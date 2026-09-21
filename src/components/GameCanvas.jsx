@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Application, Container, Graphics, Sprite, Text } from 'pixi.js';
-import { SpriteSheetManager } from '../systems/SpriteSheetManager.js';
+import { assetManager } from '../systems/SpriteSheetManager.js';
 import { Fighter } from '../systems/Fighter.js';
 import { ComboDetector } from '../systems/ComboDetector.js';
 import { AIController } from '../systems/AIController.js';
@@ -87,9 +87,22 @@ function drawBoxes(layer, fighters) {
   }
 }
 
-export default function GameCanvas() {
+export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
   const containerRef = useRef(null);
   const [status, setStatus] = useState('loading');
+  // A configuracao da partida e capturada na montagem: ela nao muda enquanto a
+  // luta acontece, e reconstruir o canvas no meio do combate seria um desastre.
+  const setupRef = useRef(setup);
+  const pausedRef = useRef(paused);
+  const onMatchEndRef = useRef(onMatchEnd);
+
+  useEffect(() => {
+    pausedRef.current = paused;
+  }, [paused]);
+
+  useEffect(() => {
+    onMatchEndRef.current = onMatchEnd;
+  }, [onMatchEnd]);
 
   useEffect(() => {
     let disposed = false;
@@ -115,10 +128,15 @@ export default function GameCanvas() {
       instance.canvas.style.display = 'block';
       containerRef.current.appendChild(instance.canvas);
 
-      const assets = new SpriteSheetManager();
-      const [mapRecord, characterRecord] = await Promise.all([
-        assets.loadMap(maps[0]),
-        assets.loadCharacter(characters[0]),
+      const matchSetup = setupRef.current;
+      const stageEntry = maps.find((entry) => entry.id === matchSetup.mapId) ?? maps[0];
+      const characterEntries = matchSetup.characters.map(
+        (id) => characters.find((entry) => entry.id === id) ?? characters[0],
+      );
+
+      const [mapRecord, ...characterRecords] = await Promise.all([
+        assetManager.loadMap(stageEntry),
+        ...characterEntries.map((entry) => assetManager.loadCharacter(entry)),
       ]);
       if (disposed) return;
 
@@ -137,17 +155,20 @@ export default function GameCanvas() {
       instance.stage.addChild(world);
 
       const fighters = spawns.map((x, index) => new Fighter({
-        record: characterRecord,
+        record: characterRecords[index],
         map,
         x,
         facing: index === 0 ? 1 : -1,
       }));
-      const detectors = fighters.map(() => new ComboDetector(characterRecord.config.combos));
+      const detectors = characterRecords.map(
+        (record) => new ComboDetector(record.config.combos),
+      );
       // A IA recebe os combos ja interpretados pelo detector, com tokens e
       // animacao resolvidos.
-      const ai = new AIController(detectors[1].combos, 'normal');
+      const ai = new AIController(detectors[1].combos, matchSetup.difficulty);
       const match = new GameStateManager();
-      let cpuEnabled = true;
+      const cpuEnabled = matchSetup.mode !== 'versusPlayer';
+      let matchEndTimer = 0;
 
       const markers = [playerMarker(PALETTE_HEX.player1), playerMarker(PALETTE_HEX.player2)];
       for (const marker of markers) world.addChild(marker);
@@ -190,7 +211,10 @@ export default function GameCanvas() {
           return;
         }
         if (event.type === 'matchEnd') {
-          hud.announce(`PLAYER ${event.winner + 1} VENCE`, 600);
+          const label = event.winner === 1 && cpuEnabled ? 'CPU' : `PLAYER ${event.winner + 1}`;
+          hud.announce(`${label} VENCE`, 600);
+          // Deixa o anuncio na tela antes de entregar o resultado para a UI.
+          matchEndTimer = 150;
         }
       }
 
@@ -204,10 +228,6 @@ export default function GameCanvas() {
       onDebugKey = (event) => {
         if (event.code === 'Backquote') debugLayer.visible = !debugLayer.visible;
         if (event.code === 'KeyR') restartMatch();
-        if (event.code === 'KeyC') cpuEnabled = !cpuEnabled;
-        if (event.code === 'Digit1') ai.setDifficulty('easy');
-        if (event.code === 'Digit2') ai.setDifficulty('normal');
-        if (event.code === 'Digit3') ai.setDifficulty('hard');
       };
       window.addEventListener('keydown', onDebugKey);
 
@@ -217,8 +237,17 @@ export default function GameCanvas() {
 
       let elapsed = 0;
       instance.ticker.add((ticker) => {
+        if (pausedRef.current) return;
+
         const delta = ticker.deltaTime;
         input.poll();
+
+        if (matchEndTimer > 0) {
+          matchEndTimer -= delta;
+          if (matchEndTimer <= 0) {
+            onMatchEndRef.current?.({ winner: match.matchWinner, wins: [...match.wins] });
+          }
+        }
 
         const fighting = match.phase === 'fighting';
         const now = performance.now();
@@ -270,12 +299,10 @@ export default function GameCanvas() {
         elapsed += ticker.deltaMS;
         if (elapsed >= 250) {
           elapsed = 0;
-          const cpu = cpuEnabled ? `cpu ${ai.difficulty}` : 'cpu off';
+          const cpu = cpuEnabled ? `cpu ${ai.difficulty}` : 'dois jogadores';
           overlay.text = [
-            `fps ${ticker.FPS.toFixed(0)}   \` caixas   R reiniciar   C ${cpu}   1/2/3 dificuldade`,
-            fighters
-              .map((fighter, index) => `p${index + 1} ${fighter.state}`)
-              .join('   '),
+            `fps ${ticker.FPS.toFixed(0)}   ${cpu}   \` caixas   R reiniciar`,
+            fighters.map((fighter, index) => `p${index + 1} ${fighter.state}`).join('   '),
           ].join('\n');
         }
       });

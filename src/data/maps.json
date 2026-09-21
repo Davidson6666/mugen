@@ -1,8 +1,37 @@
 [
   {
-    "id": "dummy_map",
-    "name": "Dummy Arena",
-    "dir": "/assets/maps/dummy",
-    "config": "dummy_map_config.json"
+    "id": "map_01",
+    "name": "Dojo Neon",
+    "dir": "/assets/maps/map_01",
+    "config": "map_01_config.json",
+    "background": "map_01_bg.png"
+  },
+  {
+    "id": "map_02",
+    "name": "Beco Arcade",
+    "dir": "/assets/maps/map_02",
+    "config": "map_02_config.json",
+    "background": "map_02_bg.png"
+  },
+  {
+    "id": "map_03",
+    "name": "Telhado Sintetico",
+    "dir": "/assets/maps/map_03",
+    "config": "map_03_config.json",
+    "background": "map_03_bg.png"
+  },
+  {
+    "id": "map_04",
+    "name": "Templo Submerso",
+    "dir": "/assets/maps/map_04",
+    "config": "map_04_config.json",
+    "background": "map_04_bg.png"
+  },
+  {
+    "id": "map_05",
+    "name": "Arena Final",
+    "dir": "/assets/maps/map_05",
+    "config": "map_05_config.json",
+    "background": "map_05_bg.png"
   }
 ]

@@ -1,9 +1,50 @@
 [
   {
-    "id": "dummy",
-    "name": "Dummy",
-    "dir": "/assets/characters/dummy",
-    "config": "dummy_config.json",
+    "id": "dante",
+    "name": "Dante",
+    "dir": "/assets/characters/dante",
+    "config": "dante_config.json",
+    "portrait": "dante_portrait.png",
+    "isBoss": false
+  },
+  {
+    "id": "escanor",
+    "name": "Escanor",
+    "dir": "/assets/characters/escanor",
+    "config": "escanor_config.json",
+    "portrait": "escanor_portrait.png",
+    "isBoss": false
+  },
+  {
+    "id": "gojo",
+    "name": "Gojo",
+    "dir": "/assets/characters/gojo",
+    "config": "gojo_config.json",
+    "portrait": "gojo_portrait.png",
+    "isBoss": false
+  },
+  {
+    "id": "humberto",
+    "name": "Humberto",
+    "dir": "/assets/characters/humberto",
+    "config": "humberto_config.json",
+    "portrait": "humberto_portrait.png",
+    "isBoss": false
+  },
+  {
+    "id": "itachi",
+    "name": "Itachi",
+    "dir": "/assets/characters/itachi",
+    "config": "itachi_config.json",
+    "portrait": "itachi_portrait.png",
+    "isBoss": false
+  },
+  {
+    "id": "ensina_god",
+    "name": "Ensina GOD",
+    "dir": "/assets/characters/ensina_god",
+    "config": "ensina_god_config.json",
+    "portrait": "ensina_god_portrait.png",
     "isBoss": false
   }
 ]

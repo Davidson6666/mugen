@@ -78,3 +78,7 @@ export class SpriteSheetManager {
     this.maps.clear();
   }
 }
+
+// Instancia unica do jogo: a tela de confronto pre-carrega o que a luta vai
+// precisar e a arena reaproveita o mesmo cache, sem baixar duas vezes.
+export const assetManager = new SpriteSheetManager();

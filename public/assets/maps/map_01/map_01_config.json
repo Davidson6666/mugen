@@ -1,0 +1,12 @@
+{
+  "id": "map_01",
+  "name": "Dojo Neon",
+  "backgroundImage": "map_01_bg.png",
+  "width": 1280,
+  "height": 720,
+  "groundLevel": 580,
+  "leftBound": 100,
+  "rightBound": 1180,
+  "cameraZoomDefault": 1,
+  "parallaxLayers": []
+}

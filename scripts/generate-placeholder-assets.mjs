@@ -1,7 +1,7 @@
 // Gera os assets placeholder da Fase 1 (sprite sheet do personagem dummy e fundo
 // do mapa dummy). Encoder PNG proprio via zlib para nao depender de Pillow/canvas.
 import { deflateSync } from 'node:zlib';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -101,6 +101,13 @@ class Canvas {
     }
   }
 
+  circle(cx, cy, radius, rgb, alpha = 255) {
+    for (let dy = -radius; dy <= radius; dy += 1) {
+      const span = Math.floor(Math.sqrt(radius * radius - dy * dy));
+      for (let dx = -span; dx <= span; dx += 1) this.set(cx + dx, cy + dy, rgb, alpha);
+    }
+  }
+
   outline(x, y, w, h, rgb, alpha = 255) {
     for (let dx = 0; dx < w; dx += 1) {
       this.set(x + dx, y, rgb, alpha);
@@ -182,9 +189,27 @@ function shade(rgb, factor) {
   return rgb.map((c) => Math.max(0, Math.min(255, Math.round(c * factor))));
 }
 
-function drawFighterFrame(canvas, originX, originY, index) {
+// Rotaciona o matiz para dar identidade visual propria a cada personagem sem
+// precisar redesenhar os 84 frames.
+function rotateHue([r, g, b], degrees) {
+  if (!degrees) return [r, g, b];
+  const angle = (degrees * Math.PI) / 180;
+  const cos = Math.cos(angle);
+  const sin = Math.sin(angle);
+  const matrix = [
+    [0.213 + cos * 0.787 - sin * 0.213, 0.715 - cos * 0.715 - sin * 0.715, 0.072 - cos * 0.072 + sin * 0.928],
+    [0.213 - cos * 0.213 + sin * 0.143, 0.715 + cos * 0.285 + sin * 0.140, 0.072 - cos * 0.072 - sin * 0.283],
+    [0.213 - cos * 0.213 - sin * 0.787, 0.715 - cos * 0.715 + sin * 0.715, 0.072 + cos * 0.928 + sin * 0.072],
+  ];
+  return matrix.map((row) => {
+    const value = row[0] * r + row[1] * g + row[2] * b;
+    return Math.max(0, Math.min(255, Math.round(value)));
+  });
+}
+
+function drawFighterFrame(canvas, originX, originY, index, hue = 0) {
   const band = bandFor(index);
-  const base = hexToRgb(band ? band.color : '#3A3550');
+  const base = rotateHue(hexToRgb(band ? band.color : '#3A3550'), hue);
   const dark = shade(base, 0.45);
   const light = shade(base, 1.25);
   const phase = band ? index - band.from : 0;
@@ -230,13 +255,40 @@ function drawFighterFrame(canvas, originX, originY, index) {
   drawNumber(canvas, index, originX + 3, originY + FRAME_H - 9, hexToRgb('#FFFFFF'), 1);
 }
 
-function buildSpriteSheet() {
+function buildSpriteSheet(hue = 0) {
   const canvas = new Canvas(COLS * FRAME_W, ROWS * FRAME_H);
   for (let row = 0; row < ROWS; row += 1) {
     for (let col = 0; col < COLS; col += 1) {
-      drawFighterFrame(canvas, col * FRAME_W, row * FRAME_H, row * COLS + col);
+      drawFighterFrame(canvas, col * FRAME_W, row * FRAME_H, row * COLS + col, hue);
     }
   }
+  return canvas.toPng();
+}
+
+/* ------------------------------------------------------------- retrato --- */
+
+const PORTRAIT_SIZE = 160;
+
+// Retrato leve para a grade da tela de selecao: a especificacao pede carregar
+// so as miniaturas ali, deixando o sprite sheet inteiro para o inicio da luta.
+function buildPortrait(hue) {
+  const canvas = new Canvas(PORTRAIT_SIZE, PORTRAIT_SIZE);
+  const base = rotateHue(hexToRgb('#39FF14'), hue);
+  const dark = shade(base, 0.35);
+  const light = shade(base, 1.2);
+  const center = PORTRAIT_SIZE / 2;
+
+  canvas.rect(0, 0, PORTRAIT_SIZE, PORTRAIT_SIZE, shade(base, 0.18));
+  canvas.circle(center, center, 74, shade(base, 0.32));
+  canvas.circle(center, center, 58, shade(base, 0.45));
+
+  // Ombros e cabeca, enquadrados como um busto.
+  canvas.rect(30, 116, 100, 44, base);
+  canvas.outline(30, 116, 100, 44, dark);
+  canvas.rect(52, 44, 56, 74, light);
+  canvas.outline(52, 44, 56, 74, dark);
+  canvas.rect(102, 76, 16, 9, hexToRgb('#FFB800'));
+
   return canvas.toPng();
 }
 
@@ -248,10 +300,10 @@ const GROUND_LEVEL = 580;
 const LEFT_BOUND = 100;
 const RIGHT_BOUND = 1180;
 
-function buildMapBackground() {
+function buildMapBackground(hue = 0) {
   const canvas = new Canvas(MAP_W, MAP_H);
   const top = hexToRgb('#0D0B1A');
-  const bottom = hexToRgb('#1A1625');
+  const bottom = rotateHue(hexToRgb('#1A1625'), hue);
   const accent = hexToRgb('#FFB800');
 
   for (let y = 0; y < MAP_H; y += 1) {
@@ -267,11 +319,11 @@ function buildMapBackground() {
   // Brilho de horizonte logo acima do chao.
   for (let y = GROUND_LEVEL - 90; y < GROUND_LEVEL; y += 1) {
     const t = (y - (GROUND_LEVEL - 90)) / 90;
-    canvas.rect(0, y, MAP_W, 1, hexToRgb('#2A1F45'), Math.round(t * 140));
+    canvas.rect(0, y, MAP_W, 1, rotateHue(hexToRgb('#2A1F45'), hue), Math.round(t * 140));
   }
 
   // Chao com grade em perspectiva simples.
-  canvas.rect(0, GROUND_LEVEL, MAP_W, MAP_H - GROUND_LEVEL, hexToRgb('#241C33'));
+  canvas.rect(0, GROUND_LEVEL, MAP_W, MAP_H - GROUND_LEVEL, rotateHue(hexToRgb('#241C33'), hue));
   canvas.rect(0, GROUND_LEVEL, MAP_W, 3, accent, 200);
   for (let x = 0; x < MAP_W; x += 64) {
     canvas.rect(x, GROUND_LEVEL, 1, MAP_H - GROUND_LEVEL, hexToRgb('#3A2E52'), 160);
@@ -288,6 +340,28 @@ function buildMapBackground() {
   return canvas.toPng();
 }
 
+/* --------------------------------------------------------------- elenco --- */
+
+// Os diretorios ja usam os ids definitivos do elenco: quando a arte real
+// chegar, basta sobrescrever o PNG e ajustar o JSON ao lado, sem mexer no
+// codigo nem na estrutura de pastas.
+const ROSTER = [
+  { id: 'dante', name: 'Dante', description: 'Cacador de demonios', hue: 0 },
+  { id: 'escanor', name: 'Escanor', description: 'O orgulho do sol', hue: 40 },
+  { id: 'gojo', name: 'Gojo', description: 'Satoru Gojo - The Strongest', hue: 190 },
+  { id: 'humberto', name: 'Humberto', description: 'Lenda da UTFPR', hue: 120 },
+  { id: 'itachi', name: 'Itachi', description: 'Sombra do cla Uchiha', hue: 265 },
+  { id: 'ensina_god', name: 'Ensina GOD', description: 'Professor supremo', hue: 320 },
+];
+
+const STAGES = [
+  { id: 'map_01', name: 'Dojo Neon', hue: 0 },
+  { id: 'map_02', name: 'Beco Arcade', hue: 60 },
+  { id: 'map_03', name: 'Telhado Sintetico', hue: 140 },
+  { id: 'map_04', name: 'Templo Submerso', hue: 200 },
+  { id: 'map_05', name: 'Arena Final', hue: 300 },
+];
+
 /* ------------------------------------------------------------- escrita --- */
 
 function write(relativePath, buffer) {
@@ -297,7 +371,69 @@ function write(relativePath, buffer) {
   console.log(`  ${relativePath} (${(buffer.length / 1024).toFixed(1)} KB)`);
 }
 
-console.log('Gerando assets dummy...');
+function writeJson(relativePath, value) {
+  write(relativePath, Buffer.from(`${JSON.stringify(value, null, 2)}\n`, 'utf8'));
+}
+
+function readJson(relativePath) {
+  return JSON.parse(readFileSync(resolve(ROOT, relativePath), 'utf8'));
+}
+
+console.log('Gerando fixture de teste (dummy)...');
 write('public/assets/characters/dummy/dummy_spritesheet.png', buildSpriteSheet());
 write('public/assets/maps/dummy/dummy_map_bg.png', buildMapBackground());
+
+// O config do dummy e a fonte dos demais: valores de combate ajustados uma vez
+// so, e o elenco inteiro herda a mesma base (a especificacao pede stats
+// identicos entre os personagens).
+const characterTemplate = readJson('public/assets/characters/dummy/dummy_config.json');
+const mapTemplate = readJson('public/assets/maps/dummy/dummy_map_config.json');
+
+console.log('Gerando elenco placeholder...');
+for (const { id, name, description, hue } of ROSTER) {
+  write(`public/assets/characters/${id}/${id}_spritesheet.png`, buildSpriteSheet(hue));
+  write(`public/assets/characters/${id}/${id}_portrait.png`, buildPortrait(hue));
+  writeJson(`public/assets/characters/${id}/${id}_config.json`, {
+    ...characterTemplate,
+    id,
+    name,
+    description,
+    spriteSheet: `${id}_spritesheet.png`,
+  });
+}
+
+console.log('Gerando cenarios placeholder...');
+for (const { id, name, hue } of STAGES) {
+  write(`public/assets/maps/${id}/${id}_bg.png`, buildMapBackground(hue));
+  writeJson(`public/assets/maps/${id}/${id}_config.json`, {
+    ...mapTemplate,
+    id,
+    name,
+    backgroundImage: `${id}_bg.png`,
+  });
+}
+
+console.log('Atualizando registros...');
+writeJson(
+  'src/data/characters.json',
+  ROSTER.map(({ id, name }) => ({
+    id,
+    name,
+    dir: `/assets/characters/${id}`,
+    config: `${id}_config.json`,
+    portrait: `${id}_portrait.png`,
+    isBoss: false,
+  })),
+);
+writeJson(
+  'src/data/maps.json',
+  STAGES.map(({ id, name }) => ({
+    id,
+    name,
+    dir: `/assets/maps/${id}`,
+    config: `${id}_config.json`,
+    background: `${id}_bg.png`,
+  })),
+);
+
 console.log('Pronto.');

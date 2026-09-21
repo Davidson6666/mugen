@@ -1,40 +1,549 @@
+/* Todas as cores vem das custom properties injetadas por applyPaletteToCss. */
+
 .app {
   width: 1280px;
   margin: 0 auto;
-  padding: 24px 0 48px;
+  padding: 24px 0;
+}
+
+.app__stage {
+  position: relative;
+  width: 1280px;
+  height: 720px;
+  overflow: hidden;
+  /* Outline em vez de border: a moldura fica por fora da caixa e nao come os
+     1280x720 exatos que o canvas do jogo ocupa. */
+  outline: 3px solid var(--color-accent);
+  background: var(--color-bg-primary);
+}
+
+/* Scanlines: reforcam a estetica de fliperama sem atrapalhar a leitura. */
+.app__scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.18) 0px,
+    rgba(0, 0, 0, 0.18) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+.screen {
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 32px 48px;
+  text-align: center;
 }
 
-.app__header {
-  display: flex;
-  align-items: baseline;
-  gap: 16px;
+.screen--battle {
+  padding: 0;
+  gap: 0;
 }
 
-.app__title {
+.screen__title {
   margin: 0;
-  font-size: 28px;
-  letter-spacing: 6px;
+  font-family: Impact, 'Arial Black', sans-serif;
+  font-size: 34px;
+  letter-spacing: 8px;
   color: var(--color-accent);
-  text-shadow: 0 0 12px rgba(255, 184, 0, 0.35);
 }
 
-.app__subtitle {
+.screen__hint {
   margin: 0;
-  font-size: 13px;
+  min-height: 20px;
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: var(--color-text-secondary);
+}
+
+.screen__footer {
+  margin: 0;
+  font-size: 12px;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--color-text-secondary);
 }
 
+.screen__warning {
+  margin: 0;
+  min-height: 22px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--color-player1);
+  opacity: 0;
+  transition: opacity 120ms ease-out;
+}
+
+.screen__warning.is-visible {
+  opacity: 1;
+}
+
+/* ------------------------------------------------------------ menu ------ */
+
+.title-block__title {
+  margin: 0;
+  font-family: Impact, 'Arial Black', sans-serif;
+  font-size: 84px;
+  letter-spacing: 14px;
+  color: var(--color-accent);
+  text-shadow:
+    0 0 24px rgba(255, 184, 0, 0.45),
+    4px 4px 0 var(--color-player1);
+}
+
+.title-block__subtitle {
+  margin: 8px 0 0;
+  font-size: 13px;
+  letter-spacing: 10px;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menu-list__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 360px;
+  padding: 10px 18px;
+  border: 2px solid transparent;
+  background: transparent;
+  font-family: Impact, 'Arial Black', sans-serif;
+  font-size: 22px;
+  letter-spacing: 4px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.menu-list__item.is-active {
+  border-color: var(--color-accent);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+}
+
+.menu-list__item.is-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.menu-list__marker {
+  width: 14px;
+  color: var(--color-accent);
+}
+
+/* -------------------------------------------------- selecao de lutador -- */
+
+.select-layout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+}
+
+.fighter-preview {
+  width: 210px;
+  margin: 0;
+}
+
+.fighter-preview__art {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 4px solid var(--color-accent);
+  object-fit: cover;
+}
+
+.fighter-preview__tag {
+  margin: 10px 0 0;
+  font-weight: 700;
+  letter-spacing: 4px;
+}
+
+.fighter-preview--p1 .fighter-preview__tag {
+  color: var(--color-player1);
+}
+
+.fighter-preview--p2 .fighter-preview__tag {
+  color: var(--color-player2);
+}
+
+.fighter-preview__name {
+  margin: 4px 0 0;
+  font-family: Impact, 'Arial Black', sans-serif;
+  font-size: 30px;
+  letter-spacing: 3px;
+  color: var(--color-text-primary);
+}
+
+.fighter-preview__status {
+  margin: 2px 0 0;
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.portrait-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 120px);
+  gap: 16px;
+}
+
+.portrait {
+  position: relative;
+  padding: 0;
+  border: 3px solid var(--color-bg-secondary);
+  border-radius: 50%;
+  background: var(--color-bg-secondary);
+  cursor: pointer;
+}
+
+.portrait img {
+  display: block;
+  width: 114px;
+  height: 114px;
+  border-radius: 50%;
+}
+
+.portrait__name {
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  transform: translateX(-50%);
+  padding: 1px 8px;
+  background: var(--color-bg-primary);
+  font-size: 11px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  color: var(--color-text-secondary);
+}
+
+.portrait.is-cursor-p1 {
+  border-color: var(--color-player1);
+  box-shadow: 0 0 18px rgba(255, 61, 61, 0.6);
+}
+
+.portrait.is-cursor-p2 {
+  border-color: var(--color-player2);
+  box-shadow: 0 0 18px rgba(0, 217, 255, 0.6);
+}
+
+/* Os dois cursores no mesmo retrato: metade de cada cor. */
+.portrait.is-cursor-p1.is-cursor-p2 {
+  border-color: var(--color-player1) var(--color-player2) var(--color-player2) var(--color-player1);
+}
+
+.portrait.is-taken img {
+  filter: grayscale(0.6) brightness(0.7);
+}
+
+.portrait__lock {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 2px 6px;
+  background: var(--color-accent);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-bg-primary);
+}
+
+/* -------------------------------------------------- selecao de cenario -- */
+
+.stage-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 240px);
+  gap: 18px;
+}
+
+.stage {
+  position: relative;
+  padding: 0;
+  border: 3px solid var(--color-bg-secondary);
+  background: var(--color-bg-secondary);
+  cursor: pointer;
+}
+
+.stage img {
+  display: block;
+  width: 234px;
+  height: 132px;
+  object-fit: cover;
+}
+
+.stage__name {
+  display: block;
+  padding: 6px 0;
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: var(--color-text-secondary);
+}
+
+.stage.is-cursor-p1 {
+  border-color: var(--color-player1);
+}
+
+.stage.is-cursor-p2 {
+  border-color: var(--color-player2);
+}
+
+.stage__votes {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  padding: 2px 8px;
+  background: var(--color-accent);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-bg-primary);
+}
+
+.difficulty {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 10px 20px;
+  border: 2px solid transparent;
+}
+
+.difficulty.is-active {
+  border-color: var(--color-accent);
+  background: var(--color-bg-secondary);
+}
+
+.difficulty__label {
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--color-text-secondary);
+}
+
+.difficulty__options {
+  display: flex;
+  gap: 8px;
+}
+
+.difficulty__option {
+  padding: 6px 18px;
+  border: 2px solid var(--color-bg-secondary);
+  background: transparent;
+  font-family: Impact, 'Arial Black', sans-serif;
+  font-size: 16px;
+  letter-spacing: 3px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.difficulty__option.is-selected {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+/* ------------------------------------------------------------ versus --- */
+
+.versus {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 120px;
+}
+
+.versus__side {
+  margin: 0;
+}
+
+.versus__side img {
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  border: 5px solid var(--color-accent);
+}
+
+.versus__side--p1 img {
+  border-color: var(--color-player1);
+}
+
+.versus__side--p2 img {
+  border-color: var(--color-player2);
+}
+
+.versus__side figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 14px;
+}
+
+.versus__tag {
+  font-size: 13px;
+  letter-spacing: 5px;
+  color: var(--color-text-secondary);
+}
+
+.versus__name {
+  font-family: Impact, 'Arial Black', sans-serif;
+  font-size: 34px;
+  letter-spacing: 3px;
+  color: var(--color-text-primary);
+}
+
+.versus__vs {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  font-family: Impact, 'Arial Black', sans-serif;
+  font-size: 96px;
+  letter-spacing: 4px;
+  color: var(--color-accent);
+  text-shadow: 0 0 30px rgba(255, 184, 0, 0.5);
+}
+
+.versus__stage {
+  margin: 0;
+  font-size: 14px;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.loading {
+  width: 420px;
+}
+
+.loading__bar {
+  height: 10px;
+  border: 2px solid var(--color-accent);
+  background: linear-gradient(90deg, var(--color-accent) 0%, var(--color-accent) 100%) no-repeat;
+  background-size: 35% 100%;
+  animation: loading-slide 900ms ease-in-out infinite alternate;
+}
+
+.loading__bar.is-complete {
+  background-size: 100% 100%;
+  animation: none;
+}
+
+@keyframes loading-slide {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 100% 0;
+  }
+}
+
+.loading__label {
+  margin: 8px 0 0;
+  font-size: 12px;
+  letter-spacing: 5px;
+  color: var(--color-text-secondary);
+}
+
+/* ---------------------------------------------------------- resultado -- */
+
+.result__label {
+  margin: 0;
+  font-size: 16px;
+  letter-spacing: 8px;
+  color: var(--color-text-secondary);
+}
+
+.result__name {
+  margin: 0;
+  font-family: Impact, 'Arial Black', sans-serif;
+  font-size: 72px;
+  letter-spacing: 8px;
+  color: var(--color-accent);
+}
+
+.result__score {
+  margin: 0 0 20px;
+  font-family: Impact, 'Arial Black', sans-serif;
+  font-size: 30px;
+  letter-spacing: 8px;
+  color: var(--color-text-primary);
+}
+
+/* -------------------------------------------------------------- pausa -- */
+
+.pause {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(13, 11, 26, 0.86);
+}
+
+.pause__panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 36px 56px;
+  border: 3px solid var(--color-accent);
+  background: var(--color-bg-secondary);
+}
+
+.pause__title {
+  margin: 0;
+  font-family: Impact, 'Arial Black', sans-serif;
+  font-size: 40px;
+  letter-spacing: 12px;
+  color: var(--color-accent);
+}
+
+/* --------------------------------------------------------- controles --- */
+
+.controls {
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.controls th,
+.controls td {
+  padding: 8px 20px;
+  border-bottom: 1px solid var(--color-bg-secondary);
+  text-align: left;
+}
+
+.controls th {
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.controls td {
+  color: var(--color-text-primary);
+}
+
+.controls td:first-child {
+  color: var(--color-text-secondary);
+}
+
+/* ------------------------------------------------------------ arena ---- */
+
 .game-canvas {
   position: relative;
   width: 1280px;
   height: 720px;
-  border: 3px solid var(--color-accent);
-  background: var(--color-bg-secondary);
 }
 
 .game-canvas__status {
@@ -46,34 +555,4 @@
   letter-spacing: 3px;
   text-transform: uppercase;
   color: var(--color-text-secondary);
-}
-
-.app__controls {
-  display: flex;
-  gap: 32px;
-  margin: 0;
-  font-size: 13px;
-  color: var(--color-text-secondary);
-}
-
-.app__controls p {
-  margin: 0;
-}
-
-.app__tag {
-  display: inline-block;
-  min-width: 34px;
-  margin-right: 10px;
-  padding: 2px 6px;
-  text-align: center;
-  font-weight: 700;
-  color: var(--color-bg-primary);
-}
-
-.app__tag--p1 {
-  background: var(--color-player1);
-}
-
-.app__tag--p2 {
-  background: var(--color-player2);
 }
