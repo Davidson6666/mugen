@@ -42,6 +42,7 @@ export class Fighter {
     // Um golpe so conecta uma vez, mesmo com a hitbox ativa por varios ticks.
     this.attackHasLanded = false;
     this.attackOverride = null;
+    this.pendingPose = null;
     this.cooldowns = new Map();
     this.comboCount = 0;
     this.comboTimer = 0;
@@ -69,7 +70,7 @@ export class Fighter {
   }
 
   get canAct() {
-    return !this.isKnockedOut && this.stunTimer <= 0;
+    return !this.isKnockedOut && this.state !== 'pose' && this.stunTimer <= 0;
   }
 
   // Retangulo declarado no espaco do frame (origem no canto superior esquerdo)
@@ -158,6 +159,12 @@ export class Fighter {
         this.stunTimer = 0;
         this.state = this.grounded ? 'idle' : 'air';
       }
+    }
+
+    // A pose de derrota so entra depois da animacao de nocaute terminar.
+    if (this.state === 'pose' && this.pendingPose && this.animation.finished) {
+      this.animation.play(this.pendingPose, { restart: true });
+      this.pendingPose = null;
     }
 
     this.tickCooldowns(delta);
@@ -266,6 +273,45 @@ export class Fighter {
     if (this.grounded) this.vx = 0;
     this.animation.play(crouching ? 'blockCrouching' : 'blockStanding', { restart: true });
     return 'block';
+  }
+
+  // Entre rounds nada carrega alem do placar: vida cheia, posicao inicial e
+  // todos os temporizadores zerados.
+  resetForRound(x, facing) {
+    this.x = x;
+    this.y = this.map.groundLevel;
+    this.vx = 0;
+    this.vy = 0;
+    this.facing = facing;
+    this.grounded = true;
+    this.state = 'idle';
+    this.blocking = false;
+    this.health = this.config.stats.maxHealth;
+    this.stunTimer = 0;
+    this.attackHasLanded = false;
+    this.attackOverride = null;
+    this.pendingPose = null;
+    this.cooldowns.clear();
+    this.breakCombo();
+    this.animation.play('idle', { restart: true });
+    this.syncSprite();
+  }
+
+  playRoundEndPose(won) {
+    const wasKnockedOut = this.isKnockedOut;
+    this.state = 'pose';
+    this.vx = 0;
+    this.blocking = false;
+
+    if (won) {
+      this.animation.play('victoryPose', { restart: true });
+      this.pendingPose = null;
+    } else if (wasKnockedOut) {
+      this.pendingPose = 'defeatPose';
+    } else {
+      this.animation.play('defeatPose', { restart: true });
+      this.pendingPose = null;
+    }
   }
 
   knockOut() {

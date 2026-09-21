@@ -4,6 +4,8 @@ import { SpriteSheetManager } from '../systems/SpriteSheetManager.js';
 import { Fighter } from '../systems/Fighter.js';
 import { ComboDetector } from '../systems/ComboDetector.js';
 import { AIController } from '../systems/AIController.js';
+import { GameStateManager } from '../systems/GameStateManager.js';
+import { Hud } from '../systems/Hud.js';
 import { resolveAttack, resolveBodyCollision } from '../systems/CollisionDetector.js';
 import { InputHandler } from '../utils/InputHandler.js';
 import { PALETTE, PALETTE_HEX } from '../utils/palette.js';
@@ -13,11 +15,27 @@ import maps from '../data/maps.json';
 export const STAGE_WIDTH = 1280;
 export const STAGE_HEIGHT = 720;
 
-const SPAWN_X = [440, 840];
+const ROUND_END_MESSAGE = {
+  ko: 'K.O.',
+  timeout: 'TEMPO ESGOTADO',
+  doubleKo: 'EMPATE',
+  timeDraw: 'EMPATE',
+};
+
+const NEUTRAL_COMMAND = {
+  left: false,
+  right: false,
+  up: false,
+  down: false,
+  jump: false,
+  punch: false,
+  kick: false,
+  special: false,
+};
 
 // Traduz o estado bruto do InputHandler no comando que o Fighter consome.
-// A IA vai produzir esse mesmo formato, entao o Fighter nao precisa saber quem
-// esta no controle.
+// A IA produz esse mesmo formato, entao o Fighter nao precisa saber quem esta
+// no controle.
 function buildCommand(input, player) {
   const held = input.state(player);
   return {
@@ -43,15 +61,15 @@ function debugText() {
     text: '',
     style: {
       fontFamily: 'monospace',
-      fontSize: 14,
+      fontSize: 13,
       fill: PALETTE.textSecondary,
-      lineHeight: 18,
+      lineHeight: 17,
     },
   });
 }
 
-// Desenha hurtbox (sempre) e hitbox (so no frame ativo do golpe). E ferramenta
-// de debug: o HUD de verdade vem depois, na etapa de interface.
+// Desenha hurtbox (sempre) e hitbox (so no frame ativo do golpe). Ferramenta de
+// debug, separada do HUD de jogo.
 function drawBoxes(layer, fighters) {
   layer.clear();
   for (const fighter of fighters) {
@@ -105,6 +123,10 @@ export default function GameCanvas() {
       if (disposed) return;
 
       const map = mapRecord.config;
+      // Os pontos de partida saem dos limites do mapa, entao qualquer cenario
+      // novo posiciona os lutadores sozinho.
+      const span = map.rightBound - map.leftBound;
+      const spawns = [map.leftBound + span * 0.3, map.rightBound - span * 0.3];
 
       const background = new Sprite(mapRecord.texture);
       background.width = map.width;
@@ -114,7 +136,7 @@ export default function GameCanvas() {
       const world = new Container();
       instance.stage.addChild(world);
 
-      let fighters = SPAWN_X.map((x, index) => new Fighter({
+      const fighters = spawns.map((x, index) => new Fighter({
         record: characterRecord,
         map,
         x,
@@ -124,37 +146,64 @@ export default function GameCanvas() {
       // A IA recebe os combos ja interpretados pelo detector, com tokens e
       // animacao resolvidos.
       const ai = new AIController(detectors[1].combos, 'normal');
+      const match = new GameStateManager();
       let cpuEnabled = true;
+
       const markers = [playerMarker(PALETTE_HEX.player1), playerMarker(PALETTE_HEX.player2)];
       for (const marker of markers) world.addChild(marker);
       for (const fighter of fighters) world.addChild(fighter.sprite);
+
+      const hud = new Hud({
+        width: STAGE_WIDTH,
+        names: fighters.map((fighter) => fighter.config.name),
+      });
+      instance.stage.addChild(hud.view);
 
       const debugLayer = new Graphics();
       debugLayer.visible = false;
       instance.stage.addChild(debugLayer);
 
       const overlay = debugText();
-      overlay.position.set(16, 16);
+      overlay.position.set(16, STAGE_HEIGHT - 60);
       instance.stage.addChild(overlay);
 
-      function resetFighters() {
-        for (const fighter of fighters) world.removeChild(fighter.sprite);
-        fighters = SPAWN_X.map((x, index) => new Fighter({
-          record: characterRecord,
-          map,
-          x,
-          facing: index === 0 ? 1 : -1,
-        }));
-        for (const fighter of fighters) world.addChild(fighter.sprite);
+      function startRound(round) {
+        fighters.forEach((fighter, index) => {
+          fighter.resetForRound(spawns[index], index === 0 ? 1 : -1);
+        });
         for (const detector of detectors) detector.reset();
         ai.reset();
+        hud.announce(`ROUND ${round} — FIGHT!`, 110);
+      }
+
+      function handleMatchEvent(event) {
+        if (event.type === 'roundEnd') {
+          hud.announce(ROUND_END_MESSAGE[event.reason], 140);
+          if (event.winner !== null) {
+            fighters[event.winner].playRoundEndPose(true);
+            fighters[1 - event.winner].playRoundEndPose(false);
+          }
+          return;
+        }
+        if (event.type === 'roundStart') {
+          startRound(event.round);
+          return;
+        }
+        if (event.type === 'matchEnd') {
+          hud.announce(`PLAYER ${event.winner + 1} VENCE`, 600);
+        }
+      }
+
+      function restartMatch() {
+        match.reset();
+        startRound(1);
       }
 
       // Atalhos de desenvolvimento, fora do input map do jogo. A selecao de
       // modo e dificuldade sai daqui quando os menus existirem.
       onDebugKey = (event) => {
         if (event.code === 'Backquote') debugLayer.visible = !debugLayer.visible;
-        if (event.code === 'KeyR') resetFighters();
+        if (event.code === 'KeyR') restartMatch();
         if (event.code === 'KeyC') cpuEnabled = !cpuEnabled;
         if (event.code === 'Digit1') ai.setDifficulty('easy');
         if (event.code === 'Digit2') ai.setDifficulty('normal');
@@ -164,34 +213,57 @@ export default function GameCanvas() {
 
       input.attach();
       setStatus('ready');
+      startRound(1);
 
       let elapsed = 0;
       instance.ticker.add((ticker) => {
         const delta = ticker.deltaTime;
         input.poll();
 
+        const fighting = match.phase === 'fighting';
+        const now = performance.now();
+
         fighters[0].faceTowards(fighters[1].x);
         fighters[1].faceTowards(fighters[0].x);
 
-        const now = performance.now();
         fighters.forEach((fighter, index) => {
-          const command = index === 1 && cpuEnabled
-            ? ai.update(fighter, fighters[0], delta)
-            : buildCommand(input, index);
-          // O buffer le a direcao ja relativa ao lado que o personagem encara,
-          // por isso o flip precisa acontecer antes.
-          command.combo = detectors[index].feed(command, fighter.facing, now);
+          let command = { ...NEUTRAL_COMMAND };
+          if (fighting) {
+            command = index === 1 && cpuEnabled
+              ? ai.update(fighter, fighters[0], delta)
+              : buildCommand(input, index);
+            // O buffer le a direcao ja relativa ao lado que o personagem
+            // encara, por isso o flip precisa acontecer antes.
+            command.combo = detectors[index].feed(command, fighter.facing, now);
+          }
           fighter.update(command, delta);
         });
 
-        resolveBodyCollision(fighters[0], fighters[1]);
-        resolveAttack(fighters[0], fighters[1]);
-        resolveAttack(fighters[1], fighters[0]);
+        if (fighting) {
+          resolveBodyCollision(fighters[0], fighters[1]);
+          resolveAttack(fighters[0], fighters[1]);
+          resolveAttack(fighters[1], fighters[0]);
+        }
+
+        const event = match.update(fighters, delta);
+        if (event) handleMatchEvent(event);
 
         fighters.forEach((fighter, index) => {
           fighter.syncSprite();
           markers[index].position.set(fighter.x, map.groundLevel);
         });
+
+        hud.update(
+          {
+            fighters,
+            timeRemaining: match.timeRemaining,
+            roundNumber: match.roundNumber,
+            wins: match.wins,
+            suddenDeath: match.isSuddenDeath,
+            roundsToWin: match.roundsToWin,
+          },
+          delta,
+        );
 
         if (debugLayer.visible) drawBoxes(debugLayer, fighters);
 
@@ -200,14 +272,10 @@ export default function GameCanvas() {
           elapsed = 0;
           const cpu = cpuEnabled ? `cpu ${ai.difficulty}` : 'cpu off';
           overlay.text = [
-            `fps ${ticker.FPS.toFixed(0)}   \` boxes   R reset   C ${cpu}   1/2/3 dificuldade`,
-            ...fighters.map((fighter, index) => {
-              const facing = fighter.facing === 1 ? '>' : '<';
-              const guard = fighter.blocking ? ' block' : '';
-              const health = String(Math.round(fighter.health)).padStart(3);
-              const combo = fighter.comboCount > 1 ? `  ${fighter.comboCount} hits` : '';
-              return `p${index + 1} ${facing} hp${health}  ${fighter.animation.name}${guard}${combo}`;
-            }),
+            `fps ${ticker.FPS.toFixed(0)}   \` caixas   R reiniciar   C ${cpu}   1/2/3 dificuldade`,
+            fighters
+              .map((fighter, index) => `p${index + 1} ${fighter.state}`)
+              .join('   '),
           ].join('\n');
         }
       });
