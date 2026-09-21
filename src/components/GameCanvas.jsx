@@ -3,6 +3,7 @@ import { Application, Container, Graphics, Sprite, Text } from 'pixi.js';
 import { SpriteSheetManager } from '../systems/SpriteSheetManager.js';
 import { Fighter } from '../systems/Fighter.js';
 import { ComboDetector } from '../systems/ComboDetector.js';
+import { AIController } from '../systems/AIController.js';
 import { resolveAttack, resolveBodyCollision } from '../systems/CollisionDetector.js';
 import { InputHandler } from '../utils/InputHandler.js';
 import { PALETTE, PALETTE_HEX } from '../utils/palette.js';
@@ -120,6 +121,10 @@ export default function GameCanvas() {
         facing: index === 0 ? 1 : -1,
       }));
       const detectors = fighters.map(() => new ComboDetector(characterRecord.config.combos));
+      // A IA recebe os combos ja interpretados pelo detector, com tokens e
+      // animacao resolvidos.
+      const ai = new AIController(detectors[1].combos, 'normal');
+      let cpuEnabled = true;
       const markers = [playerMarker(PALETTE_HEX.player1), playerMarker(PALETTE_HEX.player2)];
       for (const marker of markers) world.addChild(marker);
       for (const fighter of fighters) world.addChild(fighter.sprite);
@@ -142,12 +147,18 @@ export default function GameCanvas() {
         }));
         for (const fighter of fighters) world.addChild(fighter.sprite);
         for (const detector of detectors) detector.reset();
+        ai.reset();
       }
 
-      // Atalhos de desenvolvimento, fora do input map do jogo.
+      // Atalhos de desenvolvimento, fora do input map do jogo. A selecao de
+      // modo e dificuldade sai daqui quando os menus existirem.
       onDebugKey = (event) => {
         if (event.code === 'Backquote') debugLayer.visible = !debugLayer.visible;
         if (event.code === 'KeyR') resetFighters();
+        if (event.code === 'KeyC') cpuEnabled = !cpuEnabled;
+        if (event.code === 'Digit1') ai.setDifficulty('easy');
+        if (event.code === 'Digit2') ai.setDifficulty('normal');
+        if (event.code === 'Digit3') ai.setDifficulty('hard');
       };
       window.addEventListener('keydown', onDebugKey);
 
@@ -164,7 +175,9 @@ export default function GameCanvas() {
 
         const now = performance.now();
         fighters.forEach((fighter, index) => {
-          const command = buildCommand(input, index);
+          const command = index === 1 && cpuEnabled
+            ? ai.update(fighter, fighters[0], delta)
+            : buildCommand(input, index);
           // O buffer le a direcao ja relativa ao lado que o personagem encara,
           // por isso o flip precisa acontecer antes.
           command.combo = detectors[index].feed(command, fighter.facing, now);
@@ -185,8 +198,9 @@ export default function GameCanvas() {
         elapsed += ticker.deltaMS;
         if (elapsed >= 250) {
           elapsed = 0;
+          const cpu = cpuEnabled ? `cpu ${ai.difficulty}` : 'cpu off';
           overlay.text = [
-            `fps ${ticker.FPS.toFixed(0)}   \` boxes   R reset`,
+            `fps ${ticker.FPS.toFixed(0)}   \` boxes   R reset   C ${cpu}   1/2/3 dificuldade`,
             ...fighters.map((fighter, index) => {
               const facing = fighter.facing === 1 ? '>' : '<';
               const guard = fighter.blocking ? ' block' : '';

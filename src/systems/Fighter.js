@@ -60,6 +60,14 @@ export class Fighter {
     return this.state === 'ko';
   }
 
+  // Quanto a hitbox base avanca alem do centro do corpo. A IA usa isso para
+  // saber de que distancia vale a pena atacar.
+  get attackReach() {
+    const { frameWidth } = this.config.spriteGridSize;
+    const { offsetX, width } = this.config.hitbox;
+    return (offsetX + width - frameWidth / 2) * RENDER_SCALE;
+  }
+
   get canAct() {
     return !this.isKnockedOut && this.stunTimer <= 0;
   }
