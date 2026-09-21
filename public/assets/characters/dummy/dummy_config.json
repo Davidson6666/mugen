@@ -135,17 +135,33 @@
       "hitstun": 12
     },
     {
+      "id": "basic_kick",
+      "input": "K",
+      "damage": 18,
+      "hitstun": 14
+    },
+    {
       "id": "forward_punch",
       "input": "→P",
+      "animation": "special2",
       "damage": 20,
       "hitstun": 14
     },
     {
       "id": "hadoken_like",
       "input": "→↘↓P",
+      "animation": "special1",
       "damage": 35,
       "hitstun": 20,
       "cooldown": 60
+    },
+    {
+      "id": "rising_kick",
+      "input": "↓↘→K",
+      "animation": "special3",
+      "damage": 40,
+      "hitstun": 22,
+      "cooldown": 80
     }
   ],
   "hitbox": {

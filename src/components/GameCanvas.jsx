@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Application, Container, Graphics, Sprite, Text } from 'pixi.js';
 import { SpriteSheetManager } from '../systems/SpriteSheetManager.js';
 import { Fighter } from '../systems/Fighter.js';
+import { ComboDetector } from '../systems/ComboDetector.js';
 import { resolveAttack, resolveBodyCollision } from '../systems/CollisionDetector.js';
 import { InputHandler } from '../utils/InputHandler.js';
 import { PALETTE, PALETTE_HEX } from '../utils/palette.js';
@@ -118,6 +119,7 @@ export default function GameCanvas() {
         x,
         facing: index === 0 ? 1 : -1,
       }));
+      const detectors = fighters.map(() => new ComboDetector(characterRecord.config.combos));
       const markers = [playerMarker(PALETTE_HEX.player1), playerMarker(PALETTE_HEX.player2)];
       for (const marker of markers) world.addChild(marker);
       for (const fighter of fighters) world.addChild(fighter.sprite);
@@ -139,6 +141,7 @@ export default function GameCanvas() {
           facing: index === 0 ? 1 : -1,
         }));
         for (const fighter of fighters) world.addChild(fighter.sprite);
+        for (const detector of detectors) detector.reset();
       }
 
       // Atalhos de desenvolvimento, fora do input map do jogo.
@@ -158,8 +161,15 @@ export default function GameCanvas() {
 
         fighters[0].faceTowards(fighters[1].x);
         fighters[1].faceTowards(fighters[0].x);
-        fighters[0].update(buildCommand(input, 0), delta);
-        fighters[1].update(buildCommand(input, 1), delta);
+
+        const now = performance.now();
+        fighters.forEach((fighter, index) => {
+          const command = buildCommand(input, index);
+          // O buffer le a direcao ja relativa ao lado que o personagem encara,
+          // por isso o flip precisa acontecer antes.
+          command.combo = detectors[index].feed(command, fighter.facing, now);
+          fighter.update(command, delta);
+        });
 
         resolveBodyCollision(fighters[0], fighters[1]);
         resolveAttack(fighters[0], fighters[1]);
@@ -181,7 +191,8 @@ export default function GameCanvas() {
               const facing = fighter.facing === 1 ? '>' : '<';
               const guard = fighter.blocking ? ' block' : '';
               const health = String(Math.round(fighter.health)).padStart(3);
-              return `p${index + 1} ${facing} hp${health}  ${fighter.state}${guard}`;
+              const combo = fighter.comboCount > 1 ? `  ${fighter.comboCount} hits` : '';
+              return `p${index + 1} ${facing} hp${health}  ${fighter.animation.name}${guard}${combo}`;
             }),
           ].join('\n');
         }

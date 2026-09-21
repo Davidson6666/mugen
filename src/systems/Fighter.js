@@ -7,6 +7,19 @@ export const RENDER_SCALE = 3;
 
 const ATTACK_BY_BUTTON = { punch: 'punch', kick: 'kick', special: 'special1' };
 
+// Tempo sem conectar golpe que zera o contador de combo.
+const COMBO_INACTIVITY_FRAMES = 60;
+
+// O combo traz seus proprios dano e hitstun; campos ausentes continuam vindo da
+// animacao, entao nao se sobrescreve nada com undefined.
+function overrideFrom(combo) {
+  const override = {};
+  for (const field of ['damage', 'hitstun', 'cooldown']) {
+    if (combo[field] !== undefined) override[field] = combo[field];
+  }
+  return override;
+}
+
 // Personagem jogavel: fisica, estado e animacao. Recebe um "command" ja
 // resolvido (teclado, gamepad ou, mais tarde, IA) em vez de ler input direto.
 export class Fighter {
@@ -28,6 +41,10 @@ export class Fighter {
     this.stunTimer = 0;
     // Um golpe so conecta uma vez, mesmo com a hitbox ativa por varios ticks.
     this.attackHasLanded = false;
+    this.attackOverride = null;
+    this.cooldowns = new Map();
+    this.comboCount = 0;
+    this.comboTimer = 0;
 
     this.sprite = new Sprite(this.frames[0]);
     this.sprite.anchor.set(0.5, 1);
@@ -78,7 +95,41 @@ export class Fighter {
     const animation = this.animation.current;
     if (animation?.hitboxFrame === undefined) return null;
     if (this.animation.localFrame !== animation.hitboxFrame) return null;
-    return animation;
+    return this.attackOverride ? { ...animation, ...this.attackOverride } : animation;
+  }
+
+  isOnCooldown(animationName) {
+    return (this.cooldowns.get(animationName) ?? 0) > 0;
+  }
+
+  startAttack(animationName, override = null) {
+    if (!this.config.animations[animationName] || this.isOnCooldown(animationName)) return false;
+
+    this.state = 'attack';
+    this.attackHasLanded = false;
+    this.attackOverride = override;
+    if (this.grounded) this.vx = 0;
+    this.animation.play(animationName, { restart: true });
+
+    const cooldown = override?.cooldown ?? this.config.animations[animationName].cooldown;
+    if (cooldown) this.cooldowns.set(animationName, cooldown);
+    return true;
+  }
+
+  // O contador so sobe em acertos consecutivos: errar, ser bloqueado ou ficar
+  // sem atacar zera a sequencia.
+  onAttackResolved(outcome) {
+    if (outcome === 'block') {
+      this.breakCombo();
+      return;
+    }
+    this.comboCount += 1;
+    this.comboTimer = COMBO_INACTIVITY_FRAMES;
+  }
+
+  breakCombo() {
+    this.comboCount = 0;
+    this.comboTimer = 0;
   }
 
   // "Frente" e "tras" sao sempre relativos ao oponente, nunca a um lado fixo da
@@ -101,16 +152,26 @@ export class Fighter {
       }
     }
 
+    this.tickCooldowns(delta);
+
+    if (this.comboTimer > 0) {
+      this.comboTimer -= delta;
+      if (this.comboTimer <= 0) this.breakCombo();
+    }
+
     if (this.canAct) {
-      if (this.state === 'attack' && this.animation.finished) this.state = 'idle';
+      if (this.state === 'attack' && this.animation.finished) {
+        if (!this.attackHasLanded) this.breakCombo();
+        this.state = 'idle';
+        this.attackOverride = null;
+      }
 
       if (this.state !== 'attack') {
-        const button = ['punch', 'kick', 'special'].find((name) => command[name]);
-        if (button) {
-          this.state = 'attack';
-          this.attackHasLanded = false;
-          if (this.grounded) this.vx = 0;
-          this.animation.play(ATTACK_BY_BUTTON[button], { restart: true });
+        if (command.combo) {
+          this.startAttack(command.combo.animation, overrideFrom(command.combo));
+        } else {
+          const button = ['punch', 'kick', 'special'].find((name) => command[name]);
+          if (button) this.startAttack(ATTACK_BY_BUTTON[button]);
         }
       }
 
@@ -162,7 +223,16 @@ export class Fighter {
     this.syncSprite();
   }
 
+  tickCooldowns(delta) {
+    for (const [name, remaining] of this.cooldowns) {
+      const next = remaining - delta;
+      if (next <= 0) this.cooldowns.delete(name);
+      else this.cooldowns.set(name, next);
+    }
+  }
+
   takeHit(damage, hitstun) {
+    this.breakCombo();
     this.health = Math.max(0, this.health - damage);
     if (this.health === 0) {
       this.knockOut();

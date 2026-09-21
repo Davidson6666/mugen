@@ -47,8 +47,12 @@ export function resolveAttack(attacker, defender) {
   if (defender.blocking) {
     const damage = Math.max(1, Math.round(attack.damage * CHIP_DAMAGE_RATIO));
     const blockstun = Math.round(attack.hitstun * BLOCKSTUN_RATIO);
-    return { outcome: defender.takeBlockedHit(damage, blockstun), damage };
+    const outcome = defender.takeBlockedHit(damage, blockstun);
+    attacker.onAttackResolved(outcome);
+    return { outcome, damage };
   }
 
-  return { outcome: defender.takeHit(attack.damage, attack.hitstun), damage: attack.damage };
+  const outcome = defender.takeHit(attack.damage, attack.hitstun);
+  attacker.onAttackResolved(outcome);
+  return { outcome, damage: attack.damage };
 }
