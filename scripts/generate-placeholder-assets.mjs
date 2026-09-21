@@ -267,29 +267,58 @@ function buildSpriteSheet(hue = 0) {
 
 /* ------------------------------------------------------------- retrato --- */
 
-const PORTRAIT_SIZE = 160;
+// Retrato em baixa resolucao, ampliado por CSS com image-rendering: pixelated.
+// Desenhar em 40x40 e deixar a tela escalar mantem o pixel grande e chapado do
+// CPS-1, em vez de um desenho liso que so parece pequeno.
+const PORTRAIT_SIZE = 40;
 
-// Retrato leve para a grade da tela de selecao: a especificacao pede carregar
-// so as miniaturas ali, deixando o sprite sheet inteiro para o inicio da luta.
+// Xadrez de duas cores: a tecnica que os jogos da epoca usavam para simular um
+// degrade com poucas cores disponiveis.
+function dither(canvas, x, y, w, h, colorA, colorB) {
+  for (let dy = 0; dy < h; dy += 1) {
+    for (let dx = 0; dx < w; dx += 1) {
+      canvas.set(x + dx, y + dy, (dx + dy) % 2 === 0 ? colorA : colorB);
+    }
+  }
+}
+
 function buildPortrait(hue) {
   const canvas = new Canvas(PORTRAIT_SIZE, PORTRAIT_SIZE);
   const base = rotateHue(hexToRgb('#39FF14'), hue);
-  const dark = shade(base, 0.35);
-  const light = shade(base, 1.2);
-  const center = PORTRAIT_SIZE / 2;
+  const shadow = shade(base, 0.45);
+  const light = shade(base, 1.3);
+  const outline = hexToRgb('#0D0B1A');
+  const backA = shade(base, 0.26);
+  const backB = shade(base, 0.16);
 
-  canvas.rect(0, 0, PORTRAIT_SIZE, PORTRAIT_SIZE, shade(base, 0.18));
-  canvas.circle(center, center, 74, shade(base, 0.32));
-  canvas.circle(center, center, 58, shade(base, 0.45));
+  // Fundo: faixa clara em cima, dithering no meio, faixa escura embaixo.
+  canvas.rect(0, 0, PORTRAIT_SIZE, 14, backA);
+  dither(canvas, 0, 14, PORTRAIT_SIZE, 8, backA, backB);
+  canvas.rect(0, 22, PORTRAIT_SIZE, PORTRAIT_SIZE - 22, backB);
 
-  // Ombros e cabeca, enquadrados como um busto.
-  canvas.rect(30, 116, 100, 44, base);
-  canvas.outline(30, 116, 100, 44, dark);
-  canvas.rect(52, 44, 56, 74, light);
-  canvas.outline(52, 44, 56, 74, dark);
-  canvas.rect(102, 76, 16, 9, hexToRgb('#FFB800'));
+  // Ombros.
+  canvas.rect(5, 30, 30, 10, shadow);
+  canvas.rect(7, 32, 26, 8, base);
+  canvas.outline(5, 30, 30, 10, outline);
 
-  return canvas.toPng();
+  // Pescoco e cabeca.
+  canvas.rect(17, 26, 6, 5, shadow);
+  canvas.rect(12, 8, 16, 19, base);
+  // Luz vindo da esquerda: metade clara, metade na cor cheia.
+  canvas.rect(12, 8, 7, 19, light);
+  dither(canvas, 19, 8, 3, 19, light, base);
+  canvas.outline(12, 8, 16, 19, outline);
+
+  // Olhos e faixa de destaque, o que da leitura imediata do personagem.
+  canvas.rect(15, 15, 3, 3, outline);
+  canvas.rect(22, 15, 3, 3, outline);
+  canvas.rect(12, 11, 16, 3, hexToRgb('#FFB800'));
+  canvas.rect(12, 11, 16, 1, shade(hexToRgb('#FFB800'), 0.6));
+
+  // Contorno externo do quadro.
+  canvas.outline(0, 0, PORTRAIT_SIZE, PORTRAIT_SIZE, outline);
+
+  return canvas;
 }
 
 /* ----------------------------------------------------------- mapa dummy --- */
@@ -300,8 +329,21 @@ const GROUND_LEVEL = 580;
 const LEFT_BOUND = 100;
 const RIGHT_BOUND = 1180;
 
-function buildMapBackground(hue = 0) {
+// Gerador deterministico: o mesmo cenario sai igual toda vez que o script roda.
+function mulberry32(seed) {
+  let state = seed;
+  return () => {
+    state |= 0;
+    state = (state + 0x6d2b79f5) | 0;
+    let t = Math.imul(state ^ (state >>> 15), 1 | state);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function buildMapBackground(hue = 0, seed = 1) {
   const canvas = new Canvas(MAP_W, MAP_H);
+  const random = mulberry32(seed);
   const top = hexToRgb('#0D0B1A');
   const bottom = rotateHue(hexToRgb('#1A1625'), hue);
   const accent = hexToRgb('#FFB800');
@@ -316,10 +358,50 @@ function buildMapBackground(hue = 0) {
     canvas.rect(0, y, MAP_W, 1, rgb);
   }
 
+  // Lua e estrelas: dao um ponto de interesse no ceu, que antes era chapado.
+  const moonX = 180 + Math.round(random() * 900);
+  canvas.circle(moonX, 150, 62, shade(rotateHue(hexToRgb('#4A3C7A'), hue), 1.1));
+  canvas.circle(moonX, 150, 54, shade(rotateHue(hexToRgb('#8B7BD0'), hue), 1.15));
+  canvas.circle(moonX - 16, 138, 44, shade(rotateHue(hexToRgb('#4A3C7A'), hue), 0.85));
+  for (let star = 0; star < 90; star += 1) {
+    const x = Math.round(random() * MAP_W);
+    const y = Math.round(random() * (GROUND_LEVEL - 160));
+    canvas.rect(x, y, 2, 2, hexToRgb('#FFFFFF'), 60 + Math.round(random() * 120));
+  }
+
+  // Silhueta distante e estruturas de frente, com janelas acesas: sem isso o
+  // cenario nao se le como um lugar, nem na miniatura nem durante a luta.
+  const far = shade(rotateHue(hexToRgb('#2A1F45'), hue), 0.75);
+  let x = -20;
+  while (x < MAP_W) {
+    const width = 50 + Math.round(random() * 90);
+    const height = 90 + Math.round(random() * 150);
+    canvas.rect(x, GROUND_LEVEL - height, width, height, far);
+    x += width + 6;
+  }
+
+  const near = shade(rotateHue(hexToRgb('#3A2E52'), hue), 0.9);
+  const glow = rotateHue(hexToRgb('#FFB800'), hue);
+  x = -30;
+  while (x < MAP_W) {
+    const width = 80 + Math.round(random() * 120);
+    const height = 60 + Math.round(random() * 110);
+    const originY = GROUND_LEVEL - height;
+    canvas.rect(x, originY, width, height, near);
+    canvas.rect(x, originY, width, 3, shade(near, 1.4));
+    for (let wy = originY + 14; wy < GROUND_LEVEL - 16; wy += 22) {
+      for (let wx = x + 12; wx < x + width - 12; wx += 26) {
+        if (random() < 0.45) continue;
+        canvas.rect(wx, wy, 10, 12, glow, 90 + Math.round(random() * 120));
+      }
+    }
+    x += width + 10;
+  }
+
   // Brilho de horizonte logo acima do chao.
   for (let y = GROUND_LEVEL - 90; y < GROUND_LEVEL; y += 1) {
     const t = (y - (GROUND_LEVEL - 90)) / 90;
-    canvas.rect(0, y, MAP_W, 1, rotateHue(hexToRgb('#2A1F45'), hue), Math.round(t * 140));
+    canvas.rect(0, y, MAP_W, 1, rotateHue(hexToRgb('#2A1F45'), hue), Math.round(t * 110));
   }
 
   // Chao com grade em perspectiva simples.
@@ -345,13 +427,16 @@ function buildMapBackground(hue = 0) {
 // Os diretorios ja usam os ids definitivos do elenco: quando a arte real
 // chegar, basta sobrescrever o PNG e ajustar o JSON ao lado, sem mexer no
 // codigo nem na estrutura de pastas.
+// A cor base do desenho e verde (~110 graus); o deslocamento de matiz de cada
+// personagem foi escolhido para cair no tom tematico dele e, ao mesmo tempo,
+// deixar os seis bem distintos na grade de selecao.
 const ROSTER = [
-  { id: 'dante', name: 'Dante', description: 'Cacador de demonios', hue: 0 },
-  { id: 'escanor', name: 'Escanor', description: 'O orgulho do sol', hue: 40 },
-  { id: 'gojo', name: 'Gojo', description: 'Satoru Gojo - The Strongest', hue: 190 },
-  { id: 'humberto', name: 'Humberto', description: 'Lenda da UTFPR', hue: 120 },
-  { id: 'itachi', name: 'Itachi', description: 'Sombra do cla Uchiha', hue: 265 },
-  { id: 'ensina_god', name: 'Ensina GOD', description: 'Professor supremo', hue: 320 },
+  { id: 'dante', name: 'Dante', description: 'Cacador de demonios', hue: 250 },
+  { id: 'escanor', name: 'Escanor', description: 'O orgulho do sol', hue: 295 },
+  { id: 'gojo', name: 'Gojo', description: 'Satoru Gojo - The Strongest', hue: 80 },
+  { id: 'humberto', name: 'Humberto', description: 'Lenda da UTFPR', hue: 0 },
+  { id: 'itachi', name: 'Itachi', description: 'Sombra do cla Uchiha', hue: 150 },
+  { id: 'ensina_god', name: 'Ensina GOD', description: 'Professor supremo', hue: 200 },
 ];
 
 const STAGES = [
@@ -392,7 +477,7 @@ const mapTemplate = readJson('public/assets/maps/dummy/dummy_map_config.json');
 console.log('Gerando elenco placeholder...');
 for (const { id, name, description, hue } of ROSTER) {
   write(`public/assets/characters/${id}/${id}_spritesheet.png`, buildSpriteSheet(hue));
-  write(`public/assets/characters/${id}/${id}_portrait.png`, buildPortrait(hue));
+  write(`public/assets/characters/${id}/${id}_portrait.png`, buildPortrait(hue).toPng());
   writeJson(`public/assets/characters/${id}/${id}_config.json`, {
     ...characterTemplate,
     id,
@@ -403,8 +488,8 @@ for (const { id, name, description, hue } of ROSTER) {
 }
 
 console.log('Gerando cenarios placeholder...');
-for (const { id, name, hue } of STAGES) {
-  write(`public/assets/maps/${id}/${id}_bg.png`, buildMapBackground(hue));
+for (const [index, { id, name, hue }] of STAGES.entries()) {
+  write(`public/assets/maps/${id}/${id}_bg.png`, buildMapBackground(hue, index + 1));
   writeJson(`public/assets/maps/${id}/${id}_config.json`, {
     ...mapTemplate,
     id,

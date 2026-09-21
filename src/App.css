@@ -1,4 +1,12 @@
-/* Todas as cores vem das custom properties injetadas por applyPaletteToCss. */
+/* Linguagem visual CPS-1 (Street Fighter II, 1991): tipografia bitmap com
+   contorno preto duro, paineis com relevo grosso, cores chapadas e saturadas,
+   fundo com dithering. As cores vem das custom properties da paleta. */
+
+:root {
+  --ink: #05040c;
+  --bevel-light: rgba(255, 255, 255, 0.22);
+  --bevel-dark: rgba(0, 0, 0, 0.6);
+}
 
 .app {
   width: 1280px;
@@ -13,23 +21,81 @@
   overflow: hidden;
   /* Outline em vez de border: a moldura fica por fora da caixa e nao come os
      1280x720 exatos que o canvas do jogo ocupa. */
-  outline: 3px solid var(--color-accent);
-  background: var(--color-bg-primary);
+  outline: 4px solid var(--color-accent);
+  /* Faixas diagonais + xadrez de dithering sobre o roxo base dao a densidade
+     de tela de fliperama; fundo chapado e o que fazia parecer vazio. */
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(255, 184, 0, 0.05) 0 2px,
+      transparent 2px 24px
+    ),
+    repeating-conic-gradient(
+      rgba(255, 255, 255, 0.022) 0% 25%,
+      transparent 0% 50%
+    )
+      0 0 / 8px 8px,
+    radial-gradient(circle at 50% 38%, #221a3d 0%, var(--color-bg-primary) 72%);
 }
 
-/* Scanlines: reforcam a estetica de fliperama sem atrapalhar a leitura. */
 .app__scanlines {
   position: absolute;
   inset: 0;
+  z-index: 5;
   pointer-events: none;
   background: repeating-linear-gradient(
     to bottom,
-    rgba(0, 0, 0, 0.18) 0px,
-    rgba(0, 0, 0, 0.18) 1px,
-    transparent 1px,
-    transparent 3px
+    rgba(0, 0, 0, 0.22) 0 1px,
+    transparent 1px 3px
   );
 }
+
+/* ------------------------------------------------------- fundamentos --- */
+
+/* Contorno preto duro em 8 direcoes: e o que faz o texto bitmap ler por cima
+   de qualquer fundo, e a marca registrada da tipografia de arcade. */
+/* Nao incluir aqui titulos preenchidos com background-clip: text — a sombra
+   seria pintada por cima do degrade e apagaria o preenchimento. Esses usam
+   drop-shadow no filter. */
+.pixel-outline,
+.screen__title,
+.menu-list__item,
+.versus__vs,
+.versus__name,
+.pause__title,
+.fighter-preview__name {
+  text-shadow:
+    2px 0 0 var(--ink), -2px 0 0 var(--ink),
+    0 2px 0 var(--ink), 0 -2px 0 var(--ink),
+    2px 2px 0 var(--ink), -2px 2px 0 var(--ink),
+    2px -2px 0 var(--ink), -2px -2px 0 var(--ink);
+}
+
+/* Painel com relevo: luz em cima/esquerda, sombra embaixo/direita. */
+.bevel {
+  border: 4px solid var(--ink);
+  background: var(--color-bg-secondary);
+  box-shadow:
+    inset 4px 4px 0 var(--bevel-light),
+    inset -4px -4px 0 var(--bevel-dark);
+}
+
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.blink {
+  animation: blink 900ms steps(1, end) infinite;
+}
+
+/* ------------------------------------------------------------ telas ---- */
 
 .screen {
   position: absolute;
@@ -38,8 +104,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 18px;
-  padding: 32px 48px;
+  gap: 20px;
+  padding: 28px 40px;
   text-align: center;
 }
 
@@ -50,15 +116,20 @@
 
 .screen__title {
   margin: 0;
-  font-family: Impact, 'Arial Black', sans-serif;
-  font-size: 34px;
-  letter-spacing: 8px;
-  color: var(--color-accent);
+  padding: 10px 26px;
+  border: 4px solid var(--ink);
+  background: linear-gradient(180deg, #ffd966 0%, var(--color-accent) 48%, #a87400 100%);
+  box-shadow: inset 3px 3px 0 #ffe9a8, inset -3px -3px 0 #7a5400;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 18px;
+  letter-spacing: 2px;
+  color: var(--ink);
+  text-shadow: none;
 }
 
 .screen__hint {
   margin: 0;
-  min-height: 20px;
+  min-height: 18px;
   font-size: 14px;
   letter-spacing: 1px;
   color: var(--color-text-secondary);
@@ -66,51 +137,96 @@
 
 .screen__footer {
   margin: 0;
-  font-size: 12px;
-  letter-spacing: 2px;
+  font-size: 13px;
+  letter-spacing: 1px;
   text-transform: uppercase;
   color: var(--color-text-secondary);
 }
 
 .screen__warning {
   margin: 0;
-  min-height: 22px;
-  font-weight: 700;
-  letter-spacing: 1px;
+  min-height: 26px;
+  padding: 4px 14px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 11px;
+  line-height: 18px;
   color: var(--color-player1);
   opacity: 0;
-  transition: opacity 120ms ease-out;
 }
 
 .screen__warning.is-visible {
   opacity: 1;
+  animation: blink 300ms steps(1, end) 4;
 }
 
-/* ------------------------------------------------------------ menu ------ */
+/* Rodape de gabinete: credito piscando, como numa maquina de fliperama. */
+.cabinet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 18px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  color: var(--color-text-secondary);
+}
+
+.cabinet__credit {
+  color: var(--color-accent);
+}
+
+/* ------------------------------------------------------ menu inicial --- */
+
+.title-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin-bottom: 10px;
+}
 
 .title-block__title {
   margin: 0;
-  font-family: Impact, 'Arial Black', sans-serif;
-  font-size: 84px;
-  letter-spacing: 14px;
-  color: var(--color-accent);
-  text-shadow:
-    0 0 24px rgba(255, 184, 0, 0.45),
-    4px 4px 0 var(--color-player1);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 62px;
+  line-height: 1.1;
+  letter-spacing: 2px;
+  /* Preenchimento em degrade dourado, como os logos da epoca. */
+  background: linear-gradient(180deg, #fff3c4 0%, var(--color-accent) 50%, #c98a00 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  /* drop-shadows encadeados desenham o contorno preto ao redor do degrade;
+     text-shadow aqui cobriria o preenchimento. */
+  filter:
+    drop-shadow(3px 0 0 var(--ink)) drop-shadow(-3px 0 0 var(--ink))
+    drop-shadow(0 3px 0 var(--ink)) drop-shadow(0 -3px 0 var(--ink))
+    drop-shadow(6px 6px 0 var(--color-player1));
+}
+
+.title-block__title span {
+  display: block;
+}
+
+.title-block__title--small {
+  font-size: 40px;
+  letter-spacing: 10px;
 }
 
 .title-block__subtitle {
-  margin: 8px 0 0;
-  font-size: 13px;
-  letter-spacing: 10px;
-  text-transform: uppercase;
-  color: var(--color-text-secondary);
+  margin: 12px 0 0;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
+  letter-spacing: 4px;
+  color: var(--color-text-primary);
 }
 
 .menu-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -119,32 +235,42 @@
 .menu-list__item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  width: 360px;
-  padding: 10px 18px;
-  border: 2px solid transparent;
-  background: transparent;
-  font-family: Impact, 'Arial Black', sans-serif;
-  font-size: 22px;
-  letter-spacing: 4px;
+  gap: 10px;
+  width: 420px;
+  padding: 12px 18px;
+  border: 4px solid var(--ink);
+  background: var(--color-bg-secondary);
+  box-shadow:
+    inset 3px 3px 0 var(--bevel-light),
+    inset -3px -3px 0 var(--bevel-dark);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 15px;
+  letter-spacing: 1px;
   color: var(--color-text-secondary);
   cursor: pointer;
 }
 
 .menu-list__item.is-active {
-  border-color: var(--color-accent);
-  background: var(--color-bg-secondary);
-  color: var(--color-text-primary);
+  background: linear-gradient(180deg, #ffd966 0%, var(--color-accent) 50%, #b98600 100%);
+  box-shadow:
+    inset 3px 3px 0 #ffe9a8,
+    inset -3px -3px 0 #7a5400;
+  color: var(--ink);
+  text-shadow: none;
 }
 
 .menu-list__item.is-disabled {
-  opacity: 0.4;
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
 .menu-list__marker {
-  width: 14px;
-  color: var(--color-accent);
+  width: 16px;
+  color: var(--color-player1);
+}
+
+.menu-list__item.is-active .menu-list__marker {
+  color: var(--ink);
 }
 
 /* -------------------------------------------------- selecao de lutador -- */
@@ -153,26 +279,42 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 40px;
+  gap: 34px;
 }
 
 .fighter-preview {
-  width: 210px;
+  width: 252px;
   margin: 0;
+  padding: 12px;
+  border: 4px solid var(--ink);
+  background: var(--color-bg-secondary);
+  box-shadow:
+    inset 3px 3px 0 var(--bevel-light),
+    inset -3px -3px 0 var(--bevel-dark);
+}
+
+.fighter-preview--p1 {
+  border-color: var(--ink);
+  outline: 3px solid var(--color-player1);
+}
+
+.fighter-preview--p2 {
+  outline: 3px solid var(--color-player2);
 }
 
 .fighter-preview__art {
-  width: 160px;
-  height: 160px;
-  border-radius: 50%;
-  border: 4px solid var(--color-accent);
-  object-fit: cover;
+  display: block;
+  width: 204px;
+  height: 204px;
+  margin: 0 auto;
+  border: 4px solid var(--ink);
 }
 
 .fighter-preview__tag {
   margin: 10px 0 0;
-  font-weight: 700;
-  letter-spacing: 4px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 13px;
+  letter-spacing: 2px;
 }
 
 .fighter-preview--p1 .fighter-preview__tag {
@@ -183,153 +325,211 @@
   color: var(--color-player2);
 }
 
+.fighter-preview__art--unknown {
+  display: grid;
+  place-items: center;
+  background: var(--color-bg-primary);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 72px;
+  color: var(--color-text-secondary);
+}
+
 .fighter-preview__name {
-  margin: 4px 0 0;
-  font-family: Impact, 'Arial Black', sans-serif;
-  font-size: 30px;
-  letter-spacing: 3px;
+  margin: 8px 0 0;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 14px;
+  line-height: 1.3;
+  text-transform: uppercase;
   color: var(--color-text-primary);
 }
 
 .fighter-preview__status {
-  margin: 2px 0 0;
-  font-size: 12px;
-  letter-spacing: 3px;
+  margin: 8px 0 0;
+  font-size: 13px;
+  letter-spacing: 1px;
   text-transform: uppercase;
   color: var(--color-text-secondary);
 }
 
 .portrait-grid {
   display: grid;
-  grid-template-columns: repeat(3, 120px);
-  gap: 16px;
+  grid-template-columns: repeat(3, 152px);
+  gap: 12px;
+  padding: 12px;
+  border: 4px solid var(--ink);
+  background: rgba(5, 4, 12, 0.5);
+  box-shadow:
+    inset 3px 3px 0 var(--bevel-dark),
+    inset -3px -3px 0 var(--bevel-light);
 }
 
 .portrait {
   position: relative;
+  display: block;
   padding: 0;
-  border: 3px solid var(--color-bg-secondary);
-  border-radius: 50%;
+  border: 4px solid var(--ink);
   background: var(--color-bg-secondary);
+  box-shadow:
+    inset 2px 2px 0 var(--bevel-light),
+    inset -2px -2px 0 var(--bevel-dark);
   cursor: pointer;
 }
 
 .portrait img {
   display: block;
-  width: 114px;
-  height: 114px;
-  border-radius: 50%;
+  width: 144px;
+  height: 126px;
+  object-fit: cover;
+  object-position: top;
 }
 
 .portrait__name {
-  position: absolute;
-  left: 50%;
-  bottom: -6px;
-  transform: translateX(-50%);
-  padding: 1px 8px;
+  display: block;
+  padding: 3px 0;
+  border-top: 3px solid var(--ink);
   background: var(--color-bg-primary);
-  font-size: 11px;
-  letter-spacing: 1px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  letter-spacing: 0;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
   color: var(--color-text-secondary);
 }
 
+/* Cursor: moldura grossa na cor do jogador, piscando como no arcade. */
 .portrait.is-cursor-p1 {
-  border-color: var(--color-player1);
-  box-shadow: 0 0 18px rgba(255, 61, 61, 0.6);
+  outline: 4px solid var(--color-player1);
+  outline-offset: 1px;
+  animation: blink 520ms steps(1, end) infinite alternate;
 }
 
 .portrait.is-cursor-p2 {
-  border-color: var(--color-player2);
-  box-shadow: 0 0 18px rgba(0, 217, 255, 0.6);
+  outline: 4px solid var(--color-player2);
+  outline-offset: 1px;
+  animation: blink 520ms steps(1, end) infinite alternate;
 }
 
-/* Os dois cursores no mesmo retrato: metade de cada cor. */
 .portrait.is-cursor-p1.is-cursor-p2 {
-  border-color: var(--color-player1) var(--color-player2) var(--color-player2) var(--color-player1);
+  outline-color: var(--color-accent);
+}
+
+.portrait.is-cursor-p1 .portrait__name,
+.portrait.is-cursor-p2 .portrait__name {
+  background: var(--color-accent);
+  color: var(--ink);
 }
 
 .portrait.is-taken img {
-  filter: grayscale(0.6) brightness(0.7);
+  filter: grayscale(0.75) brightness(0.55);
 }
 
 .portrait__lock {
   position: absolute;
-  top: 4px;
-  right: 4px;
-  padding: 2px 6px;
+  top: 3px;
+  right: 3px;
+  padding: 3px 5px;
+  border: 2px solid var(--ink);
   background: var(--color-accent);
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--color-bg-primary);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  color: var(--ink);
 }
 
 /* -------------------------------------------------- selecao de cenario -- */
 
 .stage-grid {
   display: grid;
-  grid-template-columns: repeat(3, 240px);
-  gap: 18px;
+  grid-template-columns: repeat(3, 250px);
+  gap: 16px;
+  padding: 14px;
+  border: 4px solid var(--ink);
+  background: rgba(5, 4, 12, 0.5);
+  box-shadow:
+    inset 3px 3px 0 var(--bevel-dark),
+    inset -3px -3px 0 var(--bevel-light);
 }
 
 .stage {
   position: relative;
+  display: block;
   padding: 0;
-  border: 3px solid var(--color-bg-secondary);
+  border: 4px solid var(--ink);
   background: var(--color-bg-secondary);
+  box-shadow:
+    inset 2px 2px 0 var(--bevel-light),
+    inset -2px -2px 0 var(--bevel-dark);
   cursor: pointer;
 }
 
 .stage img {
   display: block;
-  width: 234px;
-  height: 132px;
+  width: 242px;
+  height: 112px;
   object-fit: cover;
+  /* Recorta na altura do horizonte: o topo do cenario e so ceu. */
+  object-position: 50% 74%;
 }
 
 .stage__name {
   display: block;
-  padding: 6px 0;
-  font-size: 13px;
-  letter-spacing: 2px;
+  padding: 5px 0;
+  border-top: 3px solid var(--ink);
+  background: var(--color-bg-primary);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  text-transform: uppercase;
   color: var(--color-text-secondary);
 }
 
 .stage.is-cursor-p1 {
-  border-color: var(--color-player1);
+  outline: 4px solid var(--color-player1);
+  outline-offset: 1px;
 }
 
 .stage.is-cursor-p2 {
-  border-color: var(--color-player2);
+  outline: 4px solid var(--color-player2);
+  outline-offset: 1px;
+}
+
+.stage.is-cursor-p1 .stage__name,
+.stage.is-cursor-p2 .stage__name {
+  background: var(--color-accent);
+  color: var(--ink);
 }
 
 .stage__votes {
   position: absolute;
-  top: 6px;
-  left: 6px;
-  padding: 2px 8px;
+  top: 4px;
+  left: 4px;
+  padding: 3px 6px;
+  border: 2px solid var(--ink);
   background: var(--color-accent);
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--color-bg-primary);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  color: var(--ink);
 }
 
 .difficulty {
   display: flex;
   align-items: center;
-  gap: 18px;
-  padding: 10px 20px;
-  border: 2px solid transparent;
+  gap: 16px;
+  padding: 10px 18px;
+  border: 4px solid transparent;
 }
 
 .difficulty.is-active {
-  border-color: var(--color-accent);
+  border-color: var(--ink);
   background: var(--color-bg-secondary);
+  box-shadow:
+    inset 3px 3px 0 var(--bevel-light),
+    inset -3px -3px 0 var(--bevel-dark);
 }
 
 .difficulty__label {
-  font-size: 12px;
-  letter-spacing: 3px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
   color: var(--color-text-secondary);
 }
 
@@ -339,19 +539,18 @@
 }
 
 .difficulty__option {
-  padding: 6px 18px;
-  border: 2px solid var(--color-bg-secondary);
-  background: transparent;
-  font-family: Impact, 'Arial Black', sans-serif;
-  font-size: 16px;
-  letter-spacing: 3px;
+  padding: 8px 16px;
+  border: 3px solid var(--ink);
+  background: var(--color-bg-primary);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 11px;
   color: var(--color-text-secondary);
   cursor: pointer;
 }
 
 .difficulty__option.is-selected {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
+  background: linear-gradient(180deg, #ffd966, var(--color-accent) 60%, #b98600);
+  color: var(--ink);
 }
 
 /* ------------------------------------------------------------ versus --- */
@@ -360,79 +559,90 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: 120px;
+  gap: 190px;
 }
 
 .versus__side {
   margin: 0;
+  padding: 10px;
+  border: 4px solid var(--ink);
+  background: var(--color-bg-secondary);
+  box-shadow:
+    inset 3px 3px 0 var(--bevel-light),
+    inset -3px -3px 0 var(--bevel-dark);
 }
 
 .versus__side img {
+  display: block;
   width: 220px;
   height: 220px;
-  border-radius: 50%;
-  border: 5px solid var(--color-accent);
+  border: 4px solid var(--ink);
 }
 
-.versus__side--p1 img {
-  border-color: var(--color-player1);
+.versus__side--p1 {
+  outline: 4px solid var(--color-player1);
 }
 
-.versus__side--p2 img {
-  border-color: var(--color-player2);
+.versus__side--p2 {
+  outline: 4px solid var(--color-player2);
 }
 
 .versus__side figcaption {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  margin-top: 14px;
+  gap: 8px;
+  margin-top: 12px;
 }
 
 .versus__tag {
-  font-size: 13px;
-  letter-spacing: 5px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
   color: var(--color-text-secondary);
 }
 
 .versus__name {
-  font-family: Impact, 'Arial Black', sans-serif;
-  font-size: 34px;
-  letter-spacing: 3px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 16px;
+  text-transform: uppercase;
   color: var(--color-text-primary);
 }
 
 .versus__vs {
   position: absolute;
   left: 50%;
-  top: 40%;
+  top: 44%;
   transform: translate(-50%, -50%);
   margin: 0;
-  font-family: Impact, 'Arial Black', sans-serif;
-  font-size: 96px;
-  letter-spacing: 4px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 84px;
   color: var(--color-accent);
-  text-shadow: 0 0 30px rgba(255, 184, 0, 0.5);
+  filter: drop-shadow(6px 6px 0 var(--color-player1));
 }
 
 .versus__stage {
   margin: 0;
-  font-size: 14px;
-  letter-spacing: 6px;
-  text-transform: uppercase;
-  color: var(--color-text-secondary);
+  padding: 6px 18px;
+  border: 3px solid var(--ink);
+  background: var(--color-bg-secondary);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--color-accent);
 }
 
+/* Barra de carregamento em blocos, nao em degrade continuo. */
 .loading {
-  width: 420px;
+  width: 460px;
 }
 
 .loading__bar {
-  height: 10px;
-  border: 2px solid var(--color-accent);
-  background: linear-gradient(90deg, var(--color-accent) 0%, var(--color-accent) 100%) no-repeat;
-  background-size: 35% 100%;
-  animation: loading-slide 900ms ease-in-out infinite alternate;
+  height: 18px;
+  border: 4px solid var(--ink);
+  background: var(--color-bg-secondary)
+    repeating-linear-gradient(90deg, var(--color-accent) 0 14px, transparent 14px 20px)
+    no-repeat;
+  background-size: 30% 100%;
+  animation: loading-slide 850ms steps(8, end) infinite alternate;
 }
 
 .loading__bar.is-complete {
@@ -451,8 +661,9 @@
 
 .loading__label {
   margin: 8px 0 0;
-  font-size: 12px;
-  letter-spacing: 5px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
   color: var(--color-text-secondary);
 }
 
@@ -460,24 +671,38 @@
 
 .result__label {
   margin: 0;
-  font-size: 16px;
-  letter-spacing: 8px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 14px;
+  letter-spacing: 2px;
   color: var(--color-text-secondary);
 }
 
 .result__name {
   margin: 0;
-  font-family: Impact, 'Arial Black', sans-serif;
-  font-size: 72px;
-  letter-spacing: 8px;
-  color: var(--color-accent);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 48px;
+  text-transform: uppercase;
+  background: linear-gradient(180deg, #fff3c4 0%, var(--color-accent) 50%, #c98a00 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter:
+    drop-shadow(3px 0 0 var(--ink)) drop-shadow(-3px 0 0 var(--ink))
+    drop-shadow(0 3px 0 var(--ink)) drop-shadow(0 -3px 0 var(--ink))
+    drop-shadow(5px 5px 0 var(--color-player1));
 }
 
 .result__score {
-  margin: 0 0 20px;
-  font-family: Impact, 'Arial Black', sans-serif;
-  font-size: 30px;
-  letter-spacing: 8px;
+  margin: 0 0 18px;
+  padding: 8px 22px;
+  border: 4px solid var(--ink);
+  background: var(--color-bg-secondary);
+  box-shadow:
+    inset 3px 3px 0 var(--bevel-light),
+    inset -3px -3px 0 var(--bevel-dark);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 24px;
+  letter-spacing: 6px;
   color: var(--color-text-primary);
 }
 
@@ -486,26 +711,31 @@
 .pause {
   position: absolute;
   inset: 0;
+  z-index: 4;
   display: grid;
   place-items: center;
-  background: rgba(13, 11, 26, 0.86);
+  background: rgba(5, 4, 12, 0.82);
 }
 
 .pause__panel {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
-  padding: 36px 56px;
-  border: 3px solid var(--color-accent);
+  gap: 20px;
+  padding: 34px 54px;
+  border: 4px solid var(--ink);
+  outline: 4px solid var(--color-accent);
   background: var(--color-bg-secondary);
+  box-shadow:
+    inset 4px 4px 0 var(--bevel-light),
+    inset -4px -4px 0 var(--bevel-dark);
 }
 
 .pause__title {
   margin: 0;
-  font-family: Impact, 'Arial Black', sans-serif;
-  font-size: 40px;
-  letter-spacing: 12px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 30px;
+  letter-spacing: 6px;
   color: var(--color-accent);
 }
 
@@ -513,20 +743,22 @@
 
 .controls {
   border-collapse: collapse;
+  border: 4px solid var(--ink);
+  background: var(--color-bg-secondary);
   font-size: 14px;
 }
 
 .controls th,
 .controls td {
-  padding: 8px 20px;
-  border-bottom: 1px solid var(--color-bg-secondary);
+  padding: 9px 18px;
+  border-bottom: 2px solid var(--ink);
   text-align: left;
 }
 
 .controls th {
-  font-size: 12px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
+  background: var(--color-bg-primary);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
   color: var(--color-accent);
 }
 
@@ -552,7 +784,8 @@
   margin: 0;
   display: grid;
   place-items: center;
-  letter-spacing: 3px;
-  text-transform: uppercase;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 14px;
+  letter-spacing: 2px;
   color: var(--color-text-secondary);
 }

@@ -1,92 +1,119 @@
 import { Container, Graphics, Text } from 'pixi.js';
 import { PALETTE, PALETTE_HEX, healthBarColor } from '../utils/palette.js';
 
-// HUD de combate no estilo fliperama: barras de vida no topo (P1 a esquerda,
-// P2 a direita), cronometro central, indicador de rounds e contador de combo.
+// HUD no formato do Street Fighter II: barra de vida grossa com contorno preto,
+// nome do personagem logo abaixo dela, marcadores de round vencido, cronometro
+// central em caixa com relevo e anuncios em tipografia bitmap contornada.
 
 const BAR_WIDTH = 470;
-const BAR_HEIGHT = 28;
-const BAR_MARGIN = 40;
-const BAR_Y = 42;
-const FRAME_THICKNESS = 3;
-const PIP_SIZE = 12;
+const BAR_HEIGHT = 30;
+const BAR_MARGIN = 30;
+const BAR_Y = 44;
+const OUTLINE = 4;
+const PIP_SIZE = 16;
 const PIP_GAP = 6;
 
-const ARCADE_FONT = 'Impact, "Arial Black", sans-serif';
+const INK = 0x05040c;
+const PIXEL_FONT = '"Press Start 2P", monospace';
 
-function label(text, size, color, extra = {}) {
+function pixelText(text, size, color, extra = {}) {
   return new Text({
     text,
     style: {
-      fontFamily: ARCADE_FONT,
+      fontFamily: PIXEL_FONT,
       fontSize: size,
       fill: color,
-      letterSpacing: 2,
-      stroke: { color: PALETTE.bgPrimary, width: 4 },
+      // O contorno preto e o que faz o texto ler por cima do cenario.
+      stroke: { color: PALETTE.bgPrimary, width: Math.max(3, Math.round(size / 5)) },
       ...extra,
     },
   });
 }
 
 export class Hud {
-  constructor({ width, names = ['P1', 'P2'] }) {
+  constructor({ width, names = ['P1', 'P2'], labels = ['1P', '2P'] }) {
     this.width = width;
     this.view = new Container();
     this.announcementTimer = 0;
 
-    this.barFills = [new Graphics(), new Graphics()];
-    this.pips = [new Graphics(), new Graphics()];
-    this.comboLabels = [];
+    const chrome = new Graphics();
+    this.view.addChild(chrome);
 
-    const frames = new Graphics();
-    this.view.addChild(frames);
+    this.barFills = [];
+    this.pips = [];
+    this.comboLabels = [];
 
     names.forEach((name, index) => {
       const onLeft = index === 0;
       const barX = onLeft ? BAR_MARGIN : width - BAR_MARGIN - BAR_WIDTH;
-      const playerColor = onLeft ? PALETTE_HEX.player1 : PALETTE_HEX.player2;
 
-      frames
-        .rect(
-          barX - FRAME_THICKNESS,
-          BAR_Y - FRAME_THICKNESS,
-          BAR_WIDTH + FRAME_THICKNESS * 2,
-          BAR_HEIGHT + FRAME_THICKNESS * 2,
-        )
-        .fill({ color: PALETTE_HEX.bgSecondary })
-        .stroke({ color: PALETTE_HEX.accent, width: FRAME_THICKNESS });
+      // Moldura da barra: contorno preto por fora, relevo por dentro.
+      chrome
+        .rect(barX - OUTLINE, BAR_Y - OUTLINE, BAR_WIDTH + OUTLINE * 2, BAR_HEIGHT + OUTLINE * 2)
+        .fill({ color: INK })
+        .rect(barX - 2, BAR_Y - 2, BAR_WIDTH + 4, BAR_HEIGHT + 4)
+        .fill({ color: PALETTE_HEX.accent })
+        .rect(barX, BAR_Y, BAR_WIDTH, BAR_HEIGHT)
+        .fill({ color: 0x1a1020 });
 
-      this.view.addChild(this.barFills[index]);
-      this.view.addChild(this.pips[index]);
+      const fill = new Graphics();
+      this.view.addChild(fill);
+      this.barFills.push(fill);
 
-      const nameLabel = label(name.toUpperCase(), 20, playerColor);
-      nameLabel.y = BAR_Y + BAR_HEIGHT + 12;
-      nameLabel.x = onLeft ? barX : barX + BAR_WIDTH - nameLabel.width;
+      const pips = new Graphics();
+      this.view.addChild(pips);
+      this.pips.push(pips);
+
+      const tag = pixelText(labels[index], 16, onLeft ? PALETTE.player1 : PALETTE.player2);
+      tag.y = BAR_Y - OUTLINE - 22;
+      tag.x = onLeft ? barX - OUTLINE : barX + BAR_WIDTH + OUTLINE - tag.width;
+      this.view.addChild(tag);
+
+      // Nome do personagem embaixo da barra, como no SF2.
+      const nameLabel = pixelText(name.toUpperCase(), 13, PALETTE.textPrimary);
+      nameLabel.y = BAR_Y + BAR_HEIGHT + OUTLINE + 8;
+      nameLabel.x = onLeft ? barX - OUTLINE : barX + BAR_WIDTH + OUTLINE - nameLabel.width;
       this.view.addChild(nameLabel);
 
-      const combo = label('', 26, PALETTE.accent);
-      combo.y = BAR_Y + BAR_HEIGHT + 44;
+      const combo = pixelText('', 18, PALETTE.accent);
+      combo.y = BAR_Y + BAR_HEIGHT + OUTLINE + 34;
       combo.visible = false;
       this.view.addChild(combo);
       this.comboLabels.push({ text: combo, onLeft, barX });
     });
 
-    this.timer = label('90', 46, PALETTE.textPrimary);
+    // Caixa do cronometro no centro, com relevo.
+    const timerBoxWidth = 108;
+    const timerBoxHeight = 74;
+    const timerX = width / 2 - timerBoxWidth / 2;
+    chrome
+      .rect(timerX - OUTLINE, BAR_Y - 24, timerBoxWidth + OUTLINE * 2, timerBoxHeight + OUTLINE * 2)
+      .fill({ color: INK })
+      .rect(timerX, BAR_Y - 20, timerBoxWidth, timerBoxHeight)
+      .fill({ color: PALETTE_HEX.bgSecondary })
+      .rect(timerX, BAR_Y - 20, timerBoxWidth, 4)
+      .fill({ color: 0x4a4266 })
+      .rect(timerX, BAR_Y - 20 + timerBoxHeight - 4, timerBoxWidth, 4)
+      .fill({ color: 0x000000 });
+
+    this.timer = pixelText('90', 38, PALETTE.textPrimary);
     this.timer.anchor.set(0.5, 0);
     this.timer.x = width / 2;
-    this.timer.y = BAR_Y - 8;
+    this.timer.y = BAR_Y - 2;
     this.view.addChild(this.timer);
 
-    this.roundLabel = label('ROUND 1', 16, PALETTE.textSecondary);
+    this.roundLabel = pixelText('ROUND 1', 10, PALETTE.accent);
     this.roundLabel.anchor.set(0.5, 0);
     this.roundLabel.x = width / 2;
-    this.roundLabel.y = BAR_Y + BAR_HEIGHT + 10;
+    this.roundLabel.y = BAR_Y + 44;
     this.view.addChild(this.roundLabel);
 
-    this.announcement = label('', 72, PALETTE.accent);
+    this.announcement = pixelText('', 54, PALETTE.accent, {
+      dropShadow: { color: PALETTE.player1, distance: 6, angle: Math.PI / 4, blur: 0, alpha: 1 },
+    });
     this.announcement.anchor.set(0.5);
     this.announcement.x = width / 2;
-    this.announcement.y = 250;
+    this.announcement.y = 268;
     this.announcement.visible = false;
     this.view.addChild(this.announcement);
   }
@@ -102,30 +129,37 @@ export class Hud {
       const ratio = Math.max(0, fighter.health / fighter.config.stats.maxHealth);
       const onLeft = index === 0;
       const barX = onLeft ? BAR_MARGIN : this.width - BAR_MARGIN - BAR_WIDTH;
-      const filled = BAR_WIDTH * ratio;
+      const filled = Math.round(BAR_WIDTH * ratio);
       // As duas barras esvaziam em direcao ao centro da tela.
       const fillX = onLeft ? barX : barX + BAR_WIDTH - filled;
+      const color = healthBarColor(ratio);
 
       this.barFills[index]
         .clear()
-        .rect(barX, BAR_Y, BAR_WIDTH, BAR_HEIGHT)
-        .fill({ color: PALETTE_HEX.bgPrimary })
         .rect(fillX, BAR_Y, filled, BAR_HEIGHT)
-        .fill({ color: healthBarColor(ratio) });
+        .fill({ color })
+        // Faixa clara no topo e escura embaixo: o volume que a barra chapada
+        // nao tinha.
+        .rect(fillX, BAR_Y, filled, 5)
+        .fill({ color: 0xffffff, alpha: 0.35 })
+        .rect(fillX, BAR_Y + BAR_HEIGHT - 6, filled, 6)
+        .fill({ color: 0x000000, alpha: 0.3 });
 
       this.drawPips(this.pips[index], wins[index], roundsToWin, barX, onLeft);
 
-      const { text, onLeft: comboOnLeft, barX: comboBarX } = this.comboLabels[index];
+      const combo = this.comboLabels[index];
       const visible = fighter.comboCount > 1;
-      text.visible = visible;
+      combo.text.visible = visible;
       if (visible) {
-        text.text = `${fighter.comboCount} HITS`;
-        text.x = comboOnLeft ? comboBarX : comboBarX + BAR_WIDTH - text.width;
+        combo.text.text = `${fighter.comboCount} HITS`;
+        combo.text.x = combo.onLeft
+          ? combo.barX - OUTLINE
+          : combo.barX + BAR_WIDTH + OUTLINE - combo.text.width;
       }
     });
 
     this.timer.text = suddenDeath ? '--' : String(Math.ceil(timeRemaining)).padStart(2, '0');
-    this.roundLabel.text = suddenDeath ? 'MORTE SUBITA' : `ROUND ${roundNumber}`;
+    this.roundLabel.text = suddenDeath ? 'FINAL' : `ROUND ${roundNumber}`;
 
     if (this.announcementTimer > 0) {
       this.announcementTimer -= delta;
@@ -133,6 +167,7 @@ export class Hud {
     }
   }
 
+  // Marcadores de round vencido, crescendo a partir do centro da tela.
   drawPips(graphics, won, roundsToWin, barX, onLeft) {
     graphics.clear();
     for (let index = 0; index < roundsToWin; index += 1) {
@@ -140,10 +175,15 @@ export class Hud {
       const x = onLeft
         ? barX + BAR_WIDTH - PIP_SIZE - offset
         : barX + offset;
-      graphics.rect(x, BAR_Y + BAR_HEIGHT + 16, PIP_SIZE, PIP_SIZE);
-      if (index < won) graphics.fill({ color: PALETTE_HEX.accent });
-      else graphics.fill({ color: PALETTE_HEX.bgSecondary });
-      graphics.stroke({ color: PALETTE_HEX.accent, width: 2 });
+      const y = BAR_Y + BAR_HEIGHT + OUTLINE + 6;
+
+      graphics.rect(x - 2, y - 2, PIP_SIZE + 4, PIP_SIZE + 4).fill({ color: INK });
+      graphics
+        .rect(x, y, PIP_SIZE, PIP_SIZE)
+        .fill({ color: index < won ? PALETTE_HEX.accent : 0x2a2340 });
+      if (index < won) {
+        graphics.rect(x, y, PIP_SIZE, 4).fill({ color: 0xffe9a8 });
+      }
     }
   }
 }

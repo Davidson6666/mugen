@@ -8,11 +8,16 @@
 html,
 body {
   margin: 0;
-  background: var(--color-bg-primary, #0d0b1a);
+  background: #05040c;
   color: var(--color-text-primary, #ffffff);
-  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-family: Silkscreen, 'Courier New', monospace;
 }
 
 #root {
   min-height: 100vh;
+}
+
+/* Arte em pixel nunca deve ser suavizada ao ser ampliada. */
+img {
+  image-rendering: pixelated;
 }

@@ -19,6 +19,21 @@ function moveIndex(index, direction) {
   return Math.min(nextRow * COLUMNS + column, characters.length - 1);
 }
 
+function FighterPanel({ player, character, confirmed }) {
+  return (
+    <aside className={`fighter-preview fighter-preview--p${player + 1}`}>
+      <img
+        className="fighter-preview__art"
+        src={`${character.dir}/${character.portrait}`}
+        alt=""
+      />
+      <p className="fighter-preview__tag">P{player + 1}</p>
+      <p className="fighter-preview__name">{character.name}</p>
+      <p className="fighter-preview__status">{confirmed ? 'PRONTO' : 'escolhendo...'}</p>
+    </aside>
+  );
+}
+
 export default function CharacterSelect() {
   const { go, back } = useMenu();
   const { setup, chooseCharacter } = useGame();
@@ -90,23 +105,11 @@ export default function CharacterSelect() {
       <h2 className="screen__title">ESCOLHA SEU LUTADOR</h2>
 
       <div className="select-layout">
-        {activePlayers.map((player) => {
-          const highlighted = characters[cursors[player]];
-          return (
-            <aside key={player} className={`fighter-preview fighter-preview--p${player + 1}`}>
-              <img
-                className="fighter-preview__art"
-                src={`${highlighted.dir}/${highlighted.portrait}`}
-                alt=""
-              />
-              <p className="fighter-preview__tag">P{player + 1}</p>
-              <p className="fighter-preview__name">{highlighted.name}</p>
-              <p className="fighter-preview__status">
-                {confirmed[player] ? 'PRONTO' : 'escolhendo...'}
-              </p>
-            </aside>
-          );
-        })}
+        <FighterPanel
+          player={0}
+          character={characters[cursors[0]]}
+          confirmed={Boolean(confirmed[0])}
+        />
 
         <div className="portrait-grid">
           {characters.map((character, index) => {
@@ -134,6 +137,21 @@ export default function CharacterSelect() {
             );
           })}
         </div>
+
+        {twoPlayers ? (
+          <FighterPanel
+            player={1}
+            character={characters[cursors[1]]}
+            confirmed={Boolean(confirmed[1])}
+          />
+        ) : (
+          <aside className="fighter-preview fighter-preview--p2">
+            <div className="fighter-preview__art fighter-preview__art--unknown">?</div>
+            <p className="fighter-preview__tag">CPU</p>
+            <p className="fighter-preview__name">???</p>
+            <p className="fighter-preview__status">sorteado</p>
+          </aside>
+        )}
       </div>
 
       <p className={`screen__warning ${warning ? 'is-visible' : ''}`}>{warning}</p>

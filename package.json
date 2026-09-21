@@ -9,9 +9,11 @@
     "lint": "oxlint",
     "test": "node --test",
     "preview": "vite preview",
-    "assets:dummy": "node scripts/generate-dummy-assets.mjs"
+    "assets:placeholder": "node scripts/generate-placeholder-assets.mjs"
   },
   "dependencies": {
+    "@fontsource/press-start-2p": "^5.3.0",
+    "@fontsource/silkscreen": "^5.3.0",
     "pixi.js": "^8.21.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"

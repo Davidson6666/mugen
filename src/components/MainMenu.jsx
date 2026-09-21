@@ -36,8 +36,11 @@ export default function MainMenu() {
   return (
     <div className="screen screen--menu">
       <header className="title-block">
-        <h1 className="title-block__title">MUGEN FIGHTER</h1>
-        <p className="title-block__subtitle">insert coin</p>
+        <h1 className="title-block__title">
+          <span>MUGEN</span>
+          <span className="title-block__title--small">FIGHTER</span>
+        </h1>
+        <p className="title-block__subtitle blink">PRESS START</p>
       </header>
 
       <ul className="menu-list">
@@ -62,7 +65,11 @@ export default function MainMenu() {
       </ul>
 
       <p className="screen__hint">{OPTIONS[index].hint}</p>
-      <p className="screen__footer">W/S navega · J ou Enter confirma</p>
+
+      <footer className="cabinet">
+        <span>W/S NAVEGA · J CONFIRMA</span>
+        <span className="cabinet__credit">CREDIT 99</span>
+      </footer>
     </div>
   );
 }

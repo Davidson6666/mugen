@@ -174,9 +174,15 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       for (const marker of markers) world.addChild(marker);
       for (const fighter of fighters) world.addChild(fighter.sprite);
 
+      // O Pixi rasteriza o texto na hora de criar: sem esperar a fonte bitmap
+      // carregar, o HUD sairia desenhado com a fonte de fallback.
+      await document.fonts.ready;
+      if (disposed) return;
+
       const hud = new Hud({
         width: STAGE_WIDTH,
         names: fighters.map((fighter) => fighter.config.name),
+        labels: ['1P', cpuEnabled ? 'CPU' : '2P'],
       });
       instance.stage.addChild(hud.view);
 
