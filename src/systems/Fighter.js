@@ -25,6 +25,9 @@ export class Fighter {
     this.state = 'idle';
     this.blocking = false;
     this.health = this.config.stats.maxHealth;
+    this.stunTimer = 0;
+    // Um golpe so conecta uma vez, mesmo com a hitbox ativa por varios ticks.
+    this.attackHasLanded = false;
 
     this.sprite = new Sprite(this.frames[0]);
     this.sprite.anchor.set(0.5, 1);
@@ -36,10 +39,49 @@ export class Fighter {
     return (this.config.hurtbox.width * RENDER_SCALE) / 2;
   }
 
+  get isKnockedOut() {
+    return this.state === 'ko';
+  }
+
+  get canAct() {
+    return !this.isKnockedOut && this.stunTimer <= 0;
+  }
+
+  // Retangulo declarado no espaco do frame (origem no canto superior esquerdo)
+  // convertido para coordenadas de mundo. O flip espelha o box junto do sprite,
+  // senao o alcance do golpe ficaria sempre apontado para a direita.
+  rectInWorld(box) {
+    const { frameWidth, frameHeight } = this.config.spriteGridSize;
+    const left = this.facing === 1 ? box.offsetX : frameWidth - box.offsetX - box.width;
+    return {
+      x: this.x + (left - frameWidth / 2) * RENDER_SCALE,
+      y: this.y + (box.offsetY - frameHeight) * RENDER_SCALE,
+      width: box.width * RENDER_SCALE,
+      height: box.height * RENDER_SCALE,
+    };
+  }
+
+  get hurtRect() {
+    return this.rectInWorld(this.config.hurtbox);
+  }
+
+  get hitRect() {
+    return this.rectInWorld(this.config.hitbox);
+  }
+
+  // A hitbox so existe no frame declarado como hitboxFrame pelo character config.
+  get activeAttack() {
+    if (this.state !== 'attack') return null;
+    const animation = this.animation.current;
+    if (animation?.hitboxFrame === undefined) return null;
+    if (this.animation.localFrame !== animation.hitboxFrame) return null;
+    return animation;
+  }
+
   // "Frente" e "tras" sao sempre relativos ao oponente, nunca a um lado fixo da
   // tela: o flip precisa acontecer antes de interpretar o input do frame.
   faceTowards(targetX) {
-    if (this.state === 'attack') return;
+    if (this.state === 'attack' || !this.canAct) return;
     this.facing = targetX >= this.x ? 1 : -1;
   }
 
@@ -48,19 +90,28 @@ export class Fighter {
     const back = this.facing === 1 ? command.left : command.right;
     const forward = this.facing === 1 ? command.right : command.left;
 
-    if (this.state === 'attack' && this.animation.finished) this.state = 'idle';
-
-    if (this.state !== 'attack') {
-      const button = ['punch', 'kick', 'special'].find((name) => command[name]);
-      if (button) {
-        this.state = 'attack';
-        if (this.grounded) this.vx = 0;
-        this.animation.play(ATTACK_BY_BUTTON[button], { restart: true });
+    if (this.stunTimer > 0) {
+      this.stunTimer -= delta;
+      if (this.stunTimer <= 0) {
+        this.stunTimer = 0;
+        this.state = this.grounded ? 'idle' : 'air';
       }
     }
 
-    if (this.state !== 'attack') {
-      if (this.grounded) {
+    if (this.canAct) {
+      if (this.state === 'attack' && this.animation.finished) this.state = 'idle';
+
+      if (this.state !== 'attack') {
+        const button = ['punch', 'kick', 'special'].find((name) => command[name]);
+        if (button) {
+          this.state = 'attack';
+          this.attackHasLanded = false;
+          if (this.grounded) this.vx = 0;
+          this.animation.play(ATTACK_BY_BUTTON[button], { restart: true });
+        }
+      }
+
+      if (this.state !== 'attack' && this.grounded) {
         const direction = (command.right ? 1 : 0) - (command.left ? 1 : 0);
         if (command.jump) {
           this.vy = -jumpForce;
@@ -79,8 +130,11 @@ export class Fighter {
     }
 
     // Bloqueio e uma condicao do input, nao um estado: andar para tras tambem
-    // deixa o personagem guardado quando o golpe chegar.
-    this.blocking = this.grounded && back && this.state !== 'attack';
+    // deixa o personagem guardado quando o golpe chegar. Durante o blockstun a
+    // guarda continua de pe, senao o segundo golpe da sequencia passaria direto.
+    this.blocking =
+      this.state === 'blockstun' ||
+      (this.canAct && this.grounded && back && this.state !== 'attack');
 
     if (!this.grounded) {
       this.vy += jumpGravity * delta;
@@ -105,8 +159,44 @@ export class Fighter {
     this.syncSprite();
   }
 
+  takeHit(damage, hitstun) {
+    this.health = Math.max(0, this.health - damage);
+    if (this.health === 0) {
+      this.knockOut();
+      return 'ko';
+    }
+    this.state = 'hitstun';
+    this.stunTimer = hitstun;
+    this.blocking = false;
+    if (this.grounded) this.vx = 0;
+    this.animation.play('hitReaction', { restart: true });
+    return 'hit';
+  }
+
+  takeBlockedHit(damage, blockstun) {
+    const crouching = this.state === 'crouch';
+    this.health = Math.max(0, this.health - damage);
+    if (this.health === 0) {
+      this.knockOut();
+      return 'ko';
+    }
+    this.state = 'blockstun';
+    this.stunTimer = blockstun;
+    if (this.grounded) this.vx = 0;
+    this.animation.play(crouching ? 'blockCrouching' : 'blockStanding', { restart: true });
+    return 'block';
+  }
+
+  knockOut() {
+    this.state = 'ko';
+    this.stunTimer = 0;
+    this.vx = 0;
+    this.blocking = false;
+    this.animation.play('ko', { restart: true });
+  }
+
   updateAnimation(movingForward) {
-    if (this.state === 'attack') return;
+    if (this.state === 'attack' || !this.canAct) return;
     if (!this.grounded) {
       this.animation.play('jump');
       return;

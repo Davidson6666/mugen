@@ -1,3 +1,10 @@
+// Fracao do dano que atravessa a guarda: bloquear reduz muito, mas nunca zera,
+// entao ficar parado defendendo tambem custa vida.
+const CHIP_DAMAGE_RATIO = 0.15;
+// O blockstun e mais curto que o hitstun: quem defende recupera antes de quem
+// apanha, e por isso a sequencia de golpes nao emenda sozinha na guarda.
+const BLOCKSTUN_RATIO = 0.5;
+
 // Colisao fisica entre os corpos dos lutadores. Sem isso os sprites se
 // sobrepoem e o combate perde a sensacao de peso.
 // A separacao so vale com os dois no chao: no ar, passar por cima do oponente
@@ -16,4 +23,32 @@ export function resolveBodyCollision(a, b) {
   b.x += direction * push;
   a.clampToBounds();
   b.clampToBounds();
+}
+
+function overlaps(a, b) {
+  return (
+    a.x < b.x + b.width &&
+    a.x + a.width > b.x &&
+    a.y < b.y + b.height &&
+    a.y + a.height > b.y
+  );
+}
+
+// Confronta a hitbox ativa do atacante contra a hurtbox do defensor. Devolve o
+// que aconteceu ('hit', 'block' ou 'ko') para quem precisar reagir — contador de
+// combo, audio, HUD — ou null quando o golpe nao conecta.
+export function resolveAttack(attacker, defender) {
+  const attack = attacker.activeAttack;
+  if (!attack || attacker.attackHasLanded || defender.isKnockedOut) return null;
+  if (!overlaps(attacker.hitRect, defender.hurtRect)) return null;
+
+  attacker.attackHasLanded = true;
+
+  if (defender.blocking) {
+    const damage = Math.max(1, Math.round(attack.damage * CHIP_DAMAGE_RATIO));
+    const blockstun = Math.round(attack.hitstun * BLOCKSTUN_RATIO);
+    return { outcome: defender.takeBlockedHit(damage, blockstun), damage };
+  }
+
+  return { outcome: defender.takeHit(attack.damage, attack.hitstun), damage: attack.damage };
 }

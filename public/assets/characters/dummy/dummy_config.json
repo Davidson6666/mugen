@@ -137,10 +137,10 @@
     }
   ],
   "hitbox": {
-    "width": 30,
-    "height": 80,
-    "offsetX": 25,
-    "offsetY": 8
+    "width": 34,
+    "height": 30,
+    "offsetX": 50,
+    "offsetY": 30
   },
   "hurtbox": {
     "width": 40,
