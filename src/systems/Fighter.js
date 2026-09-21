@@ -65,8 +65,11 @@ export class Fighter {
     return this.rectInWorld(this.config.hurtbox);
   }
 
+  // Um ataque pode declarar a propria hitbox para ter alcance proprio (chute
+  // alcanca mais que soco). Sem esse campo vale a hitbox do personagem, entao
+  // config que segue so o schema base continua funcionando igual.
   get hitRect() {
-    return this.rectInWorld(this.config.hitbox);
+    return this.rectInWorld(this.animation.current?.hitbox ?? this.config.hitbox);
   }
 
   // A hitbox so existe no frame declarado como hitboxFrame pelo character config.

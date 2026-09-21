@@ -65,7 +65,13 @@
       "loop": false,
       "hitboxFrame": 2,
       "damage": 18,
-      "hitstun": 14
+      "hitstun": 14,
+      "hitbox": {
+        "width": 44,
+        "height": 26,
+        "offsetX": 52,
+        "offsetY": 44
+      }
     },
     "special1": {
       "frames": [44, 45, 46, 47, 48, 49, 50, 51],
@@ -74,7 +80,13 @@
       "hitboxFrame": 3,
       "damage": 35,
       "hitstun": 20,
-      "cooldown": 60
+      "cooldown": 60,
+      "hitbox": {
+        "width": 60,
+        "height": 40,
+        "offsetX": 48,
+        "offsetY": 26
+      }
     },
     "special2": {
       "frames": [52, 53, 54, 55, 56, 57, 58, 59],

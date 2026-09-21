@@ -216,6 +216,39 @@ test('o alcance do golpe cobre a distancia minima entre os corpos', () => {
   );
 });
 
+test('ataque sem hitbox propria usa a hitbox do personagem', () => {
+  assert.equal(
+    characterConfig.animations.punch.hitbox,
+    undefined,
+    'este teste so vale enquanto o soco nao declarar hitbox propria',
+  );
+
+  const [a, b] = makePair();
+  step(a, b, command({ punch: true }));
+
+  assert.equal(a.animation.name, 'punch');
+  assert.deepEqual(a.hitRect, a.rectInWorld(characterConfig.hitbox));
+});
+
+test('ataque com hitbox propria usa o alcance dela', () => {
+  const [a, b] = makePair();
+  step(a, b, command({ kick: true }));
+
+  assert.equal(a.animation.name, 'kick');
+  assert.deepEqual(a.hitRect, a.rectInWorld(characterConfig.animations.kick.hitbox));
+});
+
+test('o chute alcanca uma distancia em que o soco erra', () => {
+  const distance = 210;
+
+  const [puncher, target] = makePair(500, 500 + distance);
+  assert.equal(runAttack(puncher, target, { button: 'punch' }).result, null);
+  assert.equal(target.health, characterConfig.stats.maxHealth);
+
+  const [kicker, victim] = makePair(500, 500 + distance);
+  assert.equal(runAttack(kicker, victim, { button: 'kick' }).result?.outcome, 'hit');
+});
+
 test('a hitbox so existe no hitboxFrame declarado', () => {
   const [a, b] = makePair();
   const { hitboxFrame } = characterConfig.animations.punch;
