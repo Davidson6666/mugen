@@ -1,0 +1,12 @@
+{
+  "id": "dummy_map",
+  "name": "Dummy Arena",
+  "backgroundImage": "dummy_map_bg.png",
+  "width": 1280,
+  "height": 720,
+  "groundLevel": 580,
+  "leftBound": 100,
+  "rightBound": 1180,
+  "cameraZoomDefault": 1.0,
+  "parallaxLayers": []
+}

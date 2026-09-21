@@ -1,0 +1,151 @@
+{
+  "id": "dummy",
+  "name": "Dummy",
+  "description": "Personagem placeholder da Fase 1",
+  "spriteSheet": "dummy_spritesheet.png",
+  "spriteGridSize": {
+    "cols": 14,
+    "rows": 6,
+    "frameWidth": 80,
+    "frameHeight": 96
+  },
+  "stats": {
+    "maxHealth": 100,
+    "walkSpeed": 4,
+    "jumpForce": 12,
+    "jumpGravity": 0.6
+  },
+  "animations": {
+    "idle": {
+      "frames": [0, 1, 2, 3],
+      "speed": 0.1,
+      "loop": true
+    },
+    "walkForward": {
+      "frames": [4, 5, 6, 7, 8, 9],
+      "speed": 0.12,
+      "loop": true
+    },
+    "walkBackward": {
+      "frames": [10, 11, 12, 13, 14, 15],
+      "speed": 0.12,
+      "loop": true
+    },
+    "jump": {
+      "frames": [16, 17, 18, 19],
+      "speed": 0.15,
+      "loop": false
+    },
+    "crouch": {
+      "frames": [20, 21, 22, 23],
+      "speed": 0.1,
+      "loop": true
+    },
+    "blockStanding": {
+      "frames": [24, 25, 26, 27],
+      "speed": 0.08,
+      "loop": true
+    },
+    "blockCrouching": {
+      "frames": [28, 29, 30, 31],
+      "speed": 0.08,
+      "loop": true
+    },
+    "punch": {
+      "frames": [32, 33, 34, 35, 36, 37],
+      "speed": 0.15,
+      "loop": false,
+      "hitboxFrame": 2,
+      "damage": 15,
+      "hitstun": 12
+    },
+    "kick": {
+      "frames": [38, 39, 40, 41, 42, 43],
+      "speed": 0.15,
+      "loop": false,
+      "hitboxFrame": 2,
+      "damage": 18,
+      "hitstun": 14
+    },
+    "special1": {
+      "frames": [44, 45, 46, 47, 48, 49, 50, 51],
+      "speed": 0.15,
+      "loop": false,
+      "hitboxFrame": 3,
+      "damage": 35,
+      "hitstun": 20,
+      "cooldown": 60
+    },
+    "special2": {
+      "frames": [52, 53, 54, 55, 56, 57, 58, 59],
+      "speed": 0.15,
+      "loop": false,
+      "hitboxFrame": 4,
+      "damage": 30,
+      "hitstun": 18,
+      "cooldown": 60
+    },
+    "special3": {
+      "frames": [60, 61, 62, 63, 64, 65, 66, 67],
+      "speed": 0.15,
+      "loop": false,
+      "hitboxFrame": 4,
+      "damage": 40,
+      "hitstun": 22,
+      "cooldown": 80
+    },
+    "hitReaction": {
+      "frames": [68, 69, 70],
+      "speed": 0.2,
+      "loop": false
+    },
+    "ko": {
+      "frames": [71, 72, 73, 74, 75],
+      "speed": 0.1,
+      "loop": false
+    },
+    "victoryPose": {
+      "frames": [76, 77, 78],
+      "speed": 0.1,
+      "loop": false
+    },
+    "defeatPose": {
+      "frames": [79, 80, 81],
+      "speed": 0.1,
+      "loop": false
+    }
+  },
+  "combos": [
+    {
+      "id": "basic_punch",
+      "input": "P",
+      "damage": 15,
+      "hitstun": 12
+    },
+    {
+      "id": "forward_punch",
+      "input": "→P",
+      "damage": 20,
+      "hitstun": 14
+    },
+    {
+      "id": "hadoken_like",
+      "input": "→↘↓P",
+      "damage": 35,
+      "hitstun": 20,
+      "cooldown": 60
+    }
+  ],
+  "hitbox": {
+    "width": 30,
+    "height": 80,
+    "offsetX": 25,
+    "offsetY": 8
+  },
+  "hurtbox": {
+    "width": 40,
+    "height": 96,
+    "offsetX": 20,
+    "offsetY": 0
+  }
+}

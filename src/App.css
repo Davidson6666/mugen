@@ -1,0 +1,79 @@
+.app {
+  width: 1280px;
+  margin: 0 auto;
+  padding: 24px 0 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.app__header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+
+.app__title {
+  margin: 0;
+  font-size: 28px;
+  letter-spacing: 6px;
+  color: var(--color-accent);
+  text-shadow: 0 0 12px rgba(255, 184, 0, 0.35);
+}
+
+.app__subtitle {
+  margin: 0;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.game-canvas {
+  position: relative;
+  width: 1280px;
+  height: 720px;
+  border: 3px solid var(--color-accent);
+  background: var(--color-bg-secondary);
+}
+
+.game-canvas__status {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  display: grid;
+  place-items: center;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.app__controls {
+  display: flex;
+  gap: 32px;
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.app__controls p {
+  margin: 0;
+}
+
+.app__tag {
+  display: inline-block;
+  min-width: 34px;
+  margin-right: 10px;
+  padding: 2px 6px;
+  text-align: center;
+  font-weight: 700;
+  color: var(--color-bg-primary);
+}
+
+.app__tag--p1 {
+  background: var(--color-player1);
+}
+
+.app__tag--p2 {
+  background: var(--color-player2);
+}

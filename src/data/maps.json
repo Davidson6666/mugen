@@ -1,0 +1,8 @@
+[
+  {
+    "id": "dummy_map",
+    "name": "Dummy Arena",
+    "dir": "/assets/maps/dummy",
+    "config": "dummy_map_config.json"
+  }
+]

@@ -1,0 +1,9 @@
+[
+  {
+    "id": "dummy",
+    "name": "Dummy",
+    "dir": "/assets/characters/dummy",
+    "config": "dummy_config.json",
+    "isBoss": false
+  }
+]
