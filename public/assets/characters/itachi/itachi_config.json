@@ -6,7 +6,7 @@
   "spriteGridSize": {
     "cols": 8,
     "rows": 5,
-    "frameWidth": 112,
+    "frameWidth": 96,
     "frameHeight": 120
   },
   "stats": {
@@ -83,10 +83,10 @@
     },
     "punch": {
       "frames": [
-        19,
-        20,
-        20,
-        21
+        17,
+        24,
+        24,
+        17
       ],
       "speed": 0.1,
       "loop": false,
@@ -94,10 +94,10 @@
       "damage": 15,
       "hitstun": 12,
       "hitbox": {
-        "width": 28,
-        "height": 18,
-        "offsetX": 70,
-        "offsetY": 30
+        "width": 26,
+        "height": 17,
+        "offsetX": 62,
+        "offsetY": 58
       }
     },
     "kick": {
@@ -115,7 +115,7 @@
       "hitbox": {
         "width": 29,
         "height": 23,
-        "offsetX": 70,
+        "offsetX": 62,
         "offsetY": 52
       }
     },
@@ -131,58 +131,52 @@
       ],
       "speed": 0.13,
       "loop": false,
-      "hitboxFrame": 3,
       "damage": 35,
       "hitstun": 20,
       "cooldown": 60,
-      "hitbox": {
-        "width": 26,
-        "height": 24,
-        "offsetX": 70,
-        "offsetY": 34
+      "effect": {
+        "id": "amaterasu",
+        "spawnFrame": 3,
+        "target": "opponent"
       }
     },
     "special2": {
       "frames": [
-        17,
-        24,
-        24,
-        24,
-        17
+        19,
+        20,
+        20,
+        21,
+        21
       ],
       "speed": 0.094,
       "loop": false,
-      "hitboxFrame": 1,
       "damage": 30,
       "hitstun": 18,
       "cooldown": 60,
-      "hitbox": {
-        "width": 26,
-        "height": 17,
-        "offsetX": 70,
-        "offsetY": 58
+      "effect": {
+        "id": "shuriken",
+        "spawnFrame": 1,
+        "offsetX": 41,
+        "offsetY": 73
       }
     },
     "special3": {
       "frames": [
-        7,
-        32,
-        33,
-        34,
-        34,
-        18
+        25,
+        0,
+        1,
+        1,
+        1,
+        0
       ],
       "speed": 0.113,
       "loop": false,
-      "hitboxFrame": 3,
       "damage": 40,
       "hitstun": 22,
       "cooldown": 80,
-      "hitbox": {
-        "width": 39,
-        "height": 22,
-        "offsetX": 70,
-        "offsetY": 62
+      "effect": {
+        "id": "susanoo",
+        "spawnFrame": 0
       }
     },
     "hitReaction": {
@@ -262,15 +256,112 @@
     }
   ],
   "hitbox": {
-    "width": 28,
-    "height": 18,
-    "offsetX": 70,
-    "offsetY": 30
+    "width": 26,
+    "height": 17,
+    "offsetX": 62,
+    "offsetY": 58
   },
   "hurtbox": {
     "width": 32,
     "height": 100,
-    "offsetX": 40,
+    "offsetX": 32,
     "offsetY": 20
+  },
+  "effects": {
+    "amaterasu": {
+      "spriteSheet": "itachi_fx_amaterasu.png",
+      "spriteGridSize": {
+        "cols": 4,
+        "rows": 2,
+        "frameWidth": 104,
+        "frameHeight": 96
+      },
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          4,
+          5,
+          6,
+          1
+        ],
+        "speed": 0.2,
+        "loop": false
+      },
+      "hitbox": {
+        "width": 59,
+        "height": 68,
+        "offsetX": 23,
+        "offsetY": 25
+      },
+      "activeFrom": 3,
+      "activeUntil": 7,
+      "layer": "front"
+    },
+    "shuriken": {
+      "spriteSheet": "itachi_fx_shuriken.png",
+      "spriteGridSize": {
+        "cols": 4,
+        "rows": 1,
+        "frameWidth": 40,
+        "frameHeight": 32
+      },
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "speed": 0.5,
+        "loop": true
+      },
+      "hitbox": {
+        "width": 28,
+        "height": 25,
+        "offsetX": 6,
+        "offsetY": 5
+      },
+      "velocityX": 11,
+      "lifetime": 150,
+      "destroyOnHit": true,
+      "layer": "front"
+    },
+    "susanoo": {
+      "spriteSheet": "itachi_fx_susanoo.png",
+      "spriteGridSize": {
+        "cols": 4,
+        "rows": 1,
+        "frameWidth": 448,
+        "frameHeight": 144
+      },
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3,
+          3,
+          3,
+          0
+        ],
+        "speed": 0.132,
+        "loop": false
+      },
+      "hitbox": {
+        "width": 131,
+        "height": 132,
+        "offsetX": 244,
+        "offsetY": 12
+      },
+      "activeFrom": 3,
+      "activeUntil": 5,
+      "attached": true,
+      "layer": "back"
+    }
   }
 }

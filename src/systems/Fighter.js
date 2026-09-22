@@ -26,6 +26,7 @@ export class Fighter {
   constructor({ record, map, x, facing = 1 }) {
     this.config = record.config;
     this.frames = record.frames;
+    this.effectFrames = record.effectFrames ?? {};
     this.map = map;
     this.animation = new AnimationStateMachine(this.config.animations);
 
@@ -46,6 +47,13 @@ export class Fighter {
     this.cooldowns = new Map();
     this.comboCount = 0;
     this.comboTimer = 0;
+    // O lutador so avisa que um golpe soltou um efeito; quem cria, move e
+    // colide a entidade e o EffectManager.
+    this.pendingEffects = [];
+    this.effectSpawned = false;
+    // Identifica cada execucao de golpe: um efeito preso ao corpo so vive
+    // enquanto a mesma execucao que o criou continua.
+    this.attackSerial = 0;
 
     this.sprite = new Sprite(this.frames[0]);
     this.sprite.anchor.set(0.5, 1);
@@ -98,13 +106,20 @@ export class Fighter {
     return this.rectInWorld(this.animation.current?.hitbox ?? this.config.hitbox);
   }
 
-  // A hitbox so existe no frame declarado como hitboxFrame pelo character config.
-  get activeAttack() {
+  // Dados do golpe em execucao, ja com dano/hitstun do combo aplicados.
+  get currentAttack() {
     if (this.state !== 'attack') return null;
     const animation = this.animation.current;
-    if (animation?.hitboxFrame === undefined) return null;
-    if (this.animation.localFrame !== animation.hitboxFrame) return null;
+    if (!animation) return null;
     return this.attackOverride ? { ...animation, ...this.attackOverride } : animation;
+  }
+
+  // A hitbox so existe no frame declarado como hitboxFrame pelo character config.
+  get activeAttack() {
+    const attack = this.currentAttack;
+    if (attack?.hitboxFrame === undefined) return null;
+    if (this.animation.localFrame !== attack.hitboxFrame) return null;
+    return attack;
   }
 
   isOnCooldown(animationName) {
@@ -117,6 +132,8 @@ export class Fighter {
     this.state = 'attack';
     this.attackHasLanded = false;
     this.attackOverride = override;
+    this.effectSpawned = false;
+    this.attackSerial += 1;
     if (this.grounded) this.vx = 0;
     this.animation.play(animationName, { restart: true });
 
@@ -235,7 +252,18 @@ export class Fighter {
     this.clampToBounds();
     this.updateAnimation(forward);
     this.animation.update(delta);
+    this.queueEffect();
     this.syncSprite();
+  }
+
+  // O efeito sai uma vez por golpe, quando a animacao chega no spawnFrame.
+  queueEffect() {
+    const attack = this.currentAttack;
+    const effect = attack?.effect;
+    if (!effect || this.effectSpawned) return;
+    if (this.animation.localFrame < (effect.spawnFrame ?? 0)) return;
+    this.effectSpawned = true;
+    this.pendingEffects.push({ owner: this, spawn: effect, attack, serial: this.attackSerial });
   }
 
   tickCooldowns(delta) {
@@ -291,6 +319,8 @@ export class Fighter {
     this.attackHasLanded = false;
     this.attackOverride = null;
     this.pendingPose = null;
+    this.pendingEffects.length = 0;
+    this.effectSpawned = false;
     this.cooldowns.clear();
     this.breakCombo();
     this.animation.play('idle', { restart: true });

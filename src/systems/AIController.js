@@ -73,6 +73,14 @@ function tokenToFragment(token, facing) {
   }
 }
 
+// Golpe que alcanca de longe: solta um projetil ou surge em cima do oponente.
+function isRanged(self, combo) {
+  const spawn = combo.animation ? self.config.animations?.[combo.animation]?.effect : null;
+  if (!spawn) return false;
+  const effect = self.config.effects?.[spawn.id];
+  return spawn.target === 'opponent' || (effect?.velocityX ?? 0) > 0;
+}
+
 export class AIController {
   constructor(combos = [], difficulty = 'normal', { random = Math.random } = {}) {
     this.combos = combos;
@@ -137,6 +145,11 @@ export class AIController {
     }
 
     if (distance > range) {
+      // Longe demais para o corpo a corpo, mas ao alcance de um projetil.
+      const ranged = this.pickCombo(self, { rangedOnly: true });
+      if (ranged && this.chance(this.params.aggression * this.params.comboChance)) {
+        return { type: 'combo', combo: ranged };
+      }
       if (this.chance(this.params.jumpChance)) return { type: 'jump' };
       return { type: 'approach' };
     }
@@ -152,9 +165,10 @@ export class AIController {
 
   // So considera combos de verdade (mais de um token) e que nao estejam em
   // cooldown, senao a IA "gastaria" a decisao num golpe que nao vai sair.
-  pickCombo(self) {
+  pickCombo(self, { rangedOnly = false } = {}) {
     const available = this.combos.filter((combo) => {
       if (combo.tokens ? combo.tokens.length < 2 : combo.input.length < 2) return false;
+      if (rangedOnly && !isRanged(self, combo)) return false;
       const animation = combo.animation ?? null;
       return !animation || !self.isOnCooldown(animation);
     });

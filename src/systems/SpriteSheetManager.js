@@ -55,9 +55,28 @@ export class SpriteSheetManager {
     const frames = sliceGrid(texture, config.spriteGridSize);
     validateAnimations(config, frames.length);
 
-    const record = { config, frames };
+    const effectFrames = await this.loadEffects(entry, config);
+    const record = { config, frames, effectFrames };
     this.characters.set(entry.id, record);
     return record;
+  }
+
+  // Cada efeito tem sprite sheet e grade proprios: um projetil pequeno e um
+  // Susanoo que ocupa meia tela nao cabem bem na mesma celula.
+  async loadEffects(entry, config) {
+    const effectFrames = {};
+    await Promise.all(
+      Object.entries(config.effects ?? {}).map(async ([id, effect]) => {
+        const texture = await Assets.load(`${entry.dir}/${effect.spriteSheet}`);
+        texture.source.scaleMode = 'nearest';
+        effectFrames[id] = sliceGrid(texture, effect.spriteGridSize);
+        validateAnimations(
+          { id: `${config.id}/${id}`, animations: { [id]: effect.animation } },
+          effectFrames[id].length,
+        );
+      }),
+    );
+    return effectFrames;
   }
 
   async loadMap(entry) {

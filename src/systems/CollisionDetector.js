@@ -25,7 +25,7 @@ export function resolveBodyCollision(a, b) {
   b.clampToBounds();
 }
 
-function overlaps(a, b) {
+export function overlaps(a, b) {
   return (
     a.x < b.x + b.width &&
     a.x + a.width > b.x &&
@@ -43,7 +43,12 @@ export function resolveAttack(attacker, defender) {
   if (!overlaps(attacker.hitRect, defender.hurtRect)) return null;
 
   attacker.attackHasLanded = true;
+  return applyHit(attacker, defender, attack);
+}
 
+// Regra de dano comum a golpe corpo a corpo e a efeito (projetil, area):
+// guarda reduz o dano e troca hitstun por blockstun.
+export function applyHit(attacker, defender, attack) {
   if (defender.blocking) {
     const damage = Math.max(1, Math.round(attack.damage * CHIP_DAMAGE_RATIO));
     const blockstun = Math.round(attack.hitstun * BLOCKSTUN_RATIO);

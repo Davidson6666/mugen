@@ -6,6 +6,7 @@ import { ComboDetector } from '../systems/ComboDetector.js';
 import { AIController } from '../systems/AIController.js';
 import { GameStateManager } from '../systems/GameStateManager.js';
 import { Hud } from '../systems/Hud.js';
+import { EffectManager } from '../systems/EffectManager.js';
 import { resolveAttack, resolveBodyCollision } from '../systems/CollisionDetector.js';
 import { InputHandler } from '../utils/InputHandler.js';
 import { PALETTE, PALETTE_HEX } from '../utils/palette.js';
@@ -68,9 +69,9 @@ function debugText() {
   });
 }
 
-// Desenha hurtbox (sempre) e hitbox (so no frame ativo do golpe). Ferramenta de
-// debug, separada do HUD de jogo.
-function drawBoxes(layer, fighters) {
+// Desenha hurtbox (sempre) e hitbox (so no frame ativo do golpe ou do efeito).
+// Ferramenta de debug, separada do HUD de jogo.
+function drawBoxes(layer, fighters, effects) {
   layer.clear();
   for (const fighter of fighters) {
     const hurt = fighter.hurtRect;
@@ -84,6 +85,14 @@ function drawBoxes(layer, fighters) {
         .fill({ color: PALETTE_HEX.player1, alpha: 0.35 })
         .stroke({ color: PALETTE_HEX.player1, width: 1 });
     }
+  }
+  for (const effect of effects) {
+    const hit = effect.hitRect;
+    if (!hit) continue;
+    layer
+      .rect(hit.x, hit.y, hit.width, hit.height)
+      .fill({ color: PALETTE_HEX.accent, alpha: 0.35 })
+      .stroke({ color: PALETTE_HEX.accent, width: 1 });
   }
 }
 
@@ -172,7 +181,16 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
 
       const markers = [playerMarker(PALETTE_HEX.player1), playerMarker(PALETTE_HEX.player2)];
       for (const marker of markers) world.addChild(marker);
+      const effectsBehind = new Container();
+      world.addChild(effectsBehind);
       for (const fighter of fighters) world.addChild(fighter.sprite);
+      const effectsInFront = new Container();
+      world.addChild(effectsInFront);
+      const effects = new EffectManager({
+        back: effectsBehind,
+        front: effectsInFront,
+        bounds: { left: 0, right: STAGE_WIDTH },
+      });
 
       // O Pixi rasteriza o texto na hora de criar: sem esperar a fonte bitmap
       // carregar, o HUD sairia desenhado com a fonte de fallback.
@@ -199,6 +217,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
           fighter.resetForRound(spawns[index], index === 0 ? 1 : -1);
         });
         for (const detector of detectors) detector.reset();
+        effects.clear();
         ai.reset();
         hud.announce(`ROUND ${round} — FIGHT!`, 110);
       }
@@ -274,11 +293,16 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
           fighter.update(command, delta);
         });
 
+        effects.collect(fighters);
+
         if (fighting) {
           resolveBodyCollision(fighters[0], fighters[1]);
           resolveAttack(fighters[0], fighters[1]);
           resolveAttack(fighters[1], fighters[0]);
         }
+        // Fora do combate os efeitos terminam a animacao, mas nao acertam
+        // mais ninguem: o round ja foi decidido.
+        effects.update(delta, fighting ? fighters : []);
 
         const event = match.update(fighters, delta);
         if (event) handleMatchEvent(event);
@@ -300,7 +324,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
           delta,
         );
 
-        if (debugLayer.visible) drawBoxes(debugLayer, fighters);
+        if (debugLayer.visible) drawBoxes(debugLayer, fighters, effects.effects);
 
         elapsed += ticker.deltaMS;
         if (elapsed >= 250) {
