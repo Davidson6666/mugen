@@ -435,7 +435,9 @@ const ROSTER = [
   { id: 'escanor', name: 'Escanor', description: 'O orgulho do sol', hue: 295 },
   { id: 'gojo', name: 'Gojo', description: 'Satoru Gojo - The Strongest', hue: 80 },
   { id: 'humberto', name: 'Humberto', description: 'Lenda da UTFPR', hue: 0 },
-  { id: 'itachi', name: 'Itachi', description: 'Sombra do cla Uchiha', hue: 150 },
+  // Arte real, gerada por scripts/import-itachi.mjs: o placeholder nao pode
+  // sobrescrever.
+  { id: 'itachi', name: 'Itachi', description: 'Sombra do cla Uchiha', hue: 150, realArt: true },
   { id: 'ensina_god', name: 'Ensina GOD', description: 'Professor supremo', hue: 200 },
 ];
 
@@ -475,7 +477,8 @@ const characterTemplate = readJson('public/assets/characters/dummy/dummy_config.
 const mapTemplate = readJson('public/assets/maps/dummy/dummy_map_config.json');
 
 console.log('Gerando elenco placeholder...');
-for (const { id, name, description, hue } of ROSTER) {
+for (const { id, name, description, hue, realArt } of ROSTER) {
+  if (realArt) continue;
   write(`public/assets/characters/${id}/${id}_spritesheet.png`, buildSpriteSheet(hue));
   write(`public/assets/characters/${id}/${id}_portrait.png`, buildPortrait(hue).toPng());
   writeJson(`public/assets/characters/${id}/${id}_config.json`, {
