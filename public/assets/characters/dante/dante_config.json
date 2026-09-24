@@ -11,9 +11,9 @@
   },
   "stats": {
     "maxHealth": 100,
-    "walkSpeed": 4,
-    "jumpForce": 12,
-    "jumpGravity": 0.6
+    "walkSpeed": 2.5,
+    "jumpForce": 8.5,
+    "jumpGravity": 0.55
   },
   "animations": {
     "idle": {

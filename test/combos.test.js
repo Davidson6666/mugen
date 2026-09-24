@@ -161,7 +161,7 @@ test('combo com campo animation usa a animacao declarada', () => {
 
 /* ------------------------------------------- combo aplicado ao combate ---- */
 
-function makePair(leftX = 500, rightX = 620) {
+function makePair(leftX = 500, rightX = 540) {
   return [
     new Fighter({ record, map, x: leftX, facing: 1 }),
     new Fighter({ record, map, x: rightX, facing: -1 }),
@@ -249,7 +249,8 @@ test('acertos consecutivos aumentam o contador', () => {
 });
 
 test('o contador zera quando o golpe e bloqueado', () => {
-  const [a, b] = makePair();
+  // Encostado na parede: recuar para defender nao tira o defensor do alcance.
+  const [a, b] = makePair(map.rightBound - 56, map.rightBound - 16);
   attack(a, b);
   assert.equal(a.comboCount, 1);
   recover(a, b);

@@ -32,12 +32,16 @@ const NEUTRAL = {
 
 const command = (overrides = {}) => ({ ...NEUTRAL, ...overrides });
 
-function makePair(leftX = 500, rightX = 620) {
+function makePair(leftX = 500, rightX = 540) {
   return [
     new Fighter({ record, map, x: leftX, facing: 1 }),
     new Fighter({ record, map, x: rightX, facing: -1 }),
   ];
 }
+
+// Defensor encostado na parede direita: segurar para tras (defender) nao o
+// afasta, entao o teste mede so a regra de guarda, nao o espacamento.
+const againstWall = () => makePair(map.rightBound - 56, map.rightBound - 16);
 
 // Mesma ordem de operacoes do game loop em GameCanvas.
 function step(a, b, commandA = command(), commandB = command(), delta = 1) {
@@ -72,7 +76,7 @@ test('soco conecta a queima-roupa e aplica dano e hitstun do config', () => {
 });
 
 test('golpe bloqueado passa so o chip damage e gera blockstun mais curto', () => {
-  const [a, b] = makePair();
+  const [a, b] = againstWall();
   // b esta a direita e encara a esquerda: segurar "direita" e segurar para tras.
   const { result } = runAttack(a, b, { defenderCommand: command({ right: true }) });
 
@@ -86,7 +90,7 @@ test('golpe bloqueado passa so o chip damage e gera blockstun mais curto', () =>
 });
 
 test('chip damage nunca e zero, senao bloquear seria seguro para sempre', () => {
-  const [a, b] = makePair();
+  const [a, b] = againstWall();
   const weakest = Math.min(
     ...Object.values(characterConfig.animations)
       .filter((animation) => animation.damage !== undefined)
@@ -138,7 +142,7 @@ test('o hitstun acaba e devolve o controle', () => {
 });
 
 test('a guarda segue de pe durante o blockstun', () => {
-  const [a, b] = makePair();
+  const [a, b] = againstWall();
   runAttack(a, b, { defenderCommand: command({ right: true }) });
 
   assert.equal(b.state, 'blockstun');
@@ -161,7 +165,7 @@ test('vida zerada leva a KO e encerra a troca de golpes', () => {
 });
 
 test('os corpos nunca ocupam o mesmo espaco no chao', () => {
-  const [a, b] = makePair(600, 610);
+  const [a, b] = makePair(600, 604);
   step(a, b);
 
   const minDistance = a.halfWidth + b.halfWidth;
@@ -172,7 +176,7 @@ test('os corpos nunca ocupam o mesmo espaco no chao', () => {
 });
 
 test('no ar da para passar por cima do oponente', () => {
-  const [a, b] = makePair(600, 700);
+  const [a, b] = makePair(600, 633);
   a.grounded = false;
   a.y = map.groundLevel - 150;
   a.x = 700;
@@ -239,7 +243,7 @@ test('ataque com hitbox propria usa o alcance dela', () => {
 });
 
 test('o chute alcanca uma distancia em que o soco erra', () => {
-  const distance = 210;
+  const distance = 70;
 
   const [puncher, target] = makePair(500, 500 + distance);
   assert.equal(runAttack(puncher, target, { button: 'punch' }).result, null);

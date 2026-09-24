@@ -1,165 +1,194 @@
-import { Container, Graphics, Text } from 'pixi.js';
-import { PALETTE, PALETTE_HEX, healthBarColor } from '../utils/palette.js';
+import { Container, Graphics, Sprite, Text } from 'pixi.js';
+import { PALETTE, PALETTE_HEX } from '../utils/palette.js';
+import {
+  EMBLEM, EMBLEM_TITLE_BAND, EMBLEM_TITLE_Y, LIFE_BAR, LIFE_HEIGHT, LIFE_INNER_X, LIFE_OUTER_X,
+  LIFE_TOP, NAME_POSITION, OUTLINE_LAYERS, PORTRAIT, PORTRAIT_CENTER, ROUND_MARKERS,
+  ROUND_MARKER_RADIUS, TIMER_Y, diamond, mirrorX,
+} from '../utils/hudGeometry.js';
 
-// HUD no formato do Street Fighter II: barra de vida grossa com contorno preto,
-// nome do personagem logo abaixo dela, marcadores de round vencido, cronometro
-// central em caixa com relevo e anuncios em tipografia bitmap contornada.
+// HUD no padrao Capcom vs SNK 2 (docs/referencias-ui/cvs2/capcomvssnk2-s16.jpg):
+// barras amarelas com ponta cortada, retrato em losango, emblema central com o
+// timer, nomes em italico pesado e anuncios sobre faixa amarela. A geometria
+// e a mesma da prancha de estilo (src/utils/hudGeometry.js).
 
-const BAR_WIDTH = 470;
-const BAR_HEIGHT = 30;
-const BAR_MARGIN = 30;
-const BAR_Y = 44;
-const OUTLINE = 4;
-const PIP_SIZE = 16;
-const PIP_GAP = 6;
+const FONT = '"Barlow Condensed", sans-serif';
 
-const INK = 0x05040c;
-const PIXEL_FONT = '"Press Start 2P", monospace';
+// A trilha vermelha segura o dano recente por um instante e depois desce.
+const TRAIL_HOLD_FRAMES = 30;
+const TRAIL_DRAIN_PER_FRAME = 0.012;
 
-function pixelText(text, size, color, extra = {}) {
+// Distancia entre os losangos de vitoria quando o placar pede mais de dois.
+const ROUND_MARKER_STEP = 26;
+
+const flat = (points) => points.flat();
+
+function label(text, size, { fill = PALETTE.textPrimary, weight = '900', stroke = Math.round(size / 5) } = {}) {
   return new Text({
     text,
     style: {
-      fontFamily: PIXEL_FONT,
+      fontFamily: FONT,
+      fontStyle: 'italic',
+      fontWeight: weight,
       fontSize: size,
-      fill: color,
-      // O contorno preto e o que faz o texto ler por cima do cenario.
-      stroke: { color: PALETTE.bgPrimary, width: Math.max(3, Math.round(size / 5)) },
-      ...extra,
+      fill,
+      stroke: stroke ? { color: PALETTE.ink, width: stroke, join: 'round' } : undefined,
     },
   });
 }
 
+// Poligono com o contorno em camadas do CvS2 (preto, fio branco, preto).
+function outlined(graphics, points, fill) {
+  for (const layer of OUTLINE_LAYERS) {
+    graphics.poly(flat(points)).stroke({ color: PALETTE_HEX[layer.color], width: layer.width, join: 'miter' });
+  }
+  return graphics.poly(flat(points)).fill({ color: fill });
+}
+
 export class Hud {
-  constructor({ width, names = ['P1', 'P2'], labels = ['1P', '2P'] }) {
+  constructor({ width, names = ['P1', 'P2'], labels = ['1P', '2P'], portraits = [] }) {
     this.width = width;
     this.view = new Container();
     this.announcementTimer = 0;
+    this.sides = [];
 
-    const chrome = new Graphics();
-    this.view.addChild(chrome);
+    names.forEach((name, index) => this.buildSide(index, name, labels[index], portraits[index]));
 
-    this.barFills = [];
-    this.pips = [];
-    this.comboLabels = [];
+    const emblem = new Graphics();
+    outlined(emblem, EMBLEM, PALETTE_HEX.emblem);
+    emblem.poly(flat(EMBLEM_TITLE_BAND)).fill({ color: PALETTE_HEX.ink });
+    this.view.addChild(emblem);
 
-    names.forEach((name, index) => {
-      const onLeft = index === 0;
-      const barX = onLeft ? BAR_MARGIN : width - BAR_MARGIN - BAR_WIDTH;
-
-      // Moldura da barra: contorno preto por fora, relevo por dentro.
-      chrome
-        .rect(barX - OUTLINE, BAR_Y - OUTLINE, BAR_WIDTH + OUTLINE * 2, BAR_HEIGHT + OUTLINE * 2)
-        .fill({ color: INK })
-        .rect(barX - 2, BAR_Y - 2, BAR_WIDTH + 4, BAR_HEIGHT + 4)
-        .fill({ color: PALETTE_HEX.accent })
-        .rect(barX, BAR_Y, BAR_WIDTH, BAR_HEIGHT)
-        .fill({ color: 0x1a1020 });
-
-      const fill = new Graphics();
-      this.view.addChild(fill);
-      this.barFills.push(fill);
-
-      const pips = new Graphics();
-      this.view.addChild(pips);
-      this.pips.push(pips);
-
-      const tag = pixelText(labels[index], 16, onLeft ? PALETTE.player1 : PALETTE.player2);
-      tag.y = BAR_Y - OUTLINE - 22;
-      tag.x = onLeft ? barX - OUTLINE : barX + BAR_WIDTH + OUTLINE - tag.width;
-      this.view.addChild(tag);
-
-      // Nome do personagem embaixo da barra, como no SF2.
-      const nameLabel = pixelText(name.toUpperCase(), 13, PALETTE.textPrimary);
-      nameLabel.y = BAR_Y + BAR_HEIGHT + OUTLINE + 8;
-      nameLabel.x = onLeft ? barX - OUTLINE : barX + BAR_WIDTH + OUTLINE - nameLabel.width;
-      this.view.addChild(nameLabel);
-
-      const combo = pixelText('', 18, PALETTE.accent);
-      combo.y = BAR_Y + BAR_HEIGHT + OUTLINE + 34;
-      combo.visible = false;
-      this.view.addChild(combo);
-      this.comboLabels.push({ text: combo, onLeft, barX });
-    });
-
-    // Caixa do cronometro no centro, com relevo.
-    const timerBoxWidth = 108;
-    const timerBoxHeight = 74;
-    const timerX = width / 2 - timerBoxWidth / 2;
-    chrome
-      .rect(timerX - OUTLINE, BAR_Y - 24, timerBoxWidth + OUTLINE * 2, timerBoxHeight + OUTLINE * 2)
-      .fill({ color: INK })
-      .rect(timerX, BAR_Y - 20, timerBoxWidth, timerBoxHeight)
-      .fill({ color: PALETTE_HEX.bgSecondary })
-      .rect(timerX, BAR_Y - 20, timerBoxWidth, 4)
-      .fill({ color: 0x4a4266 })
-      .rect(timerX, BAR_Y - 20 + timerBoxHeight - 4, timerBoxWidth, 4)
-      .fill({ color: 0x000000 });
-
-    this.timer = pixelText('90', 38, PALETTE.textPrimary);
-    this.timer.anchor.set(0.5, 0);
-    this.timer.x = width / 2;
-    this.timer.y = BAR_Y - 2;
-    this.view.addChild(this.timer);
-
-    this.roundLabel = pixelText('ROUND 1', 10, PALETTE.accent);
-    this.roundLabel.anchor.set(0.5, 0);
-    this.roundLabel.x = width / 2;
-    this.roundLabel.y = BAR_Y + 44;
+    this.roundLabel = label('ROUND 1', 22, { weight: '600', stroke: 0 });
+    this.roundLabel.anchor.set(0.5, 1);
+    this.roundLabel.position.set(width / 2, EMBLEM_TITLE_Y + 2);
     this.view.addChild(this.roundLabel);
 
-    this.announcement = pixelText('', 54, PALETTE.accent, {
-      dropShadow: { color: PALETTE.player1, distance: 6, angle: Math.PI / 4, blur: 0, alpha: 1 },
-    });
-    this.announcement.anchor.set(0.5);
-    this.announcement.x = width / 2;
-    this.announcement.y = 268;
+    this.timer = label('90', 78, { stroke: 10 });
+    this.timer.anchor.set(0.5, 1);
+    this.timer.position.set(width / 2, TIMER_Y + 8);
+    this.view.addChild(this.timer);
+
+    this.buildAnnouncement();
+  }
+
+  buildSide(index, name, tag, portrait) {
+    const mirror = index === 1 ? mirrorX : (points) => points;
+    const side = { mirror, trail: 1, shown: 1, hold: 0 };
+
+    const frame = new Graphics();
+    outlined(frame, mirror(LIFE_BAR), PALETTE_HEX.ink);
+    this.view.addChild(frame);
+
+    // Trilha e vida sao desenhadas em retangulos e recortadas pelo formato da
+    // faixa, entao as pontas cortadas continuam certas com qualquer valor.
+    side.fill = new Graphics();
+    const barMask = new Graphics().poly(flat(mirror(LIFE_BAR))).fill({ color: 0xffffff });
+    side.fill.mask = barMask;
+    this.view.addChild(barMask, side.fill);
+
+    const portraitFrame = new Graphics();
+    outlined(portraitFrame, mirror(PORTRAIT), PALETTE_HEX.portraitBg);
+    this.view.addChild(portraitFrame);
+    if (portrait) {
+      const [cx, cy] = mirror([PORTRAIT_CENTER])[0];
+      const picture = new Sprite(portrait);
+      picture.anchor.set(0.5);
+      picture.position.set(cx, cy + 2);
+      // Retrato no tamanho nativo, olhando para o centro da tela.
+      picture.scale.x = index === 1 ? -1 : 1;
+      const portraitMask = new Graphics().poly(flat(mirror(PORTRAIT))).fill({ color: 0xffffff });
+      picture.mask = portraitMask;
+      this.view.addChild(portraitMask, picture);
+    }
+
+    const nameLabel = label(name.toUpperCase(), 40);
+    const [nameX, nameY] = mirror([NAME_POSITION])[0];
+    nameLabel.anchor.set(index === 1 ? 1 : 0, 1);
+    nameLabel.position.set(nameX, nameY);
+    this.view.addChild(nameLabel);
+
+    const tagLabel = label(tag, 26, { fill: index === 0 ? PALETTE.cursorP1 : PALETTE.cursorP2, stroke: 6 });
+    const [tagX] = mirror([[PORTRAIT_CENTER[0] + 52, 0]])[0];
+    tagLabel.anchor.set(index === 1 ? 1 : 0, 1);
+    tagLabel.position.set(tagX, LIFE_TOP - 8);
+    this.view.addChild(tagLabel);
+
+    side.markers = new Graphics();
+    this.view.addChild(side.markers);
+
+    side.combo = new Container();
+    const capsule = new Graphics()
+      .roundRect(0, 0, 236, 40, 20)
+      .fill({ color: PALETTE_HEX.fieldYellow })
+      .stroke({ color: PALETTE_HEX.ink, width: 5 });
+    side.comboCount = label('2', 36, { fill: PALETTE.cursorP1, stroke: 6 });
+    side.comboCount.anchor.set(0, 1);
+    side.comboCount.position.set(20, 36);
+    const comboText = label('HIT COMBO', 28, { fill: PALETTE.ink, weight: '800', stroke: 0 });
+    comboText.anchor.set(0, 1);
+    comboText.position.set(52, 35);
+    side.comboText = comboText;
+    side.combo.addChild(capsule, side.comboCount, comboText);
+    side.combo.position.set(index === 1 ? this.width - 40 - 236 : 40, 214);
+    side.combo.visible = false;
+    this.view.addChild(side.combo);
+
+    this.sides.push(side);
+  }
+
+  // Anuncio no estilo do K.O. do CvS2: faixa amarela atravessando a tela com o
+  // texto gigante por cima.
+  buildAnnouncement() {
+    this.announcement = new Container();
     this.announcement.visible = false;
+    this.announcementBand = new Graphics();
+    this.announcementText = label('', 96, { stroke: 14 });
+    this.announcementText.anchor.set(0.5);
+    this.announcementText.position.set(this.width / 2, 300);
+    this.announcement.addChild(this.announcementBand, this.announcementText);
     this.view.addChild(this.announcement);
   }
 
   announce(text, durationFrames = 90) {
-    this.announcement.text = text;
+    // Texto curto (K.O.) sai enorme; frases longas cabem na largura da tela.
+    const size = text.length <= 4 ? 190 : 88;
+    const bandHeight = text.length <= 4 ? 170 : 116;
+    this.announcementText.text = text;
+    this.announcementText.style.fontSize = size;
+    this.announcementText.style.stroke = { color: PALETTE.ink, width: Math.round(size / 8), join: 'round' };
+
+    const top = 300 - bandHeight / 2;
+    this.announcementBand
+      .clear()
+      .rect(-10, top, this.width + 20, bandHeight)
+      .fill({ color: PALETTE_HEX.fieldYellow })
+      .stroke({ color: PALETTE_HEX.ink, width: 8 });
+    if (text.length <= 4) {
+      this.announcementBand
+        .poly(flat(diamond([this.width / 2, 300], bandHeight * 0.9)))
+        .fill({ color: PALETTE_HEX.emblem })
+        .stroke({ color: PALETTE_HEX.ink, width: 8 });
+    }
+
     this.announcement.visible = true;
     this.announcementTimer = durationFrames;
   }
 
   update({ fighters, timeRemaining, roundNumber, wins, suddenDeath, roundsToWin }, delta) {
     fighters.forEach((fighter, index) => {
+      const side = this.sides[index];
       const ratio = Math.max(0, fighter.health / fighter.config.stats.maxHealth);
-      const onLeft = index === 0;
-      const barX = onLeft ? BAR_MARGIN : this.width - BAR_MARGIN - BAR_WIDTH;
-      const filled = Math.round(BAR_WIDTH * ratio);
-      // As duas barras esvaziam em direcao ao centro da tela.
-      const fillX = onLeft ? barX : barX + BAR_WIDTH - filled;
-      const color = healthBarColor(ratio);
+      this.updateTrail(side, ratio, delta);
+      this.drawLife(side, index, ratio);
+      this.drawMarkers(side, index, wins[index], roundsToWin);
 
-      this.barFills[index]
-        .clear()
-        .rect(fillX, BAR_Y, filled, BAR_HEIGHT)
-        .fill({ color })
-        // Faixa clara no topo e escura embaixo: o volume que a barra chapada
-        // nao tinha.
-        .rect(fillX, BAR_Y, filled, 5)
-        .fill({ color: 0xffffff, alpha: 0.35 })
-        .rect(fillX, BAR_Y + BAR_HEIGHT - 6, filled, 6)
-        .fill({ color: 0x000000, alpha: 0.3 });
-
-      this.drawPips(this.pips[index], wins[index], roundsToWin, barX, onLeft);
-
-      const combo = this.comboLabels[index];
-      const visible = fighter.comboCount > 1;
-      combo.text.visible = visible;
-      if (visible) {
-        combo.text.text = `${fighter.comboCount} HITS`;
-        combo.text.x = combo.onLeft
-          ? combo.barX - OUTLINE
-          : combo.barX + BAR_WIDTH + OUTLINE - combo.text.width;
-      }
+      const showCombo = fighter.comboCount > 1;
+      side.combo.visible = showCombo;
+      if (showCombo) side.comboCount.text = String(fighter.comboCount);
     });
 
     this.timer.text = suddenDeath ? '--' : String(Math.ceil(timeRemaining)).padStart(2, '0');
-    this.roundLabel.text = suddenDeath ? 'FINAL' : `ROUND ${roundNumber}`;
+    this.roundLabel.text = suddenDeath ? 'FINAL ROUND' : `ROUND ${roundNumber}`;
 
     if (this.announcementTimer > 0) {
       this.announcementTimer -= delta;
@@ -167,23 +196,45 @@ export class Hud {
     }
   }
 
-  // Marcadores de round vencido, crescendo a partir do centro da tela.
-  drawPips(graphics, won, roundsToWin, barX, onLeft) {
-    graphics.clear();
-    for (let index = 0; index < roundsToWin; index += 1) {
-      const offset = index * (PIP_SIZE + PIP_GAP);
-      const x = onLeft
-        ? barX + BAR_WIDTH - PIP_SIZE - offset
-        : barX + offset;
-      const y = BAR_Y + BAR_HEIGHT + OUTLINE + 6;
+  updateTrail(side, ratio, delta) {
+    if (ratio > side.trail) {
+      // Vida cheia de novo (round novo): a trilha acompanha na hora.
+      side.trail = ratio;
+      side.hold = 0;
+    } else if (ratio < side.shown) {
+      side.hold = TRAIL_HOLD_FRAMES;
+    }
+    side.shown = ratio;
+    if (side.hold > 0) {
+      side.hold -= delta;
+    } else if (side.trail > ratio) {
+      side.trail = Math.max(ratio, side.trail - TRAIL_DRAIN_PER_FRAME * delta);
+    }
+  }
 
-      graphics.rect(x - 2, y - 2, PIP_SIZE + 4, PIP_SIZE + 4).fill({ color: INK });
-      graphics
-        .rect(x, y, PIP_SIZE, PIP_SIZE)
-        .fill({ color: index < won ? PALETTE_HEX.accent : 0x2a2340 });
-      if (index < won) {
-        graphics.rect(x, y, PIP_SIZE, 4).fill({ color: 0xffe9a8 });
-      }
+  // A vida fica ancorada perto do timer; o dano come a faixa pela ponta de fora.
+  drawLife(side, index, ratio) {
+    const span = LIFE_INNER_X - LIFE_OUTER_X;
+    const rect = (amount) => {
+      const from = LIFE_INNER_X - span * amount;
+      const x = index === 1 ? this.width - LIFE_INNER_X : from;
+      return [x, LIFE_TOP, span * amount, LIFE_HEIGHT];
+    };
+    side.fill
+      .clear()
+      .rect(...rect(side.trail))
+      .fill({ color: PALETTE_HEX.lifeTrail })
+      .rect(...rect(ratio))
+      .fill({ color: PALETTE_HEX.lifeFill });
+  }
+
+  drawMarkers(side, index, won, roundsToWin) {
+    side.markers.clear();
+    const [firstX, y] = ROUND_MARKERS[0];
+    for (let marker = 0; marker < roundsToWin; marker += 1) {
+      const x = firstX - marker * ROUND_MARKER_STEP;
+      const center = index === 1 ? [this.width - x, y] : [x, y];
+      outlined(side.markers, diamond(center, ROUND_MARKER_RADIUS), marker < won ? PALETTE_HEX.lifeFill : PALETTE_HEX.ink);
     }
   }
 }

@@ -2,35 +2,64 @@ import { useEffect, useRef, useState } from 'react';
 import { useMenu } from '../context/MenuContext.js';
 import { useGame } from '../context/GameContext.js';
 import { useMenuInput } from '../utils/useMenuInput.js';
+import { PALETTE } from '../utils/palette.js';
 import characters from '../data/characters.json';
+import FighterSprite from './FighterSprite.jsx';
+import { Capsule, DiagonalBackdrop, Label, Pedestal, PortraitCell } from './cvs2.jsx';
+import { cellAt } from '../utils/cvs2Layout.js';
 
-const COLUMNS = 3;
+// Selecao no padrao Capcom vs SNK 2 (docs/referencias-ui/cvs2/capcomvssnk2-s4.jpg):
+// retratos em losango ao longo da faixa diagonal, P1 no campo laranja e P2 no
+// azul, cada um com o personagem sob o cursor em pe no pedestal.
 
+// Duas fileiras ao longo da faixa, centradas nela.
+const COLUMNS = Math.ceil(characters.length / 2);
+const CELLS = characters.map((_, index) => {
+  const column = Math.floor(index / 2) - (COLUMNS - 1) / 2;
+  return cellAt(column, (index % 2) - 0.5);
+});
+
+const DIRECTIONS = { left: [-1, 0], right: [1, 0], up: [0, -1], down: [0, 1] };
+
+// A grade e diagonal, entao "vizinho" e a casa mais proxima na direcao da seta
+// (quem sai muito para o lado conta como mais longe).
 function moveIndex(index, direction) {
-  const rows = Math.ceil(characters.length / COLUMNS);
-  const row = Math.floor(index / COLUMNS);
-  const column = index % COLUMNS;
-
-  if (direction === 'left') return row * COLUMNS + (column - 1 + COLUMNS) % COLUMNS;
-  if (direction === 'right') return row * COLUMNS + (column + 1) % COLUMNS;
-
-  const nextRow = direction === 'up' ? (row - 1 + rows) % rows : (row + 1) % rows;
-  // A ultima fileira pode estar incompleta: cai no ultimo retrato existente.
-  return Math.min(nextRow * COLUMNS + column, characters.length - 1);
+  const [dirX, dirY] = DIRECTIONS[direction];
+  const [x0, y0] = CELLS[index];
+  let best = index;
+  let bestScore = Infinity;
+  CELLS.forEach(([x, y], candidate) => {
+    const dx = x - x0, dy = y - y0;
+    const along = dx * dirX + dy * dirY;
+    if (candidate === index || along <= 0) return;
+    const score = along + Math.abs(dx * dirY - dy * dirX) * 2;
+    if (score < bestScore) {
+      bestScore = score;
+      best = candidate;
+    }
+  });
+  return best;
 }
 
-function FighterPanel({ player, character, confirmed }) {
+// Onde fica o personagem e o nome de cada lado.
+const SIDES = [
+  { tab: { x: 36, y: 96, align: 'start' }, status: [40, 186, 'start'], stand: [210, 470] },
+  { tab: { x: 1244, y: 578, align: 'end' }, status: [1240, 566, 'end'], stand: [1070, 500] },
+];
+
+function SideInfo({ player, character, confirmed, isCpu }) {
+  const { tab, status, stand } = SIDES[player];
+  let statusText = confirmed ? 'PRONTO!' : 'ESCOLHENDO...';
+  if (isCpu) statusText = 'SORTEADA';
   return (
-    <aside className={`fighter-preview fighter-preview--p${player + 1}`}>
-      <img
-        className="fighter-preview__art"
-        src={`${character.dir}/${character.portrait}`}
-        alt=""
-      />
-      <p className="fighter-preview__tag">P{player + 1}</p>
-      <p className="fighter-preview__name">{character.name}</p>
-      <p className="fighter-preview__status">{confirmed ? 'PRONTO' : 'escolhendo...'}</p>
-    </aside>
+    <g>
+      <Pedestal x={stand[0]} y={stand[1]} />
+      {isCpu && <Label x={stand[0]} y={stand[1] - 30} size={120} anchor="middle">?</Label>}
+      <Capsule {...tab}>{isCpu ? '???' : character.name.toUpperCase()}</Capsule>
+      <Label x={status[0]} y={status[1]} size={28} anchor={status[2]} fill={confirmed ? PALETTE.fieldYellow : PALETTE.textPrimary} stroke={6}>
+        {isCpu ? 'CPU' : `${player + 1}P`} · {statusText}
+      </Label>
+    </g>
   );
 }
 
@@ -70,7 +99,7 @@ export default function CharacterSelect() {
     const other = confirmed[1 - player];
     // Sem partida espelhada: o segundo jogador precisa escolher outro.
     if (twoPlayers && other === picked.id) {
-      showWarning('Personagem ja selecionado pelo outro jogador');
+      showWarning('PERSONAGEM JA ESCOLHIDO PELO OUTRO JOGADOR');
       return;
     }
 
@@ -99,67 +128,48 @@ export default function CharacterSelect() {
   useMenuInput({ onMove, onConfirm, onCancel, twoPlayers });
 
   const activePlayers = twoPlayers ? [0, 1] : [0];
+  const shown = [characters[cursors[0]], characters[cursors[1]]];
 
   return (
-    <div className="screen screen--select">
-      <h2 className="screen__title">ESCOLHA SEU LUTADOR</h2>
+    <div className="cvs2-screen">
+      <svg className="cvs2-svg" viewBox="0 0 1280 720">
+        <DiagonalBackdrop />
 
-      <div className="select-layout">
-        <FighterPanel
-          player={0}
-          character={characters[cursors[0]]}
-          confirmed={Boolean(confirmed[0])}
-        />
-
-        <div className="portrait-grid">
-          {characters.map((character, index) => {
-            const owners = activePlayers.filter((player) => cursors[player] === index);
-            const takenBy = activePlayers.find((player) => confirmed[player] === character.id);
-            return (
-              <button
-                type="button"
-                key={character.id}
-                className={[
-                  'portrait',
-                  owners.includes(0) ? 'is-cursor-p1' : '',
-                  owners.includes(1) ? 'is-cursor-p2' : '',
-                  takenBy !== undefined ? 'is-taken' : '',
-                ].join(' ')}
-                onMouseEnter={() => {
-                  if (!confirmed[0]) setCursors((current) => [index, current[1]]);
-                }}
-                onClick={() => onConfirm(0)}
-              >
-                <img src={`${character.dir}/${character.portrait}`} alt={character.name} />
-                <span className="portrait__name">{character.name}</span>
-                {takenBy !== undefined && <span className="portrait__lock">P{takenBy + 1}</span>}
-              </button>
-            );
-          })}
-        </div>
-
-        {twoPlayers ? (
-          <FighterPanel
-            player={1}
-            character={characters[cursors[1]]}
-            confirmed={Boolean(confirmed[1])}
+        {characters.map((character, index) => (
+          <PortraitCell
+            key={character.id}
+            id={character.id}
+            at={CELLS[index]}
+            image={`${character.dir}/${character.portrait}`}
+            cursors={activePlayers.filter((player) => cursors[player] === index)}
+            onPointerEnter={() => {
+              if (!confirmed[0]) setCursors((current) => [index, current[1]]);
+            }}
+            onClick={() => onConfirm(0)}
           />
-        ) : (
-          <aside className="fighter-preview fighter-preview--p2">
-            <div className="fighter-preview__art fighter-preview__art--unknown">?</div>
-            <p className="fighter-preview__tag">CPU</p>
-            <p className="fighter-preview__name">???</p>
-            <p className="fighter-preview__status">sorteado</p>
-          </aside>
-        )}
-      </div>
+        ))}
 
-      <p className={`screen__warning ${warning ? 'is-visible' : ''}`}>{warning}</p>
-      <p className="screen__footer">
-        {twoPlayers
-          ? 'P1 WASD + J · P2 setas + Numpad1 · K volta'
-          : 'WASD navega · J confirma · K volta'}
-      </p>
+        <Label x={410} y={58} size={40} weight={800}>PLAYER SELECT</Label>
+
+        <SideInfo player={0} character={shown[0]} confirmed={Boolean(confirmed[0])} />
+        <SideInfo player={1} character={shown[1]} confirmed={Boolean(confirmed[1])} isCpu={!twoPlayers} />
+
+        {warning && (
+          <g>
+            <rect x={340} y={640} width={600} height={46} rx={23} fill={PALETTE.lifeTrail} stroke={PALETTE.ink} strokeWidth={5} />
+            <Label x={640} y={675} size={30} anchor="middle" stroke={6}>{warning}</Label>
+          </g>
+        )}
+        <Label x={24} y={706} size={22} weight={600} stroke={5}>
+          {twoPlayers ? 'P1 WASD + J · P2 SETAS + NUMPAD 1 · K VOLTA' : 'WASD ESCOLHE · J CONFIRMA · K VOLTA'}
+        </Label>
+      </svg>
+
+      {activePlayers.map((player) => (
+        <div key={player} className="cvs2-sprite" style={{ left: SIDES[player].stand[0], top: SIDES[player].stand[1] }}>
+          <FighterSprite entry={shown[player]} flip={player === 1} />
+        </div>
+      ))}
     </div>
   );
 }

@@ -16,14 +16,6 @@
     "isBoss": false
   },
   {
-    "id": "gojo",
-    "name": "Gojo",
-    "dir": "/assets/characters/gojo",
-    "config": "gojo_config.json",
-    "portrait": "gojo_portrait.png",
-    "isBoss": false
-  },
-  {
     "id": "humberto",
     "name": "Humberto",
     "dir": "/assets/characters/humberto",
@@ -37,6 +29,14 @@
     "dir": "/assets/characters/itachi",
     "config": "itachi_config.json",
     "portrait": "itachi_portrait.png",
+    "isBoss": false
+  },
+  {
+    "id": "yoruichi",
+    "name": "Yoruichi",
+    "dir": "/assets/characters/yoruichi",
+    "config": "yoruichi_config.json",
+    "portrait": "yoruichi_portrait.png",
     "isBoss": false
   },
   {

@@ -33,7 +33,6 @@ export default function App() {
         <div className="app">
           <div className="app__stage">
             <Router />
-            <div className="app__scanlines" aria-hidden="true" />
           </div>
         </div>
       </MenuProvider>

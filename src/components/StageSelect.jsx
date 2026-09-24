@@ -2,27 +2,24 @@ import { useState } from 'react';
 import { useMenu } from '../context/MenuContext.js';
 import { useGame } from '../context/GameContext.js';
 import { useMenuInput } from '../utils/useMenuInput.js';
+import { PALETTE } from '../utils/palette.js';
+import { toPoints } from '../utils/cvs2Layout.js';
 import characters from '../data/characters.json';
 import maps from '../data/maps.json';
+import { Capsule, DiagonalBackdrop, Label, MenuOption, Shape } from './cvs2.jsx';
 
-const COLUMNS = 3;
 const DIFFICULTIES = [
   { id: 'easy', label: 'FACIL' },
   { id: 'normal', label: 'NORMAL' },
   { id: 'hard', label: 'DIFICIL' },
 ];
 
-function moveIndex(index, direction) {
-  const rows = Math.ceil(maps.length / COLUMNS);
-  const row = Math.floor(index / COLUMNS);
-  const column = index % COLUMNS;
+// Previa do cenario numa moldura inclinada, como as barras de vida.
+const PREVIEW = [[76, 138], [700, 138], [664, 488], [40, 488]];
+const CURSOR_COLORS = [PALETTE.cursorP1, PALETTE.cursorP2];
 
-  if (direction === 'left') return row * COLUMNS + (column - 1 + COLUMNS) % COLUMNS;
-  if (direction === 'right') return row * COLUMNS + (column + 1) % COLUMNS;
-
-  const nextRow = direction === 'up' ? (row - 1 + rows) % rows : (row + 1) % rows;
-  return Math.min(nextRow * COLUMNS + column, maps.length - 1);
-}
+// Lista de cenarios no campo azul, inclinando junto com a faixa.
+const optionPosition = (index) => [900 - index * 18, 150 + index * 66];
 
 export default function StageSelect() {
   const { go, back } = useMenu();
@@ -51,31 +48,26 @@ export default function StageSelect() {
     if (player === 1 && !twoPlayers) return;
 
     if (!twoPlayers && section === 'difficulty') {
-      if (direction === 'up') {
-        setSection('maps');
-        return;
-      }
+      if (direction === 'up') setSection('maps');
       if (direction === 'left') {
         setDifficultyIndex((current) => (current - 1 + DIFFICULTIES.length) % DIFFICULTIES.length);
       }
-      if (direction === 'right') {
-        setDifficultyIndex((current) => (current + 1) % DIFFICULTIES.length);
-      }
+      if (direction === 'right') setDifficultyIndex((current) => (current + 1) % DIFFICULTIES.length);
       return;
     }
 
-    if (votes[player]) return;
+    if (votes[player] || (direction !== 'up' && direction !== 'down')) return;
 
-    const lastRow = Math.floor((maps.length - 1) / COLUMNS);
-    const onLastRow = Math.floor(cursors[player] / COLUMNS) === lastRow;
-    if (!twoPlayers && direction === 'down' && onLastRow) {
+    // Contra a CPU, descer do ultimo cenario leva a escolha de dificuldade.
+    if (!twoPlayers && direction === 'down' && cursors[player] === maps.length - 1) {
       setSection('difficulty');
       return;
     }
 
     setCursors((current) => {
       const next = [...current];
-      next[player] = moveIndex(next[player], direction);
+      const step = direction === 'up' ? -1 : 1;
+      next[player] = (next[player] + step + maps.length) % maps.length;
       return next;
     });
   };
@@ -120,69 +112,83 @@ export default function StageSelect() {
   useMenuInput({ onMove, onConfirm, onCancel, twoPlayers });
 
   const activePlayers = twoPlayers ? [0, 1] : [0];
+  const previewed = maps[cursors[0]];
 
   return (
-    <div className="screen screen--select">
-      <h2 className="screen__title">{twoPlayers ? 'VOTEM O CENARIO' : 'ESCOLHA O CENARIO'}</h2>
+    <div className="cvs2-screen">
+      <svg className="cvs2-svg" viewBox="0 0 1280 720">
+        <DiagonalBackdrop lattice={false} topWord="" bottomWord="" />
 
-      <div className="stage-grid">
+        <Label x={48} y={112} size={72}>{twoPlayers ? 'VOTEM O CENARIO' : 'STAGE SELECT'}</Label>
+
+        <defs><clipPath id="stage-preview"><polygon points={toPoints(PREVIEW)} /></clipPath></defs>
+        <Shape points={PREVIEW} fill={PALETTE.ink} />
+        <image
+          href={`${previewed.dir}/${previewed.background}`}
+          x={40} y={138} width={660} height={350} preserveAspectRatio="xMidYMid slice"
+          clipPath="url(#stage-preview)"
+        />
+        <Capsule x={48} y={512} width={520} size={38}>{previewed.name.toUpperCase()}</Capsule>
+
         {maps.map((stage, index) => {
-          const owners = activePlayers.filter((player) => cursors[player] === index);
+          const [x, y] = optionPosition(index);
+          const here = activePlayers.filter((player) => cursors[player] === index);
           const votedBy = activePlayers.filter((player) => votes[player] === stage.id);
           return (
-            <button
-              type="button"
-              key={stage.id}
-              className={[
-                'stage',
-                section === 'maps' && owners.includes(0) ? 'is-cursor-p1' : '',
-                owners.includes(1) ? 'is-cursor-p2' : '',
-              ].join(' ')}
-              onMouseEnter={() => {
-                setSection('maps');
-                setCursors((current) => [index, current[1]]);
-              }}
-              onClick={() => onConfirm(0)}
-            >
-              <img src={`${stage.dir}/${stage.background}`} alt={stage.name} />
-              <span className="stage__name">{stage.name}</span>
-              {votedBy.length > 0 && (
-                <span className="stage__votes">
-                  {votedBy.map((player) => `P${player + 1}`).join(' + ')}
-                </span>
-              )}
-            </button>
+            <g key={stage.id}>
+              <MenuOption
+                x={x} y={y} width={340}
+                label={stage.name.toUpperCase()}
+                active={section === 'maps' && cursors[0] === index}
+                onPointerEnter={() => {
+                  setSection('maps');
+                  setCursors((current) => [index, current[1]]);
+                }}
+                onClick={() => onConfirm(0)}
+              />
+              {here.map((player, order) => (
+                <Label
+                  key={player} x={x - 12 - order * 50} y={y + 42} size={32} anchor="end"
+                  fill={CURSOR_COLORS[player]} stroke={6}
+                >
+                  {votedBy.includes(player) ? `${player + 1}P✓` : `${player + 1}P`}
+                </Label>
+              ))}
+            </g>
           );
         })}
-      </div>
 
-      {!twoPlayers && (
-        <div className={`difficulty ${section === 'difficulty' ? 'is-active' : ''}`}>
-          <span className="difficulty__label">DIFICULDADE DA CPU</span>
-          <div className="difficulty__options">
+        {!twoPlayers && (
+          <g>
+            <Label
+              x={1240} y={538} size={30} weight={800} anchor="end"
+              fill={section === 'difficulty' ? PALETTE.fieldYellow : PALETTE.textPrimary} stroke={6}
+            >
+              DIFICULDADE DA CPU
+            </Label>
             {DIFFICULTIES.map((entry, index) => (
-              <button
-                type="button"
+              <MenuOption
                 key={entry.id}
-                className={`difficulty__option ${index === difficultyIndex ? 'is-selected' : ''}`}
-                onMouseEnter={() => {
+                x={742 + index * 168} y={556} width={150}
+                label={entry.label}
+                active={index === difficultyIndex}
+                marker={false}
+                onPointerEnter={() => {
                   setSection('difficulty');
                   setDifficultyIndex(index);
                 }}
                 onClick={() => startMatch(maps[cursors[0]].id)}
-              >
-                {entry.label}
-              </button>
+              />
             ))}
-          </div>
-        </div>
-      )}
+          </g>
+        )}
 
-      <p className="screen__footer">
-        {twoPlayers
-          ? 'Cada jogador vota um cenario · votos diferentes sorteiam entre os dois'
-          : 'WASD navega · J confirma · K volta'}
-      </p>
+        <Label x={1240} y={700} size={22} weight={600} anchor="end" stroke={5}>
+          {twoPlayers
+            ? 'CADA JOGADOR VOTA · VOTOS DIFERENTES SORTEIAM ENTRE OS DOIS'
+            : 'W/S ESCOLHE · J CONFIRMA · K VOLTA'}
+        </Label>
+      </svg>
     </div>
   );
 }

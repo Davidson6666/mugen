@@ -1,0 +1,81 @@
+{
+  "hit": {
+    "spriteSheet": "fightfx_hit.png",
+    "spriteGridSize": {
+      "cols": 5,
+      "rows": 1,
+      "frameWidth": 90,
+      "frameHeight": 82,
+      "baseline": 42
+    },
+    "animation": {
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "durations": [
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "loop": false
+    }
+  },
+  "heavy": {
+    "spriteSheet": "fightfx_heavy.png",
+    "spriteGridSize": {
+      "cols": 4,
+      "rows": 1,
+      "frameWidth": 186,
+      "frameHeight": 116,
+      "baseline": 59
+    },
+    "animation": {
+      "frames": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "durations": [
+        3,
+        3,
+        3,
+        3
+      ],
+      "loop": false
+    }
+  },
+  "block": {
+    "spriteSheet": "fightfx_block.png",
+    "spriteGridSize": {
+      "cols": 5,
+      "rows": 1,
+      "frameWidth": 20,
+      "frameHeight": 45,
+      "baseline": 23
+    },
+    "animation": {
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "loop": false
+    }
+  }
+}

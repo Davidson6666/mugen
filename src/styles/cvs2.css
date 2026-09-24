@@ -1,0 +1,170 @@
+/* Telas de menu no padrao Capcom vs SNK 2. O desenho e SVG em coordenadas da
+   arena (1280x720), por cima vao os sprites dos personagens. */
+
+.cvs2-screen {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--color-ink);
+}
+
+/* Por cima da luta (pausa): deixa o jogo aparecer por baixo. */
+.cvs2-screen--overlay {
+  background: none;
+  z-index: 10;
+}
+
+.cvs2-svg {
+  position: absolute;
+  inset: 0;
+  width: 1280px;
+  height: 720px;
+}
+
+/* Sprite no tamanho nativo com os pes no ponto (left, top). */
+.cvs2-sprite {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+}
+
+.fighter-sprite {
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+}
+
+/* Lista de golpes (pausa): faixa amarela como o "PAUSA", abas com a cor de
+   cada jogador e teclas em capsulas. */
+.movelist {
+  position: absolute;
+  inset: 0;
+  z-index: 11;
+  display: flex;
+  flex-direction: column;
+  background: color-mix(in srgb, var(--color-ink) 94%, transparent);
+  font-family: 'Barlow Condensed', sans-serif;
+  color: var(--color-text-primary);
+}
+
+.movelist__band {
+  margin-top: 36px;
+  padding: 6px 0 2px;
+  background: var(--color-field-yellow);
+  border-block: 6px solid var(--color-ink);
+  color: var(--color-ink);
+  font-size: 64px;
+  font-style: italic;
+  font-weight: 900;
+  line-height: 1;
+  text-align: center;
+}
+
+.movelist__tabs {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 16px;
+}
+
+.movelist__tab {
+  padding: 4px 26px;
+  border: 3px solid var(--color-ink);
+  background: var(--color-cell-empty);
+  color: var(--color-text-secondary);
+  font-size: 26px;
+  font-style: italic;
+  font-weight: 800;
+  transform: skewX(-18deg);
+}
+
+.movelist__tab.is-active.movelist__tab--p1 { background: var(--color-cursor-p1); color: var(--color-text-primary); }
+.movelist__tab.is-active.movelist__tab--p2 { background: var(--color-cursor-p2); color: var(--color-text-primary); }
+
+.movelist__hint,
+.movelist__footer {
+  margin: 10px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 19px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.movelist__footer {
+  margin: 8px 0 18px;
+}
+
+.movelist__body {
+  flex: 1;
+  min-height: 0;
+  margin: 12px 70px 0;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+  column-gap: 48px;
+  scrollbar-width: none;
+}
+
+.movelist__section {
+  margin-bottom: 12px;
+}
+
+.movelist__section h3 {
+  margin: 0 0 6px;
+  padding-bottom: 2px;
+  border-bottom: 3px solid var(--color-field-yellow);
+  color: var(--color-field-yellow);
+  font-size: 26px;
+  font-style: italic;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.movelist__row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: 12px;
+  padding: 2px 0;
+}
+
+.movelist__name {
+  font-size: 22px;
+  font-style: italic;
+  font-weight: 800;
+}
+
+.movelist__keys {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.movelist__keys kbd {
+  min-width: 26px;
+  padding: 1px 7px;
+  border: 2px solid var(--color-text-secondary);
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 20px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.movelist__keys kbd.is-button {
+  border-color: var(--color-ink);
+  background: var(--color-field-yellow);
+  color: var(--color-ink);
+}
+
+.movelist__keys kbd.is-held {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.movelist__note {
+  grid-column: 1 / -1;
+  margin-top: -3px;
+  color: var(--color-text-secondary);
+  font-size: 16px;
+  font-weight: 600;
+}

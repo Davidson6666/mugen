@@ -22,7 +22,7 @@ const record = {
 // Combos ja interpretados, do mesmo jeito que o GameCanvas entrega para a IA.
 const parsedCombos = new ComboDetector(characterConfig.combos).combos;
 
-function makePair(leftX = 500, rightX = 620) {
+function makePair(leftX = 500, rightX = 540) {
   return [
     new Fighter({ record, map, x: leftX, facing: 1 }),
     new Fighter({ record, map, x: rightX, facing: -1 }),
@@ -71,7 +71,7 @@ test('a CPU persegue para o outro lado quando o oponente troca de lado', () => {
 });
 
 test('a CPU ataca quando o oponente esta no alcance', () => {
-  const [cpu, player] = makePair(500, 620);
+  const [cpu, player] = makePair(500, 540);
   const ai = new AIController(parsedCombos, 'normal', { random: fixedRandom(0) });
 
   const command = ai.update(cpu, player, 1);
@@ -81,7 +81,7 @@ test('a CPU ataca quando o oponente esta no alcance', () => {
 });
 
 test('a CPU usa ataque simples quando nao vai de combo', () => {
-  const [cpu, player] = makePair(500, 620);
+  const [cpu, player] = makePair(500, 540);
   // 0.4 passa na agressividade do normal (0.55) mas falha na chance de combo (0.3).
   const ai = new AIController(parsedCombos, 'normal', { random: fixedRandom(0.4) });
 
@@ -92,7 +92,7 @@ test('a CPU usa ataque simples quando nao vai de combo', () => {
 });
 
 test('a CPU defende quando o oponente esta atacando perto', () => {
-  const [cpu, player] = makePair(500, 620);
+  const [cpu, player] = makePair(500, 540);
   player.startAttack('punch');
   const ai = new AIController(parsedCombos, 'hard', { random: fixedRandom(0) });
 
@@ -104,7 +104,7 @@ test('a CPU defende quando o oponente esta atacando perto', () => {
 });
 
 test('a CPU recua quando esta com pouca vida', () => {
-  const [cpu, player] = makePair(500, 620);
+  const [cpu, player] = makePair(500, 540);
   cpu.health = characterConfig.stats.maxHealth * 0.1;
   // 0.26 falha no bloqueio do easy (0.25) mas passa no sorteio de recuo (0.5).
   const ai = new AIController(parsedCombos, 'easy', { random: fixedRandom(0.26) });
@@ -181,7 +181,8 @@ test('a sequencia emitida pela CPU e reconhecida pelo proprio ComboDetector', ()
 });
 
 test('a CPU encosta no jogador e consegue acertar um golpe', () => {
-  const [cpu, player] = makePair(300, 900);
+  // Uns dois corpos de distancia, como o comeco de um round.
+  const [cpu, player] = makePair(300, 500);
   const ai = new AIController(parsedCombos, 'hard');
   const detector = new ComboDetector(characterConfig.combos);
   const neutral = {

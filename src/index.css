@@ -8,9 +8,9 @@
 html,
 body {
   margin: 0;
-  background: #05040c;
+  background: var(--color-ink, #0a0a0c);
   color: var(--color-text-primary, #ffffff);
-  font-family: Silkscreen, 'Courier New', monospace;
+  font-family: 'Barlow Condensed', sans-serif;
 }
 
 #root {

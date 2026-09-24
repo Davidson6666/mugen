@@ -25,6 +25,19 @@ function sliceGrid(texture, grid) {
   return frames;
 }
 
+// Atlas recortado (personagens importados do MUGEN): cada quadro guarda so a
+// parte desenhada, [pagina, x, y, w, h, dx, dy], e o tamanho cheio da celula
+// fica em "orig". Para o Sprite nada muda: a ancora continua no pe.
+function sliceAtlas(pages, atlas, grid) {
+  const orig = new Rectangle(0, 0, grid.frameWidth, grid.frameHeight);
+  return atlas.map(([page, x, y, width, height, dx, dy]) => new Texture({
+    source: pages[page].source,
+    frame: new Rectangle(x, y, width, height),
+    orig,
+    trim: new Rectangle(dx, dy, width, height),
+  }));
+}
+
 // Config vem de arquivo externo: vale avisar cedo quando uma animacao aponta
 // para um frame que nao existe na grade declarada.
 function validateAnimations(config, frameCount) {
@@ -49,13 +62,26 @@ export class SpriteSheetManager {
     if (cached) return cached;
 
     const config = await fetchJson(`${entry.dir}/${entry.config}`);
-    const texture = await Assets.load(`${entry.dir}/${config.spriteSheet}`);
-    texture.source.scaleMode = 'nearest';
-
-    const frames = sliceGrid(texture, config.spriteGridSize);
+    let frames;
+    let effectFrames;
+    if (config.atlas) {
+      const pages = await Promise.all(config.sheets.map((file) => Assets.load(`${entry.dir}/${file}`)));
+      // A camera da luta amplia 1.5x: com "nearest" cada pixel sairia com 1 ou
+      // 2 px de largura e o contorno serrilharia. Suavizado fica liso.
+      for (const page of pages) page.source.scaleMode = 'linear';
+      frames = sliceAtlas(pages, config.atlas, config.spriteGridSize);
+      effectFrames = {};
+      for (const [id, effect] of Object.entries(config.effects ?? {})) {
+        effectFrames[id] = sliceAtlas(pages, effect.atlas, effect.spriteGridSize);
+        validateAnimations({ id: `${config.id}/${id}`, animations: { [id]: effect.animation } }, effectFrames[id].length);
+      }
+    } else {
+      const texture = await Assets.load(`${entry.dir}/${config.spriteSheet}`);
+      texture.source.scaleMode = 'linear';
+      frames = sliceGrid(texture, config.spriteGridSize);
+      effectFrames = await this.loadEffects(entry, config);
+    }
     validateAnimations(config, frames.length);
-
-    const effectFrames = await this.loadEffects(entry, config);
     const record = { config, frames, effectFrames };
     this.characters.set(entry.id, record);
     return record;
@@ -68,7 +94,7 @@ export class SpriteSheetManager {
     await Promise.all(
       Object.entries(config.effects ?? {}).map(async ([id, effect]) => {
         const texture = await Assets.load(`${entry.dir}/${effect.spriteSheet}`);
-        texture.source.scaleMode = 'nearest';
+        texture.source.scaleMode = 'linear';
         effectFrames[id] = sliceGrid(texture, effect.spriteGridSize);
         validateAnimations(
           { id: `${config.id}/${id}`, animations: { [id]: effect.animation } },
@@ -77,6 +103,24 @@ export class SpriteSheetManager {
       }),
     );
     return effectFrames;
+  }
+
+  // Faiscas de impacto compartilhadas pelo elenco (public/assets/fx), geradas
+  // por scripts/import-itachi.mjs a partir do pacote MUGEN.
+  async loadFightFx(dir = '/assets/fx') {
+    if (!this.fightFx) {
+      this.fightFx = (async () => {
+        const index = await fetchJson(`${dir}/fightfx.json`);
+        const sparks = {};
+        await Promise.all(Object.entries(index).map(async ([id, definition]) => {
+          const texture = await Assets.load(`${dir}/${definition.spriteSheet}`);
+          texture.source.scaleMode = 'linear';
+          sparks[id] = { definition, frames: sliceGrid(texture, definition.spriteGridSize) };
+        }));
+        return sparks;
+      })();
+    }
+    return this.fightFx;
   }
 
   async loadMap(entry) {

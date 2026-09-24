@@ -1,0 +1,3684 @@
+{
+  "id": "yoruichi",
+  "name": "Yoruichi",
+  "description": "A deusa do Shunpo",
+  "spriteGridSize": {
+    "frameWidth": 112,
+    "frameHeight": 112,
+    "baseline": 96
+  },
+  "stats": {
+    "maxHealth": 100,
+    "walkSpeed": 2.5,
+    "jumpForce": 8.5,
+    "jumpGravity": 0.55
+  },
+  "animations": {
+    "idle": {
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "durations": [
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7
+      ],
+      "loop": true
+    },
+    "walkForward": {
+      "frames": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "loop": true
+    },
+    "walkBackward": {
+      "frames": [
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "loop": true
+    },
+    "jump": {
+      "frames": [
+        24,
+        25
+      ],
+      "durations": [
+        3,
+        600
+      ],
+      "loop": false
+    },
+    "crouch": {
+      "frames": [
+        26
+      ],
+      "durations": [
+        600
+      ],
+      "loop": true
+    },
+    "blockStanding": {
+      "frames": [
+        27
+      ],
+      "durations": [
+        600
+      ],
+      "loop": true
+    },
+    "blockCrouching": {
+      "frames": [
+        28
+      ],
+      "durations": [
+        600
+      ],
+      "loop": true
+    },
+    "hitReaction": {
+      "frames": [
+        29
+      ],
+      "durations": [
+        8
+      ],
+      "loop": false
+    },
+    "ko": {
+      "frames": [
+        30,
+        31,
+        32,
+        33,
+        34
+      ],
+      "durations": [
+        5,
+        15,
+        20,
+        4,
+        600
+      ],
+      "loop": false
+    },
+    "victoryPose": {
+      "frames": [
+        35
+      ],
+      "durations": [
+        600
+      ],
+      "loop": false
+    },
+    "defeatPose": {
+      "frames": [
+        24,
+        36
+      ],
+      "durations": [
+        4,
+        600
+      ],
+      "loop": false
+    },
+    "dashForward": {
+      "frames": [
+        0,
+        37,
+        0,
+        37,
+        38
+      ],
+      "durations": [
+        1,
+        1,
+        1,
+        1,
+        16
+      ],
+      "loop": false,
+      "dash": {
+        "speed": 11.18,
+        "moveFrom": 3,
+        "moveUntil": 4,
+        "invulnerableFrom": 1,
+        "invulnerableUntil": 4,
+        "cancel": true
+      },
+      "effect": {
+        "id": "flashStep",
+        "spawnFrame": 0,
+        "offsetX": 0,
+        "offsetY": 20
+      }
+    },
+    "dashBackward": {
+      "frames": [
+        0,
+        37,
+        0,
+        37,
+        39
+      ],
+      "durations": [
+        1,
+        1,
+        1,
+        1,
+        14
+      ],
+      "loop": false,
+      "dash": {
+        "speed": 10,
+        "moveFrom": 3,
+        "moveUntil": 4,
+        "invulnerableFrom": 1,
+        "invulnerableUntil": 4,
+        "cancel": true
+      },
+      "effect": {
+        "id": "flashStep",
+        "spawnFrame": 0,
+        "offsetX": 0,
+        "offsetY": 20
+      }
+    },
+    "airDashForward": {
+      "frames": [
+        25,
+        38
+      ],
+      "durations": [
+        5,
+        15
+      ],
+      "loop": false,
+      "dash": {
+        "speed": 6,
+        "moveFrom": 1,
+        "moveUntil": 1,
+        "invulnerableFrom": 9,
+        "invulnerableUntil": 0
+      }
+    },
+    "airDashBackward": {
+      "frames": [
+        25,
+        38
+      ],
+      "durations": [
+        5,
+        12
+      ],
+      "loop": false,
+      "dash": {
+        "speed": 5.83,
+        "moveFrom": 1,
+        "moveUntil": 1,
+        "invulnerableFrom": 9,
+        "invulnerableUntil": 0
+      }
+    },
+    "punch": {
+      "frames": [
+        40,
+        41,
+        40
+      ],
+      "durations": [
+        4,
+        6,
+        4
+      ],
+      "loop": false,
+      "damage": 15,
+      "hitstun": 12,
+      "hits": [
+        {
+          "from": 1,
+          "until": 1,
+          "box": {
+            "width": 31,
+            "height": 25,
+            "offsetX": 70,
+            "offsetY": 17
+          },
+          "damage": 3,
+          "hitstun": 18,
+          "push": 5
+        }
+      ],
+      "cancels": [
+        {
+          "on": "punch",
+          "to": "punch",
+          "after": 6,
+          "down": false
+        },
+        {
+          "on": "kick",
+          "to": "kick",
+          "after": 5,
+          "down": false
+        },
+        {
+          "on": "special",
+          "to": "strong",
+          "after": 5,
+          "down": false
+        },
+        {
+          "on": "punch",
+          "to": "crouchLight",
+          "down": true
+        },
+        {
+          "on": "kick",
+          "to": "crouchMedium",
+          "down": true
+        }
+      ],
+      "specialCancel": true
+    },
+    "kick": {
+      "frames": [
+        42,
+        43,
+        42
+      ],
+      "durations": [
+        7,
+        10,
+        6
+      ],
+      "loop": false,
+      "damage": 18,
+      "hitstun": 14,
+      "hits": [
+        {
+          "from": 1,
+          "until": 1,
+          "box": {
+            "width": 28,
+            "height": 8,
+            "offsetX": 84,
+            "offsetY": 28
+          },
+          "damage": 4,
+          "hitstun": 20,
+          "push": 5
+        }
+      ],
+      "events": [
+        {
+          "at": 7,
+          "vx": 3
+        },
+        {
+          "at": 17,
+          "vx": 0
+        }
+      ],
+      "cancels": [
+        {
+          "on": "special",
+          "to": "strong",
+          "after": 3
+        }
+      ],
+      "specialCancel": true
+    },
+    "strong": {
+      "frames": [
+        44,
+        45,
+        46,
+        45,
+        44
+      ],
+      "durations": [
+        3,
+        3,
+        10,
+        4,
+        6
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 2,
+          "until": 2,
+          "box": {
+            "width": 52,
+            "height": 28,
+            "offsetX": 58,
+            "offsetY": 20
+          },
+          "damage": 4,
+          "hitstun": 30,
+          "push": 8,
+          "heavy": true
+        }
+      ],
+      "cancels": [
+        {
+          "on": "punch",
+          "to": "crouchLight",
+          "down": true
+        },
+        {
+          "on": "kick",
+          "to": "crouchMedium",
+          "down": true
+        }
+      ],
+      "specialCancel": true
+    },
+    "crouchLight": {
+      "frames": [
+        26,
+        47,
+        26
+      ],
+      "durations": [
+        4,
+        6,
+        4
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 1,
+          "until": 1,
+          "box": {
+            "width": 29,
+            "height": 12,
+            "offsetX": 76,
+            "offsetY": 84
+          },
+          "damage": 3,
+          "hitstun": 18,
+          "push": 3
+        }
+      ],
+      "cancels": [
+        {
+          "on": "kick",
+          "to": "crouchMedium",
+          "after": 6,
+          "down": true
+        },
+        {
+          "on": "special",
+          "to": "crouchStrong",
+          "after": 6,
+          "down": true
+        },
+        {
+          "on": "kick",
+          "to": "kick",
+          "down": false
+        }
+      ],
+      "specialCancel": true
+    },
+    "crouchMedium": {
+      "frames": [
+        48,
+        49,
+        50,
+        49,
+        48
+      ],
+      "durations": [
+        3,
+        5,
+        7,
+        4,
+        2
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 2,
+          "until": 2,
+          "box": {
+            "width": 32,
+            "height": 26,
+            "offsetX": 74,
+            "offsetY": 58
+          },
+          "damage": 3,
+          "hitstun": 20,
+          "push": 3
+        }
+      ],
+      "cancels": [
+        {
+          "on": "special",
+          "to": "crouchStrong",
+          "after": 13,
+          "down": true
+        }
+      ],
+      "specialCancel": true
+    },
+    "crouchStrong": {
+      "frames": [
+        26,
+        51,
+        52,
+        53
+      ],
+      "durations": [
+        2,
+        2,
+        5,
+        10
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 3,
+          "until": 3,
+          "box": {
+            "width": 54,
+            "height": 17,
+            "offsetX": 56,
+            "offsetY": 83
+          },
+          "damage": 4,
+          "hitstun": 26,
+          "push": 6,
+          "heavy": true
+        }
+      ],
+      "events": [
+        {
+          "at": 4,
+          "vx": 8
+        }
+      ],
+      "specialCancel": true
+    },
+    "airLight": {
+      "frames": [
+        54,
+        55,
+        56
+      ],
+      "durations": [
+        4,
+        7,
+        5
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 1,
+          "until": 1,
+          "box": {
+            "width": 40,
+            "height": 60,
+            "offsetX": 45,
+            "offsetY": 33
+          },
+          "damage": 3,
+          "hitstun": 18,
+          "push": 6
+        }
+      ],
+      "air": true,
+      "specialCancel": true
+    },
+    "airMedium": {
+      "frames": [
+        57,
+        58,
+        56
+      ],
+      "durations": [
+        5,
+        9,
+        5
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 1,
+          "until": 1,
+          "box": {
+            "width": 55,
+            "height": 35,
+            "offsetX": 57,
+            "offsetY": 38
+          },
+          "damage": 4,
+          "hitstun": 20,
+          "push": 7
+        }
+      ],
+      "air": true,
+      "specialCancel": true
+    },
+    "airStrong": {
+      "frames": [
+        59,
+        60,
+        61,
+        56
+      ],
+      "durations": [
+        4,
+        3,
+        4,
+        5
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 2,
+          "until": 2,
+          "box": {
+            "width": 62,
+            "height": 38,
+            "offsetX": 50,
+            "offsetY": 56
+          },
+          "damage": 5,
+          "hitstun": 24,
+          "push": 10,
+          "heavy": true
+        }
+      ],
+      "air": true,
+      "specialCancel": true
+    },
+    "ankenLight": {
+      "frames": [
+        27,
+        62
+      ],
+      "durations": [
+        10,
+        60
+      ],
+      "loop": false,
+      "events": [
+        {
+          "at": 10,
+          "effect": {
+            "id": "kunai",
+            "motion": [
+              {
+                "at": 0,
+                "vx": -2,
+                "vy": -2
+              },
+              {
+                "at": 20,
+                "vx": 0,
+                "vy": 0
+              },
+              {
+                "at": 80,
+                "aim": 12
+              }
+            ],
+            "hitDelay": 80,
+            "lifetime": 130,
+            "offsetX": 0,
+            "offsetY": 60
+          }
+        },
+        {
+          "at": 10,
+          "effect": {
+            "id": "kunai",
+            "motion": [
+              {
+                "at": 0,
+                "vx": 0,
+                "vy": -2
+              },
+              {
+                "at": 30,
+                "vx": 0,
+                "vy": 0
+              },
+              {
+                "at": 70,
+                "aim": 12
+              }
+            ],
+            "hitDelay": 70,
+            "lifetime": 120,
+            "offsetX": 0,
+            "offsetY": 60
+          }
+        },
+        {
+          "at": 10,
+          "effect": {
+            "id": "kunai",
+            "motion": [
+              {
+                "at": 0,
+                "vx": 2,
+                "vy": -2
+              },
+              {
+                "at": 20,
+                "vx": 0,
+                "vy": 0
+              },
+              {
+                "at": 60,
+                "aim": 12
+              }
+            ],
+            "hitDelay": 60,
+            "lifetime": 110,
+            "offsetX": 0,
+            "offsetY": 60
+          }
+        }
+      ],
+      "cooldown": 90
+    },
+    "ankenMedium": {
+      "frames": [
+        27,
+        62
+      ],
+      "durations": [
+        60,
+        10
+      ],
+      "loop": false,
+      "events": [
+        {
+          "at": 10,
+          "effect": {
+            "id": "kunai",
+            "motion": [
+              {
+                "at": 0,
+                "vx": -2,
+                "vy": 0
+              },
+              {
+                "at": 30,
+                "vx": 0,
+                "vy": 0
+              },
+              {
+                "at": 100,
+                "aim": 12
+              }
+            ],
+            "hitDelay": 100,
+            "lifetime": 150,
+            "offsetX": 0,
+            "offsetY": 60
+          }
+        },
+        {
+          "at": 10,
+          "effect": {
+            "id": "kunai",
+            "motion": [
+              {
+                "at": 0,
+                "vx": -2,
+                "vy": -2
+              },
+              {
+                "at": 20,
+                "vx": 0,
+                "vy": 0
+              },
+              {
+                "at": 90,
+                "aim": 12
+              }
+            ],
+            "hitDelay": 90,
+            "lifetime": 140,
+            "offsetX": 0,
+            "offsetY": 60
+          }
+        },
+        {
+          "at": 10,
+          "effect": {
+            "id": "kunai",
+            "motion": [
+              {
+                "at": 0,
+                "vx": 0,
+                "vy": -2
+              },
+              {
+                "at": 30,
+                "vx": 0,
+                "vy": 0
+              },
+              {
+                "at": 80,
+                "aim": 12
+              }
+            ],
+            "hitDelay": 80,
+            "lifetime": 130,
+            "offsetX": 0,
+            "offsetY": 60
+          }
+        },
+        {
+          "at": 10,
+          "effect": {
+            "id": "kunai",
+            "motion": [
+              {
+                "at": 0,
+                "vx": 2,
+                "vy": -2
+              },
+              {
+                "at": 20,
+                "vx": 0,
+                "vy": 0
+              },
+              {
+                "at": 70,
+                "aim": 12
+              }
+            ],
+            "hitDelay": 70,
+            "lifetime": 120,
+            "offsetX": 0,
+            "offsetY": 60
+          }
+        },
+        {
+          "at": 10,
+          "effect": {
+            "id": "kunai",
+            "motion": [
+              {
+                "at": 0,
+                "vx": 2,
+                "vy": 0
+              },
+              {
+                "at": 30,
+                "vx": 0,
+                "vy": 0
+              },
+              {
+                "at": 60,
+                "aim": 12
+              }
+            ],
+            "hitDelay": 60,
+            "lifetime": 110,
+            "offsetX": 0,
+            "offsetY": 60
+          }
+        }
+      ],
+      "cooldown": 110
+    },
+    "ankenStrong": {
+      "frames": [
+        27,
+        62
+      ],
+      "durations": [
+        10,
+        10
+      ],
+      "loop": false,
+      "events": [
+        {
+          "at": 10,
+          "effect": {
+            "id": "kunai",
+            "motion": [
+              {
+                "at": 0,
+                "vx": -2,
+                "vy": 2
+              },
+              {
+                "at": 20,
+                "vx": 0,
+                "vy": 0
+              },
+              {
+                "at": 120,
+                "aim": 12
+              }
+            ],
+            "hitDelay": 120,
+            "lifetime": 170,
+            "offsetX": 0,
+            "offsetY": 60
+          }
+        },
+        {
+          "at": 10,
+          "effect": {
+            "id": "kunai",
+            "motion": [
+              {
+                "at": 0,
+                "vx": -2,
+                "vy": 0
+              },
+              {
+                "at": 30,
+                "vx": 0,
+                "vy": 0
+              },
+              {
+                "at": 110,
+                "aim": 12
+              }
+            ],
+            "hitDelay": 110,
+            "lifetime": 160,
+            "offsetX": 0,
+            "offsetY": 60
+          }
+        },
+        {
+          "at": 10,
+          "effect": {
+            "id": "kunai",
+            "motion": [
+              {
+                "at": 0,
+                "vx": -2,
+                "vy": -2
+              },
+              {
+                "at": 20,
+                "vx": 0,
+                "vy": 0
+              },
+              {
+                "at": 100,
+                "aim": 12
+              }
+            ],
+            "hitDelay": 100,
+            "lifetime": 150,
+            "offsetX": 0,
+            "offsetY": 60
+          }
+        },
+        {
+          "at": 10,
+          "effect": {
+            "id": "kunai",
+            "motion": [
+              {
+                "at": 0,
+                "vx": 0,
+                "vy": -2
+              },
+              {
+                "at": 30,
+                "vx": 0,
+                "vy": 0
+              },
+              {
+                "at": 90,
+                "aim": 12
+              }
+            ],
+            "hitDelay": 90,
+            "lifetime": 140,
+            "offsetX": 0,
+            "offsetY": 60
+          }
+        },
+        {
+          "at": 10,
+          "effect": {
+            "id": "kunai",
+            "motion": [
+              {
+                "at": 0,
+                "vx": 2,
+                "vy": -2
+              },
+              {
+                "at": 20,
+                "vx": 0,
+                "vy": 0
+              },
+              {
+                "at": 80,
+                "aim": 12
+              }
+            ],
+            "hitDelay": 80,
+            "lifetime": 130,
+            "offsetX": 0,
+            "offsetY": 60
+          }
+        },
+        {
+          "at": 10,
+          "effect": {
+            "id": "kunai",
+            "motion": [
+              {
+                "at": 0,
+                "vx": 2,
+                "vy": 0
+              },
+              {
+                "at": 30,
+                "vx": 0,
+                "vy": 0
+              },
+              {
+                "at": 70,
+                "aim": 12
+              }
+            ],
+            "hitDelay": 70,
+            "lifetime": 120,
+            "offsetX": 0,
+            "offsetY": 60
+          }
+        },
+        {
+          "at": 10,
+          "effect": {
+            "id": "kunai",
+            "motion": [
+              {
+                "at": 0,
+                "vx": 2,
+                "vy": 2
+              },
+              {
+                "at": 20,
+                "vx": 0,
+                "vy": 0
+              },
+              {
+                "at": 60,
+                "aim": 12
+              }
+            ],
+            "hitDelay": 60,
+            "lifetime": 110,
+            "offsetX": 0,
+            "offsetY": 60
+          }
+        }
+      ],
+      "cooldown": 130
+    },
+    "kokuLight": {
+      "frames": [
+        24,
+        38
+      ],
+      "durations": [
+        8,
+        15
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 1,
+          "until": 1,
+          "box": {
+            "width": 36,
+            "height": 57,
+            "offsetX": 44,
+            "offsetY": 41
+          },
+          "damage": 3,
+          "hitstun": 30,
+          "push": 0
+        }
+      ],
+      "events": [
+        {
+          "at": 8,
+          "vx": 11.5
+        }
+      ],
+      "onHit": {
+        "to": "kokuFlurry"
+      },
+      "next": "kokuSlideLight",
+      "cooldown": 90,
+      "friction": false
+    },
+    "kokuMedium": {
+      "frames": [
+        24,
+        38
+      ],
+      "durations": [
+        16,
+        26
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 1,
+          "until": 1,
+          "box": {
+            "width": 36,
+            "height": 57,
+            "offsetX": 44,
+            "offsetY": 41
+          },
+          "damage": 3,
+          "hitstun": 30,
+          "push": 0
+        }
+      ],
+      "events": [
+        {
+          "at": 16,
+          "vx": 11.5
+        }
+      ],
+      "onHit": {
+        "to": "kokuFlurry"
+      },
+      "next": "kokuSlideMedium",
+      "cooldown": 100,
+      "friction": false
+    },
+    "kokuStrong": {
+      "frames": [
+        24,
+        38
+      ],
+      "durations": [
+        4,
+        36
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 1,
+          "until": 1,
+          "box": {
+            "width": 36,
+            "height": 57,
+            "offsetX": 44,
+            "offsetY": 41
+          },
+          "damage": 3,
+          "hitstun": 30,
+          "push": 0
+        }
+      ],
+      "events": [
+        {
+          "at": 4,
+          "vx": 11.5
+        }
+      ],
+      "onHit": {
+        "to": "kokuFlurry"
+      },
+      "next": "kokuSlideStrong",
+      "cooldown": 110,
+      "friction": false
+    },
+    "kokuFlurry": {
+      "frames": [
+        40,
+        41,
+        26,
+        51,
+        52,
+        53,
+        63,
+        64,
+        65,
+        66,
+        65
+      ],
+      "durations": [
+        4,
+        3,
+        4,
+        3,
+        3,
+        5,
+        5,
+        3,
+        2,
+        7,
+        2
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 1,
+          "until": 1,
+          "box": {
+            "width": 35,
+            "height": 12,
+            "offsetX": 66,
+            "offsetY": 23
+          },
+          "damage": 2,
+          "hitstun": 26,
+          "push": 1
+        },
+        {
+          "from": 5,
+          "until": 5,
+          "box": {
+            "width": 55,
+            "height": 15,
+            "offsetX": 53,
+            "offsetY": 83
+          },
+          "damage": 2,
+          "hitstun": 26,
+          "push": 1
+        },
+        {
+          "from": 9,
+          "until": 9,
+          "box": {
+            "width": 35,
+            "height": 52,
+            "offsetX": 61,
+            "offsetY": -1
+          },
+          "damage": 3,
+          "hitstun": 30,
+          "push": 10,
+          "heavy": true
+        }
+      ],
+      "events": [
+        {
+          "at": 0,
+          "vx": 2.5
+        },
+        {
+          "at": 0,
+          "effect": {
+            "id": "kokuClone",
+            "offsetX": -20,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 32,
+          "vx": 0
+        }
+      ],
+      "friction": false
+    },
+    "kokuSlideLight": {
+      "frames": [
+        26
+      ],
+      "durations": [
+        20
+      ],
+      "loop": false,
+      "events": [
+        {
+          "at": 0,
+          "vx": 5
+        }
+      ]
+    },
+    "kokuSlideMedium": {
+      "frames": [
+        26
+      ],
+      "durations": [
+        10
+      ],
+      "loop": false,
+      "events": [
+        {
+          "at": 0,
+          "vx": 5
+        }
+      ]
+    },
+    "kokuSlideStrong": {
+      "frames": [
+        26
+      ],
+      "durations": [
+        5
+      ],
+      "loop": false,
+      "events": [
+        {
+          "at": 0,
+          "vx": 5
+        }
+      ]
+    },
+    "orukaLight": {
+      "frames": [
+        63,
+        64,
+        65,
+        67,
+        65,
+        64,
+        68
+      ],
+      "durations": [
+        4,
+        3,
+        2,
+        3,
+        2,
+        40,
+        20
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 3,
+          "until": 3,
+          "box": {
+            "width": 40,
+            "height": 57,
+            "offsetX": 50,
+            "offsetY": 19
+          },
+          "damage": 3,
+          "hitstun": 26,
+          "push": 6,
+          "heavy": true
+        }
+      ],
+      "events": [
+        {
+          "at": 4,
+          "vx": 1.25,
+          "vy": -6
+        }
+      ],
+      "air": true,
+      "cooldown": 80
+    },
+    "orukaMedium": {
+      "frames": [
+        63,
+        64,
+        65,
+        67,
+        65,
+        59,
+        60,
+        53,
+        59,
+        57,
+        58,
+        65,
+        64,
+        68
+      ],
+      "durations": [
+        20,
+        3,
+        2,
+        3,
+        2,
+        4,
+        2,
+        3,
+        2,
+        3,
+        3,
+        2,
+        20,
+        20
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 3,
+          "until": 3,
+          "box": {
+            "width": 40,
+            "height": 57,
+            "offsetX": 50,
+            "offsetY": 19
+          },
+          "damage": 2,
+          "hitstun": 22,
+          "push": 1
+        },
+        {
+          "from": 7,
+          "until": 7,
+          "box": {
+            "width": 58,
+            "height": 14,
+            "offsetX": 48,
+            "offsetY": 84
+          },
+          "damage": 2,
+          "hitstun": 22,
+          "push": 1
+        },
+        {
+          "from": 10,
+          "until": 10,
+          "box": {
+            "width": 55,
+            "height": 35,
+            "offsetX": 57,
+            "offsetY": 38
+          },
+          "damage": 3,
+          "hitstun": 28,
+          "push": 7,
+          "heavy": true
+        }
+      ],
+      "events": [
+        {
+          "at": 20,
+          "vx": 1,
+          "vy": -7
+        }
+      ],
+      "air": true,
+      "cooldown": 90
+    },
+    "orukaStrong": {
+      "frames": [
+        63,
+        64,
+        65,
+        67,
+        65,
+        59,
+        60,
+        53,
+        59,
+        57,
+        58,
+        59,
+        60,
+        53,
+        59,
+        57,
+        58,
+        59,
+        60,
+        53,
+        59,
+        57,
+        58,
+        65,
+        64,
+        68
+      ],
+      "durations": [
+        4,
+        3,
+        2,
+        3,
+        2,
+        4,
+        2,
+        3,
+        4,
+        3,
+        3,
+        4,
+        2,
+        3,
+        4,
+        3,
+        3,
+        4,
+        2,
+        3,
+        4,
+        3,
+        3,
+        2,
+        10,
+        20
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 3,
+          "until": 3,
+          "box": {
+            "width": 40,
+            "height": 57,
+            "offsetX": 50,
+            "offsetY": 19
+          },
+          "damage": 1,
+          "hitstun": 22,
+          "push": 1
+        },
+        {
+          "from": 7,
+          "until": 7,
+          "box": {
+            "width": 58,
+            "height": 15,
+            "offsetX": 48,
+            "offsetY": 83
+          },
+          "damage": 1,
+          "hitstun": 22,
+          "push": 1
+        },
+        {
+          "from": 10,
+          "until": 10,
+          "box": {
+            "width": 55,
+            "height": 35,
+            "offsetX": 57,
+            "offsetY": 38
+          },
+          "damage": 1,
+          "hitstun": 22,
+          "push": 1
+        },
+        {
+          "from": 13,
+          "until": 13,
+          "box": {
+            "width": 58,
+            "height": 15,
+            "offsetX": 48,
+            "offsetY": 83
+          },
+          "damage": 1,
+          "hitstun": 22,
+          "push": 1
+        },
+        {
+          "from": 16,
+          "until": 16,
+          "box": {
+            "width": 55,
+            "height": 35,
+            "offsetX": 57,
+            "offsetY": 38
+          },
+          "damage": 1,
+          "hitstun": 22,
+          "push": 1
+        },
+        {
+          "from": 19,
+          "until": 19,
+          "box": {
+            "width": 57,
+            "height": 15,
+            "offsetX": 49,
+            "offsetY": 83
+          },
+          "damage": 1,
+          "hitstun": 22,
+          "push": 1
+        },
+        {
+          "from": 22,
+          "until": 22,
+          "box": {
+            "width": 55,
+            "height": 35,
+            "offsetX": 57,
+            "offsetY": 38
+          },
+          "damage": 1,
+          "hitstun": 22,
+          "push": 1
+        }
+      ],
+      "events": [
+        {
+          "at": 4,
+          "vx": 0.8,
+          "vy": -2.8
+        },
+        {
+          "at": 33,
+          "vy": 0
+        },
+        {
+          "at": 71,
+          "vy": 4
+        }
+      ],
+      "air": true,
+      "float": true,
+      "cooldown": 100
+    },
+    "owarija": {
+      "frames": [
+        40,
+        44,
+        69,
+        44
+      ],
+      "durations": [
+        5,
+        3,
+        12,
+        2
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 1,
+          "until": 1,
+          "box": {
+            "width": 24,
+            "height": 72,
+            "offsetX": 60,
+            "offsetY": 26
+          },
+          "damage": 1,
+          "hitstun": 60,
+          "push": 0,
+          "unblockable": true
+        }
+      ],
+      "onHit": {
+        "to": "owarijaThrow"
+      },
+      "cooldown": 90
+    },
+    "owarijaThrow": {
+      "frames": [
+        70,
+        71,
+        72,
+        54,
+        50,
+        73
+      ],
+      "durations": [
+        4,
+        4,
+        2,
+        4,
+        14,
+        3
+      ],
+      "loop": false,
+      "events": [
+        {
+          "at": 0,
+          "pinOpponent": {
+            "dx": 45,
+            "lift": 0,
+            "ticks": 18,
+            "relative": "self"
+          }
+        },
+        {
+          "at": 18,
+          "effect": {
+            "id": "throwImpact",
+            "offsetX": 45,
+            "offsetY": 40
+          }
+        }
+      ],
+      "invulnerable": [
+        0,
+        31
+      ]
+    },
+    "bakamonoga": {
+      "frames": [
+        24,
+        38
+      ],
+      "durations": [
+        1,
+        45
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 1,
+          "until": 1,
+          "box": {
+            "width": 36,
+            "height": 57,
+            "offsetX": 44,
+            "offsetY": 41
+          },
+          "damage": 3,
+          "hitstun": 40,
+          "push": 0
+        }
+      ],
+      "events": [
+        {
+          "at": 1,
+          "vx": 11.5
+        }
+      ],
+      "onHit": {
+        "to": "bakaFlurry"
+      },
+      "next": "kokuSlideLight",
+      "cooldown": 600,
+      "friction": false
+    },
+    "bakaFlurry": {
+      "frames": [
+        40,
+        41,
+        26,
+        51,
+        52,
+        53,
+        42,
+        43,
+        26,
+        47,
+        44,
+        45,
+        46,
+        48,
+        49,
+        50,
+        48,
+        49,
+        50,
+        40,
+        41,
+        44,
+        45,
+        46,
+        26,
+        47,
+        42,
+        43,
+        26,
+        51,
+        52,
+        53,
+        63,
+        64,
+        65,
+        66,
+        0,
+        1,
+        2
+      ],
+      "durations": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        7,
+        7,
+        7
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 1,
+          "until": 1,
+          "box": {
+            "width": 35,
+            "height": 12,
+            "offsetX": 66,
+            "offsetY": 23
+          },
+          "damage": 1,
+          "hitstun": 24,
+          "push": 1
+        },
+        {
+          "from": 5,
+          "until": 5,
+          "box": {
+            "width": 55,
+            "height": 15,
+            "offsetX": 53,
+            "offsetY": 83
+          },
+          "damage": 1,
+          "hitstun": 24,
+          "push": 1
+        },
+        {
+          "from": 7,
+          "until": 7,
+          "box": {
+            "width": 28,
+            "height": 8,
+            "offsetX": 84,
+            "offsetY": 28
+          },
+          "damage": 1,
+          "hitstun": 24,
+          "push": 1
+        },
+        {
+          "from": 9,
+          "until": 9,
+          "box": {
+            "width": 29,
+            "height": 12,
+            "offsetX": 76,
+            "offsetY": 84
+          },
+          "damage": 1,
+          "hitstun": 24,
+          "push": 1
+        },
+        {
+          "from": 12,
+          "until": 12,
+          "box": {
+            "width": 52,
+            "height": 28,
+            "offsetX": 58,
+            "offsetY": 20
+          },
+          "damage": 1,
+          "hitstun": 24,
+          "push": 1
+        },
+        {
+          "from": 15,
+          "until": 15,
+          "box": {
+            "width": 32,
+            "height": 26,
+            "offsetX": 74,
+            "offsetY": 58
+          },
+          "damage": 1,
+          "hitstun": 24,
+          "push": 1
+        },
+        {
+          "from": 18,
+          "until": 18,
+          "box": {
+            "width": 32,
+            "height": 26,
+            "offsetX": 74,
+            "offsetY": 58
+          },
+          "damage": 1,
+          "hitstun": 24,
+          "push": 1
+        },
+        {
+          "from": 20,
+          "until": 20,
+          "box": {
+            "width": 31,
+            "height": 25,
+            "offsetX": 70,
+            "offsetY": 17
+          },
+          "damage": 1,
+          "hitstun": 24,
+          "push": 1
+        },
+        {
+          "from": 23,
+          "until": 23,
+          "box": {
+            "width": 52,
+            "height": 28,
+            "offsetX": 58,
+            "offsetY": 20
+          },
+          "damage": 1,
+          "hitstun": 24,
+          "push": 1
+        },
+        {
+          "from": 25,
+          "until": 25,
+          "box": {
+            "width": 29,
+            "height": 12,
+            "offsetX": 76,
+            "offsetY": 84
+          },
+          "damage": 1,
+          "hitstun": 24,
+          "push": 1
+        },
+        {
+          "from": 27,
+          "until": 27,
+          "box": {
+            "width": 28,
+            "height": 8,
+            "offsetX": 84,
+            "offsetY": 28
+          },
+          "damage": 1,
+          "hitstun": 24,
+          "push": 1
+        },
+        {
+          "from": 31,
+          "until": 31,
+          "box": {
+            "width": 54,
+            "height": 17,
+            "offsetX": 56,
+            "offsetY": 83
+          },
+          "damage": 1,
+          "hitstun": 24,
+          "push": 1
+        },
+        {
+          "from": 35,
+          "until": 35,
+          "box": {
+            "width": 35,
+            "height": 52,
+            "offsetX": 61,
+            "offsetY": -1
+          },
+          "damage": 1,
+          "hitstun": 24,
+          "push": 1
+        }
+      ],
+      "events": [
+        {
+          "at": 0,
+          "vx": 2.5
+        },
+        {
+          "at": 0,
+          "effect": {
+            "id": "bakaClone",
+            "offsetX": -20,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 105,
+          "vx": 0
+        }
+      ],
+      "invulnerable": [
+        0,
+        129
+      ],
+      "friction": false
+    }
+  },
+  "combos": [
+    {
+      "id": "baka-p",
+      "input": "↓→↓→P",
+      "animation": "bakamonoga"
+    },
+    {
+      "id": "baka-k",
+      "input": "↓→↓→K",
+      "animation": "bakamonoga"
+    },
+    {
+      "id": "baka-s",
+      "input": "↓→↓→S",
+      "animation": "bakamonoga"
+    },
+    {
+      "id": "koku-p",
+      "input": "←↓→P",
+      "animation": "kokuLight"
+    },
+    {
+      "id": "koku-k",
+      "input": "←↓→K",
+      "animation": "kokuMedium"
+    },
+    {
+      "id": "koku-s",
+      "input": "←↓→S",
+      "animation": "kokuStrong"
+    },
+    {
+      "id": "owarija-p",
+      "input": "→↓→P",
+      "animation": "owarija"
+    },
+    {
+      "id": "owarija-k",
+      "input": "→↓→K",
+      "animation": "owarija"
+    },
+    {
+      "id": "owarija-s",
+      "input": "→↓→S",
+      "animation": "owarija"
+    },
+    {
+      "id": "anken-p",
+      "input": "↓→P",
+      "animation": "ankenLight"
+    },
+    {
+      "id": "anken-k",
+      "input": "↓→K",
+      "animation": "ankenMedium"
+    },
+    {
+      "id": "anken-s",
+      "input": "↓→S",
+      "animation": "ankenStrong"
+    },
+    {
+      "id": "oruka-p",
+      "input": "↓↑P",
+      "animation": "orukaLight"
+    },
+    {
+      "id": "oruka-k",
+      "input": "↓↑K",
+      "animation": "orukaMedium"
+    },
+    {
+      "id": "oruka-s",
+      "input": "↓↑S",
+      "animation": "orukaStrong"
+    },
+    {
+      "id": "crouch-p",
+      "input": "P",
+      "hold": "↓",
+      "animation": "crouchLight"
+    },
+    {
+      "id": "crouch-k",
+      "input": "K",
+      "hold": "↓",
+      "animation": "crouchMedium"
+    },
+    {
+      "id": "crouch-s",
+      "input": "S",
+      "hold": "↓",
+      "animation": "crouchStrong"
+    }
+  ],
+  "hitbox": {
+    "width": 31,
+    "height": 25,
+    "offsetX": 70,
+    "offsetY": 17
+  },
+  "hurtbox": {
+    "width": 23,
+    "height": 81,
+    "offsetX": 46,
+    "offsetY": 16
+  },
+  "sheets": [
+    "yoruichi_atlas_0.png"
+  ],
+  "atlas": [
+    [
+      0,
+      568,
+      0,
+      39,
+      85,
+      40,
+      13
+    ],
+    [
+      0,
+      234,
+      0,
+      39,
+      87,
+      40,
+      11
+    ],
+    [
+      0,
+      152,
+      0,
+      39,
+      88,
+      40,
+      10
+    ],
+    [
+      0,
+      111,
+      0,
+      39,
+      89,
+      40,
+      9
+    ],
+    [
+      0,
+      275,
+      0,
+      39,
+      87,
+      40,
+      11
+    ],
+    [
+      0,
+      193,
+      0,
+      39,
+      88,
+      40,
+      10
+    ],
+    [
+      0,
+      609,
+      0,
+      39,
+      85,
+      40,
+      13
+    ],
+    [
+      0,
+      387,
+      0,
+      39,
+      86,
+      40,
+      12
+    ],
+    [
+      0,
+      650,
+      0,
+      32,
+      85,
+      38,
+      12
+    ],
+    [
+      0,
+      684,
+      0,
+      32,
+      85,
+      38,
+      12
+    ],
+    [
+      0,
+      718,
+      0,
+      34,
+      85,
+      37,
+      12
+    ],
+    [
+      0,
+      754,
+      0,
+      34,
+      85,
+      37,
+      12
+    ],
+    [
+      0,
+      790,
+      0,
+      41,
+      85,
+      34,
+      11
+    ],
+    [
+      0,
+      833,
+      0,
+      34,
+      85,
+      37,
+      11
+    ],
+    [
+      0,
+      428,
+      0,
+      33,
+      86,
+      38,
+      11
+    ],
+    [
+      0,
+      463,
+      0,
+      33,
+      86,
+      38,
+      11
+    ],
+    [
+      0,
+      869,
+      0,
+      32,
+      85,
+      43,
+      12
+    ],
+    [
+      0,
+      903,
+      0,
+      32,
+      85,
+      43,
+      12
+    ],
+    [
+      0,
+      937,
+      0,
+      34,
+      85,
+      42,
+      12
+    ],
+    [
+      0,
+      973,
+      0,
+      34,
+      85,
+      42,
+      12
+    ],
+    [
+      0,
+      1009,
+      0,
+      41,
+      85,
+      38,
+      11
+    ],
+    [
+      0,
+      1052,
+      0,
+      34,
+      85,
+      42,
+      11
+    ],
+    [
+      0,
+      498,
+      0,
+      33,
+      86,
+      42,
+      11
+    ],
+    [
+      0,
+      533,
+      0,
+      33,
+      86,
+      42,
+      11
+    ],
+    [
+      0,
+      477,
+      99,
+      35,
+      59,
+      42,
+      38
+    ],
+    [
+      0,
+      316,
+      0,
+      69,
+      87,
+      18,
+      10
+    ],
+    [
+      0,
+      1022,
+      99,
+      37,
+      47,
+      37,
+      52
+    ],
+    [
+      0,
+      1303,
+      0,
+      37,
+      83,
+      37,
+      14
+    ],
+    [
+      0,
+      1061,
+      99,
+      38,
+      47,
+      36,
+      53
+    ],
+    [
+      0,
+      1342,
+      0,
+      39,
+      83,
+      37,
+      15
+    ],
+    [
+      0,
+      1783,
+      0,
+      60,
+      78,
+      31,
+      17
+    ],
+    [
+      0,
+      62,
+      99,
+      72,
+      73,
+      18,
+      20
+    ],
+    [
+      0,
+      1716,
+      99,
+      84,
+      27,
+      18,
+      42
+    ],
+    [
+      0,
+      1147,
+      99,
+      81,
+      45,
+      11,
+      67
+    ],
+    [
+      0,
+      1802,
+      99,
+      94,
+      18,
+      5,
+      83
+    ],
+    [
+      0,
+      1088,
+      0,
+      37,
+      85,
+      40,
+      12
+    ],
+    [
+      0,
+      1305,
+      99,
+      47,
+      42,
+      31,
+      59
+    ],
+    [
+      0,
+      1929,
+      99,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      187,
+      99,
+      59,
+      66,
+      24,
+      31
+    ],
+    [
+      0,
+      248,
+      99,
+      59,
+      66,
+      30,
+      31
+    ],
+    [
+      0,
+      1127,
+      0,
+      41,
+      84,
+      38,
+      13
+    ],
+    [
+      0,
+      1383,
+      0,
+      63,
+      83,
+      38,
+      15
+    ],
+    [
+      0,
+      1170,
+      0,
+      41,
+      84,
+      38,
+      13
+    ],
+    [
+      0,
+      1448,
+      0,
+      71,
+      83,
+      41,
+      15
+    ],
+    [
+      0,
+      1213,
+      0,
+      49,
+      84,
+      40,
+      14
+    ],
+    [
+      0,
+      1694,
+      0,
+      47,
+      80,
+      30,
+      17
+    ],
+    [
+      0,
+      1913,
+      0,
+      74,
+      77,
+      37,
+      20
+    ],
+    [
+      0,
+      1230,
+      99,
+      73,
+      45,
+      32,
+      53
+    ],
+    [
+      0,
+      854,
+      99,
+      39,
+      49,
+      41,
+      51
+    ],
+    [
+      0,
+      1101,
+      99,
+      44,
+      46,
+      46,
+      53
+    ],
+    [
+      0,
+      895,
+      99,
+      80,
+      48,
+      27,
+      50
+    ],
+    [
+      0,
+      646,
+      99,
+      46,
+      53,
+      31,
+      47
+    ],
+    [
+      0,
+      1354,
+      99,
+      55,
+      42,
+      22,
+      58
+    ],
+    [
+      0,
+      1622,
+      99,
+      92,
+      35,
+      18,
+      66
+    ],
+    [
+      0,
+      136,
+      99,
+      49,
+      69,
+      30,
+      28
+    ],
+    [
+      0,
+      514,
+      99,
+      42,
+      54,
+      34,
+      28
+    ],
+    [
+      0,
+      1989,
+      0,
+      43,
+      74,
+      31,
+      23
+    ],
+    [
+      0,
+      694,
+      99,
+      52,
+      53,
+      23,
+      33
+    ],
+    [
+      0,
+      1539,
+      99,
+      81,
+      40,
+      25,
+      38
+    ],
+    [
+      0,
+      435,
+      99,
+      40,
+      60,
+      33,
+      26
+    ],
+    [
+      0,
+      309,
+      99,
+      46,
+      65,
+      35,
+      26
+    ],
+    [
+      0,
+      357,
+      99,
+      76,
+      65,
+      30,
+      28
+    ],
+    [
+      0,
+      1521,
+      0,
+      69,
+      83,
+      21,
+      15
+    ],
+    [
+      0,
+      1592,
+      0,
+      47,
+      82,
+      34,
+      15
+    ],
+    [
+      0,
+      1743,
+      0,
+      38,
+      80,
+      34,
+      17
+    ],
+    [
+      0,
+      1264,
+      0,
+      37,
+      84,
+      36,
+      13
+    ],
+    [
+      0,
+      0,
+      0,
+      60,
+      97,
+      36,
+      0
+    ],
+    [
+      0,
+      1845,
+      0,
+      66,
+      78,
+      25,
+      19
+    ],
+    [
+      0,
+      62,
+      0,
+      47,
+      94,
+      26,
+      3
+    ],
+    [
+      0,
+      0,
+      99,
+      60,
+      74,
+      30,
+      24
+    ],
+    [
+      0,
+      1641,
+      0,
+      51,
+      82,
+      25,
+      15
+    ],
+    [
+      0,
+      435,
+      99,
+      40,
+      60,
+      33,
+      36
+    ],
+    [
+      0,
+      309,
+      99,
+      46,
+      65,
+      35,
+      32
+    ],
+    [
+      0,
+      977,
+      99,
+      43,
+      48,
+      38,
+      50
+    ]
+  ],
+  "effects": {
+    "flashStep": {
+      "spriteGridSize": {
+        "frameWidth": 128,
+        "frameHeight": 54,
+        "baseline": 52
+      },
+      "atlas": [
+        [
+          0,
+          558,
+          99,
+          86,
+          54,
+          20,
+          0
+        ],
+        [
+          0,
+          748,
+          99,
+          104,
+          51,
+          11,
+          1
+        ],
+        [
+          0,
+          1411,
+          99,
+          126,
+          41,
+          0,
+          4
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2
+        ],
+        "durations": [
+          2,
+          3,
+          2
+        ],
+        "loop": false
+      },
+      "blend": "add"
+    },
+    "kunai": {
+      "spriteGridSize": {
+        "frameWidth": 44,
+        "frameHeight": 24,
+        "baseline": 12
+      },
+      "atlas": [
+        [
+          0,
+          1898,
+          99,
+          29,
+          9,
+          11,
+          7
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0
+        ],
+        "durations": [
+          10
+        ],
+        "loop": true
+      },
+      "hits": [
+        {
+          "from": 0,
+          "until": 0,
+          "box": {
+            "width": 30,
+            "height": 14,
+            "offsetX": 11,
+            "offsetY": 4
+          },
+          "damage": 2,
+          "hitstun": 20,
+          "push": 3
+        }
+      ],
+      "lifetime": 150,
+      "destroyOnHit": true,
+      "endOnOwnerHit": true
+    },
+    "kokuClone": {
+      "spriteGridSize": {
+        "frameWidth": 108,
+        "frameHeight": 101,
+        "baseline": 96
+      },
+      "atlas": [
+        [
+          0,
+          1929,
+          99,
+          1,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1127,
+          0,
+          41,
+          84,
+          36,
+          13
+        ],
+        [
+          0,
+          1383,
+          0,
+          63,
+          83,
+          36,
+          15
+        ],
+        [
+          0,
+          1022,
+          99,
+          37,
+          47,
+          35,
+          52
+        ],
+        [
+          0,
+          646,
+          99,
+          46,
+          53,
+          29,
+          47
+        ],
+        [
+          0,
+          1354,
+          99,
+          55,
+          42,
+          20,
+          58
+        ],
+        [
+          0,
+          1622,
+          99,
+          92,
+          35,
+          16,
+          66
+        ],
+        [
+          0,
+          1592,
+          0,
+          47,
+          82,
+          32,
+          15
+        ],
+        [
+          0,
+          1743,
+          0,
+          38,
+          80,
+          32,
+          17
+        ],
+        [
+          0,
+          1264,
+          0,
+          37,
+          84,
+          34,
+          13
+        ],
+        [
+          0,
+          0,
+          0,
+          60,
+          97,
+          34,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          9
+        ],
+        "durations": [
+          20,
+          4,
+          3,
+          4,
+          3,
+          3,
+          5,
+          5,
+          3,
+          2,
+          7,
+          2
+        ],
+        "loop": false
+      },
+      "hits": [
+        {
+          "from": 2,
+          "until": 2,
+          "box": {
+            "width": 35,
+            "height": 12,
+            "offsetX": 64,
+            "offsetY": 23
+          },
+          "damage": 1,
+          "hitstun": 26,
+          "push": 1
+        },
+        {
+          "from": 6,
+          "until": 6,
+          "box": {
+            "width": 55,
+            "height": 15,
+            "offsetX": 51,
+            "offsetY": 83
+          },
+          "damage": 1,
+          "hitstun": 26,
+          "push": 1
+        },
+        {
+          "from": 10,
+          "until": 10,
+          "box": {
+            "width": 35,
+            "height": 52,
+            "offsetX": 59,
+            "offsetY": -1
+          },
+          "damage": 1,
+          "hitstun": 26,
+          "push": 1
+        }
+      ],
+      "velocityX": 2.5,
+      "endOnOwnerHit": true
+    },
+    "bakaClone": {
+      "spriteGridSize": {
+        "frameWidth": 112,
+        "frameHeight": 101,
+        "baseline": 96
+      },
+      "atlas": [
+        [
+          0,
+          1929,
+          99,
+          1,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1127,
+          0,
+          41,
+          84,
+          38,
+          13
+        ],
+        [
+          0,
+          1383,
+          0,
+          63,
+          83,
+          38,
+          15
+        ],
+        [
+          0,
+          1022,
+          99,
+          37,
+          47,
+          37,
+          52
+        ],
+        [
+          0,
+          646,
+          99,
+          46,
+          53,
+          31,
+          47
+        ],
+        [
+          0,
+          1354,
+          99,
+          55,
+          42,
+          22,
+          58
+        ],
+        [
+          0,
+          1622,
+          99,
+          92,
+          35,
+          18,
+          66
+        ],
+        [
+          0,
+          1170,
+          0,
+          41,
+          84,
+          38,
+          13
+        ],
+        [
+          0,
+          1448,
+          0,
+          71,
+          83,
+          41,
+          15
+        ],
+        [
+          0,
+          1230,
+          99,
+          73,
+          45,
+          32,
+          53
+        ],
+        [
+          0,
+          1213,
+          0,
+          49,
+          84,
+          40,
+          14
+        ],
+        [
+          0,
+          1694,
+          0,
+          47,
+          80,
+          30,
+          17
+        ],
+        [
+          0,
+          1913,
+          0,
+          74,
+          77,
+          37,
+          20
+        ],
+        [
+          0,
+          854,
+          99,
+          39,
+          49,
+          41,
+          51
+        ],
+        [
+          0,
+          1101,
+          99,
+          44,
+          46,
+          46,
+          53
+        ],
+        [
+          0,
+          895,
+          99,
+          80,
+          48,
+          27,
+          50
+        ],
+        [
+          0,
+          1592,
+          0,
+          47,
+          82,
+          34,
+          15
+        ],
+        [
+          0,
+          1743,
+          0,
+          38,
+          80,
+          34,
+          17
+        ],
+        [
+          0,
+          1264,
+          0,
+          37,
+          84,
+          36,
+          13
+        ],
+        [
+          0,
+          0,
+          0,
+          60,
+          97,
+          36,
+          0
+        ],
+        [
+          0,
+          568,
+          0,
+          39,
+          85,
+          40,
+          13
+        ],
+        [
+          0,
+          234,
+          0,
+          39,
+          87,
+          40,
+          11
+        ],
+        [
+          0,
+          152,
+          0,
+          39,
+          88,
+          40,
+          10
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          3,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          13,
+          14,
+          15,
+          1,
+          2,
+          10,
+          11,
+          12,
+          3,
+          9,
+          7,
+          8,
+          3,
+          4,
+          5,
+          6,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22
+        ],
+        "durations": [
+          20,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          7,
+          7,
+          7
+        ],
+        "loop": false
+      },
+      "hits": [
+        {
+          "from": 2,
+          "until": 2,
+          "box": {
+            "width": 35,
+            "height": 12,
+            "offsetX": 66,
+            "offsetY": 23
+          },
+          "damage": 1,
+          "hitstun": 24,
+          "push": 1
+        },
+        {
+          "from": 6,
+          "until": 6,
+          "box": {
+            "width": 55,
+            "height": 15,
+            "offsetX": 53,
+            "offsetY": 83
+          },
+          "damage": 1,
+          "hitstun": 24,
+          "push": 1
+        },
+        {
+          "from": 8,
+          "until": 8,
+          "box": {
+            "width": 28,
+            "height": 8,
+            "offsetX": 84,
+            "offsetY": 28
+          },
+          "damage": 1,
+          "hitstun": 24,
+          "push": 1
+        },
+        {
+          "from": 10,
+          "until": 10,
+          "box": {
+            "width": 29,
+            "height": 12,
+            "offsetX": 76,
+            "offsetY": 84
+          },
+          "damage": 1,
+          "hitstun": 24,
+          "push": 1
+        },
+        {
+          "from": 13,
+          "until": 13,
+          "box": {
+            "width": 52,
+            "height": 28,
+            "offsetX": 58,
+            "offsetY": 20
+          },
+          "damage": 1,
+          "hitstun": 24,
+          "push": 1
+        },
+        {
+          "from": 16,
+          "until": 16,
+          "box": {
+            "width": 32,
+            "height": 26,
+            "offsetX": 74,
+            "offsetY": 58
+          },
+          "damage": 1,
+          "hitstun": 24,
+          "push": 1
+        },
+        {
+          "from": 19,
+          "until": 19,
+          "box": {
+            "width": 32,
+            "height": 26,
+            "offsetX": 74,
+            "offsetY": 58
+          },
+          "damage": 1,
+          "hitstun": 24,
+          "push": 1
+        },
+        {
+          "from": 21,
+          "until": 21,
+          "box": {
+            "width": 31,
+            "height": 25,
+            "offsetX": 70,
+            "offsetY": 17
+          },
+          "damage": 1,
+          "hitstun": 24,
+          "push": 1
+        },
+        {
+          "from": 24,
+          "until": 24,
+          "box": {
+            "width": 52,
+            "height": 28,
+            "offsetX": 58,
+            "offsetY": 20
+          },
+          "damage": 1,
+          "hitstun": 24,
+          "push": 1
+        },
+        {
+          "from": 26,
+          "until": 26,
+          "box": {
+            "width": 29,
+            "height": 12,
+            "offsetX": 76,
+            "offsetY": 84
+          },
+          "damage": 1,
+          "hitstun": 24,
+          "push": 1
+        },
+        {
+          "from": 28,
+          "until": 28,
+          "box": {
+            "width": 28,
+            "height": 8,
+            "offsetX": 84,
+            "offsetY": 28
+          },
+          "damage": 1,
+          "hitstun": 24,
+          "push": 1
+        },
+        {
+          "from": 32,
+          "until": 32,
+          "box": {
+            "width": 54,
+            "height": 17,
+            "offsetX": 56,
+            "offsetY": 83
+          },
+          "damage": 1,
+          "hitstun": 24,
+          "push": 1
+        },
+        {
+          "from": 36,
+          "until": 36,
+          "box": {
+            "width": 35,
+            "height": 52,
+            "offsetX": 61,
+            "offsetY": -1
+          },
+          "damage": 1,
+          "hitstun": 24,
+          "push": 1
+        }
+      ],
+      "velocityX": 2.5,
+      "endOnOwnerHit": true
+    },
+    "throwImpact": {
+      "spriteGridSize": {
+        "frameWidth": 2,
+        "frameHeight": 2,
+        "baseline": 1
+      },
+      "atlas": [
+        [
+          0,
+          1929,
+          99,
+          1,
+          1,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0
+        ],
+        "durations": [
+          4
+        ],
+        "loop": false
+      },
+      "hits": [
+        {
+          "from": 0,
+          "until": 0,
+          "box": {
+            "width": 40,
+            "height": 80,
+            "offsetX": -19,
+            "offsetY": -39
+          },
+          "damage": 4,
+          "hitstun": 50,
+          "push": 8,
+          "heavy": true,
+          "unblockable": true
+        }
+      ]
+    }
+  },
+  "buttons": {
+    "ground": {
+      "punch": "punch",
+      "kick": "kick",
+      "special": "strong"
+    },
+    "air": {
+      "punch": "airLight",
+      "kick": "airMedium",
+      "special": "airStrong"
+    }
+  },
+  "moveList": [
+    {
+      "section": "Movimento",
+      "name": "Flash step (Shunpo)",
+      "input": "→→",
+      "note": "Some e reaparece adiante; emenda num golpe"
+    },
+    {
+      "section": "Movimento",
+      "name": "Flash step para trás",
+      "input": "←←"
+    },
+    {
+      "section": "Movimento",
+      "name": "Dash aéreo",
+      "input": "→→",
+      "note": "No ar"
+    },
+    {
+      "section": "Movimento",
+      "name": "Pulo duplo",
+      "input": "↑↑",
+      "note": "No ar, aperte para cima de novo"
+    },
+    {
+      "section": "Golpes",
+      "name": "Fraco / médio / forte",
+      "input": "PKS",
+      "note": "Encadeia do mais fraco para o mais forte"
+    },
+    {
+      "section": "Golpes",
+      "name": "Agachada (fraco, médio, rasteira)",
+      "input": "P",
+      "hold": "↓",
+      "note": "Também com chute e especial"
+    },
+    {
+      "section": "Golpes",
+      "name": "No ar (fraco, médio, forte)",
+      "input": "PKS",
+      "note": "No ar"
+    },
+    {
+      "section": "Especiais",
+      "name": "Anken",
+      "input": "↓→P",
+      "note": "Kunais que disparam no oponente (3, 5 ou 7 com P/K/S)"
+    },
+    {
+      "section": "Especiais",
+      "name": "Kokubyouenbu",
+      "input": "←↓→P",
+      "note": "Investida; se pegar, rajada com o clone"
+    },
+    {
+      "section": "Especiais",
+      "name": "Oruka Mono",
+      "input": "↓↑P",
+      "note": "Chutes subindo (1, 3 ou 7 com P/K/S)"
+    },
+    {
+      "section": "Especiais",
+      "name": "Owarija",
+      "input": "→↓→P",
+      "note": "Agarra e arremessa (não dá para defender)"
+    },
+    {
+      "section": "Super",
+      "name": "Bakamonoga",
+      "input": "↓→↓→P",
+      "note": "Investida e a rajada de 12 golpes com o clone"
+    }
+  ]
+}

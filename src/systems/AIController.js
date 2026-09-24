@@ -15,7 +15,7 @@ export const DIFFICULTY_PRESETS = {
     blockChance: 0.25,
     jumpChance: 0.05,
     retreatHealthRatio: 0.25,
-    spacingError: 60,
+    spacingError: 24,
   },
   normal: {
     reactionFrames: 16,
@@ -25,7 +25,7 @@ export const DIFFICULTY_PRESETS = {
     blockChance: 0.55,
     jumpChance: 0.1,
     retreatHealthRatio: 0.3,
-    spacingError: 30,
+    spacingError: 12,
   },
   hard: {
     reactionFrames: 8,
@@ -35,7 +35,7 @@ export const DIFFICULTY_PRESETS = {
     blockChance: 0.85,
     jumpChance: 0.14,
     retreatHealthRatio: 0.35,
-    spacingError: 10,
+    spacingError: 4,
   },
 };
 
@@ -73,13 +73,25 @@ function tokenToFragment(token, facing) {
   }
 }
 
+// Efeitos que um golpe solta: o do formato antigo e os dos eventos.
+function spawnsOf(animation) {
+  if (!animation) return [];
+  const fromEvents = (animation.events ?? []).filter((event) => event.effect).map((event) => event.effect);
+  return animation.effect ? [animation.effect, ...fromEvents] : fromEvents;
+}
+
 // Golpe que alcanca de longe: solta um projetil ou surge em cima do oponente.
 function isRanged(self, combo) {
-  const spawn = combo.animation ? self.config.animations?.[combo.animation]?.effect : null;
-  if (!spawn) return false;
-  const effect = self.config.effects?.[spawn.id];
-  return spawn.target === 'opponent' || (effect?.velocityX ?? 0) > 0;
+  const animation = combo.animation ? self.config.animations?.[combo.animation] : null;
+  return spawnsOf(animation).some((spawn) => {
+    const effect = self.config.effects?.[spawn.id];
+    if (!effect || (!effect.hits && !effect.hitbox)) return false;
+    return spawn.target === 'opponent' || (spawn.velocityX ?? effect.velocityX ?? 0) > 0;
+  });
 }
+
+// Ticks entre apertos quando a IA encadeia a sequencia de um botao.
+const CHAIN_GAP = 9;
 
 export class AIController {
   constructor(combos = [], difficulty = 'normal', { random = Math.random } = {}) {
@@ -157,7 +169,9 @@ export class AIController {
     if (this.chance(this.params.aggression)) {
       const combo = this.pickCombo(self);
       if (combo && this.chance(this.params.comboChance)) return { type: 'combo', combo };
-      return { type: 'attack', button: this.chance(0.5) ? 'punch' : 'kick' };
+      // Com golpe proprio no botao especial (sequencia C), os tres entram.
+      const buttons = self.config.buttons?.ground?.special ? ['punch', 'kick', 'special'] : ['punch', 'kick'];
+      return { type: 'attack', button: buttons[Math.floor(this.random() * buttons.length)] };
     }
 
     return { type: 'wait' };
@@ -167,7 +181,9 @@ export class AIController {
   // cooldown, senao a IA "gastaria" a decisao num golpe que nao vai sair.
   pickCombo(self, { rangedOnly = false } = {}) {
     const available = this.combos.filter((combo) => {
-      if (combo.tokens ? combo.tokens.length < 2 : combo.input.length < 2) return false;
+      const length = combo.tokens ? combo.tokens.length : combo.input.length;
+      if (length < 2 && !combo.hold) return false;
+      if ((combo.mode ?? null) !== (self.mode ?? null)) return false;
       if (rangedOnly && !isRanged(self, combo)) return false;
       const animation = combo.animation ?? null;
       return !animation || !self.isOnCooldown(animation);
@@ -177,12 +193,34 @@ export class AIController {
   }
 
   scriptFor(intent, self) {
-    if (intent.type === 'attack') return [{ [intent.button]: true }];
-    if (intent.type === 'jump') return [{ up: true, jump: true }];
+    if (intent.type === 'attack') {
+      // Personagem com sequencias (cancels): a IA aperta de novo no ritmo do
+      // golpe, e a sequencia so continua se o primeiro conectar.
+      const script = [{ [intent.button]: true }];
+      const chains = self.config.buttons ? Math.floor(this.random() * 4 * this.params.aggression) : 0;
+      for (let press = 0; press < chains; press += 1) {
+        script.push(...Array.from({ length: CHAIN_GAP }, () => ({})), { [intent.button]: true });
+      }
+      return script;
+    }
+    if (intent.type === 'jump') {
+      // As vezes emenda o pulo duplo no alto do primeiro.
+      if (this.random() < 0.3) return [{ up: true, jump: true }, ...Array.from({ length: 12 }, () => ({})), { up: true, jump: true }];
+      return [{ up: true, jump: true }];
+    }
     if (intent.type !== 'combo') return [];
 
-    const tokens = intent.combo.tokens ?? [...intent.combo.input];
-    return tokens.map((token) => tokenToFragment(token, self.facing));
+    const { combo } = intent;
+    const tokens = combo.tokens ?? [...combo.input];
+    const script = [];
+    tokens.forEach((token, index) => {
+      // Direcao repetida (↓↓) so conta se soltar entre as duas.
+      if (index > 0 && token === tokens[index - 1]) script.push({});
+      script.push(tokenToFragment(token, self.facing));
+    });
+    // "↓ + botao": a direcao continua segurada no aperto.
+    if (combo.hold) Object.assign(script[script.length - 1], tokenToFragment(combo.hold, self.facing));
+    return script;
   }
 
   movementCommand(self, opponent) {
