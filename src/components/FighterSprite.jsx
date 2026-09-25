@@ -17,7 +17,7 @@ function frameAt(clip, ticks) {
 // Sprite do proprio jogo, animado, no tamanho nativo: ampliar deixa cada pixel
 // visivel e foi recusado. Os pes ficam na base da caixa, do mesmo jeito que o
 // importador monta a grade.
-export default function FighterSprite({ entry, animation = 'idle', scale = 1, flip = false }) {
+export default function FighterSprite({ entry, animation = 'idle', scale: baseScale = 1, flip = false }) {
   const [config, setConfig] = useState(null);
   const [ticks, setTicks] = useState(0);
 
@@ -42,12 +42,16 @@ export default function FighterSprite({ entry, animation = 'idle', scale = 1, fl
 
   if (!clip) return null;
 
+  // Personagem de sprite pequeno aparece na mesma escala da luta.
+  const scale = baseScale * (config.spriteScale ?? 1);
   const { frameWidth, frameHeight } = config.spriteGridSize;
   const frame = frameAt(clip, ticks);
   const box = {
     width: frameWidth * scale,
     height: frameHeight * scale,
     transform: flip ? 'scaleX(-1)' : undefined,
+    // Ampliado: suave, sem pixel em bloco.
+    imageRendering: scale === 1 ? undefined : 'auto',
   };
 
   if (config.atlas) {

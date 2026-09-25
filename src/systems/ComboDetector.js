@@ -77,7 +77,9 @@ export class ComboDetector {
   // fechar algum padrao. So direcoes que mudaram entram no buffer, senao
   // segurar uma tecla encheria tudo com o mesmo token.
   // mode: modo atual do personagem; combo com "mode" so vale nele (e combo
-  // sem "mode" so fora de qualquer modo).
+  // sem "mode" so fora de qualquer modo). Uma lista vale para todos os modos
+  // dela (null = os combos de base): o Origin Mode do Gojo mantem os golpes
+  // normais e soma o Hollow Nuke.
   feed(command, facing, now, mode = null) {
     this.mode = mode;
     const direction = directionToken(command, facing);
@@ -107,7 +109,7 @@ export class ComboDetector {
 
   match(now, command = {}, facing = 1) {
     return this.combos.find(
-      (combo) => (combo.mode ?? null) === (this.mode ?? null)
+      (combo) => (Array.isArray(this.mode) ? this.mode : [this.mode ?? null]).includes(combo.mode ?? null)
         && holdSatisfied(combo.hold, command, facing) && this.matchesTokens(combo.tokens, now),
     ) ?? null;
   }

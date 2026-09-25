@@ -5,6 +5,8 @@ import { hitsOf, pickActiveHit, recordHit } from './hits.js';
 // Personagem no tamanho exato do sprite: ampliar deixava cada pixel visivel.
 // Velocidade, pulo e alcance do config sao medidos nessa escala.
 export const RENDER_SCALE = 1;
+// Quanto o tempo anda para quem esta sob o selo "slow".
+const SLOW_FACTOR = 0.5;
 
 // Botao -> golpe, no chao e no ar. Config sem "buttons" usa o mesmo golpe nos
 // dois (o elenco provisorio nao tem golpe aereo).
@@ -62,9 +64,15 @@ export class Fighter {
     this.map = map;
     this.animation = new AnimationStateMachine(this.config.animations);
     this.baseButtons = this.config.buttons ?? DEFAULT_BUTTONS;
+    // Escala do personagem (spriteScale): pacotes com sprites pequenos (estilo
+    // Bleach vs Naruto) sao ampliados para a altura do elenco. Caixas,
+    // deslocamentos e velocidades dos golpes (em pixels do pacote) acompanham.
+    this.scale = RENDER_SCALE * (this.config.spriteScale ?? 1);
     // Modo do personagem (o "The One" do Escanor): outro conjunto de botoes,
     // combos e animacoes base. null = normal.
     this.mode = null;
+    this.awakened = false;
+    this.awakeGauge = 0;
     this.roundClock = 0;
     // Quem esta do outro lado (teleportes). O game loop preenche.
     this.opponent = null;
@@ -86,12 +94,21 @@ export class Fighter {
     this.attackOverride = null;
     this.pendingPose = null;
     this.cooldowns = new Map();
+    this.roundUses = new Map();
+    // Sons pedidos neste tick (o GameCanvas toca pelo AudioManager). moveRun
+    // conta golpes comecados (nao os encadeados): o som com stopWithMove para
+    // quando esse golpe acaba.
+    this.pendingSounds = [];
+    this.moveRun = 0;
+    this.illusion = null;
     this.comboCount = 0;
     this.comboTimer = 0;
     // Selos do Kotoamatsukami: impedem defender/pular por alguns ticks.
     this.seals = {};
     // Estados temporarios a favor (ex.: crowEvade, do Genjutsu do dedo).
     this.buffs = {};
+    // Acertos repetidos pelo clone (queueEcho).
+    this.echoes = [];
     // Marcas dos efeitos vivos deste lutador (o corvo do Shisui); o
     // EffectManager mantem, e golpe com "requires" so sai com a marca em campo.
     this.effectTags = new Set();
@@ -112,6 +129,56 @@ export class Fighter {
     this.sprite.anchor.set(0.5, baseline / frameHeight);
     this.animation.play(this.base('idle'));
     this.syncSprite();
+  }
+
+  // Combos validos agora: os do modo e, se o modo mantem a base (keepBase),
+  // tambem os de fora de modo.
+  get comboModes() {
+    if (!this.mode) return null;
+    return this.modeDef?.keepBase ? [null, this.mode] : this.mode;
+  }
+
+  // Despertar (Origin Mode do Gojo): um medidor proprio enche apanhando (e
+  // metade batendo); cheio, o modo liga, cura, e o medidor esvazia sozinho.
+  // config.awakening = { mode, gauge, onHit, onAttackHit, drain, heal,
+  // damageScale, aura }.
+  get awakening() {
+    return this.config.awakening ?? null;
+  }
+
+  get damageScale() {
+    return this.awakened ? (this.awakening.damageScale ?? 1) : 1;
+  }
+
+  fillAwakening(amount) {
+    if (!this.awakening || this.awakened) return;
+    this.awakeGauge = Math.min(this.awakening.gauge, (this.awakeGauge ?? 0) + amount);
+  }
+
+  tickAwakening(delta) {
+    const def = this.awakening;
+    if (!def) return;
+    if (!this.awakened) {
+      // Liga quando estiver livre (nao no meio de golpe ou apanhando).
+      const free = this.state === 'idle' || this.state === 'walk' || this.state === 'crouch';
+      if ((this.awakeGauge ?? 0) >= def.gauge && free && !this.isKnockedOut) {
+        this.awakened = true;
+        this.mode = def.mode;
+        this.health = Math.min(this.config.stats.maxHealth, this.health + this.config.stats.maxHealth * (def.heal ?? 0));
+        if (def.aura) this.pendingEffects.push({ owner: this, spawn: { id: def.aura, follow: 'owner' }, attack: null, serial: this.attackSerial });
+      }
+      return;
+    }
+    this.awakeGauge -= (def.drain ?? 1) * delta;
+    if (this.awakeGauge <= 0) this.endAwakening();
+  }
+
+  endAwakening() {
+    if (!this.awakened) return;
+    this.awakened = false;
+    this.awakeGauge = 0;
+    if (this.mode === this.awakening.mode) this.mode = null;
+    if (this.awakening.aura) this.pendingConsumes.push(this.config.effects[this.awakening.aura]?.tag ?? this.awakening.aura);
   }
 
   get modeDef() {
@@ -152,7 +219,7 @@ export class Fighter {
   }
 
   get halfWidth() {
-    return (this.config.hurtbox.width * RENDER_SCALE) / 2;
+    return (this.config.hurtbox.width * this.scale) / 2;
   }
 
   get isKnockedOut() {
@@ -164,7 +231,7 @@ export class Fighter {
   get attackReach() {
     const { frameWidth } = this.config.spriteGridSize;
     const { offsetX, width } = this.config.hitbox;
-    return (offsetX + width - frameWidth / 2) * RENDER_SCALE;
+    return (offsetX + width - frameWidth / 2) * this.scale;
   }
 
   // O dash (e golpe que atravessa, como o dash de corvos) passa pelo
@@ -198,10 +265,10 @@ export class Fighter {
     const { frameWidth, frameHeight, baseline = frameHeight } = this.config.spriteGridSize;
     const left = this.facing === 1 ? box.offsetX : frameWidth - box.offsetX - box.width;
     return {
-      x: this.x + (left - frameWidth / 2) * RENDER_SCALE,
-      y: this.y + (box.offsetY - baseline) * RENDER_SCALE,
-      width: box.width * RENDER_SCALE,
-      height: box.height * RENDER_SCALE,
+      x: this.x + (left - frameWidth / 2) * this.scale,
+      y: this.y + (box.offsetY - baseline) * this.scale,
+      width: box.width * this.scale,
+      height: box.height * this.scale,
     };
   }
 
@@ -258,7 +325,7 @@ export class Fighter {
     const hit = hitsOf(this.config.animations[animationName])[0];
     const box = hit?.box;
     if (!box) return null;
-    return (box.offsetX + box.width / 2 - this.config.spriteGridSize.frameWidth / 2) * RENDER_SCALE;
+    return (box.offsetX + box.width / 2 - this.config.spriteGridSize.frameWidth / 2) * this.scale;
   }
 
   isOnCooldown(animationName) {
@@ -270,6 +337,12 @@ export class Fighter {
     if (!move) return false;
     if (!chained && this.isOnCooldown(animationName)) return false;
     if (!chained && move.requires && !this.effectTags.has(move.requires)) return false;
+    // Golpe de misericordia (Hollow Nuke): so com o oponente abaixo de uma
+    // fracao da vida.
+    if (!chained && move.opponentLifeBelow && this.opponent
+      && this.opponent.health / this.opponent.config.stats.maxHealth >= move.opponentLifeBelow) return false;
+    // Uma vez por round (a hipnose completa do Aizen).
+    if (!chained && move.perRound && (this.roundUses.get(animationName) ?? 0) >= move.perRound) return false;
 
     this.state = 'attack';
     this.attackHasLanded = false;
@@ -282,6 +355,14 @@ export class Fighter {
 
     const cooldown = override?.cooldown ?? move.cooldown;
     if (cooldown && !chained) this.cooldowns.set(animationName, cooldown);
+    if (!chained) this.moveRun += 1;
+    if (!chained && move.perRound) this.roundUses.set(animationName, (this.roundUses.get(animationName) ?? 0) + 1);
+    // Ilusao (Kyoka Suigetsu): por "ticks", o primeiro golpe recebido acerta
+    // a ilusao, sem dano, e dispara o golpe "to".
+    if (move.illusion) this.illusion = { ticks: move.illusion.ticks, to: move.illusion.to };
+    // Golpe sorteado (as musicas do Hatsune Music): segue para uma das
+    // variacoes, na hora.
+    if (move.randomNext?.length) return this.continueMove(move.randomNext[Math.floor(Math.random() * move.randomNext.length)]);
     this.fireEvents();
     return true;
   }
@@ -303,10 +384,12 @@ export class Fighter {
   // O contador so sobe em acertos consecutivos: errar, ser bloqueado ou ficar
   // sem atacar zera a sequencia. serial diz de qual execucao veio o acerto
   // (um projetil pode conectar depois que o golpe que o soltou acabou).
-  onAttackResolved(outcome, serial = this.attackSerial) {
+  onAttackResolved(outcome, serial = this.attackSerial, attack = null) {
+    if (outcome !== 'block') this.queueEcho(attack);
     if (serial === this.attackSerial) {
       this.moveContact = true;
       if (outcome !== 'block') {
+        this.fillAwakening(this.awakening?.onAttackHit ?? 0);
         this.moveHits += 1;
         const buff = this.animation.current?.onHitBuff;
         if (buff && this.moveHits === 1) this.buffs[buff.kind] = buff.ticks;
@@ -318,6 +401,32 @@ export class Fighter {
     }
     this.comboCount += 1;
     this.comboTimer = COMBO_INACTIVITY_FRAMES;
+  }
+
+  // Clone (config.echo, o Doppelganger do Dante): com o buff ligado, cada
+  // acerto se repete "delay" ticks depois, com parte do dano, pelo efeito
+  // do clone em cima do oponente. O acerto do proprio clone nao ecoa.
+  queueEcho(attack) {
+    const echo = this.config.echo;
+    if (!echo || !this.buffs[echo.buff] || !attack || attack.noEcho) return;
+    // Um eco por janela curta: golpe de muitos acertos nao vira metralhadora.
+    const last = this.echoes.at(-1);
+    if (last && this.roundClock - (last.due - echo.delay) < (echo.gap ?? 8)) return;
+    const damage = Math.max(1, Math.round(attack.damage * (echo.ratio ?? 0.5)));
+    this.echoes.push({ due: this.roundClock + echo.delay, damage, hitstun: attack.hitstun });
+  }
+
+  tickEchoes() {
+    const echo = this.config.echo;
+    while (echo && this.echoes.length > 0 && this.echoes[0].due <= this.roundClock) {
+      const { damage, hitstun } = this.echoes.shift();
+      this.pendingEffects.push({
+        owner: this,
+        spawn: { id: echo.effect, target: 'opponent', offsetY: echo.height ?? 50, damage, hitstun },
+        attack: null,
+        serial: -1,
+      });
+    }
   }
 
   breakCombo() {
@@ -333,6 +442,9 @@ export class Fighter {
   }
 
   update(command, delta) {
+    // Selo "slow" (Quicksilver do Dante): o tempo deste lutador anda pela
+    // metade, inclusive o do proprio selo.
+    if (this.seals.slow) delta *= SLOW_FACTOR;
     const { walkSpeed, jumpForce, jumpGravity } = this.config.stats;
     const back = this.facing === 1 ? command.left : command.right;
     const forward = this.facing === 1 ? command.right : command.left;
@@ -353,6 +465,9 @@ export class Fighter {
 
     this.tickCooldowns(delta);
     this.tickSeals(delta);
+    this.tickEchoes();
+    this.tickAwakening(delta);
+    this.tickIllusion(delta);
     this.roundClock += delta;
 
     if (this.comboTimer > 0) {
@@ -420,8 +535,11 @@ export class Fighter {
         this.airDashesLeft = 1;
         if (this.state === 'dash') this.state = 'idle';
         if (this.state === 'air') this.state = 'idle';
-        // Golpe aereo acaba ao tocar o chao.
-        if (this.state === 'attack' && this.animation.current?.air) this.endMove();
+        // Golpe aereo acaba ao tocar o chao; com "onLand", segue para a
+        // aterrissagem do golpe (o impacto do Helm Breaker do Dante).
+        const landing = this.state === 'attack' ? this.animation.current : null;
+        if (landing?.onLand) this.continueMove(landing.onLand);
+        else if (landing?.air) this.endMove();
       }
     }
 
@@ -590,13 +708,14 @@ export class Fighter {
   }
 
   applyEvent(event) {
-    if (event.vx !== undefined) this.vx = event.vx * this.facing;
+    const k = this.scale;
+    if (event.vx !== undefined) this.vx = event.vx * this.facing * k;
     if (event.vy !== undefined) {
-      this.vy = event.vy;
+      this.vy = event.vy * k;
       if (event.vy < 0) this.grounded = false;
     }
     if (event.dx) {
-      this.x += event.dx * this.facing;
+      this.x += event.dx * this.facing * k;
       // Ajuste de posicao do pacote (alinhar o desenho entre um estado e
       // outro) nunca passa para o outro lado do oponente.
       if (this.opponent && !this.pushless) {
@@ -605,20 +724,33 @@ export class Fighter {
       }
     }
     // Reaparece num ponto qualquer ate "randomX" px de onde estava.
-    if (event.randomX) this.x += (Math.random() * 2 - 1) * event.randomX;
+    if (event.randomX) this.x += (Math.random() * 2 - 1) * event.randomX * k;
     if (event.consume) this.pendingConsumes.push(event.consume);
+    if (event.sound) this.pendingSounds.push({ key: event.sound, run: this.moveRun, stopWithMove: Boolean(event.stopWithMove) });
+    // Cura (o Minazuki da Unohana): nunca passa da vida maxima.
+    if (event.heal) this.health = Math.min(this.config.stats.maxHealth, this.health + event.heal);
     if (event.setMode !== undefined) this.mode = event.setMode || null;
+    // Estado a favor ligado pelo proprio golpe (Doppelganger do Dante).
+    if (event.buff) this.buffs[event.buff.kind] = event.buff.ticks;
+    // Selo no oponente sem precisar acertar (o Quicksilver para o tempo dele).
+    if (event.sealOpponent && this.opponent) this.opponent.applySeal(event.sealOpponent);
     // Teleporte: reaparece a "teleport" px do oponente, do lado de ca.
     if (event.teleport !== undefined && this.opponent) {
-      this.x = this.opponent.x - this.facing * event.teleport;
+      // through: atravessa para o lado oposto de onde esta, sem virar (os
+      // cortes para tras do Death Impact).
+      const side = event.through ? -Math.sign(this.opponent.x - this.x || this.facing) : this.facing;
+      this.x = this.opponent.x - side * event.teleport * k;
+      // turn: reaparece do outro lado ja virado para o oponente (Shunpo). Sem
+      // ele, continua virado para onde estava (corte para tras).
+      if (event.turn) this.facing = -this.facing;
     }
     // Posicoes no cenario (o mundo do Tsukuyomi e centrado na arena): quem
     // ataca fica a "standAt" px do centro; o oponente, preso no centro.
-    if (event.standAt !== undefined) this.x = this.stageCenter + event.standAt * this.facing;
+    if (event.standAt !== undefined) this.x = this.stageCenter + event.standAt * this.facing * k;
     if (event.pinOpponent && this.opponent) {
       const { dx = 0, lift = 0, ticks, relative = 'stage' } = event.pinOpponent;
       const originX = relative === 'self' ? this.x : this.stageCenter;
-      this.opponent.pin({ x: originX + dx * this.facing, y: this.map.groundLevel - lift, ticks });
+      this.opponent.pin({ x: originX + dx * this.facing * k, y: this.map.groundLevel - lift * k, ticks });
     }
     if (event.land) {
       this.y = this.map.groundLevel;
@@ -655,6 +787,12 @@ export class Fighter {
     }
   }
 
+  tickIllusion(delta) {
+    if (!this.illusion) return;
+    this.illusion.ticks -= delta;
+    if (this.illusion.ticks <= 0) this.illusion = null;
+  }
+
   tickSeals(delta) {
     for (const timers of [this.seals, this.buffs]) {
       for (const kind of Object.keys(timers)) {
@@ -679,6 +817,15 @@ export class Fighter {
       this.startAttack(counter.to, null, { chained: true });
       return true;
     }
+    // Ilusao: o golpe acerta o reflexo; o de verdade reage (vale no meio de
+    // golpe, no ar, parado).
+    if (this.illusion && !this.isKnockedOut && this.config.animations[this.illusion.to]) {
+      const { to } = this.illusion;
+      this.illusion = null;
+      this.stunTimer = 0;
+      this.startAttack(to, null, { chained: true });
+      return true;
+    }
     if (!this.buffs.crowEvade || !this.grounded || this.isKnockedOut) return false;
     if (!this.config.animations.crowEvade || Math.random() >= 0.5) return false;
     this.stunTimer = 0;
@@ -688,6 +835,7 @@ export class Fighter {
 
   takeHit(damage, hitstun) {
     this.breakCombo();
+    this.fillAwakening(this.awakening?.onHit ?? 0);
     this.health = Math.max(0, this.health - damage);
     if (this.health === 0) {
       this.knockOut();
@@ -731,7 +879,7 @@ export class Fighter {
     }
     const frame = this.animation.localFrame;
     const moving = frame >= dash.moveFrom && frame <= dash.moveUntil;
-    this.vx = moving ? this.dashDirection * this.facing * dash.speed : 0;
+    this.vx = moving ? this.dashDirection * this.facing * dash.speed * this.scale : 0;
   }
 
   // Nos quadros em que some no dash (ou no trecho invulneravel de um golpe),
@@ -789,8 +937,11 @@ export class Fighter {
     this.pendingEffects.length = 0;
     this.effectSpawned = false;
     this.cooldowns.clear();
+    this.roundUses.clear();
+    this.illusion = null;
     this.seals = {};
     this.buffs = {};
+    this.echoes.length = 0;
     this.pinned = null;
     this.mode = null;
     this.roundClock = 0;
@@ -855,6 +1006,7 @@ export class Fighter {
     this.sprite.texture = this.frames[this.animation.sheetFrame];
     this.sprite.x = Math.round(this.x);
     this.sprite.y = Math.round(this.y);
-    this.sprite.scale.set(RENDER_SCALE * this.facing, RENDER_SCALE);
+    this.sprite.scale.set(this.scale * this.facing, this.scale);
+    this.sprite.alpha = this.illusion ? 0.55 : 1;
   }
 }

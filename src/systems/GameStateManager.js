@@ -1,5 +1,9 @@
 // Regras de round e condicao de vitoria: melhor de 3, 90 segundos por round, e
 // o round de desempate (1 a 1) rodando sem cronometro ate o nocaute.
+//
+// Abertura (introFrames): cada round comeca com o anuncio "ROUND N" e os
+// lutadores parados, sem cronometro; quando ela acaba sai o evento "fight" e
+// a luta vale. Com introFrames = 0 (o padrao), o round ja comeca valendo.
 
 export const ROUND_TIME_SECONDS = 90;
 export const ROUNDS_TO_WIN = 2;
@@ -10,19 +14,21 @@ export class GameStateManager {
     roundTimeSeconds = ROUND_TIME_SECONDS,
     roundsToWin = ROUNDS_TO_WIN,
     endDelayFrames = 150,
+    introFrames = 0,
   } = {}) {
     this.roundTimeSeconds = roundTimeSeconds;
     this.roundsToWin = roundsToWin;
     this.endDelayFrames = endDelayFrames;
+    this.introFrames = introFrames;
     this.reset();
   }
 
   reset() {
     this.wins = [0, 0];
     this.roundNumber = 1;
-    this.phase = 'fighting';
     this.timeRemaining = this.roundTimeSeconds;
     this.endTimer = 0;
+    this.beginRound();
     this.lastResult = null;
     this.matchWinner = null;
   }
@@ -34,10 +40,23 @@ export class GameStateManager {
     return this.wins.every((wins) => wins === this.roundsToWin - 1);
   }
 
+  beginRound() {
+    this.phase = this.introFrames > 0 ? 'intro' : 'fighting';
+    this.introTimer = this.introFrames;
+  }
+
   update(fighters, delta) {
+    if (this.phase === 'intro') return this.updateIntro(delta);
     if (this.phase === 'fighting') return this.updateFighting(fighters, delta);
     if (this.phase === 'roundEnd') return this.updateRoundEnd(delta);
     return null;
+  }
+
+  updateIntro(delta) {
+    this.introTimer -= delta;
+    if (this.introTimer > 0) return null;
+    this.phase = 'fighting';
+    return { type: 'fight', round: this.roundNumber };
   }
 
   updateFighting(fighters, delta) {
@@ -85,8 +104,8 @@ export class GameStateManager {
     }
 
     this.roundNumber += 1;
-    this.phase = 'fighting';
     this.timeRemaining = this.roundTimeSeconds;
+    this.beginRound();
     return { type: 'roundStart', round: this.roundNumber };
   }
 }

@@ -259,3 +259,32 @@ test('quem cai nocauteado so faz a pose depois da animacao de KO', () => {
 
   assert.equal(fighters[1].animation.name, 'defeatPose');
 });
+
+// ---- Abertura do round ("ROUND N", depois "FIGHT!") ----
+
+test('com abertura, o round comeca parado: sem cronometro e sem nocaute ate o FIGHT', () => {
+  const match = new GameStateManager({ introFrames: 80 });
+  const fighters = makePair();
+  assert.equal(match.phase, 'intro');
+
+  fighters[1].health = 0;
+  for (let tick = 0; tick < 79; tick += 1) assert.equal(match.update(fighters, 1), null);
+  assert.equal(match.timeRemaining, ROUND_TIME_SECONDS, 'o cronometro espera o FIGHT');
+
+  assert.deepEqual(match.update(fighters, 1), { type: 'fight', round: 1 });
+  assert.equal(match.phase, 'fighting');
+  assert.equal(runUntilEvent(match, fighters).type, 'roundEnd', 'depois do FIGHT a luta vale');
+});
+
+test('com abertura, cada round novo passa de novo pelo FIGHT', () => {
+  const match = new GameStateManager({ introFrames: 80 });
+  const fighters = makePair();
+  runUntilEvent(match, fighters);
+  fighters[1].health = 0;
+  runUntilEvent(match, fighters);
+  const next = runUntilEvent(match, fighters);
+  assert.deepEqual(next, { type: 'roundStart', round: 2 });
+  assert.equal(match.phase, 'intro');
+  for (const fighter of fighters) fighter.health = characterConfig.stats.maxHealth;
+  assert.deepEqual(runUntilEvent(match, fighters), { type: 'fight', round: 2 });
+});

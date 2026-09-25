@@ -18567,8 +18567,8 @@
     "worldSky": {
       "spriteGridSize": {
         "frameWidth": 400,
-        "frameHeight": 260,
-        "baseline": 260
+        "frameHeight": 257,
+        "baseline": 129
       },
       "atlas": [
         [

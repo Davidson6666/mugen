@@ -8,6 +8,7 @@ import { GameStateManager } from '../systems/GameStateManager.js';
 import { Hud } from '../systems/Hud.js';
 import { EffectManager } from '../systems/EffectManager.js';
 import { HitFeedback } from '../systems/HitFeedback.js';
+import { AudioManager } from '../systems/AudioManager.js';
 import { resolveAttack, resolveBodyCollision } from '../systems/CollisionDetector.js';
 import { InputHandler } from '../utils/InputHandler.js';
 import { PALETTE, PALETTE_HEX } from '../utils/palette.js';
@@ -27,6 +28,11 @@ const CAMERA_GROUND_Y = 630;
 
 // Variantes da Barlow Condensed que o HUD usa.
 const HUD_FONTS = ['italic 900 40px "Barlow Condensed"', 'italic 800 28px "Barlow Condensed"', 'italic 600 22px "Barlow Condensed"'];
+
+// Abertura do round: "ROUND N" com os lutadores parados; depois "FIGHT!" e o
+// controle e liberado, como nos Street Fighter de fliperama.
+const ROUND_INTRO_FRAMES = 80;
+const FIGHT_ANNOUNCE_FRAMES = 45;
 
 const ROUND_END_MESSAGE = {
   ko: 'K.O.',
@@ -124,10 +130,14 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
   // luta acontece, e reconstruir o canvas no meio do combate seria um desastre.
   const setupRef = useRef(setup);
   const pausedRef = useRef(paused);
+  const audioRef = useRef(null);
   const onMatchEndRef = useRef(onMatchEnd);
 
   useEffect(() => {
     pausedRef.current = paused;
+    // Pausa congela tambem o som (a musica do super continua de onde parou).
+    if (paused) audioRef.current?.pause();
+    else audioRef.current?.resume();
   }, [paused]);
 
   useEffect(() => {
@@ -138,6 +148,8 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
     let disposed = false;
     let app = null;
     const input = new InputHandler();
+    const audio = new AudioManager();
+    audioRef.current = audio;
     let onDebugKey = null;
 
     async function boot() {
@@ -170,6 +182,8 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
         ...characterEntries.map((entry) => assetManager.loadCharacter(entry)),
       ]);
       if (disposed) return;
+      // Os sons carregam em paralelo; a luta nao espera por eles.
+      characterEntries.forEach((entry, index) => audio.preload(entry.dir, characterRecords[index].config.sounds));
 
       const map = mapRecord.config;
       // Os lutadores comecam a uns dois corpos de distancia, no meio do
@@ -208,7 +222,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       // A IA recebe os combos ja interpretados pelo detector, com tokens e
       // animacao resolvidos.
       const ai = new AIController(detectors[1].combos, matchSetup.difficulty);
-      const match = new GameStateManager();
+      const match = new GameStateManager({ introFrames: ROUND_INTRO_FRAMES });
       const cpuEnabled = matchSetup.mode !== 'versusPlayer';
       let matchEndTimer = 0;
 
@@ -260,10 +274,11 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
           fighter.resetForRound(spawns[index], index === 0 ? 1 : -1);
         });
         for (const detector of detectors) detector.reset();
+        audio.stopAll();
         effects.clear();
         feedback.clear();
         ai.reset();
-        hud.announce(`ROUND ${round} — FIGHT!`, 110);
+        hud.announce(match.isSuddenDeath ? 'FINAL ROUND' : `ROUND ${round}`, ROUND_INTRO_FRAMES);
       }
 
       function handleMatchEvent(event) {
@@ -277,6 +292,10 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
         }
         if (event.type === 'roundStart') {
           startRound(event.round);
+          return;
+        }
+        if (event.type === 'fight') {
+          hud.announce('FIGHT!', FIGHT_ANNOUNCE_FRAMES);
           return;
         }
         if (event.type === 'matchEnd') {
@@ -348,7 +367,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
               latched[index] = {};
               // O buffer le a direcao ja relativa ao lado que o personagem
               // encara, por isso o flip precisa acontecer antes.
-              command.combo = detectors[index].feed(command, fighter.facing, now, fighter.mode);
+              command.combo = detectors[index].feed(command, fighter.facing, now, fighter.comboModes);
             }
             fighter.update(command, delta);
           });
@@ -365,6 +384,8 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
           results.push(...effects.update(delta, fighting ? fighters : []));
           for (const result of results) if (result) feedback.onResult(result);
         }
+
+        fighters.forEach((fighter, index) => audio.update(index, fighter, characterEntries[index].dir));
 
         const event = match.update(fighters, delta);
         if (event) handleMatchEvent(event);
@@ -411,6 +432,8 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
     return () => {
       disposed = true;
       input.detach();
+      audio.dispose();
+      audioRef.current = null;
       if (onDebugKey) window.removeEventListener('keydown', onDebugKey);
       if (app) {
         app.destroy(true, { children: true });

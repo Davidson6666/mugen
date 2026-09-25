@@ -54,3 +54,7 @@ export const OUTLINE_LAYERS = [
   { color: 'textPrimary', width: 10 },
   { color: 'ink', width: 5 },
 ];
+
+
+// Medidor de despertar (Origin Mode do Gojo): texto pequeno embaixo do nome.
+export const AWAKENING_POSITION = [74, 196];

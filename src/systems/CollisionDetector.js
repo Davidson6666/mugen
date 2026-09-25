@@ -68,6 +68,9 @@ function impactPoint(hitRect, hurtRect) {
 // (efeitos conectam depois; o atacante so encadeia pelo golpe atual).
 export function applyHit(attacker, defender, attack, hitRect, serial = attacker.attackSerial) {
   const point = impactPoint(hitRect, defender.hurtRect);
+  // Ataque mais forte no modo despertado (Origin Mode do Gojo).
+  const scale = attacker.damageScale ?? 1;
+  if (scale !== 1) attack = { ...attack, damage: Math.max(1, Math.round(attack.damage * scale)) };
   const heavy = Boolean(attack.heavy);
   // Esquiva (Genjutsu do dedo): o golpe atravessa sem dano nem hitstun.
   if (!defender.blocking && defender.tryEvade?.()) return { outcome: 'evade', damage: 0, point };
@@ -77,13 +80,13 @@ export function applyHit(attacker, defender, attack, hitRect, serial = attacker.
     const blockstun = Math.round(attack.hitstun * BLOCKSTUN_RATIO);
     const outcome = defender.takeBlockedHit(damage, blockstun);
     defender.pushBack(Math.min(attack.push ?? BLOCK_PUSH, BLOCK_PUSH * 2));
-    attacker.onAttackResolved(outcome, serial);
+    attacker.onAttackResolved(outcome, serial, attack);
     return { outcome, damage, point, heavy };
   }
 
   const outcome = defender.takeHit(attack.damage, attack.hitstun);
   defender.pushBack(attack.push ?? HIT_PUSH);
   if (attack.seal && outcome === 'hit') defender.applySeal?.(attack.seal);
-  attacker.onAttackResolved(outcome, serial);
+  attacker.onAttackResolved(outcome, serial, attack);
   return { outcome, damage: attack.damage, point, heavy };
 }

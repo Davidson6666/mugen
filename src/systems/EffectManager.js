@@ -40,8 +40,10 @@ export class Effect {
     // Escala do pedido (a "scale" das Explod do MUGEN), numero ou [x, y].
     const [scaleX, scaleY] = Array.isArray(spawn.scale) ? spawn.scale : [spawn.scale ?? 1, spawn.scale ?? 1];
     this.renderScale = this.definition.renderScale ?? 1;
-    this.scaleX = this.renderScale * scaleX;
-    this.scaleY = this.renderScale * scaleY;
+    // Escala do dono (spriteScale): efeito, caixa, posicao e velocidade.
+    this.unit = owner.scale ?? RENDER_SCALE;
+    this.scaleX = this.renderScale * scaleX * this.unit;
+    this.scaleY = this.renderScale * scaleY * this.unit;
     this.follow = spawn.follow ?? this.definition.follow ?? (this.definition.attached ? 'owner' : null);
     this.age = 0;
     this.dead = false;
@@ -67,8 +69,8 @@ export class Effect {
     // "lifetime" do pedido (cada kunai dura ate o proprio disparo + voo).
     this.lifetime = spawn.lifetime ?? this.definition.lifetime;
     const [jitterX = 0, jitterY = 0] = spawn.velocitySpread ?? [];
-    this.vx = ((spawn.velocityX ?? this.definition.velocityX ?? 0) + (Math.random() * 2 - 1) * jitterX) * this.facing;
-    this.vy = (spawn.velocityY ?? this.definition.velocityY ?? 0) + (Math.random() * 2 - 1) * jitterY;
+    this.vx = ((spawn.velocityX ?? this.definition.velocityX ?? 0) + (Math.random() * 2 - 1) * jitterX) * this.facing * this.unit;
+    this.vy = ((spawn.velocityY ?? this.definition.velocityY ?? 0) + (Math.random() * 2 - 1) * jitterY) * this.unit;
     this.motionIndex = 0;
 
     this.sprite = new Sprite(this.frames[this.animation.sheetFrame]);
@@ -78,6 +80,7 @@ export class Effect {
     // e o brilho soma com o cenario.
     if (this.definition.blend) this.sprite.blendMode = this.definition.blend;
     if (this.definition.alpha !== undefined) this.sprite.alpha = this.definition.alpha;
+    if (this.definition.tint !== undefined) this.sprite.tint = this.definition.tint;
     // AngleDraw: o MUGEN gira no sentido anti-horario.
     if (this.definition.angle) this.sprite.rotation = -(this.definition.angle * Math.PI) / 180;
     // Fundo que cobre a tela: ancorado pelo meio, nao pelo pe.
@@ -103,16 +106,24 @@ export class Effect {
 
   place() {
     const anchor = this.anchor;
-    this.x = anchor.x + this.offset.x * RENDER_SCALE * this.anchorFacing;
-    this.y = anchor.y - this.offset.y * RENDER_SCALE;
+    this.x = anchor.x + this.offset.x * this.unit * this.anchorFacing;
+    this.y = anchor.y - this.offset.y * this.unit;
+    // Orbita em volta da ancora (o azul do Gojo que gira em volta dele):
+    // [raio x, raio y, periodo em ticks].
+    const orbit = this.definition.orbit;
+    if (orbit) {
+      const angle = ((this.age ?? 0) / orbit[2]) * Math.PI * 2;
+      this.x += Math.sin(angle) * orbit[0] * this.unit * this.anchorFacing;
+      this.y += Math.sin(angle + Math.PI / 2) * orbit[1] * this.unit;
+    }
   }
 
   // Mesma convencao das caixas do lutador: retangulo no espaco do frame do
   // efeito, espelhado junto com o sprite (e ampliado, se o efeito foi guardado
   // em resolucao menor).
   rectFor(box) {
-    const sx = RENDER_SCALE * this.scaleX;
-    const sy = RENDER_SCALE * this.scaleY;
+    const sx = this.scaleX;
+    const sy = this.scaleY;
     const { frameWidth, frameHeight, baseline = frameHeight } = this.definition.spriteGridSize;
     const left = this.facing === 1 ? box.offsetX : frameWidth - box.offsetX - box.width;
     // Caixa relativa a ancora do sprite; girada junto com ele (AngleDraw do
@@ -138,6 +149,13 @@ export class Effect {
     if (this.definition.maxHits && this.hasHitCount >= this.definition.maxHits) return null;
     if (this.age < (this.spawn.hitDelay ?? this.definition.hitDelay ?? 0)) return null;
     return pickActiveHit(hits, this.animation.localFrame, this.age, this.hitLog);
+  }
+
+  get shieldRect() {
+    const [x1, y1, x2, y2] = this.definition.shield;
+    const k = this.unit * (this.spawn.scale ?? 1);
+    const left = this.facing === 1 ? x1 : -x2;
+    return { x: this.x + left * k, y: this.y + y1 * k, width: (x2 - x1) * k, height: (y2 - y1) * k };
   }
 
   get hitRect() {
@@ -167,13 +185,15 @@ export class Effect {
       return null;
     }
 
-    if (this.follow) {
+    if (this.definition.mirrorOwner) {
+      this.recordOwner();
+    } else if (this.follow) {
       if (this.follow === 'owner') this.anchorFacing = this.owner.facing;
       if (this.attached) this.facing = this.owner.facing;
       this.place();
     } else {
       this.applyMotion();
-      this.vy += (this.definition.gravity ?? 0) * delta;
+      this.vy += (this.definition.gravity ?? 0) * this.unit * delta;
       this.x += this.vx * delta;
       this.y += this.vy * delta;
     }
@@ -208,20 +228,42 @@ export class Effect {
     return result;
   }
 
+  // mirrorOwner (Doppelganger do Dante): o efeito e o proprio dono, repetido
+  // "delay" ticks depois, "offset" px atras dele. Guarda o que o dono mostrou
+  // em cada tick.
+  recordOwner() {
+    const { delay = 12, offset = 0 } = this.definition.mirrorOwner;
+    const { sprite } = this.owner;
+    this.history ??= [];
+    this.history.push({
+      texture: sprite.texture,
+      x: this.owner.x - offset * this.owner.facing * this.unit,
+      y: this.owner.y,
+      scaleX: sprite.scale.x,
+      scaleY: sprite.scale.y,
+      anchorX: sprite.anchor.x,
+      anchorY: sprite.anchor.y,
+    });
+    while (this.history.length > delay + 1) this.history.shift();
+    const shown = this.history[0];
+    this.x = shown.x;
+    this.y = shown.y;
+  }
+
   applyMotion() {
     const motion = this.spawn.motion ?? this.definition.motion;
     if (!motion) return;
     while (this.motionIndex < motion.length && motion[this.motionIndex].at <= this.age) {
       const { vx, vy, aim } = motion[this.motionIndex];
-      if (vx !== undefined) this.vx = vx * this.facing;
-      if (vy !== undefined) this.vy = vy;
+      if (vx !== undefined) this.vx = vx * this.facing * this.unit;
+      if (vy !== undefined) this.vy = vy * this.unit;
       // Mira: sai em linha reta na direcao do oponente (as kunais da Yoruichi).
       if (aim && this.opponent) {
         const dx = this.opponent.x - this.x;
         const dy = this.opponent.y - 40 - this.y;
         const length = Math.hypot(dx, dy) || 1;
-        this.vx = (dx / length) * aim;
-        this.vy = (dy / length) * aim;
+        this.vx = (dx / length) * aim * this.unit;
+        this.vy = (dy / length) * aim * this.unit;
       }
       this.motionIndex += 1;
     }
@@ -261,6 +303,7 @@ export class Effect {
       push: hit.push ?? definition.push,
       heavy: hit.heavy ?? definition.heavy,
       unblockable: hit.unblockable ?? definition.unblockable,
+      noEcho: definition.noEcho,
     };
     // Selo sorteado entre os tipos declarados; a marca (simbolo em cima do
     // oponente) nasce junto e dura o mesmo tempo.
@@ -274,6 +317,16 @@ export class Effect {
   }
 
   sync() {
+    if (this.definition.mirrorOwner) {
+      const shown = this.history?.[0];
+      if (!shown) return;
+      this.sprite.texture = shown.texture;
+      this.sprite.anchor.set(shown.anchorX, shown.anchorY);
+      this.sprite.scale.set(shown.scaleX, shown.scaleY);
+      this.sprite.x = Math.round(shown.x);
+      this.sprite.y = Math.round(shown.y);
+      return;
+    }
     this.sprite.texture = this.frames[this.animation.sheetFrame];
     this.sprite.x = Math.round(this.x);
     this.sprite.y = Math.round(this.y);
@@ -283,7 +336,7 @@ export class Effect {
       this.sprite.scale.set(cover[0] / spriteGridSize.frameWidth, cover[1] / spriteGridSize.frameHeight);
       return;
     }
-    this.sprite.scale.set(RENDER_SCALE * this.scaleX * this.facing, RENDER_SCALE * this.scaleY);
+    this.sprite.scale.set(this.scaleX * this.facing, this.scaleY);
   }
 
   destroy() {
@@ -356,8 +409,24 @@ export class EffectManager {
       }
       effect.pendingSpawns.length = 0;
     }
+    this.blockWithShields();
     this.removeDead();
     return results;
+  }
+
+  // Barreira (o Danku da Unohana): projetil do outro lutador que encosta na
+  // caixa "shield" (x1, y1, x2, y2 relativos a ancora do efeito) some.
+  blockWithShields() {
+    for (const shield of this.effects) {
+      const box = shield.definition.shield;
+      if (!box || shield.dead) continue;
+      const rect = shield.shieldRect;
+      for (const effect of this.effects) {
+        if (effect.owner === shield.owner || effect.dead) continue;
+        const hit = effect.hitRect;
+        if (hit && overlaps(hit, rect)) effect.dead = true;
+      }
+    }
   }
 
   removeDead() {

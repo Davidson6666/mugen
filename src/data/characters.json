@@ -40,6 +40,46 @@
     "isBoss": false
   },
   {
+    "id": "unohana",
+    "name": "Unohana",
+    "dir": "/assets/characters/unohana",
+    "config": "unohana_config.json",
+    "portrait": "unohana_portrait.png",
+    "isBoss": false
+  },
+  {
+    "id": "aizen",
+    "name": "Aizen",
+    "dir": "/assets/characters/aizen",
+    "config": "aizen_config.json",
+    "portrait": "aizen_portrait.png",
+    "isBoss": false
+  },
+  {
+    "id": "gojo",
+    "name": "Gojo",
+    "dir": "/assets/characters/gojo",
+    "config": "gojo_config.json",
+    "portrait": "gojo_portrait.png",
+    "isBoss": false
+  },
+  {
+    "id": "sukuna",
+    "name": "Sukuna",
+    "dir": "/assets/characters/sukuna",
+    "config": "sukuna_config.json",
+    "portrait": "sukuna_portrait.png",
+    "isBoss": false
+  },
+  {
+    "id": "miku",
+    "name": "Miku",
+    "dir": "/assets/characters/miku",
+    "config": "miku_config.json",
+    "portrait": "miku_portrait.png",
+    "isBoss": false
+  },
+  {
     "id": "ensina_god",
     "name": "Ensina GOD",
     "dir": "/assets/characters/ensina_god",

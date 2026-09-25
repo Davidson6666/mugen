@@ -6,10 +6,30 @@ import { readFileSync } from 'node:fs';
 import { inflateSync } from 'node:zlib';
 import { PNG } from 'pngjs';
 
+const FORMAT_RAW = 0;
+const FORMAT_RLE8 = 2;
 const FORMAT_LZ5 = 4;
 const FORMAT_PNG8 = 10;
 const FORMAT_PNG24 = 11;
 const FORMAT_PNG32 = 12;
+
+// RLE8 (SFF v2.00): byte com os bits 0x40 (e nao 0x80) = repeticao do
+// proximo byte; qualquer outro = o proprio indice.
+function decodeRle8(src, width, height) {
+  const out = new Uint8Array(width * height);
+  let pointer = 0, target = 0;
+  while (pointer < src.length && target < out.length) {
+    const byte = src[pointer++];
+    if ((byte & 0xc0) === 0x40) {
+      const count = byte & 0x3f;
+      const value = src[pointer++];
+      for (let k = 0; k < count && target < out.length; k += 1) out[target++] = value;
+    } else {
+      out[target++] = byte;
+    }
+  }
+  return out;
+}
 
 // PNG paletizado lido so ate os indices: as cores vem da tabela de paletas do
 // SFF, nao do PLTE do proprio PNG.
@@ -226,6 +246,20 @@ function openSffV1(buffer, { act } = {}) {
     }
     ownPalette[index] = last;
   });
+  // A paleta do personagem (a que o .act troca) e a da cadeia do sprite 0,0
+  // (parado); cadeias de "mesma paleta" que partem de outro sprite
+  // (efeitos com cores proprias) ficam com a paleta dele, a nao ser que seja
+  // igual a do personagem.
+  const paletteOf = (index) => readPcx(buffer.subarray(sprites[index].offset, sprites[index].offset + sprites[index].length)).palette;
+  const standing = sprites.findIndex((sprite) => sprite.group === 0 && sprite.item === 0);
+  const charOwner = (standing >= 0 ? ownPalette[standing] : null) ?? ownPalette.find((index) => index !== null) ?? null;
+  const charKey = charOwner === null ? null : JSON.stringify(paletteOf(charOwner));
+  const usesAct = new Map();
+  const isCharPalette = (from) => {
+    if (from === null || from === charOwner) return true;
+    if (!usesAct.has(from)) usesAct.set(from, JSON.stringify(paletteOf(from)) === charKey);
+    return usesAct.get(from);
+  };
 
   function decode(group, item) {
     const index = byKey.get(`${group},${item}`);
@@ -239,7 +273,7 @@ function openSffV1(buffer, { act } = {}) {
     let colors;
     if (source.samePalette || meta.samePalette) {
       const from = ownPalette[sourceIndex];
-      colors = act ?? (from !== null ? readPcx(buffer.subarray(sprites[from].offset, sprites[from].offset + sprites[from].length)).palette : image.palette);
+      colors = act && isCharPalette(from) ? act : (from !== null ? paletteOf(from) : image.palette);
     } else {
       colors = image.palette ?? act;
     }
@@ -269,6 +303,8 @@ export function openSff(path, options = {}) {
   if (buffer[15] === 1) return openSffV1(buffer, options);
   if (buffer[15] !== 2) throw new Error(`${path}: versao de SFF sem suporte`);
   const spriteOffset = u32(36), spriteCount = u32(40), paletteOffset = u32(44), literalData = u32(52);
+  // Dados "translate" (flag 1 do sprite/paleta): outro bloco do arquivo.
+  const translateData = u32(60);
 
   const sprites = [];
   for (let index = 0; index < spriteCount; index += 1) {
@@ -276,7 +312,7 @@ export function openSff(path, options = {}) {
     sprites.push({
       group: u16(o), item: u16(o + 2), width: u16(o + 4), height: u16(o + 6),
       axisX: s16(o + 8), axisY: s16(o + 10), link: u16(o + 12), format: buffer[o + 14],
-      offset: u32(o + 16), length: u32(o + 20), palette: u16(o + 24),
+      offset: u32(o + 16), length: u32(o + 20), palette: u16(o + 24), flags: u16(o + 26),
     });
   }
   const byKey = new Map(sprites.map((sprite) => [`${sprite.group},${sprite.item}`, sprite]));
@@ -314,7 +350,7 @@ export function openSff(path, options = {}) {
     if (!meta) return null;
     let source = meta;
     for (let hops = 0; source.length === 0 && hops < 16; hops += 1) source = sprites[source.link];
-    const start = literalData + source.offset;
+    const start = (source.flags & 1 ? translateData : literalData) + source.offset;
     const data = Buffer.from(buffer.subarray(start + 4, start + source.length));
     const result = { axisX: meta.axisX, axisY: meta.axisY };
 
@@ -338,8 +374,10 @@ export function openSff(path, options = {}) {
       }
       return { ...result, width: image.width, height: image.height, rgba };
     }
-    if (source.format === FORMAT_LZ5) {
-      const indices = decodeLz5(data, source.width, source.height);
+    if (source.format === FORMAT_LZ5 || source.format === FORMAT_RLE8 || source.format === FORMAT_RAW) {
+      const indices = source.format === FORMAT_LZ5
+        ? decodeLz5(data, source.width, source.height)
+        : source.format === FORMAT_RLE8 ? decodeRle8(data, source.width, source.height) : new Uint8Array(data);
       const colors = paletteOf(source.palette);
       const background = backgroundMask({ width: source.width, height: source.height, indices });
       const rgba = new Uint8Array(source.width * source.height * 4);

@@ -11,12 +11,14 @@
 // (scripts/import-*.mjs) com o vocabulario do motor: events (o que acontece em
 // cada tick: impulso, teleporte, efeito), cancels (encadear no botao), onHit,
 // next. Os tempos da especificacao seguem os do .cns, em ticks de 60/s.
+import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { PNG } from 'pngjs';
 import { openSff, readAct } from './sff.mjs';
 import { readAir } from './air.mjs';
+import { openSnd } from './snd.mjs';
 
 // Quadro com duracao -1 no MUGEN fica parado para sempre.
 const HOLD_TICKS = 600;
@@ -25,6 +27,31 @@ const GRID_COLS = 8;
 // que o filtro linear puxe cor do vizinho.
 const PAGE_SIZE = 2048;
 const PADDING = 2;
+
+// Sons do .snd (WAV) viram MP3 pelo ffmpeg: as musicas dos supers em WAV
+// passariam de 1 MB cada. Sem ffmpeg, fica o WAV.
+function exportSounds(root, outDir, sndPath, sounds) {
+  const snd = openSnd(sndPath);
+  const folder = resolve(root, outDir, 'sfx');
+  rmSync(folder, { recursive: true, force: true });
+  mkdirSync(folder, { recursive: true });
+  const files = {};
+  for (const [key, [group, item]] of Object.entries(sounds)) {
+    const wav = snd.get(group, item);
+    if (!wav) throw new Error(`som ${group},${item} (${key}) nao existe no .snd`);
+    const mp3 = resolve(folder, `${key}.mp3`);
+    const converted = spawnSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', 'pipe:0', '-b:a', '112k', mp3], { input: wav });
+    if (converted.status === 0) {
+      files[key] = `sfx/${key}.mp3`;
+    } else {
+      writeFileSync(resolve(folder, `${key}.wav`), wav);
+      files[key] = `sfx/${key}.wav`;
+    }
+  }
+  const total = readdirSync(folder).reduce((sum, file) => sum + readFileSync(resolve(folder, file)).length, 0);
+  console.log(`  ${outDir}/sfx: ${Object.keys(files).length} sons (${(total / 1024).toFixed(0)} KB)`);
+  return files;
+}
 
 function write(root, relativePath, buffer) {
   const target = resolve(root, relativePath);
@@ -104,6 +131,15 @@ function collectFrames(air, spec) {
   return { frames, starts };
 }
 
+function toShade(image) {
+  const rgba = new Uint8Array(image.rgba.length);
+  for (let index = 0; index < rgba.length; index += 4) {
+    const [r, g, b, a] = image.rgba.subarray(index, index + 4);
+    rgba[index + 3] = Math.round((Math.max(r, g, b) * a) / 255);
+  }
+  return { ...image, rgba };
+}
+
 const durationsOf = (frames) => frames.map((frame) => frame.duration);
 
 // Cada combinacao sprite + deslocamento + espelhamento vira uma celula. O eixo
@@ -113,10 +149,16 @@ class CellPacker {
   // meia resolucao, faiscas que o autor exibe a 14%-50%).
   // opaque: fundo transparente vira preto (ceu que cobre a tela sem frestas).
   // remap: paleta [grupo, item] no lugar da 3,0 (remappal das Explod).
-  constructor(sff, scale = 1, { opaque = false, remap } = {}) {
+  // shade: desenho subtrativo do MUGEN (trans = sub, o caixao do Kurohitsugi):
+  // o claro escurece a tela, entao vira preto com opacidade pelo brilho.
+  // center: a imagem fica centrada na celula, ignorando o eixo (fundos de
+  // tela cheia com o eixo no canto, que o cover estica pelo centro).
+  constructor(sff, scale = 1, { opaque = false, remap, shade = false, center = false } = {}) {
+    this.center = center;
     this.sff = sff;
     this.scale = scale;
     this.opaque = opaque;
+    this.shade = shade;
     this.remap = remap;
     this.cells = [];
     this.byKey = new Map();
@@ -137,12 +179,13 @@ class CellPacker {
       }
       let image = this.scale === 1 ? decoded : scaleDown(decoded, this.scale);
       if (this.opaque) image = flatten(image);
+      if (this.shade) image = toShade(image);
       const x = Math.round(frame.x * this.scale), y = Math.round(frame.y * this.scale);
       const flipX = frame.flip.includes('H');
       const flipY = frame.flip.includes('V');
       // Pontos do desenho relativos ao pe: x para a direita, y para baixo.
-      const left = x + (flipX ? image.axisX - image.width + 1 : -image.axisX);
-      const top = y + (flipY ? image.axisY - image.height + 1 : -image.axisY);
+      const left = this.center ? -Math.round(image.width / 2) : x + (flipX ? image.axisX - image.width + 1 : -image.axisX);
+      const top = this.center ? -Math.round(image.height / 2) : y + (flipY ? image.axisY - image.height + 1 : -image.axisY);
       this.byKey.set(key, this.cells.length);
       this.cells.push({ image, flipX, flipY, left, top });
     }
@@ -495,12 +538,13 @@ function buildEvents(events = [], starts) {
 const EFFECT_FIELDS = [
   'velocityX', 'velocityY', 'gravity', 'lifetime', 'destroyOnHit', 'attached', 'follow', 'layer', 'blend',
   'activeFrom', 'activeUntil', 'maxHits', 'hitInterval', 'damage', 'hitstun', 'push', 'heavy', 'endOnGround',
-  'seal', 'alpha', 'endAtWall', 'tag', 'endWithMove', 'motion', 'hitDelay', 'unblockable', 'cover', 'endOnOwnerHit', 'angle',
+  'seal', 'alpha', 'endAtWall', 'tag', 'endWithMove', 'motion', 'hitDelay', 'unblockable', 'cover', 'endOnOwnerHit', 'angle', 'shield', 'orbit',
+  'mirrorOwner', 'tint', 'noEcho',
 ];
 // Campos do golpe que passam direto (os tempos ja estao em ticks).
 const MOVE_FIELDS = [
   'cancels', 'onHit', 'next', 'air', 'float', 'invulnerable', 'cooldown', 'damage', 'hitstun', 'friction',
-  'keepMomentum', 'requires', 'onHitBuff', 'noPush', 'charge', 'specialCancel', 'counter',
+  'keepMomentum', 'requires', 'onHitBuff', 'noPush', 'charge', 'specialCancel', 'counter', 'opponentLifeBelow', 'perRound', 'illusion', 'randomNext', 'onLand',
 ];
 
 // Efeitos compartilhados por todo o elenco (faiscas de impacto): uma folha por
@@ -529,7 +573,7 @@ export function exportFightFx({ root, sffPath, airPath, outDir, effects }) {
 
 export function importMugenCharacter({
   root, sffPath, airPath, outDir, id, name, description, template,
-  animations, effects = {}, combos, buttons, moveList, airJumpEffect, modes, sffOptions, portrait, hurtboxFrom = 'idle',
+  animations, effects = {}, combos, buttons, moveList, airJumpEffect, modes, awakening, echo, sndPath, sounds, sffOptions, spriteScale, bodyScale = 1, portrait, hurtboxFrom = 'idle',
 }) {
   console.log('Lendo o pacote MUGEN...');
   // SFF v1 (MUGEN antigo): as cores do personagem vem da paleta .act.
@@ -547,7 +591,9 @@ export function importMugenCharacter({
   };
 
   console.log('Personagem...');
-  const body = new CellPacker(sff);
+  // bodyScale: resolucao guardada do corpo (pacotes em alta resolucao, como o
+  // Dante com xscale 0.5, guardam menos e o spriteScale fecha o tamanho).
+  const body = new CellPacker(sff, bodyScale);
   const sources = {};
   for (const [animationId, spec] of Object.entries(animations)) {
     const collected = collectFrames(air, spec);
@@ -563,7 +609,7 @@ export function importMugenCharacter({
     // scale: resolucao guardada (reampliada na tela); size: tamanho na tela
     // (corvos menores que no pacote).
     const scale = spec.scale ?? 1;
-    const packer = new CellPacker(sff, scale * (spec.size ?? 1), { opaque: spec.opaque, remap: spec.remap });
+    const packer = new CellPacker(sff, scale * (spec.size ?? 1), { opaque: spec.opaque, remap: spec.remap, shade: spec.shade, center: spec.center ?? Boolean(spec.cover) });
     const collected = collectFrames(air, spec);
     const cells = collected.frames.map((frame) => packer.cellFor(frame));
     effectSources[effectId] = { ...collected, cells, packer, scale, size: spec.size ?? 1, grid: packer.grid, start: addGroup(packer) };
@@ -593,7 +639,7 @@ export function importMugenCharacter({
       // Ou uma caixa declarada (rect = x1, y1, x2, y2 do .cns, relativos ao pe).
       const { fromFrame = 0, widthRatio, heightRatio, rect, from = 0, until = frames.length - 1, ...data } = spec.area;
       const box = rect
-        ? { x1: rect[0] * scale, y1: rect[1] * scale, x2: rect[2] * scale, y2: rect[3] * scale }
+        ? { x1: rect[0] * scale * size, y1: rect[1] * scale * size, x2: rect[2] * scale * size, y2: rect[3] * scale * size }
         : opaqueBox(packer.cells[cells[fromFrame]], widthRatio, heightRatio);
       hits = [{ from, until, box: boxInCell(box, effectGrid, 1), ...data }];
     }
@@ -636,7 +682,15 @@ export function importMugenCharacter({
       };
     }
     if (spec.effect) animation.effect = toOffset(spec.effect);
-    const hits = buildHits(frames, spec, grid, 1);
+    // areas: caixas declaradas (x1, y1, x2, y2 relativos ao pe, em px do
+    // pacote) no lugar das clsn1 do .air, para pacotes cujas caixas nao servem
+    // (o Sukuna marca o corpo inteiro como ataque e acerta por projeteis
+    // invisiveis do tamanho da tela).
+    const hits = spec.areas
+      ? spec.areas.map(({ rect, from, until, ...data }) => ({
+        from, until, box: boxInCell({ x1: rect[0], y1: rect[1], x2: rect[2], y2: rect[3] }, grid, bodyScale), ...data,
+      }))
+      : buildHits(frames, spec, grid, bodyScale);
     if (hits) animation.hits = hits;
     if (spec.events) animation.events = buildEvents(spec.events, starts);
     for (const key of MOVE_FIELDS) if (spec[key] !== undefined) animation[key] = spec[key];
@@ -646,6 +700,7 @@ export function importMugenCharacter({
   // Hurtbox unica do personagem: as caixas clsn2 do primeiro quadro parado.
   const hurt = union(sources[hurtboxFrom].frames[0].clsn2);
   write(root, `${outDir}/${id}_portrait.png`, buildPortrait(sff, portrait));
+  const soundFiles = sounds ? exportSounds(root, outDir, sndPath, sounds) : null;
 
   const { spriteSheet: _unused, ...rest } = base;
   const config = {
@@ -663,10 +718,14 @@ export function importMugenCharacter({
     ...(moveList ? { moveList } : {}),
     ...(airJumpEffect ? { airJumpEffect: toOffset(airJumpEffect) } : {}),
     ...(modes ? { modes } : {}),
+    ...(awakening ? { awakening } : {}),
+    ...(echo ? { echo } : {}),
+    ...(soundFiles ? { sounds: soundFiles } : {}),
+    ...(spriteScale ? { spriteScale } : {}),
     // Hitbox base = o primeiro acerto do soco; e ela que a IA usa para medir
     // o alcance.
     hitbox: built.punch.hits?.[0]?.box ?? built.punch.hitbox,
-    hurtbox: boxInCell(hurt, grid),
+    hurtbox: boxInCell(hurt, grid, bodyScale),
   };
   write(root, `${outDir}/${id}_config.json`, Buffer.from(`${JSON.stringify(config, null, 2)}\n`, 'utf8'));
   console.log(`Pronto: ${pieces.length} recortes em ${sheets.length} pagina(s).`);

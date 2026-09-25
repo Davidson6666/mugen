@@ -1,7 +1,7 @@
 import { Container, Graphics, Sprite, Text } from 'pixi.js';
 import { PALETTE, PALETTE_HEX } from '../utils/palette.js';
 import {
-  EMBLEM, EMBLEM_TITLE_BAND, EMBLEM_TITLE_Y, LIFE_BAR, LIFE_HEIGHT, LIFE_INNER_X, LIFE_OUTER_X,
+  AWAKENING_POSITION, EMBLEM, EMBLEM_TITLE_BAND, EMBLEM_TITLE_Y, LIFE_BAR, LIFE_HEIGHT, LIFE_INNER_X, LIFE_OUTER_X,
   LIFE_TOP, NAME_POSITION, OUTLINE_LAYERS, PORTRAIT, PORTRAIT_CENTER, ROUND_MARKERS,
   ROUND_MARKER_RADIUS, TIMER_Y, diamond, mirrorX,
 } from '../utils/hudGeometry.js';
@@ -133,7 +133,35 @@ export class Hud {
     side.combo.visible = false;
     this.view.addChild(side.combo);
 
+    this.buildAwakening(side, index, mirror);
     this.sides.push(side);
+  }
+
+  // Medidor de despertar (Origin Mode do Gojo), embaixo do nome: percentual
+  // enchendo; ligado, o nome do modo piscando.
+  buildAwakening(side, index, mirror) {
+    const [x, y] = mirror([AWAKENING_POSITION])[0];
+    side.awake = label('', 20, { fill: PALETTE.textPrimary, stroke: 5 });
+    side.awake.anchor.set(index === 1 ? 1 : 0, 1);
+    side.awake.position.set(x, y);
+    side.awake.visible = false;
+    side.awakeBlink = 0;
+    this.view.addChild(side.awake);
+  }
+
+  drawAwakening(side, fighter, delta) {
+    const def = fighter.awakening;
+    side.awake.visible = Boolean(def);
+    if (!def) return;
+    side.awakeBlink = (side.awakeBlink + delta) % 20;
+    const name = (def.label ?? def.mode).toUpperCase();
+    if (fighter.awakened) {
+      side.awake.text = `${name} MODE`;
+      side.awake.style.fill = side.awakeBlink < 10 ? PALETTE.lifeFill : PALETTE.textPrimary;
+    } else {
+      side.awake.text = `${name} ${Math.floor(((fighter.awakeGauge ?? 0) / def.gauge) * 100)}%`;
+      side.awake.style.fill = PALETTE.textPrimary;
+    }
   }
 
   // Anuncio no estilo do K.O. do CvS2: faixa amarela atravessando a tela com o
@@ -181,6 +209,7 @@ export class Hud {
       this.updateTrail(side, ratio, delta);
       this.drawLife(side, index, ratio);
       this.drawMarkers(side, index, wins[index], roundsToWin);
+      this.drawAwakening(side, fighter, delta);
 
       const showCombo = fighter.comboCount > 1;
       side.combo.visible = showCombo;

@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { useMenu } from '../context/MenuContext.js';
+import { loadVolume, saveVolume } from '../systems/AudioManager.js';
 import { useMenuInput } from '../utils/useMenuInput.js';
 import { PALETTE } from '../utils/palette.js';
 import { Capsule, DiagonalBackdrop, Label, Shape } from './cvs2.jsx';
@@ -26,7 +28,23 @@ const rowShape = (y) => [[70, y], [1230, y], [1212, y + 58], [52, y + 58]];
 
 export default function SettingsScreen() {
   const { back } = useMenu();
-  useMenuInput({ onCancel: back, onConfirm: back });
+  // Volume em passos de 10%, ajustado com A / D (ou as setas do P2).
+  const [volume, setVolume] = useState(() => Math.round(loadVolume() * 10));
+  const changeVolume = (step) => {
+    setVolume((current) => {
+      const next = Math.min(10, Math.max(0, current + step));
+      saveVolume(next / 10);
+      return next;
+    });
+  };
+  useMenuInput({
+    onCancel: back,
+    onConfirm: back,
+    onMove: (player, direction) => {
+      if (direction === 'left') changeVolume(-1);
+      if (direction === 'right') changeVolume(1);
+    },
+  });
 
   return (
     <div className="cvs2-screen">
@@ -57,10 +75,16 @@ export default function SettingsScreen() {
           );
         })}
 
-        <Label x={48} y={640} size={26} weight={600} stroke={6}>
-          VOLUME E REMAPEAMENTO DE TECLAS ENTRAM JUNTO COM O SISTEMA DE AUDIO.
-        </Label>
-        <Label x={1240} y={700} size={22} weight={600} anchor="end" stroke={5}>J OU K VOLTA</Label>
+        <g>
+          <Shape points={rowShape(ROW_TOP + CONTROLS.length * ROW_STEP)} fill={PALETTE.ink} />
+          <Label x={90} y={ROW_TOP + CONTROLS.length * ROW_STEP + 42} size={30} weight={800} fill={PALETTE.fieldYellow} stroke={0}>
+            VOLUME
+          </Label>
+          <Label x={520} y={ROW_TOP + CONTROLS.length * ROW_STEP + 42} size={30} weight={800} stroke={0}>
+            {`◀  ${'■'.repeat(volume)}${'□'.repeat(10 - volume)}  ${volume * 10}%  ▶`}
+          </Label>
+        </g>
+        <Label x={1240} y={700} size={22} weight={600} anchor="end" stroke={5}>A / D AJUSTA O VOLUME · J OU K VOLTA</Label>
       </svg>
     </div>
   );

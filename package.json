@@ -12,7 +12,13 @@
     "assets:placeholder": "node scripts/generate-placeholder-assets.mjs",
     "assets:itachi": "node scripts/import-itachi.mjs",
     "assets:yoruichi": "node scripts/import-yoruichi.mjs",
-    "assets:escanor": "node scripts/import-escanor.mjs"
+    "assets:unohana": "node scripts/import-unohana.mjs",
+    "assets:aizen": "node scripts/import-aizen.mjs",
+    "assets:gojo": "node scripts/import-gojo.mjs",
+    "assets:sukuna": "node scripts/import-sukuna.mjs",
+    "assets:miku": "node scripts/import-miku.mjs",
+    "assets:escanor": "node scripts/import-escanor.mjs",
+    "assets:dante": "node scripts/import-dante.mjs"
   },
   "dependencies": {
     "@fontsource/barlow-condensed": "^5.3.0",

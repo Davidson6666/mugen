@@ -474,13 +474,18 @@ function buildMapBackground(hue = 0, seed = 1) {
 // personagem foi escolhido para cair no tom tematico dele e, ao mesmo tempo,
 // deixar os seis bem distintos na grade de selecao.
 const ROSTER = [
-  { id: 'dante', name: 'Dante', description: 'Cacador de demonios', hue: 250 },
+  { id: 'dante', name: 'Dante', description: 'Cacador de demonios', hue: 250, realArt: true },
   // Arte real, gerada por scripts/import-<id>.mjs a partir de pacotes MUGEN:
   // o placeholder nao pode sobrescrever.
   { id: 'escanor', name: 'Escanor', description: 'O Leao do Orgulho', hue: 295, realArt: true },
   { id: 'humberto', name: 'Humberto', description: 'Lenda da UTFPR', hue: 0 },
   { id: 'itachi', name: 'Itachi', description: 'Sombra do cla Uchiha', hue: 150, realArt: true },
   { id: 'yoruichi', name: 'Yoruichi', description: 'A deusa do Shunpo', hue: 40, realArt: true },
+  { id: 'aizen', name: 'Aizen', description: 'O ilusionista do Hogyoku', hue: 270, realArt: true },
+  { id: 'gojo', name: 'Gojo', description: 'O mais forte', hue: 210, realArt: true },
+  { id: 'sukuna', name: 'Sukuna', description: 'O rei das maldicoes', hue: 350, realArt: true },
+  { id: 'miku', name: 'Miku', description: 'A diva da cebolinha', hue: 175, realArt: true },
+  { id: 'unohana', name: 'Unohana', description: 'A primeira Kenpachi', hue: 130, realArt: true },
   { id: 'ensina_god', name: 'Ensina GOD', description: 'Professor supremo', hue: 200 },
 ];
 

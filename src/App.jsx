@@ -8,6 +8,8 @@ import VersusScreen from './components/VersusScreen.jsx';
 import Battle from './components/Battle.jsx';
 import ResultScreen from './components/ResultScreen.jsx';
 import SettingsScreen from './components/SettingsScreen.jsx';
+import FullscreenButton from './components/FullscreenButton.jsx';
+import { useStageScale } from './utils/useStageScale.js';
 import './App.css';
 
 const SCREENS = {
@@ -27,13 +29,15 @@ function Router() {
 }
 
 export default function App() {
+  const { fullscreen, scale } = useStageScale();
   return (
     <GameProvider>
       <MenuProvider>
-        <div className="app">
+        <div className={`app${fullscreen ? ' app--fullscreen' : ''}`} style={{ '--stage-scale': scale }}>
           <div className="app__stage">
             <Router />
           </div>
+          <FullscreenButton fullscreen={fullscreen} />
         </div>
       </MenuProvider>
     </GameProvider>
