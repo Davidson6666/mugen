@@ -1,0 +1,12 @@
+{
+  "id": "throneroom",
+  "name": "Sala do Trono",
+  "backgroundImage": "throneroom_bg.png",
+  "width": 1280,
+  "height": 720,
+  "groundLevel": 580,
+  "leftBound": 290,
+  "rightBound": 990,
+  "cameraZoomDefault": 1,
+  "parallaxLayers": []
+}

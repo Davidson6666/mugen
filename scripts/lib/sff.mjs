@@ -207,7 +207,7 @@ export function readAct(path) {
 // SFF v1 (MUGEN antigo): lista encadeada de sprites PCX. Sprites com
 // "mesma paleta" usam a paleta do personagem (o .act); os outros (retratos,
 // efeitos) trazem a propria. A cor 0 e o transparente.
-function openSffV1(buffer, { act } = {}) {
+function openSffV1(buffer, { act, actFromSprite } = {}) {
   const u16 = (o) => buffer.readUInt16LE(o);
   const s16 = (o) => buffer.readInt16LE(o);
   const u32 = (o) => buffer.readUInt32LE(o);
@@ -251,7 +251,20 @@ function openSffV1(buffer, { act } = {}) {
   // (efeitos com cores proprias) ficam com a paleta dele, a nao ser que seja
   // igual a do personagem.
   const paletteOf = (index) => readPcx(buffer.subarray(sprites[index].offset, sprites[index].offset + sprites[index].length)).palette;
-  const standing = sprites.findIndex((sprite) => sprite.group === 0 && sprite.item === 0);
+  // actFromSprite: pacotes cujo .act nao bate com os sprites (o do Zenitsu
+  // pinta tudo de preto): a paleta do personagem vem da cadeia de um sprite
+  // que sai com as cores certas.
+  if (actFromSprite) {
+    const index = byKey.get(`${actFromSprite[0]},${actFromSprite[1]}`);
+    const owner = index === undefined ? null : ownPalette[index];
+    if (owner !== null && owner !== undefined) act = paletteOf(owner);
+  }
+  // Sem o 0,0 (o Zenitsu comeca no 0,1), vale o primeiro sprite do grupo 0.
+  let standing = sprites.findIndex((sprite) => sprite.group === 0 && sprite.item === 0);
+  if (standing < 0) {
+    const idle = sprites.filter((sprite) => sprite.group === 0).sort((a, b) => a.item - b.item)[0];
+    standing = idle ? sprites.indexOf(idle) : -1;
+  }
   const charOwner = (standing >= 0 ? ownPalette[standing] : null) ?? ownPalette.find((index) => index !== null) ?? null;
   const charKey = charOwner === null ? null : JSON.stringify(paletteOf(charOwner));
   const usesAct = new Map();
@@ -275,7 +288,9 @@ function openSffV1(buffer, { act } = {}) {
       const from = ownPalette[sourceIndex];
       colors = act && isCharPalette(from) ? act : (from !== null ? paletteOf(from) : image.palette);
     } else {
-      colors = image.palette ?? act;
+      // O sprite parado que e dono da paleta do personagem tambem troca pelo
+      // .act (o retrato 9000,x, quando e o dono, fica com as cores dele).
+      colors = act && sourceIndex === charOwner && meta.group === 0 ? act : image.palette ?? act;
     }
     const rgba = new Uint8Array(image.width * image.height * 4);
     for (let p = 0; p < image.indices.length; p += 1) {

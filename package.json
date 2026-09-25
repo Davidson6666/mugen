@@ -18,7 +18,15 @@
     "assets:sukuna": "node scripts/import-sukuna.mjs",
     "assets:miku": "node scripts/import-miku.mjs",
     "assets:escanor": "node scripts/import-escanor.mjs",
-    "assets:dante": "node scripts/import-dante.mjs"
+    "assets:dante": "node scripts/import-dante.mjs",
+    "assets:throneroom": "node scripts/import-throneroom.mjs",
+    "assets:pikachu": "node scripts/import-pikachu.mjs",
+    "assets:killua": "node scripts/import-killua.mjs",
+    "assets:goku": "node scripts/import-goku.mjs",
+    "assets:tanjiro": "node scripts/import-tanjiro.mjs",
+    "assets:zenitsu": "node scripts/import-zenitsu.mjs",
+    "assets:nezuko": "node scripts/import-nezuko.mjs",
+    "assets:chunli": "node scripts/import-chunli.mjs"
   },
   "dependencies": {
     "@fontsource/barlow-condensed": "^5.3.0",

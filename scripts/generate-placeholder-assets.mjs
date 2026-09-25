@@ -486,6 +486,13 @@ const ROSTER = [
   { id: 'sukuna', name: 'Sukuna', description: 'O rei das maldicoes', hue: 350, realArt: true },
   { id: 'miku', name: 'Miku', description: 'A diva da cebolinha', hue: 175, realArt: true },
   { id: 'unohana', name: 'Unohana', description: 'A primeira Kenpachi', hue: 130, realArt: true },
+  { id: 'pikachu', name: 'Pikachu', description: 'O rato eletrico', hue: 55, realArt: true },
+  { id: 'killua', name: 'Killua', description: 'O assassino relampago', hue: 220, realArt: true },
+  { id: 'goku', name: 'Goku', description: 'Super Saiyajin Blue', hue: 200, realArt: true },
+  { id: 'tanjiro', name: 'Tanjiro', description: 'O cacador de onis', hue: 150, realArt: true },
+  { id: 'zenitsu', name: 'Zenitsu', description: 'O trovao adormecido', hue: 45, realArt: true },
+  { id: 'nezuko', name: 'Nezuko', description: 'A oni que protege', hue: 330, realArt: true },
+  { id: 'chunli', name: 'Chun-Li', description: 'A mais forte do mundo', hue: 215, realArt: true },
   { id: 'ensina_god', name: 'Ensina GOD', description: 'Professor supremo', hue: 200 },
 ];
 
@@ -495,6 +502,8 @@ const STAGES = [
   { id: 'map_03', name: 'Telhado Sintetico', hue: 140 },
   { id: 'map_04', name: 'Templo Submerso', hue: 200 },
   { id: 'map_05', name: 'Arena Final', hue: 300 },
+  // Arte real (scripts/import-throneroom.mjs): o placeholder nao sobrescreve.
+  { id: 'throneroom', name: 'Sala do Trono', realArt: true },
 ];
 
 /* ------------------------------------------------------------- escrita --- */
@@ -539,7 +548,8 @@ for (const { id, name, description, hue, realArt } of ROSTER) {
 }
 
 console.log('Gerando cenarios placeholder...');
-for (const [index, { id, name, hue }] of STAGES.entries()) {
+for (const [index, { id, name, hue, realArt }] of STAGES.entries()) {
+  if (realArt) continue;
   write(`public/assets/maps/${id}/${id}_bg.png`, buildMapBackground(hue, index + 1));
   writeJson(`public/assets/maps/${id}/${id}_config.json`, {
     ...mapTemplate,

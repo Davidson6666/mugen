@@ -153,7 +153,8 @@ class CellPacker {
   // o claro escurece a tela, entao vira preto com opacidade pelo brilho.
   // center: a imagem fica centrada na celula, ignorando o eixo (fundos de
   // tela cheia com o eixo no canto, que o cover estica pelo centro).
-  constructor(sff, scale = 1, { opaque = false, remap, shade = false, center = false } = {}) {
+  constructor(sff, scale = 1, { opaque = false, remap, shade = false, center = false, palfx } = {}) {
+    this.palfx = palfx;
     this.center = center;
     this.sff = sff;
     this.scale = scale;
@@ -165,7 +166,7 @@ class CellPacker {
   }
 
   cellFor(frame) {
-    const key = `${frame.group},${frame.item},${frame.x},${frame.y},${frame.flip}`;
+    const key = `${frame.group},${frame.item},${frame.x},${frame.y},${frame.flip},${frame.xscale ?? 1},${frame.yscale ?? 1},${frame.angle ?? 0}`;
     if (!this.byKey.has(key)) {
       let decoded = this.sff.decode(frame.group, frame.item, this.remap ? { remap: this.remap } : {});
       if (!decoded) {
@@ -177,9 +178,14 @@ class CellPacker {
         // (o instante em que o personagem some, a caixa invisivel de um golpe).
         decoded = { width: 1, height: 1, axisX: 0, axisY: 0, rgba: new Uint8Array(4) };
       }
-      let image = this.scale === 1 ? decoded : scaleDown(decoded, this.scale);
+      // Escala/rotacao do quadro (MUGEN 1.1) junto com a escala guardada.
+      const transformed = (frame.xscale ?? 1) !== 1 || (frame.yscale ?? 1) !== 1 || (frame.angle ?? 0) !== 0;
+      let image = transformed
+        ? transformImage(decoded, this.scale * (frame.xscale ?? 1), this.scale * (frame.yscale ?? 1), frame.angle ?? 0)
+        : this.scale === 1 ? decoded : scaleDown(decoded, this.scale);
       if (this.opaque) image = flatten(image);
       if (this.shade) image = toShade(image);
+      if (this.palfx) image = applyPalFx(image, this.palfx);
       const x = Math.round(frame.x * this.scale), y = Math.round(frame.y * this.scale);
       const flipX = frame.flip.includes('H');
       const flipY = frame.flip.includes('V');
@@ -270,6 +276,71 @@ class CellPacker {
       };
     });
   }
+}
+
+// PalFX fixo do .cns (mul/add em unidades do MUGEN, 256 = 1): a aura do
+// Kaioken e a chama azul com mul 512,50,50, que a deixa vermelha.
+function applyPalFx(image, { mul = [256, 256, 256], add = [0, 0, 0] }) {
+  const rgba = new Uint8Array(image.rgba);
+  for (let i = 0; i < rgba.length; i += 4) {
+    if (!rgba[i + 3]) continue;
+    for (let c = 0; c < 3; c += 1) rgba[i + c] = Math.max(0, Math.min(255, Math.round((rgba[i + c] * mul[c]) / 256 + add[c])));
+  }
+  return { ...image, rgba };
+}
+
+// Escala (x, y) e gira (graus, anti-horario como no MUGEN) o desenho em volta
+// do eixo, com amostragem bilinear (e media por area ao reduzir muito). O
+// eixo novo e o mesmo ponto do desenho.
+function transformImage(image, scaleX, scaleY, angle) {
+  const radians = (-angle * Math.PI) / 180;
+  const cos = Math.cos(radians), sin = Math.sin(radians);
+  // Cantos do desenho relativos ao eixo, ja transformados.
+  const corners = [[0, 0], [image.width, 0], [0, image.height], [image.width, image.height]].map(([x, y]) => {
+    const px = (x - image.axisX) * scaleX, py = (y - image.axisY) * scaleY;
+    return [px * cos - py * sin, px * sin + py * cos];
+  });
+  const minX = Math.floor(Math.min(...corners.map((c) => c[0])));
+  const minY = Math.floor(Math.min(...corners.map((c) => c[1])));
+  const maxX = Math.ceil(Math.max(...corners.map((c) => c[0])));
+  const maxY = Math.ceil(Math.max(...corners.map((c) => c[1])));
+  const width = Math.max(1, maxX - minX), height = Math.max(1, maxY - minY);
+  const rgba = new Uint8Array(width * height * 4);
+  // Reducao forte: amostra varios pontos por pixel de destino.
+  const steps = Math.max(1, Math.min(4, Math.ceil(1 / Math.max(1e-6, Math.min(Math.abs(scaleX), Math.abs(scaleY))) / 2)));
+  const sample = (sx, sy, out) => {
+    const x0 = Math.floor(sx), y0 = Math.floor(sy);
+    const fx = sx - x0, fy = sy - y0;
+    for (const [dx, dy, w] of [[0, 0, (1 - fx) * (1 - fy)], [1, 0, fx * (1 - fy)], [0, 1, (1 - fx) * fy], [1, 1, fx * fy]]) {
+      const x = x0 + dx, y = y0 + dy;
+      if (x < 0 || y < 0 || x >= image.width || y >= image.height || w === 0) continue;
+      const i = (y * image.width + x) * 4;
+      const a = image.rgba[i + 3] * w;
+      out[0] += image.rgba[i] * a; out[1] += image.rgba[i + 1] * a; out[2] += image.rgba[i + 2] * a; out[3] += a;
+    }
+  };
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < width; x += 1) {
+      const acc = [0, 0, 0, 0];
+      for (let sy = 0; sy < steps; sy += 1) {
+        for (let sx = 0; sx < steps; sx += 1) {
+          // Ponto de destino relativo ao eixo, desfeita a rotacao e a escala.
+          const tx = minX + x + (sx + 0.5) / steps, ty = minY + y + (sy + 0.5) / steps;
+          const rx = tx * cos + ty * sin, ry = -tx * sin + ty * cos;
+          sample(rx / scaleX + image.axisX - 0.5, ry / scaleY + image.axisY - 0.5, acc);
+        }
+      }
+      const n = steps * steps;
+      const alpha = acc[3] / n;
+      if (alpha <= 0) continue;
+      const i = (y * width + x) * 4;
+      rgba[i] = Math.round(acc[0] / acc[3]);
+      rgba[i + 1] = Math.round(acc[1] / acc[3]);
+      rgba[i + 2] = Math.round(acc[2] / acc[3]);
+      rgba[i + 3] = Math.round(alpha);
+    }
+  }
+  return { width, height, axisX: -minX, axisY: -minY, rgba };
 }
 
 // Recortes com os mesmos pixels (o mesmo corvo em cinco efeitos diferentes)
@@ -577,7 +648,10 @@ export function importMugenCharacter({
 }) {
   console.log('Lendo o pacote MUGEN...');
   // SFF v1 (MUGEN antigo): as cores do personagem vem da paleta .act.
-  const sff = openSff(sffPath, sffOptions?.actPath ? { act: readAct(sffOptions.actPath) } : {});
+  const sff = openSff(sffPath, {
+    ...(sffOptions?.actPath ? { act: readAct(sffOptions.actPath) } : {}),
+    ...(sffOptions?.actFromSprite ? { actFromSprite: sffOptions.actFromSprite } : {}),
+  });
   const air = readAir(airPath);
   const base = JSON.parse(readFileSync(resolve(root, template), 'utf8'));
 
@@ -609,7 +683,7 @@ export function importMugenCharacter({
     // scale: resolucao guardada (reampliada na tela); size: tamanho na tela
     // (corvos menores que no pacote).
     const scale = spec.scale ?? 1;
-    const packer = new CellPacker(sff, scale * (spec.size ?? 1), { opaque: spec.opaque, remap: spec.remap, shade: spec.shade, center: spec.center ?? Boolean(spec.cover) });
+    const packer = new CellPacker(sff, scale * (spec.size ?? 1), { opaque: spec.opaque, remap: spec.remap, shade: spec.shade, palfx: spec.palfx, center: spec.center ?? Boolean(spec.cover) });
     const collected = collectFrames(air, spec);
     const cells = collected.frames.map((frame) => packer.cellFor(frame));
     effectSources[effectId] = { ...collected, cells, packer, scale, size: spec.size ?? 1, grid: packer.grid, start: addGroup(packer) };
@@ -623,11 +697,17 @@ export function importMugenCharacter({
   for (const file of readdirSync(resolve(root, outDir))) {
     if (generated.test(file)) rmSync(resolve(root, outDir, file));
   }
+  // Versao das paginas (hash dos PNGs): o jogo pede as imagens com ela na URL,
+  // entao um navegador aberto nao mistura o atlas antigo com o config novo.
+  const version = createHash('md5');
   const sheets = images.map((image, index) => {
     const file = `${id}_atlas_${index}.png`;
-    write(root, `${outDir}/${file}`, toPng(image.width, image.height, image.rgba));
+    const png = toPng(image.width, image.height, image.rgba);
+    version.update(png);
+    write(root, `${outDir}/${file}`, png);
     return file;
   });
+  const assetVersion = version.digest('hex').slice(0, 10);
 
   const builtEffects = {};
   for (const [effectId, spec] of Object.entries(effects)) {
@@ -709,6 +789,7 @@ export function importMugenCharacter({
     name,
     description,
     sheets,
+    assetVersion,
     spriteGridSize: grid,
     atlas: body.cells.map((_, index) => placements[bodyStart + index]),
     animations: built,

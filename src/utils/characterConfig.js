@@ -9,3 +9,10 @@ export function loadConfig(entry) {
   }
   return configCache.get(url);
 }
+
+// URL de uma pagina do atlas com a versao gravada pelo importador: depois de
+// reimportar um personagem, a imagem nova nao vem do cache do navegador.
+export function sheetUrl(entry, config, file) {
+  const url = `${entry.dir}/${file}`;
+  return config.assetVersion ? `${url}?v=${config.assetVersion}` : url;
+}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { loadConfig } from '../utils/characterConfig.js';
+import { loadConfig, sheetUrl } from '../utils/characterConfig.js';
 
 // Quadro atual da animacao depois de "ticks" ticks de 60fps: por duracao de
 // cada quadro (importados do MUGEN) ou pela velocidade fixa (speed).
@@ -68,7 +68,7 @@ export default function FighterSprite({ entry, animation = 'idle', scale: baseSc
               top: dy,
               width,
               height,
-              backgroundImage: `url(${entry.dir}/${config.sheets[page]})`,
+              backgroundImage: `url(${sheetUrl(entry, config, config.sheets[page])})`,
               backgroundPosition: `${-x}px ${-y}px`,
             }}
           />

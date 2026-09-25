@@ -33,5 +33,12 @@
     "dir": "/assets/maps/map_05",
     "config": "map_05_config.json",
     "background": "map_05_bg.png"
+  },
+  {
+    "id": "throneroom",
+    "name": "Sala do Trono",
+    "dir": "/assets/maps/throneroom",
+    "config": "throneroom_config.json",
+    "background": "throneroom_bg.png"
   }
 ]

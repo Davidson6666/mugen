@@ -80,6 +80,62 @@
     "isBoss": false
   },
   {
+    "id": "pikachu",
+    "name": "Pikachu",
+    "dir": "/assets/characters/pikachu",
+    "config": "pikachu_config.json",
+    "portrait": "pikachu_portrait.png",
+    "isBoss": false
+  },
+  {
+    "id": "killua",
+    "name": "Killua",
+    "dir": "/assets/characters/killua",
+    "config": "killua_config.json",
+    "portrait": "killua_portrait.png",
+    "isBoss": false
+  },
+  {
+    "id": "goku",
+    "name": "Goku",
+    "dir": "/assets/characters/goku",
+    "config": "goku_config.json",
+    "portrait": "goku_portrait.png",
+    "isBoss": false
+  },
+  {
+    "id": "tanjiro",
+    "name": "Tanjiro",
+    "dir": "/assets/characters/tanjiro",
+    "config": "tanjiro_config.json",
+    "portrait": "tanjiro_portrait.png",
+    "isBoss": false
+  },
+  {
+    "id": "zenitsu",
+    "name": "Zenitsu",
+    "dir": "/assets/characters/zenitsu",
+    "config": "zenitsu_config.json",
+    "portrait": "zenitsu_portrait.png",
+    "isBoss": false
+  },
+  {
+    "id": "nezuko",
+    "name": "Nezuko",
+    "dir": "/assets/characters/nezuko",
+    "config": "nezuko_config.json",
+    "portrait": "nezuko_portrait.png",
+    "isBoss": false
+  },
+  {
+    "id": "chunli",
+    "name": "Chun-Li",
+    "dir": "/assets/characters/chunli",
+    "config": "chunli_config.json",
+    "portrait": "chunli_portrait.png",
+    "isBoss": false
+  },
+  {
     "id": "ensina_god",
     "name": "Ensina GOD",
     "dir": "/assets/characters/ensina_god",

@@ -85,3 +85,61 @@ Personagem importado do pacote MUGEN **"Dante_AI"**, usado sem fins comerciais e
 O script `scripts/import-dante.mjs` converte o pacote (SFF v1 com a paleta `dante.act`, sprites em alta resolução guardados pela metade). As vozes, os cortes e os tiros saem do `dante2.snd` do pacote e são convertidos para MP3 pelo ffmpeg (sem ffmpeg, ficam em WAV). O pacote fica em `assets-src/dante/mugen/`, fora do git. Para regerar: `npm run assets:dante`.
 
 Dante e Devil May Cry são propriedade da Capcom.
+
+## Pikachu
+
+Personagem importado do pacote MUGEN **"SC_Pikachu"**, usado sem fins comerciais em projeto acadêmico. Créditos do próprio pacote (`SC_Pikachu.def`): **TheTimster1998, Gladiacloud 'n Dylanius e Scrumble Bumble**.
+
+O script `scripts/import-pikachu.mjs` converte o pacote (SFF v2). O pacote fica em `assets-src/pikachu/mugen/`, fora do git. Para regerar: `npm run assets:pikachu`.
+
+Pikachu e Pokémon são propriedade da Nintendo / Game Freak / The Pokémon Company.
+
+## Killua
+
+Personagem importado do pacote MUGEN **"Killua"**, usado sem fins comerciais em projeto acadêmico. Créditos do próprio pacote (`Killua.def`): **Petamynx**.
+
+O script `scripts/import-killua.mjs` converte o pacote (SFF v2 com a paleta `1.act`). O pacote fica em `assets-src/killua/mugen/`, fora do git. Para regerar: `npm run assets:killua`.
+
+Killua Zoldyck e Hunter x Hunter são propriedade de Yoshihiro Togashi / Shueisha.
+
+## Goku
+
+Personagem importado do pacote MUGEN **"GokuSSGSS"**, usado sem fins comerciais em projeto acadêmico. Créditos do próprio pacote (`GokuSSGSS.def`): **Kronos**.
+
+O script `scripts/import-goku.mjs` converte o pacote (SFF v2 com a paleta `1.act`). O pacote fica em `assets-src/goku/mugen/`, fora do git. Para regerar: `npm run assets:goku`.
+
+Goku e Dragon Ball são propriedade de Akira Toriyama / Shueisha / Toei Animation.
+
+## Tanjiro
+
+Personagem importado do pacote MUGEN **"Tanjiro Jus v2 (Update)"**, usado sem fins comerciais em projeto acadêmico. Créditos do próprio pacote (`Tanjiro.def`): **Entah99**.
+
+O script `scripts/import-tanjiro.mjs` converte o pacote (SFF v2 com a paleta `1.act`). O pacote fica em `assets-src/tanjiro/mugen/`, fora do git. Para regerar: `npm run assets:tanjiro`.
+
+## Zenitsu
+
+Personagem importado do pacote MUGEN **"Zenitsu Agatsuma"**, usado sem fins comerciais em projeto acadêmico. Créditos do próprio pacote (`Zenitsu Agatsuma.def`): **SaulPRO**.
+
+O script `scripts/import-zenitsu.mjs` converte o pacote (SFF v1; a paleta vem dos próprios sprites). O pacote fica em `assets-src/zenitsu/mugen/`, fora do git. Para regerar: `npm run assets:zenitsu`.
+
+## Nezuko
+
+Personagem importada do pacote MUGEN **"Nezuko By Santoryu"**, usada sem fins comerciais em projeto acadêmico. Créditos do próprio pacote (`Nezuko By Santoryu.def`): **SantoryuMUGENJUS**.
+
+O script `scripts/import-nezuko.mjs` converte o pacote (SFF v2 com a paleta `1.act`). O pacote fica em `assets-src/nezuko/mugen/`, fora do git. Para regerar: `npm run assets:nezuko`.
+
+Tanjiro, Zenitsu, Nezuko e Demon Slayer (Kimetsu no Yaiba) são propriedade de Koyoharu Gotouge / Shueisha / Ufotable.
+
+## Chun-Li
+
+Personagem importada do pacote MUGEN **"SF3 Chun Li"**, usada sem fins comerciais em projeto acadêmico. Créditos do próprio pacote (`SF3CHUNLI.def`): **MGMURROW**.
+
+O script `scripts/import-chunli.mjs` converte o pacote (SFF v1 com a paleta `SF3CHUN.act`). O pacote fica em `assets-src/chunli/mugen/`, fora do git. Para regerar: `npm run assets:chunli`.
+
+Chun-Li e Street Fighter são propriedade da Capcom.
+
+## Sala do Trono (cenário)
+
+Cenário importado do pacote MUGEN **"The King's Throne Room"**, usado sem fins comerciais em projeto acadêmico. Créditos do próprio pacote (`throneroom(normal).def`): **xWagnerPlaguesx** (código base gerado pelo programa de Cybaster).
+
+O script `scripts/import-throneroom.mjs` junta as três camadas do pacote numa imagem de 1280x720. O pacote fica em `assets-src/throneroom/`, fora do git. Para regerar: `npm run assets:throneroom`.

@@ -1,4 +1,5 @@
 import { Assets, Rectangle, Texture } from 'pixi.js';
+import { sheetUrl } from '../utils/characterConfig.js';
 
 // Carrega personagens e mapas a partir dos JSONs em /public/assets. Nada aqui
 // conhece nome de personagem: trocar o arquivo troca o conteudo do jogo.
@@ -65,7 +66,7 @@ export class SpriteSheetManager {
     let frames;
     let effectFrames;
     if (config.atlas) {
-      const pages = await Promise.all(config.sheets.map((file) => Assets.load(`${entry.dir}/${file}`)));
+      const pages = await Promise.all(config.sheets.map((file) => Assets.load(sheetUrl(entry, config, file))));
       // A camera da luta amplia 1.5x: com "nearest" cada pixel sairia com 1 ou
       // 2 px de largura e o contorno serrilharia. Suavizado fica liso.
       for (const page of pages) page.source.scaleMode = 'linear';

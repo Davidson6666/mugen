@@ -78,6 +78,11 @@ export function readAir(path) {
         flip: (fields[5] ?? '').toUpperCase(),
         // "A"/"A1"/"AS...D..." = mistura aditiva (brilho sobre fundo preto).
         blend: (fields[6] ?? '').toUpperCase(),
+        // MUGEN 1.1: escala e rotacao por quadro (efeitos desenhados grandes e
+        // reduzidos na animacao, como nos pacotes estilo J-Stars).
+        xscale: fields[7] ? Number(fields[7]) || 1 : 1,
+        yscale: fields[8] ? Number(fields[8]) || 1 : 1,
+        angle: fields[9] ? Number(fields[9]) || 0 : 0,
         clsn1: nextClsn1 ?? defaultClsn1,
         clsn2: nextClsn2 ?? defaultClsn2,
       });
