@@ -4,6 +4,8 @@ import MoveList from './MoveList.jsx';
 import { useMenu } from '../context/MenuContext.js';
 import { useGame } from '../context/GameContext.js';
 import { useMenuInput } from '../utils/useMenuInput.js';
+import { connectedGamepads, buttonDown, PAD_BUTTONS, padLabel } from '../utils/gamepad.js';
+import { useGamepads } from '../utils/useGamepads.js';
 import { PALETTE } from '../utils/palette.js';
 import { Label, MenuOption } from './cvs2.jsx';
 
@@ -23,6 +25,7 @@ export default function Battle() {
   const [moveListPlayer, setMoveListPlayer] = useState(null);
   const listOpenRef = useRef(false);
   const scrollRef = useRef(null);
+  const pads=useGamepads();
 
   useEffect(() => {
     listOpenRef.current = moveListPlayer !== null;
@@ -47,6 +50,33 @@ export default function Battle() {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, []);
 
+  // Kept alive while paused: Start must also be able to resume the match.
+  useEffect(()=>{
+    const previous=new Map();
+    let frame;
+    const poll=()=>{
+      const connected=connectedGamepads();
+      connected.forEach((pad,player)=>{
+        const identity=pad?`${pad.index}:${pad.id}`:null;
+        const before=previous.get(player);
+        const pause=buttonDown(pad,PAD_BUTTONS.pause),moves=buttonDown(pad,PAD_BUTTONS.moves);
+        if(pause && !(before?.identity===identity&&before.pause)) {
+          if(listOpenRef.current)setMoveListPlayer(null);
+          else setPaused(value=>!value);
+          setPauseIndex(0);
+        } else if(moves && !(before?.identity===identity&&before.moves)) {
+          setPaused(true);
+          setMoveListPlayer(current=>current===player?null:player);
+          setPauseIndex(0);
+        }
+        previous.set(player,{identity,pause,moves});
+      });
+      frame=requestAnimationFrame(poll);
+    };
+    frame=requestAnimationFrame(poll);
+    return ()=>cancelAnimationFrame(frame);
+  },[]);
+
   const onMove = (_player, direction) => {
     if (moveListPlayer !== null) {
       if (direction === 'left' || direction === 'right') setMoveListPlayer((current) => 1 - current);
@@ -69,11 +99,12 @@ export default function Battle() {
 
   const onCancel = () => {
     if (moveListPlayer !== null) setMoveListPlayer(null);
+    // ESC and Start are handled by the independent pause listeners.
   };
 
   // O cancelar do menu (K) so fecha a lista de golpes: ESC ja e tratado pelo
   // listener de pausa acima, e os dois juntos alternariam a pausa duas vezes.
-  useMenuInput({ onMove, onConfirm: () => onConfirm(), onCancel }, paused);
+  useMenuInput({ onMove, onConfirm: () => onConfirm(), onCancel, twoPlayers:true }, paused);
 
   const handleMatchEnd = useCallback((result) => {
     finishMatch(result);
@@ -101,7 +132,9 @@ export default function Battle() {
                 onClick={() => onConfirm(index)}
               />
             ))}
-            <Label x={640} y={640} size={24} weight={600} anchor="middle" stroke={5}>ESC OU SHIFT RETOMA</Label>
+            <Label x={640} y={640} size={24} weight={600} anchor="middle" stroke={5}>
+              {pads.some(Boolean)?`${pads.filter(Boolean).map(p=>padLabel('pause',p.family)).join(' / ')} RETOMA · ${padLabel('moves',(pads[0]??pads[1]).family)} LISTA DE GOLPES`:'ESC OU SHIFT RETOMA'}
+            </Label>
           </svg>}
           {moveListPlayer !== null && (
             <MoveList characterIds={setup.characters} player={moveListPlayer} scrollRef={scrollRef} />

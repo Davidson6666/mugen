@@ -1,0 +1,1 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="256" viewBox="0 0 512 256"><defs><radialGradient id="night"><stop stop-color="#220933" stop-opacity=".64"/><stop offset="1" stop-color="#04010b" stop-opacity=".94"/></radialGradient></defs><path fill="url(#night)" d="M0 0H512V256H0Z"/></svg>

@@ -1,0 +1,40 @@
+<!doctype html><html lang="pt-BR"><meta charset="utf-8"><title>Teste de controles — simulação</title>
+<style>body{margin:0;background:#17101f;color:white;font:14px system-ui}header{padding:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}button,select{padding:7px;background:#332943;color:white;border:1px solid #9980b4;border-radius:4px}#demo{width:1280px;height:720px;position:relative;overflow:hidden}</style>
+<header>SIMULAÇÃO DE CONTROLES
+<label>Controle P1 <select id="pad0"><option value="none">Desconectado</option><option value="ps5">PS5</option><option value="xbox">Xbox</option></select></label>
+<label>Controle P2 <select id="pad1"><option value="none">Desconectado</option><option value="ps5">PS5</option><option value="xbox">Xbox</option></select></label>
+<button id="player">Trocar jogador</button><button id="list">Lista</button><button id="settings">Configurações</button><button id="battle">Luta</button>
+<button data-button="9">Start P1</button><button data-button="8">Lista P1</button><button data-button="0">Confirmar P1</button><button data-button="1">Voltar P1</button>
+</header><div id="demo"></div>
+<script type="module">
+import React from 'react';import {createRoot} from 'react-dom/client';
+import MoveList from '/src/components/MoveList.jsx';
+import SettingsScreen from '/src/components/SettingsScreen.jsx';
+import Battle from '/src/components/Battle.jsx';
+import {MenuContext} from '/src/context/MenuContext.js';
+import {GameContext} from '/src/context/GameContext.js';
+import {applyPaletteToCss} from '/src/utils/palette.js';
+import '@fontsource/barlow-condensed/600-italic.css';
+import '@fontsource/barlow-condensed/800-italic.css';
+import '@fontsource/barlow-condensed/900-italic.css';
+import '/src/index.css';import '/src/App.css';import '/src/styles/cvs2.css';
+applyPaletteToCss();
+const fit=()=>{document.querySelector('#demo').style.zoom=Math.min((innerWidth-16)/1280,(innerHeight-100)/720);};
+window.addEventListener('resize',fit);fit();
+const pads=[null,null];
+Object.defineProperty(navigator,'getGamepads',{value:()=>pads,configurable:true});
+for(let i=0;i<2;i++)document.querySelector('#pad'+i).onchange=e=>{
+  const value=e.target.value;
+  pads[i]=value==='none'?null:{id:value==='ps5'?'DualSense Wireless Controller (STANDARD GAMEPAD Vendor: 054c Product: 0ce6)':'Xbox Controller (XInput STANDARD GAMEPAD)',index:i,connected:true,mapping:'standard',axes:[0,0,0,0],buttons:Array.from({length:17},()=>({pressed:false,value:0}))};
+  window.dispatchEvent(new Event(pads[i]?'gamepadconnected':'gamepaddisconnected'));
+};
+for(const button of document.querySelectorAll('[data-button]')) {
+  button.onclick=()=>{const pad=pads[0];if(!pad)return;const index=Number(button.dataset.button);pad.buttons[index]={pressed:true,value:1};setTimeout(()=>{pad.buttons[index]={pressed:false,value:0};},120);};
+}
+const root=createRoot(document.querySelector('#demo'));let player=0,page='list';
+const setup={mode:'versusPlayer',characters:['ensina_god','ensina_god'],mapId:'map_01',difficulty:'normal'};
+function render(){root.render(React.createElement(MenuContext.Provider,{value:{back:()=>{},resetTo:()=>{page='list';render();}}},React.createElement(GameContext.Provider,{value:{setup,finishMatch:()=>{}}},page==='list'?React.createElement(MoveList,{characterIds:setup.characters,player}):page==='settings'?React.createElement(SettingsScreen):React.createElement(Battle))));}
+document.querySelector('#player').onclick=()=>{player=1-player;render();};
+for(const name of ['list','settings','battle'])document.querySelector('#'+name).onclick=()=>{page=name;render();};
+render();
+</script></html>

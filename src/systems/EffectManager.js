@@ -306,6 +306,7 @@ export class Effect {
       push: hit.push ?? definition.push,
       heavy: hit.heavy ?? definition.heavy,
       guaranteed,
+      instantKill: hit.instantKill ?? definition.instantKill,
       launch: launchOf(hit, this.hitLog, active.index, true) ?? definition.launch,
       unblockable: guaranteed || (hit.unblockable ?? definition.unblockable),
       noEcho: definition.noEcho,
@@ -427,7 +428,7 @@ export class EffectManager {
       if (!box || shield.dead) continue;
       const rect = shield.shieldRect;
       for (const effect of this.effects) {
-        if (effect.owner === shield.owner || effect.dead) continue;
+        if (effect.owner === shield.owner || effect.dead || effect.definition.guaranteed) continue;
         const hit = effect.hitRect;
         if (hit && overlaps(hit, rect)) effect.dead = true;
       }

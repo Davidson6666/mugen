@@ -2,11 +2,16 @@ import { useEffect, useState } from 'react';
 import characters from '../data/characters.json';
 import { loadConfig } from '../utils/characterConfig.js';
 import { DIRECTION_KEYS, groupBySection, keysFor, moveListFor } from '../utils/moveList.js';
+import { useGamepads } from '../utils/useGamepads.js';
+import { padLabel } from '../utils/gamepad.js';
 
 // Lista de golpes aberta pela pausa: um jogador por vez (1P / 2P), com as
 // teclas daquele jogador. A navegacao (trocar jogador, rolar) vem da Battle.
 export default function MoveList({ characterIds, player, scrollRef }) {
   const [configs, setConfigs] = useState({});
+  const pads=useGamepads();
+  const pad=pads[player];
+  const family=pad?.family;
 
   useEffect(() => {
     let active = true;
@@ -44,8 +49,13 @@ export default function MoveList({ characterIds, player, scrollRef }) {
         ))}
       </div>
       <p className="movelist__hint">
-        Direções: {DIRECTION_KEYS[player]} · as setas valem olhando para a direita (virado para a esquerda, → e ← se invertem)
+        {pad ? `${family==='playstation'?'PlayStation':family==='nintendo'?'Nintendo':'Xbox / padrão'} conectado · Direcional ou analógico` : `Teclado · Direções: ${DIRECTION_KEYS[player]}`} · → significa frente e ← significa trás
       </p>
+      {pad && <p className="movelist__controller">
+        <span><kbd>{padLabel('jump',family)}</kbd> Pulo / pulo duplo</span>
+        <span><kbd>{padLabel('guard',family)}</kbd> Segure para defender</span>
+        <span>Golpes e dash: execute os comandos abaixo</span>
+      </p>}
       <div className="movelist__body" ref={scrollRef}>
         {columns.map((column, columnIndex) => (
           <div key={columnIndex} className="movelist__column">
@@ -56,7 +66,7 @@ export default function MoveList({ characterIds, player, scrollRef }) {
                   <div key={`${move.name}-${move.input}`} className="movelist__row">
                     <span className="movelist__name">{move.name}</span>
                     <span className="movelist__keys">
-                      {keysFor(move, player).map((key, index) => (
+                      {keysFor(move, player,family).map((key, index) => (
                         <kbd key={index} className={key.button ? 'is-button' : key.held ? 'is-held' : undefined}>
                           {key.held ? `segure ${key.label}` : key.label}
                         </kbd>
@@ -70,7 +80,7 @@ export default function MoveList({ characterIds, player, scrollRef }) {
           </div>
         ))}
       </div>
-      <p className="movelist__footer">A / D troca o jogador · W / S rola · K ou ESC volta</p>
+      <p className="movelist__footer">{pads.some(Boolean)?`← / → troca o jogador · ↑ / ↓ rola · ${padLabel('kick',(pad??pads.find(Boolean)).family)} volta`:'A / D troca o jogador · W / S rola · K ou ESC volta'}</p>
     </div>
   );
 }

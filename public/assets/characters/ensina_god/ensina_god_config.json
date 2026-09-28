@@ -27,25 +27,33 @@
     },
     "walkForward": {
       "frames": [
-        2,
-        3
+        24,
+        25,
+        26,
+        27
       ],
-      "loop": true,
       "durations": [
-        7,
-        7
-      ]
+        6,
+        6,
+        6,
+        6
+      ],
+      "loop": true
     },
     "walkBackward": {
       "frames": [
-        3,
-        2
+        27,
+        26,
+        25,
+        24
       ],
-      "loop": true,
       "durations": [
-        8,
-        8
-      ]
+        7,
+        7,
+        7,
+        7
+      ],
+      "loop": true
     },
     "jump": {
       "frames": [
@@ -234,12 +242,12 @@
     },
     "hitReaction": {
       "frames": [
-        14
+        35
       ],
-      "loop": false,
       "durations": [
         14
-      ]
+      ],
+      "loop": false
     },
     "ko": {
       "frames": [
@@ -390,9 +398,291 @@
           }
         }
       ]
+    },
+    "airJump": {
+      "frames": [
+        28,
+        29,
+        30,
+        31
+      ],
+      "durations": [
+        3,
+        4,
+        3,
+        5
+      ],
+      "loop": false
+    },
+    "jumpFall": {
+      "frames": [
+        31
+      ],
+      "durations": [
+        8
+      ],
+      "loop": true
+    },
+    "falling": {
+      "frames": [
+        34
+      ],
+      "durations": [
+        8
+      ],
+      "loop": true
+    },
+    "launched": {
+      "frames": [
+        35,
+        34
+      ],
+      "durations": [
+        6,
+        12
+      ],
+      "loop": false
+    },
+    "hitAir": {
+      "frames": [
+        35,
+        34
+      ],
+      "durations": [
+        7,
+        10
+      ],
+      "loop": false
+    },
+    "knockdown": {
+      "frames": [
+        15
+      ],
+      "durations": [
+        28
+      ],
+      "loop": false
+    },
+    "getUp": {
+      "frames": [
+        4,
+        0
+      ],
+      "durations": [
+        8,
+        8
+      ],
+      "loop": false
+    },
+    "dashForward": {
+      "frames": [
+        32,
+        33,
+        32
+      ],
+      "durations": [
+        3,
+        9,
+        4
+      ],
+      "loop": false,
+      "dash": {
+        "speed": 30,
+        "moveFrom": 0,
+        "moveUntil": 1,
+        "invulnerableFrom": 0,
+        "invulnerableUntil": 1
+      },
+      "effect": {
+        "id": "atomicStep",
+        "offsetY": 10,
+        "scale": [
+          1.4,
+          0.5
+        ],
+        "lifetime": 16
+      }
+    },
+    "dashBackward": {
+      "frames": [
+        32,
+        33,
+        32
+      ],
+      "durations": [
+        3,
+        9,
+        4
+      ],
+      "loop": false,
+      "dash": {
+        "speed": 23,
+        "moveFrom": 0,
+        "moveUntil": 1,
+        "invulnerableFrom": 0,
+        "invulnerableUntil": 1
+      },
+      "effect": {
+        "id": "atomicStep",
+        "offsetY": 10,
+        "scale": [
+          1.4,
+          0.5
+        ],
+        "lifetime": 16
+      }
+    },
+    "airDashForward": {
+      "frames": [
+        32,
+        33,
+        32
+      ],
+      "durations": [
+        3,
+        9,
+        4
+      ],
+      "loop": false,
+      "dash": {
+        "speed": 30,
+        "moveFrom": 0,
+        "moveUntil": 1,
+        "invulnerableFrom": 0,
+        "invulnerableUntil": 1
+      },
+      "effect": {
+        "id": "atomicStep",
+        "offsetY": 10,
+        "scale": [
+          1.4,
+          0.5
+        ],
+        "lifetime": 16
+      }
+    },
+    "airDashBackward": {
+      "frames": [
+        32,
+        33,
+        32
+      ],
+      "durations": [
+        3,
+        9,
+        4
+      ],
+      "loop": false,
+      "dash": {
+        "speed": 23,
+        "moveFrom": 0,
+        "moveUntil": 1,
+        "invulnerableFrom": 0,
+        "invulnerableUntil": 1
+      },
+      "effect": {
+        "id": "atomicStep",
+        "offsetY": 10,
+        "scale": [
+          1.4,
+          0.5
+        ],
+        "lifetime": 16
+      }
+    },
+    "iAmAtomic": {
+      "frames": [
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47
+      ],
+      "durations": [
+        18,
+        30,
+        60,
+        90,
+        135,
+        18,
+        36,
+        36
+      ],
+      "loop": false,
+      "cooldown": 600,
+      "float": true,
+      "invulnerable": [
+        0,
+        423
+      ],
+      "events": [
+        {
+          "at": 0,
+          "vx": 0,
+          "vy": 0,
+          "sound": "atomicCharge",
+          "stopWithMove": true,
+          "effect": {
+            "id": "atomicNight",
+            "target": "stage",
+            "offsetY": 400
+          }
+        },
+        {
+          "at": 0,
+          "effect": {
+            "id": "atomicTransform",
+            "offsetY": 130
+          }
+        },
+        {
+          "at": 18,
+          "effect": {
+            "id": "atomicCharge",
+            "offsetY": 140
+          }
+        },
+        {
+          "at": 30,
+          "sound": "atomicVoice",
+          "stopWithMove": true
+        },
+        {
+          "at": 90,
+          "effect": {
+            "id": "atomicCircle",
+            "offsetY": 20
+          }
+        },
+        {
+          "at": 333,
+          "sound": "atomicBlast",
+          "effect": {
+            "id": "atomicFlash",
+            "target": "stage",
+            "offsetY": 350
+          }
+        },
+        {
+          "at": 333,
+          "effect": {
+            "id": "atomicBlast",
+            "target": "stage",
+            "offsetY": 1250
+          }
+        }
+      ]
     }
   },
   "combos": [
+    {
+      "id": "iAmAtomic",
+      "input": "↓→S",
+      "animation": "iAmAtomic"
+    },
     {
       "id": "crimsonEclipse",
       "input": "S",
@@ -455,7 +745,13 @@
     "ensina_god_atlas.png",
     "ensina_code_fx.svg",
     "ensina_cosmic_fx.svg",
-    "ensina_cosmic_sprites.png"
+    "ensina_cosmic_sprites.png",
+    "ensina_movement.png",
+    "ensina_atomic_fx.png",
+    "ensina_atomic_stage.svg",
+    "ensina_shadow_costume.png",
+    "ensina_atomic_pillar.png",
+    "ensina_atomic_flash.svg"
   ],
   "atlas": [
     [
@@ -673,6 +969,222 @@
       138,
       55,
       142
+    ],
+    [
+      4,
+      0,
+      0,
+      320,
+      300,
+      0,
+      0
+    ],
+    [
+      4,
+      320,
+      0,
+      320,
+      300,
+      0,
+      0
+    ],
+    [
+      4,
+      640,
+      0,
+      320,
+      300,
+      0,
+      0
+    ],
+    [
+      4,
+      960,
+      0,
+      320,
+      300,
+      0,
+      0
+    ],
+    [
+      4,
+      0,
+      300,
+      320,
+      300,
+      0,
+      0
+    ],
+    [
+      4,
+      320,
+      300,
+      320,
+      300,
+      0,
+      0
+    ],
+    [
+      4,
+      640,
+      300,
+      320,
+      300,
+      0,
+      0
+    ],
+    [
+      4,
+      960,
+      300,
+      320,
+      300,
+      0,
+      0
+    ],
+    [
+      4,
+      0,
+      600,
+      320,
+      300,
+      0,
+      0
+    ],
+    [
+      4,
+      320,
+      600,
+      320,
+      300,
+      0,
+      0
+    ],
+    [
+      4,
+      640,
+      600,
+      320,
+      300,
+      0,
+      0
+    ],
+    [
+      4,
+      960,
+      600,
+      320,
+      300,
+      0,
+      0
+    ],
+    [
+      4,
+      0,
+      900,
+      320,
+      300,
+      0,
+      0
+    ],
+    [
+      4,
+      320,
+      900,
+      320,
+      300,
+      0,
+      0
+    ],
+    [
+      4,
+      640,
+      900,
+      320,
+      300,
+      0,
+      0
+    ],
+    [
+      4,
+      960,
+      900,
+      320,
+      300,
+      0,
+      0
+    ],
+    [
+      7,
+      0,
+      0,
+      320,
+      300,
+      0,
+      0
+    ],
+    [
+      7,
+      320,
+      0,
+      320,
+      300,
+      0,
+      0
+    ],
+    [
+      7,
+      640,
+      0,
+      320,
+      300,
+      0,
+      0
+    ],
+    [
+      7,
+      960,
+      0,
+      320,
+      300,
+      0,
+      0
+    ],
+    [
+      7,
+      0,
+      300,
+      320,
+      300,
+      0,
+      0
+    ],
+    [
+      7,
+      320,
+      300,
+      320,
+      300,
+      0,
+      0
+    ],
+    [
+      7,
+      640,
+      300,
+      320,
+      300,
+      0,
+      0
+    ],
+    [
+      7,
+      960,
+      300,
+      320,
+      300,
+      0,
+      0
     ]
   ],
   "spriteScale": 0.39669421487603307,
@@ -1701,6 +2213,488 @@
         ],
         "loop": false
       }
+    },
+    "atomicCharge": {
+      "spriteGridSize": {
+        "frameWidth": 314,
+        "frameHeight": 314,
+        "baseline": 226.07999999999998
+      },
+      "atlas": [
+        [
+          8,
+          0,
+          0,
+          314,
+          314,
+          0,
+          0
+        ],
+        [
+          8,
+          314,
+          0,
+          313,
+          314,
+          0,
+          0
+        ],
+        [
+          8,
+          627,
+          0,
+          314,
+          314,
+          0,
+          0
+        ],
+        [
+          8,
+          941,
+          0,
+          313,
+          314,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "durations": [
+          60,
+          84,
+          96,
+          75
+        ],
+        "loop": false
+      },
+      "follow": "owner",
+      "renderScale": 2,
+      "layer": "back",
+      "lifetime": 315,
+      "endWithMove": true
+    },
+    "atomicCircle": {
+      "spriteGridSize": {
+        "frameWidth": 314,
+        "frameHeight": 314,
+        "baseline": 282.6
+      },
+      "atlas": [
+        [
+          8,
+          0,
+          941,
+          314,
+          313,
+          0,
+          0
+        ],
+        [
+          8,
+          314,
+          941,
+          313,
+          313,
+          0,
+          0
+        ],
+        [
+          8,
+          627,
+          941,
+          314,
+          313,
+          0,
+          0
+        ],
+        [
+          8,
+          941,
+          941,
+          313,
+          313,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "durations": [
+          60,
+          60,
+          60,
+          63
+        ],
+        "loop": false
+      },
+      "follow": "owner",
+      "renderScale": 2.3,
+      "layer": "back",
+      "lifetime": 243,
+      "endWithMove": true
+    },
+    "atomicStep": {
+      "spriteGridSize": {
+        "frameWidth": 320,
+        "frameHeight": 320,
+        "baseline": 160
+      },
+      "atlas": [
+        [
+          5,
+          0,
+          941,
+          314,
+          313,
+          3,
+          3
+        ],
+        [
+          5,
+          314,
+          941,
+          313,
+          313,
+          3,
+          3
+        ],
+        [
+          5,
+          627,
+          941,
+          314,
+          313,
+          3,
+          3
+        ],
+        [
+          5,
+          941,
+          941,
+          313,
+          313,
+          3,
+          3
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "durations": [
+          3,
+          3,
+          4,
+          6
+        ],
+        "loop": false
+      },
+      "lifetime": 16
+    },
+    "atomicBlast": {
+      "spriteGridSize": {
+        "frameWidth": 314,
+        "frameHeight": 314,
+        "baseline": 157
+      },
+      "atlas": [
+        [
+          8,
+          0,
+          314,
+          314,
+          313,
+          0,
+          0
+        ],
+        [
+          8,
+          314,
+          314,
+          313,
+          313,
+          0,
+          0
+        ],
+        [
+          8,
+          627,
+          314,
+          314,
+          313,
+          0,
+          0
+        ],
+        [
+          8,
+          941,
+          314,
+          313,
+          313,
+          0,
+          0
+        ],
+        [
+          8,
+          0,
+          627,
+          314,
+          314,
+          0,
+          0
+        ],
+        [
+          8,
+          314,
+          627,
+          313,
+          314,
+          0,
+          0
+        ],
+        [
+          8,
+          627,
+          627,
+          314,
+          314,
+          0,
+          0
+        ],
+        [
+          8,
+          941,
+          627,
+          313,
+          314,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "durations": [
+          4,
+          5,
+          9,
+          18,
+          16,
+          14,
+          12,
+          12
+        ],
+        "loop": false
+      },
+      "cover": [
+        1450,
+        1100
+      ],
+      "lifetime": 90,
+      "guaranteed": true,
+      "instantKill": true,
+      "noEcho": true,
+      "hits": [
+        {
+          "from": 2,
+          "until": 3,
+          "damage": 100,
+          "hitstun": 60,
+          "push": 0,
+          "heavy": true,
+          "box": {
+            "offsetX": 0,
+            "offsetY": 0,
+            "width": 314,
+            "height": 314
+          }
+        }
+      ]
+    },
+    "atomicNight": {
+      "spriteGridSize": {
+        "frameWidth": 512,
+        "frameHeight": 256,
+        "baseline": 128
+      },
+      "atlas": [
+        [
+          6,
+          0,
+          0,
+          512,
+          256,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0
+        ],
+        "durations": [
+          423
+        ],
+        "loop": false
+      },
+      "cover": [
+        1600,
+        1000
+      ],
+      "layer": "back",
+      "lifetime": 423
+    },
+    "atomicTransform": {
+      "spriteGridSize": {
+        "frameWidth": 314,
+        "frameHeight": 314,
+        "baseline": 157
+      },
+      "atlas": [
+        [
+          8,
+          0,
+          941,
+          314,
+          313,
+          0,
+          0
+        ],
+        [
+          8,
+          314,
+          941,
+          313,
+          313,
+          0,
+          0
+        ],
+        [
+          8,
+          627,
+          941,
+          314,
+          313,
+          0,
+          0
+        ],
+        [
+          8,
+          941,
+          941,
+          313,
+          313,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "durations": [
+          4,
+          5,
+          5,
+          4
+        ],
+        "loop": false
+      },
+      "follow": "owner",
+      "renderScale": 1.6,
+      "layer": "back",
+      "lifetime": 18,
+      "endWithMove": true
+    },
+    "atomicFlash": {
+      "spriteGridSize": {
+        "frameWidth": 512,
+        "frameHeight": 256,
+        "baseline": 128
+      },
+      "atlas": [
+        [
+          9,
+          0,
+          0,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          9,
+          512,
+          0,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          9,
+          1024,
+          0,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          9,
+          1536,
+          0,
+          512,
+          256,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "durations": [
+          1,
+          1,
+          2,
+          2
+        ],
+        "loop": false
+      },
+      "cover": [
+        1600,
+        1000
+      ],
+      "lifetime": 6
     }
   },
   "moveList": [
@@ -1748,10 +2742,39 @@
       "name": "Queda Celestial — meteoro",
       "input": "K",
       "hold": "↓"
+    },
+    {
+      "section": "Movimento",
+      "name": "Pulo duplo — aperte novamente no ar",
+      "input": "↑↑"
+    },
+    {
+      "section": "Movimento",
+      "name": "Dash / dash aéreo",
+      "input": "→→"
+    },
+    {
+      "section": "Movimento",
+      "name": "Recuo / recuo aéreo",
+      "input": "←←"
+    },
+    {
+      "section": "Finalizador absoluto",
+      "name": "I AM ATOMIC — hit kill inevitável",
+      "input": "↓→S"
     }
   ],
   "sounds": {
     "cosmicDrone": "cosmic-drone.wav",
-    "meteorRush": "meteor-rush.wav"
-  }
+    "meteorRush": "meteor-rush.wav",
+    "atomicCharge": "atomic-charge.wav",
+    "atomicVoice": "atomic-voice.wav",
+    "atomicBlast": "atomic-blast.wav"
+  },
+  "airJumpEffect": {
+    "id": "atomicStep",
+    "offsetY": 0,
+    "scale": 0.75
+  },
+  "assetVersion": "ensina-shadow-video-v2"
 }

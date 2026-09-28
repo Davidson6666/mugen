@@ -2,7 +2,8 @@
 // conforme a especificacao, e o estado e amostrado uma vez por frame (poll) para
 // que a logica de jogo enxergue o mesmo input do inicio ao fim do tick.
 
-export const ACTIONS = ['up', 'down', 'left', 'right', 'punch', 'kick', 'special'];
+import { buttonDown, connectedGamepads, PAD_BUTTONS } from './gamepad.js';
+export const ACTIONS = ['up', 'down', 'left', 'right', 'punch', 'kick', 'special', 'jump', 'guard'];
 
 const KEYBOARD_MAPS = [
   {
@@ -28,8 +29,6 @@ const KEYBOARD_MAPS = [
 const PAUSE_KEYS = ['Escape', 'ShiftLeft', 'ShiftRight'];
 
 // Mapeamento padrao (XInput): 0=A, 1=B, 2=X, 9=Start, 12..15=d-pad.
-const GAMEPAD_BUTTONS = { punch: 0, kick: 1, special: 2, up: 12, down: 13, left: 14, right: 15 };
-const GAMEPAD_PAUSE_BUTTON = 9;
 const STICK_DEADZONE = 0.35;
 
 function blankState() {
@@ -73,19 +72,17 @@ export class InputHandler {
     this.keys.delete(event.code);
   }
 
-  readPlayer(player) {
+  readPlayer(player, pads = connectedGamepads()) {
     const state = blankState();
     const map = KEYBOARD_MAPS[player];
     for (const action of ACTIONS) {
       if (this.keys.has(map[action])) state[action] = true;
     }
 
-    const pad = typeof navigator !== 'undefined' && navigator.getGamepads
-      ? navigator.getGamepads()[player]
-      : null;
+    const pad = pads[player];
     if (pad) {
       for (const action of ACTIONS) {
-        if (pad.buttons[GAMEPAD_BUTTONS[action]]?.pressed) state[action] = true;
+        if (buttonDown(pad,PAD_BUTTONS[action])) state[action] = true;
       }
       const [axisX = 0, axisY = 0] = pad.axes;
       if (axisX < -STICK_DEADZONE) state.left = true;
@@ -98,16 +95,16 @@ export class InputHandler {
 
   readPause() {
     if (PAUSE_KEYS.some((code) => this.keys.has(code))) return true;
-    if (typeof navigator === 'undefined' || !navigator.getGamepads) return false;
-    for (const pad of navigator.getGamepads()) {
-      if (pad?.buttons[GAMEPAD_PAUSE_BUTTON]?.pressed) return true;
+    for (const pad of connectedGamepads()) {
+      if (buttonDown(pad,PAD_BUTTONS.pause)) return true;
     }
     return false;
   }
 
   poll() {
     this.previous = this.current;
-    this.current = [this.readPlayer(0), this.readPlayer(1)];
+    const pads=connectedGamepads();
+    this.current = [this.readPlayer(0,pads), this.readPlayer(1,pads)];
     this.previousPause = this.pause;
     this.pause = this.readPause();
   }
