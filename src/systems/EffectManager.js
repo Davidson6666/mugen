@@ -2,7 +2,7 @@ import { Sprite } from 'pixi.js';
 import { AnimationStateMachine } from './AnimationStateMachine.js';
 import { RENDER_SCALE } from './Fighter.js';
 import { applyHit, overlaps } from './CollisionDetector.js';
-import { hitsOf, pickActiveHit, recordHit } from './hits.js';
+import { hitsOf, launchOf, pickActiveHit, recordHit } from './hits.js';
 
 // Quanto alem da borda da tela um projetil ainda existe antes de ser descartado.
 const OFFSCREEN_MARGIN = 200;
@@ -176,7 +176,7 @@ export class Effect {
       }
     }
     // Some quando quem lancou apanha (kunais paradas no ar).
-    if (this.definition.endOnOwnerHit && this.owner.state === 'hitstun') {
+    if (this.definition.endOnOwnerHit && (this.owner.state === 'hitstun' || this.owner.state === 'launched')) {
       this.dead = true;
       return null;
     }
@@ -306,6 +306,7 @@ export class Effect {
       push: hit.push ?? definition.push,
       heavy: hit.heavy ?? definition.heavy,
       guaranteed,
+      launch: launchOf(hit, this.hitLog, active.index, true) ?? definition.launch,
       unblockable: guaranteed || (hit.unblockable ?? definition.unblockable),
       noEcho: definition.noEcho,
     };

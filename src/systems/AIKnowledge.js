@@ -133,6 +133,9 @@ export function requirementMet(self, info) {
 //   air       no ar
 export function phaseOf(fighter) {
   if (fighter.state === 'hitstun' || fighter.state === 'blockstun') return { kind: 'stun', remaining: fighter.stunTimer };
+  // Lancado (ainda da para acertar no ar) ou deitado (ninguem acerta).
+  if (fighter.state === 'launched') return { kind: 'stun', remaining: 0 };
+  if (fighter.state === 'down') return { kind: 'down', remaining: fighter.downTimer };
   if (fighter.state === 'air') return { kind: 'air', remaining: 0 };
   if (fighter.state !== 'attack') return { kind: 'idle', remaining: 0 };
   const animation = fighter.animation.current;

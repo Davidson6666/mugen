@@ -43,6 +43,8 @@ const kunaiFan = (strength) => Object.values(KUNAI)
 // Cancelamentos comuns: todo golpe normal cancela nos especiais ao conectar.
 const NORMAL = { specialCancel: true };
 
+// launch: { vx, vy } faz o golpe derrubar o oponente (o pacote nao traz o
+// HitDef com "fall", entao os golpes que derrubam foram escolhidos aqui).
 const ANIMATIONS = {
   idle: { actions: [0], loop: true },
   walkForward: { actions: [20], loop: true },
@@ -100,6 +102,7 @@ const ANIMATIONS = {
   },
   // Lancador: joga para cima (sem malabarismo no motor, vira empurrao forte).
   strong: {
+    launch: { vx: 3, vy: 6 },
     actions: [220],
     ...NORMAL,
     hit: { damage: 4, hitstun: 30, push: 8, heavy: true },
@@ -128,6 +131,7 @@ const ANIMATIONS = {
   },
   // Rasteira que desliza.
   crouchStrong: {
+    launch: { vx: 1, vy: 3 },
     actions: [420],
     ...NORMAL,
     hit: { damage: 4, hitstun: 26, push: 6, heavy: true },
@@ -174,6 +178,7 @@ const ANIMATIONS = {
     next: 'kokuSlideStrong',
   },
   kokuFlurry: {
+    launch: { vx: 4, vy: 3 },
     actions: [1025],
     friction: false,
     hits: [
@@ -196,6 +201,7 @@ const ANIMATIONS = {
     events: [{ frame: 2, vx: 1.25, vy: -6 }],
   },
   orukaMedium: {
+    launch: { vx: 2, vy: 5 },
     actions: [{ id: 1051, times: { 13: 20 } }],
     air: true,
     cooldown: 90,
@@ -207,6 +213,7 @@ const ANIMATIONS = {
     events: [{ frame: 2, vx: 1, vy: -7 }],
   },
   orukaStrong: {
+    launch: { vx: 3, vy: 8 },
     actions: [{ id: 1052, times: { 25: 20 } }],
     air: true,
     float: true,
@@ -242,6 +249,7 @@ const ANIMATIONS = {
     next: 'kokuSlideLight',
   },
   bakaFlurry: {
+    launch: { vx: 5, vy: 9 },
     actions: [3001],
     friction: false,
     invulnerable: [0, 129],

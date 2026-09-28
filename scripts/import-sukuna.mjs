@@ -37,6 +37,8 @@ const SHRINE_CUTS = Array.from({ length: 18 }, (_, index) => fx(40 + index * 8, 
   [-15, -30, 10, -45, 5, -20][index % 6], [-40, -25, -55, -35, -20, -50][index % 6],
 ], { target: 'opponent' }));
 
+// launch: { vx, vy } faz o golpe derrubar o oponente (o pacote nao traz o
+// HitDef com "fall", entao os golpes que derrubam foram escolhidos aqui).
 const ANIMATIONS = {
   idle: { actions: [10000], loop: true },
   walkForward: { actions: [10020], loop: true },
@@ -84,6 +86,7 @@ const ANIMATIONS = {
     cancels: [{ on: 'punch', to: 'punch3', after: 6 }, TO_STRONG],
   },
   punch3: {
+    launch: { vx: 3, vy: 4 },
     actions: [{ id: 10220, lengthTicks: 40 }],
     ...NORMAL,
     noPush: true,
@@ -134,6 +137,7 @@ const ANIMATIONS = {
   },
   // 10520/10530/10540: vai e volta atravessando o oponente, cortando.
   strong3: {
+    launch: { vx: 4, vy: 6 },
     actions: [{ id: 10520, lengthTicks: 48 }],
     noPush: true,
     areas: [strike(0, 99, [-25, -55, 40, 5], { damage: 1, hitstun: 20, push: 1, every: 4, count: 10 })],
@@ -175,6 +179,7 @@ const ANIMATIONS = {
   // ---- Especiais ----
   // Dismantle (11000 -> 11001 -> 11002): encara, some e reaparece cortando.
   dismantle: {
+    launch: { vx: 4, vy: 4 },
     actions: [{ id: 11000, times: { 0: 25 } }, { id: 11001, lengthTicks: 14 }, { id: 11002, lengthTicks: 30 }],
     cooldown: 120,
     areas: [strike(8, 20, [0, -60, 50, 0], { damage: 8, hitstun: 36, push: 12, heavy: true })],
@@ -203,6 +208,7 @@ const ANIMATIONS = {
     next: 'heartFinish',
   },
   heartFinish: {
+    launch: { vx: 5, vy: 8 },
     actions: [{ id: 11253, lengthTicks: 30 }],
     areas: [strike(0, 2, [0, -55, 35, 0], { damage: 14, hitstun: 40, push: 10, heavy: true, unblockable: true })],
     events: [fx(0, 'blood', [30, -35])],
@@ -312,6 +318,7 @@ const ANIMATIONS = {
   },
   // Especial: o soco divergente (1102), com a energia amaldicoada no punho.
   yujiStrong: {
+    launch: { vx: 3, vy: 5 },
     actions: [{ id: 1102, lengthTicks: 26 }],
     ...NORMAL,
     areas: [strike(2, 4, [5, -50, 45, -10], { damage: 5, hitstun: 30, push: 10, heavy: true })],
@@ -366,6 +373,7 @@ const ANIMATIONS = {
     onHit: { to: 'yujiPummel' },
   },
   yujiPummel: {
+    launch: { vx: 4, vy: 6 },
     actions: [{ id: 1001, times: { 0: 30 } }],
     invulnerable: [0, 72],
     areas: [strike(1, 3, [0, -60, 40, 0], { damage: 8, hitstun: 40, push: 12, heavy: true, unblockable: true })],
@@ -373,6 +381,7 @@ const ANIMATIONS = {
   },
   // ↓→S (1 barra): Black Flash (1400 -> 1401 -> 1402).
   yujiBlackFlash: {
+    launch: { vx: 6, vy: 7 },
     cooldown: 600,
     actions: [1400, { id: 1401, times: { 2: 12 } }, { id: 1402, lengthTicks: 34 }],
     invulnerable: [0, 50],

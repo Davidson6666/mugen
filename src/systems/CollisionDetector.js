@@ -86,7 +86,8 @@ export function applyHit(attacker, defender, attack, hitRect, serial = attacker.
     return { outcome, damage, point, heavy };
   }
 
-  const outcome = defender.takeHit(attack.damage, attack.hitstun);
+  // launch: o golpe derruba (fall = 1 no MUGEN); a queda e para longe de quem bateu.
+  const outcome = defender.takeHit(attack.damage, attack.hitstun, { launch: attack.launch, from: attacker.x, scale: attacker.scale, heavy });
   defender.pushBack(attack.push ?? HIT_PUSH);
   if (attack.seal && outcome === 'hit') defender.applySeal?.(attack.seal);
   attacker.onAttackResolved(outcome, serial, attack);

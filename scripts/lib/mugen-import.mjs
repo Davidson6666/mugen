@@ -14,12 +14,14 @@
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+import { basename, dirname, extname, resolve } from 'node:path';
 import { PNG } from 'pngjs';
 import { openSff, readAct } from './sff.mjs';
 import { readAir } from './air.mjs';
 import { openSnd } from './snd.mjs';
 import { loadCnsSounds, soundEventsFor } from './cns-sounds.mjs';
+import { loadCnsHitDefs, launchFor } from './cns-hitdefs.mjs';
+import { standardAnimationsFor } from './standard-animations.mjs';
 
 // Quadro com duracao -1 no MUGEN fica parado para sempre.
 const HOLD_TICKS = 600;
@@ -83,6 +85,51 @@ function normalizeSegments(spec) {
     }
     return segment;
   });
+}
+
+// O .def do personagem, ao lado do .air (o mesmo nome; senao o unico .def da
+// pasta): dele saem os arquivos de estado (.cns) com os HitDef.
+function defNear(airPath) {
+  const stem = basename(airPath, extname(airPath)).toLowerCase();
+  // Alguns pacotes guardam o .air numa subpasta (data/) e o .def na de cima.
+  for (const dir of [dirname(airPath), dirname(dirname(airPath))]) {
+    const defs = readdirSync(dir).filter((file) => extname(file).toLowerCase() === '.def');
+    const same = defs.find((file) => basename(file, extname(file)).toLowerCase() === stem);
+    const chosen = same ?? (defs.length === 1 ? defs[0] : null);
+    if (chosen) return resolve(dir, chosen);
+  }
+  return null;
+}
+
+// Efeitos que um golpe solta tres vezes ou mais (rajada de balas): cada um
+// derrubaria e o oponente sairia do alcance da rajada.
+function barrageEffects(animations) {
+  const barrage = new Set();
+  for (const spec of Object.values(animations)) {
+    const counts = new Map();
+    for (const spawn of [spec.effect, ...(spec.events ?? []).map((event) => event.effect)]) {
+      if (spawn?.id) counts.set(spawn.id, (counts.get(spawn.id) ?? 0) + 1);
+    }
+    for (const [effectId, count] of counts) if (count >= 3) barrage.add(effectId);
+  }
+  return barrage;
+}
+
+// Golpe (ou efeito) que derruba no .cns: o ultimo acerto dele leva o
+// lancamento. spec.launch declara na mao (ou false para nao lancar). Golpe que
+// segue para outro (onHit, next) deixa a queda para o ultimo da sequencia.
+function withLaunch(hits, spec, states) {
+  if (spec.launch === false || !spec.actions) return false;
+  if (!spec.launch && (spec.onHit || spec.next || spec.randomNext)) return false;
+  const last = hits[hits.length - 1];
+  if (!last || last.launch) return false;
+  const launch = spec.launch ?? (states ? launchFor(spec.actions, states) : null);
+  if (!launch) return false;
+  // Golpe do meio de uma sequencia por cancels so derruba se for lancamento de
+  // verdade; a queda rasteira do .cns e o fim da sequencia do pacote.
+  if (!spec.launch && spec.cancels?.length > 0 && launch.vy < 6) return false;
+  last.launch = launch;
+  return true;
 }
 
 function collectFrames(air, spec) {
@@ -654,6 +701,16 @@ export function importMugenCharacter({
     ...(sffOptions?.actFromSprite ? { actFromSprite: sffOptions.actFromSprite } : {}),
   });
   const air = readAir(airPath);
+  // As animacoes comuns do MUGEN (pulo, apanhar, cair, levantar...) entram
+  // sozinhas junto dos golpes que o personagem lista.
+  const standard = standardAnimationsFor(air, animations);
+  animations = { ...animations, ...standard };
+  console.log(`  animacoes comuns do pacote: ${Object.keys(standard).length}`);
+  // Quem derruba o oponente (fall = 1 nos HitDef do .cns) e com que forca.
+  const defPath = soundsFromDef ?? defNear(airPath);
+  const cnsHitDefs = defPath ? loadCnsHitDefs(defPath) : null;
+  let launches = 0;
+  const barrage = barrageEffects(animations);
   const base = JSON.parse(readFileSync(resolve(root, template), 'utf8'));
 
   // Todos os recortes (corpo e efeitos) vao para o mesmo atlas; cada grupo
@@ -724,6 +781,7 @@ export function importMugenCharacter({
         : opaqueBox(packer.cells[cells[fromFrame]], widthRatio, heightRatio);
       hits = [{ from, until, box: boxInCell(box, effectGrid, 1), ...data }];
     }
+    if (hits && !barrage.has(effectId) && withLaunch(hits, spec, cnsHitDefs)) launches += 1;
     const blend = spec.blend ?? (frames.some((frame) => frame.blend.startsWith('A')) ? 'add' : undefined);
     builtEffects[effectId] = {
       spriteGridSize: effectGrid,
@@ -779,7 +837,10 @@ export function importMugenCharacter({
         from, until, box: boxInCell({ x1: rect[0], y1: rect[1], x2: rect[2], y2: rect[3] }, grid, bodyScale), ...data,
       }))
       : buildHits(frames, spec, grid, bodyScale);
-    if (hits) animation.hits = hits;
+    if (hits) {
+      animation.hits = hits;
+      if (withLaunch(hits, spec, cnsHitDefs)) launches += 1;
+    }
     // Golpe que ja declara sons na especificacao fica como esta.
     let specEvents = spec.events ?? [];
     if (cnsStates && !specEvents.some((event) => event.sound)) {
@@ -839,5 +900,6 @@ export function importMugenCharacter({
     hurtbox: boxInCell(hurt, grid, bodyScale),
   };
   write(root, `${outDir}/${id}_config.json`, Buffer.from(`${JSON.stringify(config, null, 2)}\n`, 'utf8'));
+  if (cnsHitDefs) console.log(`  golpes que derrubam (do .cns): ${launches}`);
   console.log(`Pronto: ${pieces.length} recortes em ${sheets.length} pagina(s).`);
 }

@@ -28,6 +28,8 @@ const soundFrame = (frame, key) => ({ frame, sound: key });
 const NORMAL = { specialCancel: true };
 const chain = (on, to, after = 4) => ({ on, to, after });
 
+// launch: { vx, vy } faz o golpe derrubar o oponente (o pacote nao traz o
+// HitDef com "fall", entao os golpes que derrubam foram escolhidos aqui).
 const ANIMATIONS = {
   idle: { actions: [0], loop: true },
   walkForward: { actions: [20], loop: true },
@@ -135,6 +137,7 @@ const ANIMATIONS = {
     cancels: [chain('special', 'strong3')],
   },
   strong3: {
+    launch: { vx: 3, vy: 5 },
     actions: [420],
     ...NORMAL,
     hits: [{ damage: 3, hitstun: 30, push: 8, heavy: true }],
@@ -144,12 +147,14 @@ const ANIMATIONS = {
   // ---- Segurando ↓ ----
   // 340: rasteira; 430: lancador; 250: a rajada de socos (a+b).
   sweep: {
+    launch: { vx: 1, vy: 3 },
     actions: [340],
     ...NORMAL,
     hit: { damage: 2, hitstun: 20, push: 5 },
     events: [{ at: 0, vx: 3 }, soundFrame(3, 'swing2'), fxFrame(3, 'lowArc')],
   },
   launcher: {
+    launch: { vx: 2, vy: 9 },
     actions: [430],
     ...NORMAL,
     hit: { damage: 3, hitstun: 30, push: 4, heavy: true },
@@ -274,6 +279,7 @@ const ANIMATIONS = {
   },
   // 1600 (↓→b): o corpo em relampago acerta em volta dele.
   lightningPalm: {
+    launch: { vx: 4, vy: 5 },
     actions: [1600],
     cooldown: 120,
     hits: [{ damage: 1, hitstun: 20, push: 1, every: 10, count: 7 }],
@@ -290,6 +296,7 @@ const ANIMATIONS = {
     events: [sound(0, 'voiceCounter'), fxFrame(2, 'counterGlow'), fxFrame(3, 'counterGlow2')],
   },
   counterStrike: {
+    launch: { vx: 4, vy: 7 },
     actions: [1305],
     invulnerable: [0, 20],
     hits: [{ damage: 5, hitstun: 36, push: 12, heavy: true }],

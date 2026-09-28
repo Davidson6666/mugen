@@ -50,6 +50,16 @@ export function pickActiveHit(hits, frame, clock, log) {
   return open;
 }
 
+// Lancamento da janela. Numa janela que repete (rajada, feixe) so o ultimo
+// acerto derruba; senao o oponente sairia voando no primeiro e os outros
+// acertos nunca chegariam. recorded: o acerto atual ja esta no log.
+export function launchOf(hit, log, index, recorded = false) {
+  if (!hit.launch) return undefined;
+  if (!hit.every) return hit.launch;
+  const done = (log.get(index)?.count ?? 0) + (recorded ? 0 : 1);
+  return done >= (hit.count ?? Infinity) ? hit.launch : undefined;
+}
+
 export function recordHit(log, index, clock) {
   const landed = log.get(index);
   log.set(index, { count: (landed?.count ?? 0) + 1, clock });

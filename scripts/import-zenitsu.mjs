@@ -8,7 +8,8 @@
 // investida que desce do alto, o contra-ataque, a disparada com a rajada de
 // cortes, o golpe duplo com os clones, o ziguezague e o mergulho; e o super
 // Deus do Trovao Flamejante (Sétima Forma). O sprite parado tem 45 px:
-// spriteScale 2.1 poe o Zenitsu na altura do elenco.
+// spriteScale 1.8: a pose parada e agachada e a cabeca e grande, entao 2.1 (a
+// mesma altura do elenco) deixava ele volumoso demais.
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { importMugenCharacter } from './lib/mugen-import.mjs';
@@ -332,6 +333,6 @@ importMugenCharacter({
   moveList: MOVE_LIST,
   sndPath: resolve(PACK, 'Zenitsu Agatsuma.snd'),
   sounds: SOUNDS,
-  spriteScale: 2.1,
+  spriteScale: 1.8,
   portrait: { sprite: [9000, 1], crop: [0, 0, 120, 132], width: 50, height: 55, background: '#2A2210' },
 });

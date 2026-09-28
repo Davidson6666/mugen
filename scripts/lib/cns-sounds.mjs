@@ -15,7 +15,7 @@ const read = (path) => readFileSync(path, 'latin1');
 const clean = (line) => line.replace(/;.*$/, '').trim();
 
 // Arquivos de estado listados no .def ([Files]: cns, st, st1... e stcommon).
-function stateFiles(defPath) {
+export function stateFiles(defPath) {
   const dir = dirname(defPath);
   const files = [];
   let inFiles = false;

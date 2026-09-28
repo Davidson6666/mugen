@@ -53,6 +53,8 @@ const LIGHT = 18;
 const MEDIUM = 22;
 const HARD = 28;
 
+// launch: { vx, vy } faz o golpe derrubar o oponente (o pacote nao traz o
+// HitDef com "fall", entao os golpes que derrubam foram escolhidos aqui).
 const ANIMATIONS = {
   idle: { actions: [0], loop: true },
   walkForward: { actions: [20], loop: true },
@@ -132,6 +134,7 @@ const ANIMATIONS = {
     cancels: [{ on: 'punch', to: 'punch5', need: 'hit' }],
   },
   punch5: {
+    launch: { vx: 3, vy: 6 },
     actions: [250],
     hit: { damage: 8, hitstun: HARD, push: 12, heavy: true },
     events: [fx(16, 'swirl', [0, 3], { flip: true }), { at: 30, vx: 3 }, fx(31, 'bigSlash', [10, -40])],
@@ -365,6 +368,7 @@ const ANIMATIONS = {
     onHit: { to: 'crowFinisher', minHits: 12 },
   },
   crowFinisher: {
+    launch: { vx: 4, vy: 5 },
     actions: [{ id: 1202, times: { 10: 110 } }, 1203, 1204],
     hits: [{ damage: 8, hitstun: 40, push: 4, heavy: true }],
     events: [
@@ -501,6 +505,7 @@ const ANIMATIONS = {
     onHit: { to: 'mangekyouFinish', minHits: 4 },
   },
   mangekyouFinish: {
+    launch: { vx: 5, vy: 9 },
     actions: [3007, 3008, 3009],
     invulnerable: [0, 260],
     hit: { damage: 12, hitstun: 90, push: 3, heavy: true },

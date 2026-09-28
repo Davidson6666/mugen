@@ -1,6 +1,6 @@
 import { Sprite } from 'pixi.js';
 import { AnimationStateMachine } from './AnimationStateMachine.js';
-import { hitsOf, pickActiveHit, recordHit } from './hits.js';
+import { hitsOf, launchOf, pickActiveHit, recordHit } from './hits.js';
 
 // Personagem no tamanho exato do sprite: ampliar deixava cada pixel visivel.
 // Velocidade, pulo e alcance do config sao medidos nessa escala.
@@ -16,6 +16,25 @@ const BUTTONS = ['punch', 'kick', 'special'];
 // Pulo duplo: forca do segundo pulo em relacao ao primeiro. Quantos pulos no
 // ar cada personagem tem vem de stats.airJumps (padrao 1).
 const AIR_JUMP_RATIO = 0.85;
+
+// Ser lancado (o "fall = 1" do MUGEN): o golpe traz vx/vy em px/tick do pacote.
+// A subida vira uma fracao do pulo do proprio personagem (vy do pulo comum do
+// MUGEN = 8.4) e o avanco, uma velocidade horizontal limitada.
+const PACK_JUMP_SPEED = 8.4;
+const LAUNCH_MIN = 0.45;
+const LAUNCH_MAX = 1.1;
+const LAUNCH_DRIFT = 0.5;
+const LAUNCH_DRIFT_MIN = 0.8;
+const LAUNCH_DRIFT_MAX = 6;
+// Quem cai por nocaute (sem lancamento no golpe) e jogado assim.
+const KO_LAUNCH = { vx: 3, vy: 6 };
+// Deitado no chao antes de se levantar; nesse tempo e no de levantar ninguem
+// acerta (senao um lancamento viraria combo infinito no chao).
+const LIE_TICKS = 28;
+const GET_UP_MAX_TICKS = 40;
+// Acertos no ar que ainda erguem o oponente; depois disso ele so cai.
+const JUGGLE_LIMIT = 3;
+const AIR_HIT_LIFT = 0.4;
 
 // Tempo sem conectar golpe que zera o contador de combo.
 const COMBO_INACTIVITY_FRAMES = 60;
@@ -89,6 +108,7 @@ export class Fighter {
     this.blocking = false;
     this.health = this.config.stats.maxHealth;
     this.stunTimer = 0;
+    this.resetReactions();
     // Pelo menos um acerto do golpe atual (corpo) ja conectou.
     this.attackHasLanded = false;
     this.attackOverride = null;
@@ -200,6 +220,41 @@ export class Fighter {
     return this.modeDef?.animations?.[name] ?? name;
   }
 
+  // O personagem tem essa animacao? As comuns do MUGEN (virar, cair, levantar)
+  // vem do pacote; o elenco provisorio nao as tem e usa a reacao unica.
+  hasAnimation(name) {
+    return Boolean(this.config.animations[this.base(name)]);
+  }
+
+  // Estado de reacao: pulo, animacao de passagem, queda e levantar.
+  resetReactions() {
+    this.jumpAnimation = 'jump';
+    // Animacao de passagem (virar, agachar, aterrissar, baixar a guarda): toca
+    // por cima do parado sem travar nada, e qualquer outra acao a interrompe.
+    this.transient = null;
+    this.juggle = 0;
+    this.hitCounter = 0;
+    this.downPhase = null;
+    this.downTimer = 0;
+    this.guarding = false;
+  }
+
+  playTransient(name) {
+    if (!this.hasAnimation(name)) return;
+    this.transient = this.base(name);
+    this.animation.play(this.transient, { restart: true });
+  }
+
+  // Animacao do pulo pela direcao (relativa a quem o personagem encara).
+  jumpAnimationFor(direction, prefix = '') {
+    const relative = direction * this.facing;
+    const suffix = relative > 0 ? 'Forward' : relative < 0 ? 'Back' : '';
+    const name = prefix ? `${prefix}${suffix}` : `jump${suffix || 'Up'}`;
+    if (this.hasAnimation(name)) return name;
+    if (this.hasAnimation(prefix || 'jumpUp')) return prefix || 'jumpUp';
+    return 'jump';
+  }
+
   // Troca de modo automatica (o sol do Escanor): passado o tempo do round, o
   // personagem parado faz a transformacao; o golpe dela liga o modo (setMode).
   checkModeTrigger() {
@@ -261,7 +316,7 @@ export class Fighter {
   }
 
   get canAct() {
-    return !this.isKnockedOut && this.state !== 'pose' && this.stunTimer <= 0;
+    return !this.isKnockedOut && this.state !== 'pose' && this.state !== 'launched' && this.state !== 'down' && this.stunTimer <= 0;
   }
 
   // Retangulo declarado no espaco do frame (origem no canto superior esquerdo)
@@ -315,6 +370,7 @@ export class Fighter {
       ready,
       damage: hit.damage ?? attack.damage,
       hitstun: hit.hitstun ?? attack.hitstun,
+      launch: launchOf(hit, this.hitLog, index) ?? attack.launch,
     };
   }
 
@@ -450,7 +506,9 @@ export class Fighter {
   // tela: o flip precisa acontecer antes de interpretar o input do frame.
   faceTowards(targetX) {
     if (this.state === 'attack' || this.state === 'dash' || !this.canAct) return;
-    this.facing = targetX >= this.x ? 1 : -1;
+    const facing = targetX >= this.x ? 1 : -1;
+    if (facing !== this.facing && this.grounded && (this.state === 'idle' || this.state === 'walk')) this.playTransient('turn');
+    this.facing = facing;
   }
 
   update(command, delta) {
@@ -468,6 +526,8 @@ export class Fighter {
         this.state = this.grounded ? 'idle' : 'air';
       }
     }
+
+    if (this.state === 'down') this.tickDown(delta);
 
     // A pose de derrota so entra depois da animacao de nocaute terminar.
     if (this.state === 'pose' && this.pendingPose && this.animation.finished) {
@@ -502,15 +562,21 @@ export class Fighter {
 
       if (this.state !== 'attack' && this.state !== 'dash' && this.grounded) {
         const direction = (command.right ? 1 : 0) - (command.left ? 1 : 0);
+        const wasCrouching = this.state === 'crouch';
         if (command.jump && !this.seals.noJump) {
           this.vy = -jumpForce;
           this.vx = direction * walkSpeed;
           this.grounded = false;
           this.state = 'air';
+          this.transient = null;
+          this.jumpAnimation = this.jumpAnimationFor(direction);
+          this.animation.play(this.base(this.jumpAnimation), { restart: true });
         } else if (command.down) {
+          if (!wasCrouching) this.playTransient('crouchDown');
           this.state = 'crouch';
           this.vx = 0;
         } else {
+          if (wasCrouching) this.playTransient('crouchUp');
           this.vx = direction * walkSpeed;
           this.state = direction === 0 ? 'idle' : 'walk';
         }
@@ -528,6 +594,12 @@ export class Fighter {
       (this.canAct && this.grounded && back && this.state !== 'attack' && this.state !== 'dash')
     );
 
+    // Baixou a guarda: a animacao de sair da defesa.
+    if (this.guarding && !this.blocking && this.grounded && ['idle', 'walk', 'crouch'].includes(this.state)) {
+      this.playTransient(this.state === 'crouch' ? 'guardEndCrouching' : 'guardEndStanding');
+    }
+    this.guarding = this.blocking;
+
     // Golpe sem gravidade e dash (no ar, o dash aereo segura a altura).
     const floating = (this.state === 'attack' && this.animation.current?.float) || this.state === 'dash';
     if (!this.grounded && !floating) {
@@ -541,12 +613,19 @@ export class Fighter {
       this.y = this.map.groundLevel;
       this.vy = 0;
       if (!this.grounded) {
-        this.vx = 0;
+        // Quem foi lancado continua escorregando ao bater no chao.
+        const falling = this.state === 'launched' || this.state === 'ko';
+        if (!falling) this.vx = 0;
         this.grounded = true;
         this.airJumpsLeft = this.maxAirJumps;
         this.airDashesLeft = 1;
+        if (this.state === 'launched') this.land();
+        else if (this.state === 'ko' && this.hasAnimation('knockdown')) this.animation.play(this.base('knockdown'), { restart: true });
         if (this.state === 'dash') this.state = 'idle';
-        if (this.state === 'air') this.state = 'idle';
+        if (this.state === 'air') {
+          this.state = 'idle';
+          this.playTransient('landing');
+        }
         // Golpe aereo acaba ao tocar o chao; com "onLand", segue para a
         // aterrissagem do golpe (o impacto do Helm Breaker do Dante).
         const landing = this.state === 'attack' ? this.animation.current : null;
@@ -556,7 +635,7 @@ export class Fighter {
     }
 
     // Escorregao do empurrao de golpe, freado pelo atrito do chao.
-    if (this.grounded && (this.state === 'hitstun' || this.state === 'blockstun')) {
+    if (this.grounded && (this.state === 'hitstun' || this.state === 'blockstun' || this.state === 'down' || this.state === 'ko')) {
       this.vx *= PUSH_FRICTION ** delta;
     }
     if (this.grounded && this.state === 'attack' && this.animation.current?.friction !== false) {
@@ -567,6 +646,7 @@ export class Fighter {
     this.holdPin(delta);
     this.clampToBounds();
     this.updateAnimation(forward);
+    this.updateFallAnimation();
     this.animation.update(delta);
     if (this.state === 'attack') {
       this.moveClock += delta;
@@ -583,7 +663,8 @@ export class Fighter {
     this.airJumpsLeft -= 1;
     this.vy = -jumpForce * AIR_JUMP_RATIO;
     this.vx = direction * walkSpeed;
-    this.animation.play(this.base('jump'), { restart: true });
+    this.jumpAnimation = this.jumpAnimationFor(direction, 'airJump');
+    this.animation.play(this.base(this.jumpAnimation), { restart: true });
     // Enfeite do personagem no impulso (os corvos do Itachi), se houver.
     if (this.config.airJumpEffect) {
       this.pendingEffects.push({ owner: this, spawn: this.config.airJumpEffect, attack: null, serial: this.attackSerial });
@@ -846,24 +927,110 @@ export class Fighter {
     return true;
   }
 
-  takeHit(damage, hitstun) {
+  // launch: { vx, vy } do golpe que derruba; from: x de quem bateu (para que
+  // lado cair); scale: escala de quem bateu (o avanco vem em px do pacote).
+  takeHit(damage, hitstun, { launch = null, from = null, scale = 1, heavy = false } = {}) {
     this.chainUsed.clear();
     this.breakCombo();
     this.fillAwakening(this.awakening?.onHit ?? 0);
     // Arredondado a 6 casas: o dano pode ser fracionario (ajuste de equilibrio)
     // e a sobra de ponto flutuante nao pode impedir o nocaute.
     this.health = Math.max(0, Math.round((this.health - damage) * 1e6) / 1e6);
+    const away = from === null ? -this.facing : (this.x >= from ? 1 : -1);
     if (this.health === 0) {
-      this.knockOut();
+      this.knockOut({ launch, away, scale });
       return 'ko';
+    }
+    const crouching = this.state === 'crouch';
+    const flying = this.state === 'launched';
+    const airborne = !this.grounded;
+    this.blocking = false;
+    this.attackOverride = null;
+    this.transient = null;
+    if (!airborne) this.juggle = 0;
+
+    if (launch && this.hasAnimation('launched') && this.juggle < JUGGLE_LIMIT) {
+      this.startLaunch(launch, away, scale);
+      if (airborne) this.juggle += 1;
+      return 'hit';
+    }
+    if (airborne) {
+      // No ar: o golpe ainda ergue um pouco (o combo no ar), ate o limite.
+      this.juggle += 1;
+      if (this.juggle <= JUGGLE_LIMIT) {
+        this.vy = Math.min(this.vy, -this.config.stats.jumpForce * AIR_HIT_LIFT);
+        this.vx = away * Math.max(Math.abs(this.vx), LAUNCH_DRIFT_MIN);
+      }
+      if (flying) {
+        this.animation.play(this.base('launched'), { restart: true });
+        return 'hit';
+      }
+      this.state = 'hitstun';
+      this.stunTimer = hitstun;
+      this.animation.play(this.base(this.hasAnimation('hitAir') ? 'hitAir' : 'hitReaction'), { restart: true });
+      return 'hit';
     }
     this.state = 'hitstun';
     this.stunTimer = hitstun;
-    this.blocking = false;
-    this.attackOverride = null;
-    if (this.grounded) this.vx = 0;
-    this.animation.play(this.base('hitReaction'), { restart: true });
+    this.vx = 0;
+    this.animation.play(this.base(this.groundHitAnimation({ crouching, heavy })), { restart: true });
     return 'hit';
+  }
+
+  // Reacao no chao: agachado, golpe pesado ou leve (varias leves, alternadas
+  // para o mesmo soco nao repetir sempre o mesmo quadro).
+  groundHitAnimation({ crouching, heavy }) {
+    const pool = crouching
+      ? ['hitCrouching', 'hitCrouching2']
+      : heavy ? ['hitHeavy', 'hitHeavy2'] : ['hitStanding', 'hitStanding2', 'hitStanding3'];
+    const options = pool.filter((name) => this.hasAnimation(name));
+    if (options.length === 0) return 'hitReaction';
+    this.hitCounter += 1;
+    return options[this.hitCounter % options.length];
+  }
+
+  // Sobe e cai para longe de quem bateu: a altura vem do pulo do proprio
+  // personagem e o avanco, do golpe.
+  startLaunch({ vx, vy }, away, scale = 1) {
+    const { jumpForce } = this.config.stats;
+    const ratio = Math.min(LAUNCH_MAX, Math.max(LAUNCH_MIN, vy / PACK_JUMP_SPEED));
+    this.vy = -jumpForce * ratio;
+    this.vx = away * Math.min(LAUNCH_DRIFT_MAX, Math.max(LAUNCH_DRIFT_MIN, vx * scale * LAUNCH_DRIFT));
+    this.grounded = false;
+    this.state = 'launched';
+    this.stunTimer = 0;
+    this.animation.play(this.base('launched'), { restart: true });
+  }
+
+  // Bateu no chao depois de lancado: fica deitado, invulneravel, e se levanta.
+  land() {
+    this.state = 'down';
+    this.downPhase = 'lie';
+    this.downTimer = LIE_TICKS;
+    this.juggle = 0;
+    this.animation.play(this.base(this.hasAnimation('knockdown') ? 'knockdown' : 'hitReaction'), { restart: true });
+  }
+
+  tickDown(delta) {
+    this.downTimer -= delta;
+    if (this.downTimer > 0) return;
+    if (this.downPhase === 'lie' && this.hasAnimation('getUp')) {
+      this.downPhase = 'rise';
+      this.animation.play(this.base('getUp'), { restart: true });
+      this.downTimer = Math.min(GET_UP_MAX_TICKS, this.animation.length);
+      return;
+    }
+    this.downPhase = null;
+    this.state = 'idle';
+    this.animation.play(this.base('idle'), { restart: true });
+  }
+
+  // No ar, lancado ou nocauteado: a pose de subida e depois a de queda.
+  updateFallAnimation() {
+    const flying = this.state === 'launched' || (this.state === 'ko' && !this.grounded);
+    if (!flying || !this.hasAnimation('launched')) return;
+    const falling = this.vy > 0 && this.hasAnimation('falling');
+    this.animation.play(this.base(falling ? 'falling' : 'launched'));
   }
 
   // Dash por toque duplo: so do chao, parado ou andando. O movimento e a
@@ -901,6 +1068,7 @@ export class Fighter {
   // Nos quadros em que some no dash (ou no trecho invulneravel de um golpe),
   // nenhum golpe pega.
   get invulnerable() {
+    if (this.state === 'down') return true;
     if (this.state === 'dash') {
       const { dash } = this.animation.current;
       const frame = this.animation.localFrame;
@@ -926,6 +1094,7 @@ export class Fighter {
       this.knockOut();
       return 'ko';
     }
+    this.transient = null;
     this.state = 'blockstun';
     this.stunTimer = blockstun;
     if (this.grounded) this.vx = 0;
@@ -947,6 +1116,7 @@ export class Fighter {
     this.blocking = false;
     this.health = this.config.stats.maxHealth;
     this.stunTimer = 0;
+    this.resetReactions();
     this.attackHasLanded = false;
     this.attackOverride = null;
     this.pendingPose = null;
@@ -988,18 +1158,32 @@ export class Fighter {
     }
   }
 
-  knockOut() {
+  // O nocaute derruba para tras, como um lancamento, e o personagem fica
+  // deitado (a animacao knockdown toca ao bater no chao).
+  knockOut({ launch = null, away = -this.facing, scale = 1 } = {}) {
     this.state = 'ko';
     this.stunTimer = 0;
     this.vx = 0;
     this.blocking = false;
+    this.transient = null;
+    if (this.hasAnimation('launched')) {
+      this.startLaunch(launch ?? KO_LAUNCH, away, scale);
+      this.state = 'ko';
+      return;
+    }
     this.animation.play(this.base('ko'), { restart: true });
   }
 
   updateAnimation(movingForward) {
     if (this.state === 'attack' || this.state === 'dash' || !this.canAct) return;
+    if (this.transient) {
+      const playing = this.grounded && this.animation.name === this.transient && !this.animation.finished
+        && (this.state === 'idle' || this.state === 'walk' || this.state === 'crouch');
+      if (playing) return;
+      this.transient = null;
+    }
     if (!this.grounded) {
-      this.animation.play(this.base('jump'));
+      this.animation.play(this.base(this.jumpAnimation));
       return;
     }
     if (this.state === 'crouch') {
