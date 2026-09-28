@@ -150,6 +150,7 @@ const ANIMATIONS = {
   kickSlide: {
     actions: [2050],
     ...NORMAL,
+    cooldown: 60,
     friction: false,
     hit: { damage: 5, hitstun: 26, push: 8, heavy: true },
     events: [sound(16, 'kick5'), { frame: 3, vx: 1 }, { frame: 12, vx: 20 }, { frame: 13, vx: 9 }, { frame: 15, vx: 0 }],

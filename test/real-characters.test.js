@@ -17,6 +17,8 @@ const map = JSON.parse(
 const config = JSON.parse(
   readFileSync(new URL('../public/assets/characters/itachi/itachi_config.json', import.meta.url)),
 );
+// Os testes de mecanica nao dependem do equilibrio (config.balance).
+delete config.balance;
 
 const blank = (count) => Array.from({ length: count }, () => Texture.EMPTY);
 const record = {

@@ -13,10 +13,15 @@ export const map = JSON.parse(
 
 const blank = (count) => Array.from({ length: count }, () => Texture.EMPTY);
 
-export function loadRecord(id) {
+// balanced: com o multiplicador de dano calibrado (config.balance). Os testes
+// de mecanica (prender, drenar, matar) medem quanta vida um golpe tira e nao
+// podem depender do equilibrio, entao por padrao o multiplicador sai; o
+// simulador de equilibrio pede balanced: true.
+export function loadRecord(id, { balanced = false } = {}) {
   const config = JSON.parse(
     readFileSync(new URL(`../../public/assets/characters/${id}/${id}_config.json`, import.meta.url)),
   );
+  if (!balanced) delete config.balance;
   return {
     config,
     frames: blank(config.atlas.length),
@@ -107,4 +112,20 @@ export function assertConfigIntegrity(assert, config) {
       for (const name of Object.values(group)) assert.ok(config.animations[name], `botao -> ${name}`);
     }
   }
+}
+
+// Sorteio fixo: golpes com espalhamento aleatorio (a chuva de laminas da
+// Unohana) viram deterministicos no teste. Devolve a funcao que restaura o
+// Math.random de verdade.
+export function seedRandom(seed = 1) {
+  const original = Math.random;
+  let state = seed >>> 0;
+  Math.random = () => {
+    state = (state + 0x6d2b79f5) >>> 0;
+    let t = state;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+  return () => { Math.random = original; };
 }

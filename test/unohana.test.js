@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { ComboDetector } from '../src/systems/ComboDetector.js';
-import { arena, assertConfigIntegrity, cast, command, hits, loadRecord, run, step } from './helpers/world.js';
+import { arena, assertConfigIntegrity, cast, command, hits, loadRecord, run, step, seedRandom } from './helpers/world.js';
 
 // Unohana (pacote MUGEN "RetsuUnohana"): sequencia de corte, especiais de
 // meia-lua, golpes de segurar para baixo, cura e Bankai.
@@ -33,7 +33,10 @@ for (const [name, [leftX, rightX], ticks, minimum] of [
   ['risingSlash', [500, 640], 80, 1],
 ]) {
   test(`unohana: ${name} acerta`, () => {
+    // A chuva de laminas sorteia onde cai: com o sorteio fixo, o teste nao oscila.
+    const restore = seedRandom(11);
     const world = run(arena(record, leftX, rightX), cast(name), ticks);
+    restore();
     assert.ok(hits(world).length >= minimum, `${name}: ${hits(world).length} acertos`);
   });
 }

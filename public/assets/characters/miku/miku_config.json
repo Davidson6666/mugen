@@ -700,6 +700,7 @@
           "vy": -4
         }
       ],
+      "cooldown": 60,
       "specialCancel": true
     },
     "flyingKick": {
@@ -753,6 +754,7 @@
           }
         }
       ],
+      "cooldown": 75,
       "specialCancel": true
     },
     "airLight": {
@@ -8611,6 +8613,10 @@
     "miku_atlas_0.png",
     "miku_atlas_1.png"
   ],
+  "assetVersion": "158ee7007f",
+  "balance": {
+    "damage": 0.934
+  },
   "atlas": [
     [
       0,

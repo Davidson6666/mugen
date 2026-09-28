@@ -70,7 +70,9 @@ export function applyHit(attacker, defender, attack, hitRect, serial = attacker.
   const point = impactPoint(hitRect, defender.hurtRect);
   // Ataque mais forte no modo despertado (Origin Mode do Gojo).
   const scale = attacker.damageScale ?? 1;
-  if (scale !== 1) attack = { ...attack, damage: Math.max(1, Math.round(attack.damage * scale)) };
+  // Sem arredondar: o ajuste fino de equilibrio (x1.15 num golpe de dano 2)
+  // precisa valer na media.
+  if (scale !== 1) attack = { ...attack, damage: attack.damage * scale };
   const heavy = Boolean(attack.heavy);
   // Esquiva (Genjutsu do dedo): o golpe atravessa sem dano nem hitstun.
   if (!defender.blocking && defender.tryEvade?.()) return { outcome: 'evade', damage: 0, point };

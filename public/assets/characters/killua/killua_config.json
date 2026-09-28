@@ -16185,5 +16185,8 @@
     "voiceUltimate2": "sfx/voiceUltimate2.mp3",
     "thunder": "sfx/thunder.mp3"
   },
-  "spriteScale": 2
+  "spriteScale": 2,
+  "balance": {
+    "damage": 1.913
+  }
 }

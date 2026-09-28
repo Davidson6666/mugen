@@ -9892,5 +9892,8 @@
     "s950_2": "sfx/s950_2.mp3",
     "s0_69": "sfx/s0_69.mp3"
   },
-  "spriteScale": 1.8
+  "spriteScale": 1.8,
+  "balance": {
+    "damage": 1.121
+  }
 }

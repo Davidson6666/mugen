@@ -5887,5 +5887,8 @@
     "slashHeavy": "sfx/slashHeavy.mp3",
     "thunder": "sfx/thunder.mp3"
   },
-  "spriteScale": 2.1
+  "spriteScale": 2.1,
+  "balance": {
+    "damage": 2
+  }
 }

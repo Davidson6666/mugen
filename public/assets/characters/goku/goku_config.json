@@ -11018,5 +11018,8 @@
     "voiceFinal": "sfx/voiceFinal.mp3",
     "voiceBeamFire": "sfx/voiceBeamFire.mp3"
   },
-  "spriteScale": 1.7
+  "spriteScale": 1.7,
+  "balance": {
+    "damage": 1.316
+  }
 }

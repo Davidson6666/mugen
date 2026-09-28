@@ -1503,6 +1503,7 @@
           "vx": 0
         }
       ],
+      "cooldown": 60,
       "friction": false,
       "specialCancel": true
     },
@@ -7551,6 +7552,10 @@
     "dante_atlas_3.png",
     "dante_atlas_4.png"
   ],
+  "assetVersion": "f2b9c32d7d",
+  "balance": {
+    "damage": 0.592
+  },
   "atlas": [
     [
       1,

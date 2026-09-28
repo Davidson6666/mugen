@@ -9731,5 +9731,8 @@
     "voiceTensho": "sfx/voiceTensho.mp3",
     "voiceSuper": "sfx/voiceSuper.mp3",
     "voiceKikosho": "sfx/voiceKikosho.mp3"
+  },
+  "balance": {
+    "damage": 0.901
   }
 }

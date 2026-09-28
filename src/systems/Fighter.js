@@ -112,6 +112,9 @@ export class Fighter {
     // Marcas dos efeitos vivos deste lutador (o corvo do Shisui); o
     // EffectManager mantem, e golpe com "requires" so sai com a marca em campo.
     this.effectTags = new Set();
+    // Golpes ja usados na sequencia encadeada atual (ver startAttack): sem
+    // isso um cancel que volta a um golpe anterior vira ataque infinito.
+    this.chainUsed = new Set();
     this.pendingConsumes = [];
     // O lutador so avisa que um golpe soltou um efeito; quem cria, move e
     // colide a entidade e o EffectManager.
@@ -146,8 +149,11 @@ export class Fighter {
     return this.config.awakening ?? null;
   }
 
+  // Multiplicador do dano que este lutador causa: o ajuste de equilibrio do
+  // personagem (config.balance.damage, calibrado por scripts/balance-tune.mjs)
+  // vezes o do modo despertado.
   get damageScale() {
-    return this.awakened ? (this.awakening.damageScale ?? 1) : 1;
+    return (this.config.balance?.damage ?? 1) * (this.awakened ? (this.awakening.damageScale ?? 1) : 1);
   }
 
   fillAwakening(amount) {
@@ -345,6 +351,11 @@ export class Fighter {
     if (!chained && move.perRound && (this.roundUses.get(animationName) ?? 0) >= move.perRound) return false;
 
     this.state = 'attack';
+    // Cada golpe entra uma vez so numa sequencia encadeada por cancels: o
+    // golpe que abre a sequencia conta, e quem volta ao neutro, apanha ou
+    // comeca um golpe novo por conta propria recomeca a conta.
+    if (!chained) this.chainUsed.clear();
+    this.chainUsed.add(animationName);
     this.attackHasLanded = false;
     this.attackOverride = override;
     this.effectSpawned = false;
@@ -375,6 +386,7 @@ export class Fighter {
   }
 
   endMove() {
+    this.chainUsed.clear();
     if (!this.moveContact && !this.attackHasLanded) this.breakCombo();
     this.state = this.grounded ? 'idle' : 'air';
     this.attackOverride = null;
@@ -635,6 +647,7 @@ export class Fighter {
         if (entry.forward && !this.buffered.forward) return false;
         if (entry.down !== undefined && entry.down !== this.buffered.down) return false;
         if (this.moveClock < (entry.after ?? 0)) return false;
+        if (this.chainUsed.has(entry.to)) return false;
         // Algumas sequencias mudam perto da parede (o .cns troca o golpe
         // pela distancia ate a borda).
         if (entry.frontEdge) {
@@ -834,9 +847,12 @@ export class Fighter {
   }
 
   takeHit(damage, hitstun) {
+    this.chainUsed.clear();
     this.breakCombo();
     this.fillAwakening(this.awakening?.onHit ?? 0);
-    this.health = Math.max(0, this.health - damage);
+    // Arredondado a 6 casas: o dano pode ser fracionario (ajuste de equilibrio)
+    // e a sobra de ponto flutuante nao pode impedir o nocaute.
+    this.health = Math.max(0, Math.round((this.health - damage) * 1e6) / 1e6);
     if (this.health === 0) {
       this.knockOut();
       return 'ko';
@@ -905,7 +921,7 @@ export class Fighter {
 
   takeBlockedHit(damage, blockstun) {
     const crouching = this.state === 'crouch';
-    this.health = Math.max(0, this.health - damage);
+    this.health = Math.max(0, Math.round((this.health - damage) * 1e6) / 1e6);
     if (this.health === 0) {
       this.knockOut();
       return 'ko';
@@ -937,6 +953,7 @@ export class Fighter {
     this.pendingEffects.length = 0;
     this.effectSpawned = false;
     this.cooldowns.clear();
+    this.chainUsed.clear();
     this.roundUses.clear();
     this.illusion = null;
     this.seals = {};

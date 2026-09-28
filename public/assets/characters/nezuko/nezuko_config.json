@@ -4025,5 +4025,8 @@
     "voice24": "sfx/voice24.mp3",
     "voice27": "sfx/voice27.mp3"
   },
-  "spriteScale": 2
+  "spriteScale": 2,
+  "balance": {
+    "damage": 1.502
+  }
 }

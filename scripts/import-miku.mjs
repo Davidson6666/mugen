@@ -162,12 +162,14 @@ const ANIMATIONS = {
   leekDive: {
     actions: [3301],
     ...NORMAL,
+    cooldown: 60,
     hit: { damage: 4, hitstun: 24, push: 5 },
     events: [{ at: 0, vx: 4, vy: -4 }],
   },
   flyingKick: {
     actions: [3741],
     ...NORMAL,
+    cooldown: 75,
     hit: { damage: 6, hitstun: 30, push: 9, heavy: true },
     events: [{ at: 0, vx: 4, vy: -4 }, fx(6, 'kickFlame', [40, -50])],
   },

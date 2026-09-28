@@ -7066,5 +7066,8 @@
     "punchZap": "sfx/punchZap.mp3",
     "boom": "sfx/boom.mp3"
   },
-  "spriteScale": 1.3
+  "spriteScale": 1.3,
+  "balance": {
+    "damage": 1.27
+  }
 }

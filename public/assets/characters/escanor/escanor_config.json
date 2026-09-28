@@ -727,7 +727,8 @@
       "onHit": {
         "to": "grabSlam",
         "after": 25
-      }
+      },
+      "cooldown": 90
     },
     "grabSlam": {
       "frames": [
@@ -2597,7 +2598,8 @@
           "to": "kick",
           "need": "contact"
         }
-      ]
+      ],
+      "cooldown": 60
     },
     "transformTheOne": {
       "frames": [
@@ -3597,6 +3599,9 @@
     "escanor_atlas_2.png"
   ],
   "assetVersion": "00b3171616",
+  "balance": {
+    "damage": 1.65
+  },
   "atlas": [
     [
       1,

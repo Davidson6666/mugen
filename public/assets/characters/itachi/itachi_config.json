@@ -20378,5 +20378,8 @@
     "id": "crowBurst",
     "offsetX": 0,
     "offsetY": 30
+  },
+  "balance": {
+    "damage": 0.638
   }
 }

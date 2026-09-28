@@ -96,6 +96,7 @@ const ANIMATIONS = {
   // ↓ + A: agarra (210) e derruba (211).
   grab: {
     actions: [210],
+    cooldown: 90,
     hit: { damage: 1, hitstun: 60, push: 0 },
     events: [{ frame: 3, vx: 5 }],
     onHit: { to: 'grabSlam', after: 25 },
@@ -254,6 +255,7 @@ const ANIMATIONS = {
   // ↓↓ + A: golpe atordoante (9620): prende o oponente e emenda A ou B.
   stunStrike: {
     actions: [920],
+    cooldown: 60,
     hit: { damage: 1, hitstun: 50, push: 1 },
     events: [{ frame: 3, vx: 6 }],
     cancels: [

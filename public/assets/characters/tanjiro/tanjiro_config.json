@@ -7064,5 +7064,8 @@
     "voiceHinokami2": "sfx/voiceHinokami2.mp3",
     "voiceDance": "sfx/voiceDance.mp3"
   },
-  "spriteScale": 2
+  "spriteScale": 2,
+  "balance": {
+    "damage": 0.713
+  }
 }

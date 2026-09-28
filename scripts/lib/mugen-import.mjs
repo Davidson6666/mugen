@@ -803,6 +803,15 @@ export function importMugenCharacter({
   const soundFiles = Object.keys(allSounds).length > 0 ? exportSounds(root, outDir, sndPath, allSounds) : null;
 
   const { spriteSheet: _unused, ...rest } = base;
+  // Ajuste de equilibrio do personagem (src/data/balance.json, calibrado por
+  // scripts/balance-tune.mjs): reimportar nao pode desfazer.
+  let balanceDamage = 1;
+  try {
+    balanceDamage = JSON.parse(readFileSync(resolve(root, 'src/data/balance.json'), 'utf8'))[id] ?? 1;
+  } catch {
+    // Sem arquivo ainda: todo mundo no x1.
+  }
+
   const config = {
     ...rest,
     id,
@@ -810,6 +819,7 @@ export function importMugenCharacter({
     description,
     sheets,
     assetVersion,
+    ...(balanceDamage !== 1 ? { balance: { damage: balanceDamage } } : {}),
     spriteGridSize: grid,
     atlas: body.cells.map((_, index) => placements[bodyStart + index]),
     animations: built,
