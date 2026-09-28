@@ -337,6 +337,11 @@ export class Fighter {
     return this.rectInWorld(this.config.hurtbox);
   }
 
+  // Altura do corpo em px de tela (a hurtbox parada, na escala do personagem).
+  get bodyHeight() {
+    return this.config.hurtbox.height * this.scale;
+  }
+
   // Caixa do acerto ativo agora; fora dele, a do golpe (ou a do personagem),
   // para a IA e os testes medirem alcance.
   get hitRect() {

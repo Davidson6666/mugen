@@ -39,6 +39,22 @@ export function overlaps(a, b) {
   );
 }
 
+// O elenco tem alturas muito diferentes (Tanjiro 106 px, Goku 70) e cada golpe
+// vem desenhado na altura do corpo de quem bate: o soco no rosto de uma
+// personagem alta passava por cima da cabeca de um oponente baixo. Contra um
+// alvo mais baixo, a caixa desce na mesma proporcao (em relacao aos pes de quem
+// bate), entao o golpe pega a mesma parte do corpo. So desce: nenhum golpe
+// que ja acertava deixa de acertar.
+const MIN_HEIGHT_RATIO = 0.5;
+
+export function fitToTarget(attacker, defender, rect) {
+  const ratio = Math.max(MIN_HEIGHT_RATIO, Math.min(1, defender.bodyHeight / attacker.bodyHeight));
+  if (ratio >= 1) return rect;
+  const top = attacker.y - (attacker.y - rect.y) * ratio;
+  const bottom = attacker.y - (attacker.y - (rect.y + rect.height)) * ratio;
+  return { ...rect, y: top, height: bottom - top };
+}
+
 // Confronta o acerto ativo do atacante contra a hurtbox do defensor. Devolve o
 // que aconteceu ('hit', 'block' ou 'ko') para quem precisar reagir — contador de
 // combo, audio, HUD — ou null quando o golpe nao conecta. Cada janela de
@@ -46,7 +62,7 @@ export function overlaps(a, b) {
 export function resolveAttack(attacker, defender) {
   const attack = attacker.activeAttack;
   if (!attack?.ready || defender.isKnockedOut || defender.invulnerable) return null;
-  const hitRect = attacker.rectInWorld(attack.box ?? attacker.config.hitbox);
+  const hitRect = fitToTarget(attacker, defender, attacker.rectInWorld(attack.box ?? attacker.config.hitbox));
   if (!overlaps(hitRect, defender.hurtRect)) return null;
 
   attacker.registerHit(attack);
