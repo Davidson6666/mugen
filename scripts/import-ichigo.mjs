@@ -10,9 +10,12 @@
 // (210, 220, 230, 400 e a maioria dos 800/900/1000+) nao existem em nenhum
 // dos arquivos do pacote - apertar o botao nao faz nada. Dois golpes
 // "nomeados" tambem sao, na pratica, passos (o chute forte em pe e o chute
-// forte no ar so teleportam, sem acerto). O que sobra e o que entrou aqui:
-// o soco fraco, o chute agachado, os tres socos no ar, o mergulho de espada
-// (Falling Sword) e o Bankai (unico "super" que funciona de verdade).
+// forte no ar so teleportam, sem acerto), e a familia "Head Smash"/"Air
+// Shunpo" (que emenda de qualquer golpe que conectar) tem o dano zerado no
+// HitDef (so causa dano na guarda) - um golpe que existe mas nao machuca.
+// O que sobra e o que entrou aqui: o soco fraco, o chute agachado, os tres
+// socos no ar, o mergulho de espada (Falling Sword), o Hard Cut (emenda de
+// qualquer golpe que conectar) e o Bankai.
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { importMugenCharacter } from './lib/mugen-import.mjs';
@@ -62,6 +65,14 @@ const ANIMATIONS = {
   airMedium: { actions: [610], air: true, specialCancel: true, hit: { damage: 3, hitstun: 18, push: 6 } },
   airStrong: { actions: [620], air: true, hit: { damage: 4, hitstun: 20, push: 6, heavy: true } },
 
+  // ---- Hard Cut (↓→ + especial): emenda de qualquer soco/chute que
+  // conectar (specialCancel), um corte forte que nao lanca ----
+  hardCut: {
+    actions: [970009],
+    cooldown: 200,
+    hit: { damage: 5, hitstun: 22, push: 8, heavy: true },
+  },
+
   // ---- Falling Sword (↓← + especial, no ar): mergulha espada em riste ----
   fallingSword: {
     launch: { vx: 4, vy: 3 },
@@ -86,6 +97,7 @@ const ANIMATIONS = {
 
 const special = (id, input, animation) => ({ id, input: `${input}S`, animation });
 const COMBOS = [
+  special('hardcut', '↓→', 'hardCut'),
   special('fallingsword', '↓←', 'fallingSword'),
   special('bankai', '↓→↓→', 'bankai'),
 ];
@@ -100,6 +112,7 @@ const MOVE_LIST = [
   { section: 'Golpes', name: 'Soco', input: 'P' },
   { section: 'Golpes', name: 'Chute (agachado)', input: 'K', note: 'Mais forte que o soco' },
   { section: 'Golpes', name: 'No ar (fraco, médio, forte)', input: 'PKS', note: 'No ar' },
+  { section: 'Especiais', name: 'Hard Cut', input: '↓→S', note: 'Emenda de qualquer soco/chute que conectar' },
   { section: 'Especiais', name: 'Falling Sword', input: '↓←S', note: 'No ar; mergulha com a espada' },
   { section: 'Super', name: 'Bankai', input: '↓→↓→S', note: 'Dois cortes na velocidade do Shunpo' },
 ];

@@ -483,6 +483,44 @@
       ],
       "air": true
     },
+    "hardCut": {
+      "frames": [
+        33,
+        7
+      ],
+      "durations": [
+        5,
+        10
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 1,
+          "until": 1,
+          "box": {
+            "width": 47,
+            "height": 71,
+            "offsetX": 116,
+            "offsetY": 73
+          },
+          "damage": 5,
+          "hitstun": 22,
+          "push": 8,
+          "heavy": true
+        }
+      ],
+      "events": [
+        {
+          "at": 0,
+          "sound": "s2_4"
+        },
+        {
+          "at": 0,
+          "sound": "s1_0"
+        }
+      ],
+      "cooldown": 200
+    },
     "fallingSword": {
       "frames": [
         47,
@@ -877,6 +915,11 @@
     }
   },
   "combos": [
+    {
+      "id": "hardcut",
+      "input": "↓→S",
+      "animation": "hardCut"
+    },
     {
       "id": "fallingsword",
       "input": "↓←S",
@@ -1701,6 +1744,12 @@
     },
     {
       "section": "Especiais",
+      "name": "Hard Cut",
+      "input": "↓→S",
+      "note": "Emenda de qualquer soco/chute que conectar"
+    },
+    {
+      "section": "Especiais",
       "name": "Falling Sword",
       "input": "↓←S",
       "note": "No ar; mergulha com a espada"
@@ -1722,6 +1771,7 @@
     "s6_3": "sfx/s6_3.mp3",
     "s30_1": "sfx/s30_1.mp3",
     "s30_2": "sfx/s30_2.mp3",
+    "s2_4": "sfx/s2_4.mp3",
     "s8_0": "sfx/s8_0.mp3",
     "s300_10": "sfx/s300_10.mp3"
   }

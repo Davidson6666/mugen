@@ -5,7 +5,8 @@ import { arena, assertConfigIntegrity, cast, command, hits, loadRecord, run, ste
 
 // Yoruichi (pacote MUGEN "Yoruichi TYBW", Mounir): soco em ate tres golpes (o
 // terceiro com um Shunpo ate o oponente), chute que lanca, forte, os tres
-// golpes no ar, Shunpo para frente/tras, Choque Eletrico e o super Raiju Senkei.
+// golpes no ar, Shunpo para frente/tras, Choque Eletrico, Shunko, Raijin
+// Senkei, Multiplos Combos e o super Raiju Senkei.
 const record = loadRecord('yoruichi');
 const { config } = record;
 
@@ -88,6 +89,13 @@ test('yoruichi: Choque Eletrico acerta forte e lanca', () => {
   assert.ok(sawLaunched);
 });
 
+test('yoruichi: Shunko, Raijin Senkei e Multiplos Combos acertam', () => {
+  for (const name of ['shunko', 'raijinSenkei', 'multiplesCombos']) {
+    const world = run(arena(record, 500, 545), cast(name), 80);
+    assert.ok(hits(world).length >= 1, name);
+  }
+});
+
 test('yoruichi: o super Raiju Senkei acerta e nao pode ser defendido', () => {
   const world = arena(record, 500, 545);
   const [, rival] = world.fighters;
@@ -115,5 +123,8 @@ test('yoruichi: comandos dos dois especiais', () => {
     return match?.animation ?? null;
   };
   assert.equal(feed([{ down: true }, { down: true, right: true }, { right: true, special: true }]), 'electroShock');
+  assert.equal(feed([{ down: true }, { down: true, left: true }, { left: true, special: true }]), 'shunko');
+  assert.equal(feed([{ left: true }, { down: true }, { down: true, right: true }, { right: true, special: true }]), 'raijinSenkei');
+  assert.equal(feed([{ right: true }, { down: true }, { down: true, left: true }, { left: true, special: true }]), 'multiplesCombos');
   assert.equal(feed([{ down: true }, { right: true }, { down: true }, { right: true, special: true }]), 'raijuSenkei');
 });

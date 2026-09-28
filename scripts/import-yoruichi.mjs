@@ -14,9 +14,16 @@
 // Golpes: soco em tres (o terceiro com um Shunpo ate o oponente), chute em
 // dois (o segundo lanca) que tambem emenda no soco forte, os tres golpes no
 // ar, o Shunpo (corrida) para frente e para tras, o Choque Eletrico (Electro
-// Shock) e o super Raiju Senkei. O pacote tem mais combos ligados a um
-// medidor de energia que o jogo nao tem (Shunko, Raioken, Raijin Senkei,
-// Shunshin Chohengen...); nao foram trazidos.
+// Shock), o Shunko (o golpe eletrico vem de um helper a parte, sem caixa
+// propria - juntei a pose de carga com a caixa do helper), o Raijin Senkei e
+// a sequencia Multiplos Combos, alem do super Raiju Senkei. O pacote ainda
+// cita o Raioken e o Shunshin Chohengen: os dois existem, mas nenhum HitDef
+// da sequencia deles causa dano de verdade (o Raioken zera o dano no meio da
+// troca de posicao; o Shunshin so reposiciona) - ficaram de fora. O modo
+// "Shunko: Raiju Senkei" (botao y) abre uma arvore de estados enorme (troca
+// de forma, varios sub-golpes) grande demais para valer a pena converter.
+// Todos os especiais dependiam de um medidor de energia que o jogo nao tem;
+// entraram com cooldown no lugar (como os supers do resto do elenco).
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { importMugenCharacter } from './lib/mugen-import.mjs';
@@ -119,6 +126,31 @@ const ANIMATIONS = {
     hit: { damage: 13, hitstun: 34, push: 10, heavy: true },
   },
 
+  // ---- Shunko (↓← + especial): crava a mao no chao e solta uma descarga -
+  // a pose (1100) nao tem caixa propria; o golpe de verdade e o efeito
+  // shunkoBolt (o helper 1150 do pacote, uma tela inteira de raio) ----
+  shunko: {
+    actions: [1100],
+    cooldown: 300,
+    effect: { id: 'shunkoBolt', spawnFrame: 4, pos: [0, 0] },
+  },
+
+  // ---- Raijin Senkei (←↓→ + especial): estocada eletrica. O golpe do
+  // pacote nao tem caixa propria no .air (o dano sai de uma condicao do
+  // .cns sem clsn1); a janela de acerto foi declarada na mao ----
+  raijinSenkei: {
+    actions: [2200],
+    cooldown: 260,
+    areas: [{ rect: [10, -75, 95, -15], from: 3, until: 6, damage: 1, hitstun: 20, push: 6 }],
+  },
+
+  // ---- Multiplos Combos (→↓← + especial): dois cortes em sequencia ----
+  multiplesCombos: {
+    actions: [2300, 2301],
+    cooldown: 280,
+    hit: { damage: 3, hitstun: 26, push: 8, heavy: true },
+  },
+
   // ---- Super Raiju Senkei (↓→↓→ + especial): investida com Shunpo em
   // sequencia e o golpe final. O .air ja marca onde acerta (quadros 13/14/16
   // de 18); um teleporte no comeco garante que ela chega perto do oponente
@@ -132,9 +164,25 @@ const ANIMATIONS = {
   },
 };
 
+// O raio do Shunko (helper 1150 do pacote): uma unica imagem enorme (885x605
+// px) desenhada para cobrir a tela toda, ja na escala em que o pacote a usa
+// (size 0.2 no proprio Helper).
+const EFFECTS = {
+  shunkoBolt: {
+    actions: [{ id: 1150, lengthTicks: 24 }],
+    size: 0.2,
+    velocityX: 4,
+    hit: { damage: 2, hitstun: 24, push: 6, heavy: true },
+    launch: { vx: 2, vy: 6 },
+  },
+};
+
 const special = (id, input, animation) => ({ id, input: `${input}S`, animation });
 const COMBOS = [
   special('electro', '↓→', 'electroShock'),
+  special('shunko', '↓←', 'shunko'),
+  special('raijin', '←↓→', 'raijinSenkei'),
+  special('multiplos', '→↓←', 'multiplesCombos'),
   special('raiju', '↓→↓→', 'raijuSenkei'),
 ];
 
@@ -150,6 +198,9 @@ const MOVE_LIST = [
   { section: 'Golpes', name: 'Forte', input: 'S', note: 'Também emenda do chute' },
   { section: 'Golpes', name: 'No ar (fraco, médio, forte)', input: 'PKS', note: 'No ar' },
   { section: 'Especiais', name: 'Choque Elétrico', input: '↓→S', note: 'Soco carregado que atordoa e lança' },
+  { section: 'Especiais', name: 'Shunko', input: '↓←S', note: 'Descarga elétrica que lança' },
+  { section: 'Especiais', name: 'Raijin Senkei', input: '←↓→S', note: 'Estocada elétrica' },
+  { section: 'Especiais', name: 'Múltiplos Combos', input: '→↓←S', note: 'Dois cortes em sequência' },
   { section: 'Super', name: 'Raiju Senkei', input: '↓→↓→S', note: 'Investida com Shunpo e o golpe final, não dá pra defender' },
 ];
 
@@ -167,6 +218,7 @@ importMugenCharacter({
   template: 'public/assets/characters/dummy/dummy_config.json',
   spriteScale: 1.8,
   animations: ANIMATIONS,
+  effects: EFFECTS,
   combos: COMBOS,
   buttons: BUTTONS,
   moveList: MOVE_LIST,
