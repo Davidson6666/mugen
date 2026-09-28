@@ -136,6 +136,14 @@
     "isBoss": false
   },
   {
+    "id": "ichigo",
+    "name": "Ichigo",
+    "dir": "/assets/characters/ichigo",
+    "config": "ichigo_config.json",
+    "portrait": "ichigo_portrait.png",
+    "isBoss": false
+  },
+  {
     "id": "ensina_god",
     "name": "Ensina GOD",
     "dir": "/assets/characters/ensina_god",

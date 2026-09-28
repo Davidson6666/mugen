@@ -12,6 +12,7 @@
     "assets:placeholder": "node scripts/generate-placeholder-assets.mjs",
     "assets:itachi": "node scripts/import-itachi.mjs",
     "assets:yoruichi": "node scripts/import-yoruichi.mjs",
+    "assets:ichigo": "node scripts/import-ichigo.mjs",
     "assets:unohana": "node scripts/import-unohana.mjs",
     "assets:aizen": "node scripts/import-aizen.mjs",
     "assets:gojo": "node scripts/import-gojo.mjs",

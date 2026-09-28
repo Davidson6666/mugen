@@ -27,8 +27,10 @@ test('equilibrio: os personagens importados sao 16 e a auditoria roda em todos',
 // emendaria para sempre.
 const WITH_CYCLES = imported.filter((id) => auditCharacter(id).cycles.length > 0);
 
-test('equilibrio: a auditoria acha os ciclos conhecidos (Yoruichi, Miku, Pikachu, Goku)', () => {
-  for (const id of ['yoruichi', 'miku', 'pikachu', 'goku']) assert.ok(WITH_CYCLES.includes(id), id);
+test('equilibrio: a auditoria acha os ciclos conhecidos (Miku, Pikachu, Goku)', () => {
+  // A Yoruichi trocou de pacote (Yoruichi TYBW): o novo soco/chute nao volta
+  // a um golpe anterior da mesma sequencia, entao nao tem ciclo.
+  for (const id of ['miku', 'pikachu', 'goku']) assert.ok(WITH_CYCLES.includes(id), id);
 });
 
 for (const id of WITH_CYCLES) {
@@ -66,6 +68,10 @@ test('equilibrio: cada golpe entra uma vez so numa sequencia por cancels', () =>
     world.fighters[1].health = 100000;
     if (a.attackSerial !== serial) {
       serial = a.attackSerial;
+      // chainUsed tem so o golpe atual quando uma sequencia nova comecou (sem
+      // deixar o estado "attack" entre uma e outra, quando o mashing emenda
+      // o ultimo golpe de uma sequencia direto no primeiro da proxima).
+      if (a.chainUsed.size <= 1) used.length = 0;
       used.push(a.animation.name);
     }
     if (a.state !== 'attack') used.length = 0;
