@@ -140,13 +140,7 @@
     "name": "Ensina GOD",
     "dir": "/assets/characters/ensina_god",
     "config": "ensina_god_config.json",
-    "portrait": "ensina_god_atlas.png",
-    "isBoss": false,
-    "portraitRect": [
-      108,
-      16,
-      90,
-      100
-    ]
+    "portrait": "ensina_god_portrait.png",
+    "isBoss": false
   }
 ]

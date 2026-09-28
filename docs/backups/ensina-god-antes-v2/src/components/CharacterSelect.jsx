@@ -141,7 +141,6 @@ export default function CharacterSelect() {
             id={character.id}
             at={CELLS[index]}
             image={`${character.dir}/${character.portrait}`}
-            portraitRect={character.portraitRect}
             cursors={activePlayers.filter((player) => cursors[player] === index)}
             onPointerEnter={() => {
               if (!confirmed[0]) setCursors((current) => [index, current[1]]);

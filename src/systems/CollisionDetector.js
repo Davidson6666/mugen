@@ -75,7 +75,7 @@ export function applyHit(attacker, defender, attack, hitRect, serial = attacker.
   if (scale !== 1) attack = { ...attack, damage: attack.damage * scale };
   const heavy = Boolean(attack.heavy);
   // Esquiva (Genjutsu do dedo): o golpe atravessa sem dano nem hitstun.
-  if (!defender.blocking && defender.tryEvade?.()) return { outcome: 'evade', damage: 0, point };
+  if (!attack.guaranteed && !defender.blocking && defender.tryEvade?.()) return { outcome: 'evade', damage: 0, point };
   // Genjutsu nao se defende: o golpe "unblockable" passa pela guarda.
   if (defender.blocking && !attack.unblockable) {
     const damage = Math.max(1, Math.round(attack.damage * CHIP_DAMAGE_RATIO));

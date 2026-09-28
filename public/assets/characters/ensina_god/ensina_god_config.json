@@ -1,13 +1,11 @@
 {
   "id": "ensina_god",
   "name": "Ensina GOD",
-  "description": "Professor supremo",
-  "spriteSheet": "ensina_god_spritesheet.png",
+  "description": "Professor de programação — arte refeita a partir das fotos",
   "spriteGridSize": {
-    "cols": 14,
-    "rows": 6,
-    "frameWidth": 80,
-    "frameHeight": 96
+    "frameWidth": 320,
+    "frameHeight": 300,
+    "baseline": 280
   },
   "stats": {
     "maxHealth": 100,
@@ -19,259 +17,1741 @@
     "idle": {
       "frames": [
         0,
-        1,
-        2,
-        3
+        1
       ],
-      "speed": 0.1,
-      "loop": true
+      "loop": true,
+      "durations": [
+        12,
+        12
+      ]
     },
     "walkForward": {
       "frames": [
-        4,
-        5,
-        6,
-        7,
-        8,
-        9
+        2,
+        3
       ],
-      "speed": 0.12,
-      "loop": true
+      "loop": true,
+      "durations": [
+        7,
+        7
+      ]
     },
     "walkBackward": {
       "frames": [
-        10,
-        11,
-        12,
-        13,
-        14,
-        15
+        3,
+        2
       ],
-      "speed": 0.12,
-      "loop": true
+      "loop": true,
+      "durations": [
+        8,
+        8
+      ]
     },
     "jump": {
       "frames": [
-        16,
-        17,
-        18,
-        19
+        12,
+        13
       ],
-      "speed": 0.15,
-      "loop": false
+      "loop": false,
+      "durations": [
+        12,
+        12
+      ]
     },
     "crouch": {
       "frames": [
-        20,
-        21,
-        22,
-        23
+        4
       ],
-      "speed": 0.1,
-      "loop": true
+      "loop": true,
+      "durations": [
+        10
+      ]
     },
     "blockStanding": {
       "frames": [
-        24,
-        25,
-        26,
-        27
+        5
       ],
-      "speed": 0.08,
-      "loop": true
+      "loop": true,
+      "durations": [
+        10
+      ]
     },
     "blockCrouching": {
       "frames": [
-        28,
-        29,
-        30,
-        31
+        4
       ],
-      "speed": 0.08,
-      "loop": true
+      "loop": true,
+      "durations": [
+        10
+      ]
     },
     "punch": {
       "frames": [
-        32,
-        33,
-        34,
-        35,
-        36,
-        37
+        6,
+        7,
+        8
       ],
-      "speed": 0.15,
       "loop": false,
-      "hitboxFrame": 2,
+      "hitboxFrame": 1,
       "damage": 15,
-      "hitstun": 12
+      "hitstun": 12,
+      "durations": [
+        5,
+        4,
+        8
+      ]
     },
     "kick": {
       "frames": [
-        38,
-        39,
-        40,
-        41,
-        42,
-        43
+        9,
+        10,
+        11,
+        0
       ],
-      "speed": 0.15,
       "loop": false,
-      "hitboxFrame": 2,
+      "hitboxFrame": 1,
       "damage": 18,
       "hitstun": 14,
       "hitbox": {
-        "width": 44,
-        "height": 26,
-        "offsetX": 52,
-        "offsetY": 44
-      }
+        "width": 110.91666666666666,
+        "height": 65.54166666666667,
+        "offsetX": 190.25,
+        "offsetY": 148.91666666666666
+      },
+      "durations": [
+        7,
+        5,
+        6,
+        5
+      ]
     },
     "special1": {
       "frames": [
-        44,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50,
-        51
+        18,
+        19,
+        20,
+        0
       ],
-      "speed": 0.15,
+      "durations": [
+        10,
+        8,
+        10,
+        10
+      ],
       "loop": false,
-      "hitboxFrame": 3,
-      "damage": 35,
-      "hitstun": 20,
-      "cooldown": 60,
-      "hitbox": {
-        "width": 60,
-        "height": 40,
-        "offsetX": 48,
-        "offsetY": 26
-      }
+      "cooldown": 45,
+      "events": [
+        {
+          "at": 0,
+          "effect": {
+            "id": "charge",
+            "offsetY": 135,
+            "scale": 0.5,
+            "lifetime": 12
+          }
+        },
+        {
+          "at": 10,
+          "effect": {
+            "id": "compile",
+            "offsetX": 125,
+            "offsetY": 135
+          }
+        }
+      ]
     },
     "special2": {
       "frames": [
-        52,
-        53,
-        54,
-        55,
-        56,
-        57,
-        58,
-        59
+        18,
+        21,
+        19,
+        0
       ],
-      "speed": 0.15,
+      "durations": [
+        16,
+        12,
+        45,
+        12
+      ],
       "loop": false,
-      "hitboxFrame": 4,
-      "damage": 30,
-      "hitstun": 18,
-      "cooldown": 60
+      "cooldown": 240,
+      "events": [
+        {
+          "at": 0,
+          "effect": {
+            "id": "charge",
+            "offsetY": 135,
+            "lifetime": 22
+          }
+        },
+        {
+          "at": 28,
+          "effect": {
+            "id": "exam",
+            "target": "opponent",
+            "offsetY": 130
+          }
+        }
+      ]
     },
     "special3": {
       "frames": [
-        60,
-        61,
-        62,
-        63,
-        64,
-        65,
-        66,
-        67
+        18,
+        21,
+        20,
+        20,
+        0
       ],
-      "speed": 0.15,
+      "durations": [
+        18,
+        24,
+        30,
+        32,
+        20
+      ],
       "loop": false,
-      "hitboxFrame": 4,
-      "damage": 40,
-      "hitstun": 22,
-      "cooldown": 80
+      "cooldown": 600,
+      "events": [
+        {
+          "at": 0,
+          "effect": {
+            "id": "charge",
+            "offsetY": 135,
+            "scale": 1.5,
+            "lifetime": 42
+          }
+        },
+        {
+          "at": 42,
+          "effect": {
+            "id": "beam",
+            "offsetX": 710,
+            "offsetY": 145
+          }
+        }
+      ],
+      "perRound": 2
     },
     "hitReaction": {
       "frames": [
-        68,
-        69,
-        70
+        14
       ],
-      "speed": 0.2,
-      "loop": false
+      "loop": false,
+      "durations": [
+        14
+      ]
     },
     "ko": {
       "frames": [
-        71,
-        72,
-        73,
-        74,
-        75
+        14,
+        15
       ],
-      "speed": 0.1,
-      "loop": false
+      "loop": false,
+      "durations": [
+        12,
+        60
+      ]
     },
     "victoryPose": {
       "frames": [
-        76,
-        77,
-        78
+        16
       ],
-      "speed": 0.1,
-      "loop": false
+      "loop": true,
+      "durations": [
+        60
+      ]
     },
     "defeatPose": {
       "frames": [
-        79,
-        80,
-        81
+        15
       ],
-      "speed": 0.1,
-      "loop": false
+      "loop": true,
+      "durations": [
+        60
+      ]
+    },
+    "crimsonEclipse": {
+      "frames": [
+        18,
+        21,
+        19,
+        20,
+        0
+      ],
+      "durations": [
+        18,
+        24,
+        70,
+        30,
+        16
+      ],
+      "loop": false,
+      "cooldown": 900,
+      "events": [
+        {
+          "at": 0,
+          "sound": "cosmicDrone",
+          "effect": {
+            "id": "crimsonWorld",
+            "target": "stage",
+            "offsetY": 350
+          }
+        },
+        {
+          "at": 0,
+          "effect": {
+            "id": "sharinganMoon",
+            "target": "stage",
+            "offsetY": 770
+          }
+        },
+        {
+          "at": 12,
+          "effect": {
+            "id": "crimsonPrison",
+            "target": "opponent",
+            "offsetY": 125
+          }
+        }
+      ],
+      "invulnerable": [
+        0,
+        158
+      ],
+      "perRound": 2
+    },
+    "blackHole": {
+      "frames": [
+        18,
+        19,
+        21,
+        0
+      ],
+      "durations": [
+        14,
+        16,
+        65,
+        14
+      ],
+      "loop": false,
+      "cooldown": 300,
+      "events": [
+        {
+          "at": 0,
+          "effect": {
+            "id": "charge",
+            "offsetY": 135,
+            "lifetime": 20
+          }
+        },
+        {
+          "at": 20,
+          "sound": "cosmicDrone",
+          "effect": {
+            "id": "singularity",
+            "target": "opponent",
+            "offsetY": 125
+          }
+        }
+      ]
+    },
+    "meteorFall": {
+      "frames": [
+        18,
+        21,
+        20,
+        0
+      ],
+      "durations": [
+        12,
+        22,
+        18,
+        18
+      ],
+      "loop": false,
+      "cooldown": 180,
+      "events": [
+        {
+          "at": 0,
+          "effect": {
+            "id": "charge",
+            "offsetY": 220,
+            "scale": 0.7,
+            "lifetime": 24
+          }
+        },
+        {
+          "at": 24,
+          "sound": "meteorRush",
+          "effect": {
+            "id": "meteor",
+            "target": "opponent",
+            "offsetY": 850
+          }
+        }
+      ]
     }
   },
   "combos": [
     {
-      "id": "basic_punch",
+      "id": "crimsonEclipse",
+      "input": "S",
+      "hold": "←",
+      "animation": "crimsonEclipse"
+    },
+    {
+      "id": "blackHole",
       "input": "P",
-      "damage": 15,
-      "hitstun": 12
+      "hold": "↓",
+      "animation": "blackHole"
     },
     {
-      "id": "basic_kick",
+      "id": "meteorFall",
       "input": "K",
-      "damage": 18,
-      "hitstun": 14
+      "hold": "↓",
+      "animation": "meteorFall"
     },
     {
-      "id": "forward_punch",
-      "input": "→P",
-      "animation": "special2",
-      "damage": 20,
-      "hitstun": 14
+      "id": "exam",
+      "input": "S",
+      "hold": "↓",
+      "animation": "special2"
     },
     {
-      "id": "hadoken_like",
-      "input": "→↘↓P",
-      "animation": "special1",
-      "damage": 35,
-      "hitstun": 20,
-      "cooldown": 60
+      "id": "admin",
+      "input": "S",
+      "hold": "→",
+      "animation": "special3"
     },
     {
-      "id": "rising_kick",
-      "input": "↓↘→K",
-      "animation": "special3",
-      "damage": 40,
-      "hitstun": 22,
-      "cooldown": 80
+      "id": "compile",
+      "input": "S",
+      "animation": "special1"
+    },
+    {
+      "id": "punch",
+      "input": "P",
+      "animation": "punch"
+    },
+    {
+      "id": "kick",
+      "input": "K",
+      "animation": "kick"
     }
   ],
   "hitbox": {
-    "width": 34,
-    "height": 30,
-    "offsetX": 50,
-    "offsetY": 30
+    "width": 85.70833333333333,
+    "height": 75.625,
+    "offsetX": 185.20833333333334,
+    "offsetY": 113.625
   },
   "hurtbox": {
-    "width": 40,
-    "height": 96,
-    "offsetX": 20,
-    "offsetY": 0
+    "width": 100.83333333333333,
+    "height": 242,
+    "offsetX": 109.58333333333334,
+    "offsetY": 38
+  },
+  "sheets": [
+    "ensina_god_atlas.png",
+    "ensina_code_fx.svg",
+    "ensina_cosmic_fx.svg",
+    "ensina_cosmic_sprites.png"
+  ],
+  "atlas": [
+    [
+      0,
+      57,
+      22,
+      160,
+      242,
+      80,
+      38
+    ],
+    [
+      0,
+      315,
+      20,
+      158,
+      244,
+      81,
+      36
+    ],
+    [
+      0,
+      563,
+      22,
+      167,
+      242,
+      76,
+      38
+    ],
+    [
+      0,
+      820,
+      22,
+      172,
+      242,
+      74,
+      38
+    ],
+    [
+      0,
+      1086,
+      100,
+      131,
+      164,
+      94,
+      116
+    ],
+    [
+      0,
+      1326,
+      22,
+      192,
+      242,
+      64,
+      38
+    ],
+    [
+      0,
+      44,
+      293,
+      180,
+      220,
+      70,
+      60
+    ],
+    [
+      0,
+      297,
+      293,
+      231,
+      220,
+      44,
+      60
+    ],
+    [
+      0,
+      564,
+      295,
+      175,
+      218,
+      72,
+      62
+    ],
+    [
+      0,
+      835,
+      281,
+      131,
+      232,
+      94,
+      48
+    ],
+    [
+      0,
+      1042,
+      290,
+      228,
+      223,
+      46,
+      57
+    ],
+    [
+      0,
+      1348,
+      282,
+      122,
+      231,
+      99,
+      49
+    ],
+    [
+      0,
+      80,
+      529,
+      118,
+      190,
+      101,
+      90
+    ],
+    [
+      0,
+      306,
+      529,
+      180,
+      222,
+      70,
+      58
+    ],
+    [
+      0,
+      580,
+      560,
+      155,
+      208,
+      82,
+      72
+    ],
+    [
+      0,
+      778,
+      718,
+      252,
+      60,
+      34,
+      220
+    ],
+    [
+      0,
+      1093,
+      518,
+      132,
+      259,
+      94,
+      21
+    ],
+    [
+      0,
+      1369,
+      529,
+      101,
+      245,
+      109,
+      35
+    ],
+    [
+      0,
+      49,
+      792,
+      185,
+      217,
+      67,
+      63
+    ],
+    [
+      0,
+      303,
+      799,
+      185,
+      211,
+      67,
+      69
+    ],
+    [
+      0,
+      548,
+      805,
+      188,
+      204,
+      66,
+      76
+    ],
+    [
+      0,
+      823,
+      778,
+      178,
+      235,
+      71,
+      45
+    ],
+    [
+      0,
+      1055,
+      837,
+      188,
+      174,
+      66,
+      106
+    ],
+    [
+      0,
+      1308,
+      874,
+      210,
+      138,
+      55,
+      142
+    ]
+  ],
+  "spriteScale": 0.39669421487603307,
+  "effects": {
+    "compile": {
+      "spriteGridSize": {
+        "frameWidth": 512,
+        "frameHeight": 256,
+        "baseline": 128
+      },
+      "atlas": [
+        [
+          1,
+          0,
+          0,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          1,
+          512,
+          0,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          1,
+          1024,
+          0,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          1,
+          1536,
+          0,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          1,
+          2048,
+          0,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          1,
+          2560,
+          0,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          1,
+          3072,
+          0,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          1,
+          3584,
+          0,
+          512,
+          256,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "durations": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "loop": true
+      },
+      "lifetime": 110,
+      "velocityX": 22,
+      "destroyOnHit": true,
+      "hits": [
+        {
+          "from": 0,
+          "until": 7,
+          "box": {
+            "offsetX": 175,
+            "offsetY": 85,
+            "width": 290,
+            "height": 85
+          },
+          "damage": 16,
+          "hitstun": 20,
+          "push": 5
+        }
+      ],
+      "onHitSpawn": {
+        "id": "charge",
+        "scale": 0.6,
+        "lifetime": 16
+      }
+    },
+    "exam": {
+      "spriteGridSize": {
+        "frameWidth": 512,
+        "frameHeight": 256,
+        "baseline": 128
+      },
+      "atlas": [
+        [
+          1,
+          0,
+          256,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          1,
+          512,
+          256,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          1,
+          1024,
+          256,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          1,
+          1536,
+          256,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          1,
+          2048,
+          256,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          1,
+          2560,
+          256,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          1,
+          3072,
+          256,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          1,
+          3584,
+          256,
+          512,
+          256,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "durations": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "loop": true
+      },
+      "lifetime": 65,
+      "endOnOwnerHit": true,
+      "hits": [
+        {
+          "from": 0,
+          "until": 7,
+          "every": 12,
+          "count": 4,
+          "box": {
+            "offsetX": 130,
+            "offsetY": 12,
+            "width": 252,
+            "height": 230
+          },
+          "damage": 7,
+          "hitstun": 15,
+          "push": 0
+        }
+      ]
+    },
+    "charge": {
+      "spriteGridSize": {
+        "frameWidth": 512,
+        "frameHeight": 256,
+        "baseline": 128
+      },
+      "atlas": [
+        [
+          1,
+          0,
+          512,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          1,
+          512,
+          512,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          1,
+          1024,
+          512,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          1,
+          1536,
+          512,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          1,
+          2048,
+          512,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          1,
+          2560,
+          512,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          1,
+          3072,
+          512,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          1,
+          3584,
+          512,
+          512,
+          256,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "durations": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "loop": true
+      },
+      "lifetime": 36,
+      "layer": "back"
+    },
+    "beam": {
+      "spriteGridSize": {
+        "frameWidth": 512,
+        "frameHeight": 256,
+        "baseline": 128
+      },
+      "atlas": [
+        [
+          1,
+          0,
+          768,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          1,
+          512,
+          768,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          1,
+          1024,
+          768,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          1,
+          1536,
+          768,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          1,
+          2048,
+          768,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          1,
+          2560,
+          768,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          1,
+          3072,
+          768,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          1,
+          3584,
+          768,
+          512,
+          256,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "durations": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "loop": true
+      },
+      "lifetime": 62,
+      "endWithMove": true,
+      "renderScale": 3,
+      "hits": [
+        {
+          "from": 0,
+          "until": 7,
+          "every": 10,
+          "count": 6,
+          "box": {
+            "offsetX": 4,
+            "offsetY": 74,
+            "width": 500,
+            "height": 108
+          },
+          "damage": 8,
+          "hitstun": 18,
+          "push": 0,
+          "heavy": true
+        }
+      ]
+    },
+    "crimsonWorld": {
+      "spriteGridSize": {
+        "frameWidth": 512,
+        "frameHeight": 256,
+        "baseline": 128
+      },
+      "atlas": [
+        [
+          2,
+          0,
+          0,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          2,
+          512,
+          0,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          2,
+          1024,
+          0,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          2,
+          1536,
+          0,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          2,
+          2048,
+          0,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          2,
+          2560,
+          0,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          2,
+          3072,
+          0,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          2,
+          3584,
+          0,
+          512,
+          256,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "durations": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "loop": true
+      },
+      "cover": [
+        1500,
+        850
+      ],
+      "layer": "back",
+      "lifetime": 132,
+      "endWithMove": true
+    },
+    "crimsonPrison": {
+      "spriteGridSize": {
+        "frameWidth": 512,
+        "frameHeight": 256,
+        "baseline": 128
+      },
+      "atlas": [
+        [
+          2,
+          0,
+          256,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          2,
+          512,
+          256,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          2,
+          1024,
+          256,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          2,
+          1536,
+          256,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          2,
+          2048,
+          256,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          2,
+          2560,
+          256,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          2,
+          3072,
+          256,
+          512,
+          256,
+          0,
+          0
+        ],
+        [
+          2,
+          3584,
+          256,
+          512,
+          256,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "durations": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "loop": true
+      },
+      "follow": "target",
+      "lifetime": 126,
+      "endWithMove": true,
+      "guaranteed": true,
+      "hits": [
+        {
+          "from": 0,
+          "until": 7,
+          "every": 18,
+          "count": 7,
+          "box": {
+            "offsetX": 128,
+            "offsetY": 0,
+            "width": 256,
+            "height": 256
+          },
+          "damage": 9,
+          "hitstun": 22,
+          "push": 0,
+          "heavy": true
+        }
+      ]
+    },
+    "singularity": {
+      "spriteGridSize": {
+        "frameWidth": 320,
+        "frameHeight": 340,
+        "baseline": 170
+      },
+      "atlas": [
+        [
+          3,
+          0,
+          302,
+          314,
+          294,
+          3,
+          23
+        ],
+        [
+          3,
+          314,
+          302,
+          313,
+          294,
+          3,
+          23
+        ],
+        [
+          3,
+          627,
+          302,
+          314,
+          294,
+          3,
+          23
+        ],
+        [
+          3,
+          941,
+          302,
+          313,
+          294,
+          3,
+          23
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          0,
+          1,
+          1,
+          2,
+          2,
+          3,
+          3
+        ],
+        "durations": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "loop": true
+      },
+      "follow": "target",
+      "lifetime": 88,
+      "endOnOwnerHit": true,
+      "hits": [
+        {
+          "from": 0,
+          "until": 7,
+          "every": 14,
+          "count": 6,
+          "box": {
+            "offsetX": -10,
+            "offsetY": 0,
+            "width": 340,
+            "height": 340
+          },
+          "damage": 6,
+          "hitstun": 18,
+          "push": 0
+        }
+      ],
+      "renderScale": 0.7529411764705882
+    },
+    "meteor": {
+      "spriteGridSize": {
+        "frameWidth": 320,
+        "frameHeight": 340,
+        "baseline": 230
+      },
+      "atlas": [
+        [
+          3,
+          0,
+          600,
+          314,
+          317,
+          3,
+          11
+        ],
+        [
+          3,
+          314,
+          600,
+          313,
+          317,
+          3,
+          11
+        ],
+        [
+          3,
+          627,
+          600,
+          314,
+          317,
+          3,
+          11
+        ],
+        [
+          3,
+          941,
+          600,
+          313,
+          317,
+          3,
+          11
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          0,
+          1,
+          1,
+          2,
+          2,
+          3,
+          3
+        ],
+        "durations": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "loop": true
+      },
+      "lifetime": 55,
+      "velocityY": 26,
+      "renderScale": 1.2047058823529413,
+      "destroyOnHit": true,
+      "hits": [
+        {
+          "from": 0,
+          "until": 7,
+          "box": {
+            "offsetX": -10,
+            "offsetY": 60,
+            "width": 340,
+            "height": 340
+          },
+          "damage": 32,
+          "hitstun": 28,
+          "push": 8,
+          "heavy": true
+        }
+      ],
+      "onHitSpawn": {
+        "id": "meteorImpact",
+        "offsetY": -50
+      }
+    },
+    "sharinganMoon": {
+      "spriteGridSize": {
+        "frameWidth": 320,
+        "frameHeight": 340,
+        "baseline": 170
+      },
+      "atlas": [
+        [
+          3,
+          0,
+          0,
+          314,
+          300,
+          3,
+          20
+        ],
+        [
+          3,
+          314,
+          0,
+          313,
+          300,
+          3,
+          20
+        ],
+        [
+          3,
+          627,
+          0,
+          314,
+          300,
+          3,
+          20
+        ],
+        [
+          3,
+          941,
+          0,
+          313,
+          300,
+          3,
+          20
+        ]
+      ],
+      "renderScale": 1.9,
+      "layer": "back",
+      "lifetime": 132,
+      "endWithMove": true,
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "durations": [
+          9,
+          9,
+          9,
+          9
+        ],
+        "loop": true
+      }
+    },
+    "meteorImpact": {
+      "spriteGridSize": {
+        "frameWidth": 320,
+        "frameHeight": 340,
+        "baseline": 275
+      },
+      "atlas": [
+        [
+          3,
+          0,
+          918,
+          314,
+          336,
+          3,
+          2
+        ],
+        [
+          3,
+          314,
+          918,
+          313,
+          336,
+          3,
+          2
+        ],
+        [
+          3,
+          627,
+          918,
+          314,
+          336,
+          3,
+          2
+        ],
+        [
+          3,
+          941,
+          918,
+          313,
+          336,
+          3,
+          2
+        ]
+      ],
+      "renderScale": 1.4,
+      "lifetime": 28,
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "durations": [
+          4,
+          6,
+          8,
+          10
+        ],
+        "loop": false
+      }
+    }
+  },
+  "moveList": [
+    {
+      "section": "Básicos",
+      "name": "Soco",
+      "input": "P"
+    },
+    {
+      "section": "Básicos",
+      "name": "Chute",
+      "input": "K"
+    },
+    {
+      "section": "Código & sala de aula",
+      "name": "Compilar — projétil de código",
+      "input": "S"
+    },
+    {
+      "section": "Código & sala de aula",
+      "name": "Prova Surpresa — 4 correções",
+      "input": "S",
+      "hold": "↓"
+    },
+    {
+      "section": "Super",
+      "name": "ADMIN SUPREMO — 6 impactos / 2 por round",
+      "input": "S",
+      "hold": "→"
+    },
+    {
+      "section": "Poderes cósmicos",
+      "name": "Eclipse Carmesim — ilusão inevitável / 2 por round",
+      "input": "S",
+      "hold": "←"
+    },
+    {
+      "section": "Poderes cósmicos",
+      "name": "Singularidade — 6 impactos no alvo",
+      "input": "P",
+      "hold": "↓"
+    },
+    {
+      "section": "Poderes cósmicos",
+      "name": "Queda Celestial — meteoro",
+      "input": "K",
+      "hold": "↓"
+    }
+  ],
+  "sounds": {
+    "cosmicDrone": "cosmic-drone.wav",
+    "meteorRush": "meteor-rush.wav"
   }
 }

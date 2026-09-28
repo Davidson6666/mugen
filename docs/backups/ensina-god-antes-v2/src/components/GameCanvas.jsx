@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Application, Assets, Container, Graphics, Sprite, Text, Texture, Rectangle } from 'pixi.js';
+import { Application, Assets, Container, Graphics, Sprite, Text } from 'pixi.js';
 import { assetManager } from '../systems/SpriteSheetManager.js';
 import { Fighter } from '../systems/Fighter.js';
 import { ComboDetector } from '../systems/ComboDetector.js';
@@ -7,7 +7,7 @@ import { AIController } from '../systems/AIController.js';
 import { GameStateManager } from '../systems/GameStateManager.js';
 import { Hud } from '../systems/Hud.js';
 import { EffectManager } from '../systems/EffectManager.js';
-import { HitFeedback, kindOf } from '../systems/HitFeedback.js';
+import { HitFeedback } from '../systems/HitFeedback.js';
 import { AudioManager } from '../systems/AudioManager.js';
 import { resolveAttack, resolveBodyCollision } from '../systems/CollisionDetector.js';
 import { InputHandler } from '../utils/InputHandler.js';
@@ -184,7 +184,6 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       if (disposed) return;
       // Os sons carregam em paralelo; a luta nao espera por eles.
       characterEntries.forEach((entry, index) => audio.preload(entry.dir, characterRecords[index].config.sounds));
-      audio.preloadImpacts();
 
       const map = mapRecord.config;
       // Os lutadores comecam a uns dois corpos de distancia, no meio do
@@ -247,10 +246,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       // sairia com a de fallback. document.fonts.ready nao basta, porque o
       // navegador so baixa uma variante quando a pagina a usa; aqui ela e pedida.
       const [portraits] = await Promise.all([
-        Promise.all(characterEntries.map(async (entry) => {
-          const texture = await Assets.load(`${entry.dir}/${entry.portrait}`);
-          return entry.portraitRect ? new Texture({ source: texture.source, frame: new Rectangle(...entry.portraitRect), orig: new Rectangle(0, 0, 50, 55) }) : texture;
-        })),
+        Promise.all(characterEntries.map((entry) => Assets.load(`${entry.dir}/${entry.portrait}`))),
         ...HUD_FONTS.map((font) => document.fonts.load(font)),
       ]);
       if (disposed) return;
@@ -386,12 +382,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
           // Fora do combate os efeitos terminam a animacao, mas nao acertam
           // mais ninguem: o round ja foi decidido.
           results.push(...effects.update(delta, fighting ? fighters : []));
-          for (const result of results) {
-            if (!result) continue;
-            feedback.onResult(result);
-            // Esquiva atravessa sem impacto (nem faisca, nem som).
-            if (result.outcome !== 'evade') audio.playImpact(kindOf(result));
-          }
+          for (const result of results) if (result) feedback.onResult(result);
         }
 
         fighters.forEach((fighter, index) => audio.update(index, fighter, characterEntries[index].dir));

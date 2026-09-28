@@ -111,7 +111,7 @@ const CURSOR_COLORS = [PALETTE.cursorP1, PALETTE.cursorP2];
 // Casa da grade com retrato no tamanho nativo, recortado pelo losango. Os
 // cursores sao molduras coloridas; "1P" fica a esquerda e "2P" a direita, para
 // nunca se cobrirem em casas vizinhas.
-export function PortraitCell({ at, image, portraitRect, id, cursors = [], onPointerEnter, onClick }) {
+export function PortraitCell({ at, image, id, cursors = [], onPointerEnter, onClick }) {
   const [cx, cy] = at;
   const clipId = `cell-${id}`;
   const shape = diamond(at, CELL_RADIUS);
@@ -119,12 +119,7 @@ export function PortraitCell({ at, image, portraitRect, id, cursors = [], onPoin
     <g onPointerEnter={onPointerEnter} onClick={onClick} style={{ cursor: 'pointer' }}>
       <defs><clipPath id={clipId}><polygon points={toPoints(shape)} /></clipPath></defs>
       <Shape points={shape} fill={PALETTE.portraitBg} />
-      {image && portraitRect && <g clipPath={`url(#${clipId})`}>
-        <svg x={cx - 25} y={cy - 27} width={50} height={55} viewBox={portraitRect.join(' ')} preserveAspectRatio="xMidYMid slice">
-          <image href={image} width={1536} height={1024} />
-        </svg>
-      </g>}
-      {image && !portraitRect && (
+      {image && (
         <image
           href={image} x={cx - 25} y={cy - 27} width={50} height={55}
           clipPath={`url(#${clipId})`} style={{ imageRendering: 'pixelated' }}

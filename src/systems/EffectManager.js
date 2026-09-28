@@ -281,11 +281,14 @@ export class Effect {
   }
 
   collide(opponent) {
-    if (this.dead || !opponent || opponent.isKnockedOut || opponent.invulnerable) return null;
+    if (this.dead || !opponent || opponent.isKnockedOut) return null;
+    const guaranteed = this.definition.guaranteed === true;
+    if (opponent.invulnerable && !guaranteed) return null;
     const active = this.activeHit;
     if (!active?.ready) return null;
-    const rect = this.rectFor(active.hit.box);
-    if (!overlaps(rect, opponent.hurtRect)) return null;
+    // An inevitable effect follows the current hurtbox, including teleports.
+    const rect = guaranteed ? opponent.hurtRect : this.rectFor(active.hit.box);
+    if (!guaranteed && !overlaps(rect, opponent.hurtRect)) return null;
 
     recordHit(this.hitLog, active.index, this.age);
     this.hasHit = true;
@@ -302,7 +305,8 @@ export class Effect {
       hitstun: spawn.hitstun ?? hit.hitstun ?? definition.hitstun ?? attack?.hitstun ?? FALLBACK_HITSTUN,
       push: hit.push ?? definition.push,
       heavy: hit.heavy ?? definition.heavy,
-      unblockable: hit.unblockable ?? definition.unblockable,
+      guaranteed,
+      unblockable: guaranteed || (hit.unblockable ?? definition.unblockable),
       noEcho: definition.noEcho,
     };
     // Selo sorteado entre os tipos declarados; a marca (simbolo em cima do
