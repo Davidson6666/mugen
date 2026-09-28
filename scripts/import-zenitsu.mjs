@@ -57,36 +57,39 @@ const ANIMATIONS = {
   punch: {
     actions: [200],
     ...NORMAL,
-    hit: { damage: 2, hitstun: 18, push: 3 },
+    hit: { damage: 3, hitstun: 18, push: 3 },
     events: [sound(0, 'voice5'), sound(0, 'swing'), { at: 0, vx: 1 }],
     cancels: [chain('punch', 'kick'), chain('kick', 'kick'), chain('special', 'strong')],
   },
   kick: {
     actions: [300],
     ...NORMAL,
-    hit: { damage: 2, hitstun: 20, push: 3 },
+    hit: { damage: 3, hitstun: 20, push: 3 },
     events: [sound(0, 'voice5'), sound(0, 'slash'), { at: 0, vx: 2 }, fx(7, 'slashA', [-8, -20])],
     cancels: [chain('kick', 'kick2'), chain('special', 'strong')],
   },
   kick2: {
     actions: [310],
     ...NORMAL,
-    hit: { damage: 3, hitstun: 22, push: 5 },
+    hit: { damage: 5, hitstun: 22, push: 5 },
     events: [sound(0, 'voice6'), sound(0, 'slash'), { at: 0, vx: 2 }, fx(7, 'slashB', [10, -28])],
     cancels: [chain('special', 'strong')],
   },
   strong: {
     actions: [400],
     ...NORMAL,
-    hit: { damage: 4, hitstun: 28, push: 9, heavy: true },
+    hit: { damage: 6, hitstun: 28, push: 9, heavy: true },
     events: [sound(0, 'voice7'), sound(0, 'slashHeavy'), { at: 0, vx: 1 }, fx(8, 'slashC', [10, -30])],
   },
+  // Normais mais fortes que no primeiro import (o torneio da IA mostrou o kit
+  // com a metade do dano dos demais) e o abridor do super sem defesa: com
+  // guarda ele quase nunca chegava ao resto da sequencia.
   // Relampago (410, ↓P): a disparada com o corte, deixando o rastro amarelo.
   thunderclap: {
     actions: [410],
     cooldown: 40,
     friction: false,
-    hit: { damage: 4, hitstun: 30, push: 10, heavy: true },
+    hit: { damage: 5, hitstun: 30, push: 10, heavy: true },
     events: [sound(0, 'voice4'), sound(0, 'slash'), { at: 6, vx: 20 }, { at: 21, vx: 2 }, fx(6, 'dust', [10, 0]), fx(6, 'afterimage', [100, -27])],
   },
 
@@ -95,7 +98,7 @@ const ANIMATIONS = {
     actions: [600],
     air: true,
     ...NORMAL,
-    hit: { damage: 2, hitstun: 20, push: 4 },
+    hit: { damage: 3, hitstun: 20, push: 4 },
     events: [sound(0, 'swing')],
     cancels: [chain('kick', 'airKick'), chain('special', 'airStrong')],
   },
@@ -103,14 +106,14 @@ const ANIMATIONS = {
     actions: [610],
     air: true,
     ...NORMAL,
-    hit: { damage: 2, hitstun: 20, push: 4 },
+    hit: { damage: 3, hitstun: 20, push: 4 },
     events: [sound(0, 'slash'), fx(7, 'slashA', [0, -20])],
     cancels: [chain('special', 'airStrong')],
   },
   airStrong: {
     actions: [620],
     air: true,
-    hit: { damage: 3, hitstun: 26, push: 6, heavy: true },
+    hit: { damage: 4, hitstun: 26, push: 6, heavy: true },
     events: [sound(0, 'slashHeavy'), { at: 0, vx: 2, vy: -4 }, { frame: 2, vx: 2, vy: -6 }, { frame: 2, effect: { id: 'upSlash', pos: [0, 0] } }],
   },
 
@@ -226,7 +229,7 @@ const ANIMATIONS = {
     cooldown: 900,
     friction: false,
     invulnerable: [0, 50],
-    hit: { damage: 3, hitstun: 80, push: 0 },
+    hit: { damage: 5, hitstun: 80, push: 0, unblockable: true },
     events: [fx(0, 'superFlash', [0, -23]), sound(0, 'voiceSuper'), { frame: 9, vx: 30 }, { frame: 11, vx: 2 }],
     onHit: { to: 'thunderGodRise' },
   },

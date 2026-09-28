@@ -119,10 +119,13 @@ const ANIMATIONS = {
     cancels: [TO_STRONG],
   },
   // ---- Especial (z): 220 (rajada avancando) -> 221 (arremesso) ----
+  // A rajada do botao especial era o golpe que mais machucava (30% de todo o
+  // dano dele, sem recarga): cinco acertos e um respiro entre uma e outra.
   strong: {
     actions: [220],
     ...NORMAL,
-    hit: { damage: 1, hitstun: 16, push: 2, every: 8, count: 8 },
+    cooldown: 40,
+    hit: { damage: 1, hitstun: 16, push: 2, every: 8, count: 5 },
     events: [{ frame: 8, vx: 7 }],
     cancels: [{ on: 'special', to: 'strong2', after: 50 }],
   },

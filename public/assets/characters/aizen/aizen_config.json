@@ -3011,6 +3011,9 @@
     "aizen_atlas_0.png"
   ],
   "assetVersion": "1881eee238",
+  "balance": {
+    "damage": 1.073
+  },
   "atlas": [
     [
       0,
@@ -9892,8 +9895,5 @@
     "s950_2": "sfx/s950_2.mp3",
     "s0_69": "sfx/s0_69.mp3"
   },
-  "spriteScale": 1.8,
-  "balance": {
-    "damage": 1.121
-  }
+  "spriteScale": 1.8
 }

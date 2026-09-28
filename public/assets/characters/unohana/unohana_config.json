@@ -1827,6 +1827,9 @@
     "unohana_atlas_0.png"
   ],
   "assetVersion": "12997f37f8",
+  "balance": {
+    "damage": 0.876
+  },
   "atlas": [
     [
       0,
@@ -5290,8 +5293,5 @@
     "s0_47": "sfx/s0_47.mp3",
     "s5_38": "sfx/s5_38.mp3"
   },
-  "spriteScale": 1.7,
-  "balance": {
-    "damage": 0.824
-  }
+  "spriteScale": 1.7
 }

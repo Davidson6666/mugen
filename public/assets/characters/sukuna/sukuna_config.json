@@ -3397,6 +3397,9 @@
     "sukuna_atlas_1.png"
   ],
   "assetVersion": "2b950485f7",
+  "balance": {
+    "damage": 0.5
+  },
   "atlas": [
     [
       1,
@@ -9727,8 +9730,5 @@
     "s0_15": "sfx/s0_15.mp3",
     "s300_4": "sfx/s300_4.mp3"
   },
-  "spriteScale": 1.7,
-  "balance": {
-    "damage": 0.5
-  }
+  "spriteScale": 1.7
 }
