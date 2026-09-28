@@ -170,7 +170,17 @@
         10,
         10
       ],
-      "loop": false
+      "loop": false,
+      "events": [
+        {
+          "at": 0,
+          "sound": "s0_58"
+        },
+        {
+          "at": 180,
+          "sound": "s0_53"
+        }
+      ]
     },
     "defeatPose": {
       "frames": [
@@ -212,7 +222,13 @@
         "invulnerableFrom": 1,
         "invulnerableUntil": 3,
         "cancel": true
-      }
+      },
+      "events": [
+        {
+          "at": 2,
+          "sound": "s40_2"
+        }
+      ]
     },
     "dashBackward": {
       "frames": [
@@ -239,7 +255,13 @@
         "invulnerableFrom": 1,
         "invulnerableUntil": 3,
         "cancel": true
-      }
+      },
+      "events": [
+        {
+          "at": 2,
+          "sound": "s40_2"
+        }
+      ]
     },
     "airDashForward": {
       "frames": [
@@ -265,7 +287,13 @@
         "moveUntil": 3,
         "invulnerableFrom": 9,
         "invulnerableUntil": 0
-      }
+      },
+      "events": [
+        {
+          "at": 2,
+          "sound": "s40_2"
+        }
+      ]
     },
     "airDashBackward": {
       "frames": [
@@ -291,7 +319,13 @@
         "moveUntil": 3,
         "invulnerableFrom": 9,
         "invulnerableUntil": 0
-      }
+      },
+      "events": [
+        {
+          "at": 2,
+          "sound": "s40_2"
+        }
+      ]
     },
     "punch": {
       "frames": [
@@ -328,6 +362,16 @@
           "damage": 3,
           "hitstun": 18,
           "push": 4
+        }
+      ],
+      "events": [
+        {
+          "at": 0,
+          "sound": "s0_5"
+        },
+        {
+          "at": 0,
+          "sound": "s5_36"
         }
       ],
       "cancels": [
@@ -381,6 +425,14 @@
         {
           "at": 0,
           "vx": 2
+        },
+        {
+          "at": 0,
+          "sound": "s0_2"
+        },
+        {
+          "at": 0,
+          "sound": "s5_35"
         },
         {
           "at": 6,
@@ -442,6 +494,14 @@
           "vx": 2
         },
         {
+          "at": 0,
+          "sound": "s0_4"
+        },
+        {
+          "at": 0,
+          "sound": "s5_35"
+        },
+        {
           "at": 8,
           "vx": 0
         }
@@ -500,6 +560,14 @@
           "vx": 2
         },
         {
+          "at": 0,
+          "sound": "s0_5"
+        },
+        {
+          "at": 0,
+          "sound": "s5_36"
+        },
+        {
           "at": 7,
           "vx": 0
         }
@@ -545,6 +613,14 @@
       ],
       "events": [
         {
+          "at": 0,
+          "sound": "s0_8"
+        },
+        {
+          "at": 0,
+          "sound": "s5_42"
+        },
+        {
           "at": 4,
           "effect": {
             "id": "strongSlash",
@@ -586,6 +662,16 @@
           "damage": 3,
           "hitstun": 18,
           "push": 5
+        }
+      ],
+      "events": [
+        {
+          "at": 0,
+          "sound": "s0_4"
+        },
+        {
+          "at": 0,
+          "sound": "s5_35"
         }
       ],
       "cancels": [
@@ -637,6 +723,16 @@
           "heavy": true
         }
       ],
+      "events": [
+        {
+          "at": 0,
+          "sound": "s0_2"
+        },
+        {
+          "at": 0,
+          "sound": "s5_35"
+        }
+      ],
       "cancels": [
         {
           "on": "special",
@@ -668,6 +764,10 @@
           "at": 4,
           "vx": 9,
           "vy": 0
+        },
+        {
+          "at": 4,
+          "sound": "s40_2"
         },
         {
           "at": 5,
@@ -773,6 +873,14 @@
           }
         },
         {
+          "at": 0,
+          "sound": "s0_41"
+        },
+        {
+          "at": 0,
+          "sound": "s950_1"
+        },
+        {
           "at": 2,
           "effect": {
             "id": "flyingBlade",
@@ -834,6 +942,10 @@
             "offsetX": -65,
             "offsetY": 28
           }
+        },
+        {
+          "at": 67,
+          "sound": "s0_42"
         }
       ],
       "cooldown": 120
@@ -858,12 +970,24 @@
       "loop": false,
       "events": [
         {
+          "at": 0,
+          "sound": "s0_51"
+        },
+        {
+          "at": 0,
+          "sound": "s950_1"
+        },
+        {
           "at": 46,
           "effect": {
             "id": "dankuWall",
             "offsetX": 30,
             "offsetY": 0
           }
+        },
+        {
+          "at": 150,
+          "sound": "s0_52"
         }
       ],
       "invulnerable": [
@@ -891,6 +1015,14 @@
       ],
       "loop": false,
       "events": [
+        {
+          "at": 0,
+          "sound": "s0_31"
+        },
+        {
+          "at": 0,
+          "sound": "s950_1"
+        },
         {
           "at": 40,
           "effect": {
@@ -924,6 +1056,14 @@
       "loop": false,
       "events": [
         {
+          "at": 0,
+          "sound": "s0_10"
+        },
+        {
+          "at": 0,
+          "sound": "s950_1"
+        },
+        {
           "at": 30,
           "effect": {
             "id": "tornado",
@@ -953,6 +1093,14 @@
       ],
       "loop": false,
       "events": [
+        {
+          "at": 0,
+          "sound": "s950_1"
+        },
+        {
+          "at": 10,
+          "sound": "s0_48"
+        },
         {
           "at": 20,
           "effect": {
@@ -1108,6 +1256,10 @@
             "offsetX": 0,
             "offsetY": 230
           }
+        },
+        {
+          "at": 100,
+          "sound": "s0_49"
         }
       ],
       "cooldown": 300
@@ -1158,12 +1310,24 @@
       "loop": false,
       "events": [
         {
+          "at": 0,
+          "sound": "s0_33"
+        },
+        {
+          "at": 0,
+          "sound": "s950_1"
+        },
+        {
           "at": 30,
           "effect": {
             "id": "belt",
             "offsetX": 20,
             "offsetY": 33
           }
+        },
+        {
+          "at": 75,
+          "sound": "s0_34"
         }
       ],
       "cooldown": 240
@@ -1192,6 +1356,14 @@
             "offsetX": 50,
             "offsetY": 0
           }
+        },
+        {
+          "at": 0,
+          "sound": "s950_1"
+        },
+        {
+          "at": 10,
+          "sound": "s0_43"
         }
       ],
       "cooldown": 180
@@ -1216,12 +1388,24 @@
       "loop": false,
       "events": [
         {
+          "at": 0,
+          "sound": "s0_37"
+        },
+        {
+          "at": 0,
+          "sound": "s950_1"
+        },
+        {
           "at": 45,
           "effect": {
             "id": "rikujokoro",
             "offsetX": 44,
             "offsetY": 0
           }
+        },
+        {
+          "at": 70,
+          "sound": "s0_38"
         }
       ],
       "cooldown": 300
@@ -1259,6 +1443,10 @@
         }
       ],
       "events": [
+        {
+          "at": 0,
+          "sound": "s0_9"
+        },
         {
           "at": 7,
           "vx": 12
@@ -1302,12 +1490,24 @@
       "loop": false,
       "events": [
         {
+          "at": 0,
+          "sound": "s0_56"
+        },
+        {
+          "at": 0,
+          "sound": "s950_1"
+        },
+        {
           "at": 20,
           "effect": {
             "id": "manta",
             "offsetX": -5,
             "offsetY": 35
           }
+        },
+        {
+          "at": 30,
+          "sound": "s0_57"
         },
         {
           "at": 55,
@@ -1415,6 +1615,14 @@
             "offsetX": -1,
             "offsetY": 28
           }
+        },
+        {
+          "at": 0,
+          "sound": "s0_45"
+        },
+        {
+          "at": 0,
+          "sound": "s950_2"
         }
       ],
       "onHit": {
@@ -1464,6 +1672,10 @@
             "offsetX": 0,
             "offsetY": 106
           }
+        },
+        {
+          "at": 55,
+          "sound": "s0_46"
         }
       ],
       "next": "bankaiSlash",
@@ -1519,6 +1731,18 @@
         {
           "at": 0,
           "teleport": 33
+        },
+        {
+          "at": 0,
+          "sound": "s0_47"
+        },
+        {
+          "at": 38,
+          "sound": "s5_35"
+        },
+        {
+          "at": 161,
+          "sound": "s5_38"
         }
       ],
       "invulnerable": [
@@ -1602,6 +1826,7 @@
   "sheets": [
     "unohana_atlas_0.png"
   ],
+  "assetVersion": "12997f37f8",
   "atlas": [
     [
       0,
@@ -5031,5 +5256,39 @@
       "note": "Se o corte pegar, a cortina de sangue e o golpe final"
     }
   ],
+  "sounds": {
+    "s0_58": "sfx/s0_58.mp3",
+    "s0_53": "sfx/s0_53.mp3",
+    "s40_2": "sfx/s40_2.mp3",
+    "s0_5": "sfx/s0_5.mp3",
+    "s5_36": "sfx/s5_36.mp3",
+    "s0_2": "sfx/s0_2.mp3",
+    "s5_35": "sfx/s5_35.mp3",
+    "s0_4": "sfx/s0_4.mp3",
+    "s0_8": "sfx/s0_8.mp3",
+    "s5_42": "sfx/s5_42.mp3",
+    "s0_41": "sfx/s0_41.mp3",
+    "s0_42": "sfx/s0_42.mp3",
+    "s950_1": "sfx/s950_1.mp3",
+    "s0_51": "sfx/s0_51.mp3",
+    "s0_52": "sfx/s0_52.mp3",
+    "s0_31": "sfx/s0_31.mp3",
+    "s0_10": "sfx/s0_10.mp3",
+    "s0_48": "sfx/s0_48.mp3",
+    "s0_49": "sfx/s0_49.mp3",
+    "s0_33": "sfx/s0_33.mp3",
+    "s0_34": "sfx/s0_34.mp3",
+    "s0_43": "sfx/s0_43.mp3",
+    "s0_37": "sfx/s0_37.mp3",
+    "s0_38": "sfx/s0_38.mp3",
+    "s0_9": "sfx/s0_9.mp3",
+    "s0_56": "sfx/s0_56.mp3",
+    "s0_57": "sfx/s0_57.mp3",
+    "s0_45": "sfx/s0_45.mp3",
+    "s950_2": "sfx/s950_2.mp3",
+    "s0_46": "sfx/s0_46.mp3",
+    "s0_47": "sfx/s0_47.mp3",
+    "s5_38": "sfx/s5_38.mp3"
+  },
   "spriteScale": 1.7
 }

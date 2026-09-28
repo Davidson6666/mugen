@@ -194,7 +194,25 @@
         "invulnerableFrom": 1,
         "invulnerableUntil": 1,
         "cancel": true
-      }
+      },
+      "events": [
+        {
+          "at": 0,
+          "sound": "s0_28"
+        },
+        {
+          "at": 0,
+          "sound": "s0_29"
+        },
+        {
+          "at": 1,
+          "sound": "s40_2"
+        },
+        {
+          "at": 3,
+          "sound": "s40_2"
+        }
+      ]
     },
     "dashBackward": {
       "frames": [
@@ -215,7 +233,17 @@
         "invulnerableFrom": 1,
         "invulnerableUntil": 1,
         "cancel": true
-      }
+      },
+      "events": [
+        {
+          "at": 0,
+          "sound": "s0_29"
+        },
+        {
+          "at": 1,
+          "sound": "s40_2"
+        }
+      ]
     },
     "airDashForward": {
       "frames": [
@@ -235,7 +263,25 @@
         "moveUntil": 1,
         "invulnerableFrom": 9,
         "invulnerableUntil": 0
-      }
+      },
+      "events": [
+        {
+          "at": 0,
+          "sound": "s0_28"
+        },
+        {
+          "at": 0,
+          "sound": "s0_29"
+        },
+        {
+          "at": 1,
+          "sound": "s40_2"
+        },
+        {
+          "at": 3,
+          "sound": "s40_2"
+        }
+      ]
     },
     "airDashBackward": {
       "frames": [
@@ -255,7 +301,17 @@
         "moveUntil": 1,
         "invulnerableFrom": 9,
         "invulnerableUntil": 0
-      }
+      },
+      "events": [
+        {
+          "at": 0,
+          "sound": "s0_29"
+        },
+        {
+          "at": 1,
+          "sound": "s40_2"
+        }
+      ]
     },
     "punch": {
       "frames": [
@@ -292,6 +348,14 @@
         {
           "at": 0,
           "vx": 2
+        },
+        {
+          "at": 0,
+          "sound": "s0_91"
+        },
+        {
+          "at": 2,
+          "sound": "s5_25"
         }
       ],
       "cancels": [
@@ -348,6 +412,14 @@
         {
           "at": 0,
           "vx": 3
+        },
+        {
+          "at": 0,
+          "sound": "s0_16"
+        },
+        {
+          "at": 2,
+          "sound": "s5_25"
         }
       ],
       "cancels": [
@@ -416,6 +488,14 @@
         {
           "at": 5,
           "teleport": 12
+        },
+        {
+          "at": 29,
+          "sound": "s0_2"
+        },
+        {
+          "at": 59,
+          "sound": "s1_32"
         }
       ]
     },
@@ -452,8 +532,16 @@
       ],
       "events": [
         {
+          "at": 0,
+          "sound": "s0_92"
+        },
+        {
           "at": 2,
           "vx": 7
+        },
+        {
+          "at": 2,
+          "sound": "s5_35"
         }
       ],
       "cancels": [
@@ -505,6 +593,14 @@
         {
           "at": 0,
           "vx": 7
+        },
+        {
+          "at": 0,
+          "sound": "s0_9"
+        },
+        {
+          "at": 4,
+          "sound": "s5_36"
         }
       ],
       "cancels": [
@@ -552,8 +648,20 @@
       ],
       "events": [
         {
+          "at": 0,
+          "sound": "s0_10"
+        },
+        {
           "at": 3,
           "vx": 8
+        },
+        {
+          "at": 3,
+          "sound": "s40_2"
+        },
+        {
+          "at": 3,
+          "sound": "s1_34"
         },
         {
           "at": 8,
@@ -601,12 +709,20 @@
       ],
       "events": [
         {
+          "at": 0,
+          "sound": "s0_93"
+        },
+        {
           "at": 3,
           "effect": {
             "id": "darkRing",
             "offsetX": 17,
             "offsetY": 37
           }
+        },
+        {
+          "at": 3,
+          "sound": "s340_15"
         }
       ],
       "cancels": [
@@ -631,6 +747,10 @@
       ],
       "loop": false,
       "events": [
+        {
+          "at": 0,
+          "sound": "s0_3"
+        },
         {
           "at": 6,
           "effect": {
@@ -763,6 +883,14 @@
           "teleport": 8
         },
         {
+          "at": 0,
+          "sound": "s0_31"
+        },
+        {
+          "at": 0,
+          "sound": "s40_2"
+        },
+        {
           "at": 4,
           "effect": {
             "id": "slashArc",
@@ -817,6 +945,10 @@
         {
           "at": 0,
           "vx": 3
+        },
+        {
+          "at": 0,
+          "sound": "s0_9"
         }
       ],
       "cancels": [
@@ -861,6 +993,10 @@
         {
           "at": 0,
           "vx": 4
+        },
+        {
+          "at": 0,
+          "sound": "s0_33"
         }
       ]
     },
@@ -878,12 +1014,24 @@
       "loop": false,
       "events": [
         {
+          "at": 0,
+          "sound": "s0_30"
+        },
+        {
+          "at": 0,
+          "sound": "s1_30"
+        },
+        {
           "at": 12,
           "effect": {
             "id": "cloneDash",
             "offsetX": 30,
             "offsetY": 0
           }
+        },
+        {
+          "at": 20,
+          "sound": "s1_31"
         }
       ],
       "cooldown": 30
@@ -915,6 +1063,16 @@
           "damage": 2,
           "hitstun": 20,
           "push": 3
+        }
+      ],
+      "events": [
+        {
+          "at": 0,
+          "sound": "s0_17"
+        },
+        {
+          "at": 2,
+          "sound": "s5_35"
         }
       ],
       "cancels": [
@@ -971,6 +1129,14 @@
           "at": 0,
           "vx": 3,
           "vy": -5
+        },
+        {
+          "at": 0,
+          "sound": "s0_18"
+        },
+        {
+          "at": 1,
+          "sound": "s5_35"
         }
       ],
       "cancels": [
@@ -1001,9 +1167,17 @@
       "loop": false,
       "events": [
         {
+          "at": 0,
+          "sound": "s0_9"
+        },
+        {
           "at": 4,
           "vx": 9,
           "vy": 0
+        },
+        {
+          "at": 4,
+          "sound": "s40_2"
         },
         {
           "at": 5,
@@ -1088,6 +1262,14 @@
       "loop": false,
       "events": [
         {
+          "at": 0,
+          "sound": "s0_30"
+        },
+        {
+          "at": 0,
+          "sound": "s1_30"
+        },
+        {
           "at": 5,
           "vx": -2,
           "vy": -4
@@ -1099,6 +1281,10 @@
             "offsetX": 30,
             "offsetY": 0
           }
+        },
+        {
+          "at": 20,
+          "sound": "s1_31"
         }
       ],
       "air": true
@@ -1116,6 +1302,10 @@
       ],
       "loop": false,
       "events": [
+        {
+          "at": 0,
+          "sound": "s0_43"
+        },
         {
           "at": 8,
           "effect": {
@@ -1179,6 +1369,14 @@
             "offsetX": 125,
             "offsetY": 38
           }
+        },
+        {
+          "at": 5,
+          "sound": "s1_35"
+        },
+        {
+          "at": 5,
+          "sound": "s0_41"
         }
       ],
       "cooldown": 90
@@ -1199,6 +1397,10 @@
       "loop": false,
       "events": [
         {
+          "at": 0,
+          "sound": "s0_38"
+        },
+        {
           "at": 5,
           "effect": {
             "id": "shakkahoCharge",
@@ -1207,12 +1409,24 @@
           }
         },
         {
+          "at": 5,
+          "sound": "s5_41"
+        },
+        {
+          "at": 45,
+          "sound": "s5_28"
+        },
+        {
           "at": 55,
           "effect": {
             "id": "shakkaho",
             "offsetX": 25,
             "offsetY": 35
           }
+        },
+        {
+          "at": 55,
+          "sound": "s0_39"
         }
       ],
       "cooldown": 90
@@ -1237,6 +1451,10 @@
             "offsetX": 0,
             "offsetY": 0
           }
+        },
+        {
+          "at": 5,
+          "sound": "s0_37"
         }
       ],
       "cooldown": 60
@@ -1254,6 +1472,22 @@
       ],
       "loop": false,
       "events": [
+        {
+          "at": 0,
+          "sound": "s0_28"
+        },
+        {
+          "at": 0,
+          "sound": "s0_29"
+        },
+        {
+          "at": 1,
+          "sound": "s40_2"
+        },
+        {
+          "at": 3,
+          "sound": "s40_2"
+        },
         {
           "at": 8,
           "teleport": -45,
@@ -1279,6 +1513,10 @@
       ],
       "loop": false,
       "events": [
+        {
+          "at": 0,
+          "sound": "s0_3"
+        },
         {
           "at": 5,
           "effect": {
@@ -1306,6 +1544,10 @@
       "loop": false,
       "events": [
         {
+          "at": 0,
+          "sound": "s0_50"
+        },
+        {
           "at": 5,
           "effect": {
             "id": "crosshair",
@@ -1321,6 +1563,10 @@
             "offsetX": 0,
             "offsetY": 20
           }
+        },
+        {
+          "at": 50,
+          "sound": "s0_51"
         }
       ],
       "cooldown": 300
@@ -1339,12 +1585,20 @@
       "loop": false,
       "events": [
         {
+          "at": 0,
+          "sound": "s0_44"
+        },
+        {
           "at": 30,
           "effect": {
             "id": "raikohoCharge",
             "offsetX": 23,
             "offsetY": 46
           }
+        },
+        {
+          "at": 40,
+          "sound": "s0_45"
         },
         {
           "at": 42,
@@ -1396,8 +1650,20 @@
       ],
       "events": [
         {
+          "at": 0,
+          "sound": "s0_63"
+        },
+        {
+          "at": 0,
+          "sound": "s950_1"
+        },
+        {
           "at": 30,
           "vx": 5
+        },
+        {
+          "at": 30,
+          "sound": "s7_1"
         }
       ],
       "onHit": {
@@ -1419,6 +1685,18 @@
         {
           "at": 0,
           "vx": 15
+        },
+        {
+          "at": 0,
+          "sound": "s0_95"
+        },
+        {
+          "at": 0,
+          "sound": "s1_34"
+        },
+        {
+          "at": 0,
+          "sound": "s40_3"
         },
         {
           "at": 20,
@@ -1476,6 +1754,14 @@
         {
           "at": 0,
           "teleport": 14
+        },
+        {
+          "at": 0,
+          "sound": "s0_61"
+        },
+        {
+          "at": 2,
+          "sound": "s1_34"
         }
       ]
     },
@@ -1507,6 +1793,20 @@
         4
       ],
       "loop": false,
+      "events": [
+        {
+          "at": 0,
+          "sound": "s0_25"
+        },
+        {
+          "at": 0,
+          "sound": "s950_1"
+        },
+        {
+          "at": 30,
+          "sound": "s900_4"
+        }
+      ],
       "cooldown": 240,
       "counter": {
         "from": 0,
@@ -1567,6 +1867,14 @@
             "offsetX": 0,
             "offsetY": 100
           }
+        },
+        {
+          "at": 10,
+          "sound": "s0_58"
+        },
+        {
+          "at": 10,
+          "sound": "s5_48"
         }
       ],
       "invulnerable": [
@@ -1594,6 +1902,18 @@
             "offsetX": 2,
             "offsetY": 30
           }
+        },
+        {
+          "at": 0,
+          "sound": "s0_25"
+        },
+        {
+          "at": 0,
+          "sound": "s950_1"
+        },
+        {
+          "at": 30,
+          "sound": "s900_4"
         }
       ],
       "perRound": 1,
@@ -1645,6 +1965,14 @@
         {
           "at": 1,
           "teleport": -30
+        },
+        {
+          "at": 10,
+          "sound": "s0_58"
+        },
+        {
+          "at": 10,
+          "sound": "s5_48"
         }
       ],
       "invulnerable": [
@@ -1665,6 +1993,14 @@
       ],
       "loop": false,
       "events": [
+        {
+          "at": 0,
+          "sound": "s0_97"
+        },
+        {
+          "at": 0,
+          "sound": "s950_1"
+        },
         {
           "at": 30,
           "effect": {
@@ -1710,6 +2046,14 @@
       ],
       "events": [
         {
+          "at": 0,
+          "sound": "s0_101"
+        },
+        {
+          "at": 0,
+          "sound": "s950_1"
+        },
+        {
           "at": 30,
           "effect": {
             "id": "pressure",
@@ -1717,6 +2061,10 @@
             "offsetX": 0,
             "offsetY": 110
           }
+        },
+        {
+          "at": 30,
+          "sound": "s300_15"
         }
       ],
       "onHit": {
@@ -1738,6 +2086,10 @@
       ],
       "loop": false,
       "events": [
+        {
+          "at": 0,
+          "sound": "s0_96"
+        },
         {
           "at": 5,
           "effect": {
@@ -1805,6 +2157,16 @@
         5
       ],
       "loop": false,
+      "events": [
+        {
+          "at": 0,
+          "sound": "s0_98"
+        },
+        {
+          "at": 0,
+          "sound": "s950_1"
+        }
+      ],
       "cooldown": 400,
       "charge": {
         "button": "special",
@@ -1882,9 +2244,21 @@
       ],
       "events": [
         {
+          "at": 0,
+          "sound": "s950_1"
+        },
+        {
+          "at": 30,
+          "sound": "s0_28"
+        },
+        {
           "at": 38,
           "teleport": 30,
           "through": true
+        },
+        {
+          "at": 46,
+          "sound": "s1_34"
         }
       ],
       "onHit": {
@@ -1940,9 +2314,17 @@
       ],
       "events": [
         {
+          "at": 0,
+          "sound": "s0_22"
+        },
+        {
           "at": 6,
           "teleport": 30,
           "through": true
+        },
+        {
+          "at": 11,
+          "sound": "s5_35"
         }
       ],
       "onHit": {
@@ -1997,9 +2379,17 @@
       ],
       "events": [
         {
+          "at": 0,
+          "sound": "s0_21"
+        },
+        {
           "at": 6,
           "teleport": 30,
           "through": true
+        },
+        {
+          "at": 9,
+          "sound": "s5_35"
         }
       ],
       "onHit": {
@@ -2054,8 +2444,16 @@
       ],
       "events": [
         {
+          "at": 0,
+          "sound": "s0_13"
+        },
+        {
           "at": 5,
           "teleport": 20
+        },
+        {
+          "at": 13,
+          "sound": "s5_35"
         }
       ],
       "onHit": {
@@ -2184,6 +2582,10 @@
       ],
       "events": [
         {
+          "at": 0,
+          "sound": "s0_63"
+        },
+        {
           "at": 6,
           "teleport": 22
         },
@@ -2231,6 +2633,10 @@
         {
           "at": 0,
           "vx": 2
+        },
+        {
+          "at": 0,
+          "sound": "s0_32"
         }
       ],
       "onHit": {
@@ -2291,8 +2697,20 @@
           "teleport": 28
         },
         {
+          "at": 9,
+          "sound": "s5_25"
+        },
+        {
+          "at": 10,
+          "sound": "s0_54"
+        },
+        {
           "at": 12,
           "vx": 12
+        },
+        {
+          "at": 12,
+          "sound": "s1_34"
         },
         {
           "at": 14,
@@ -2349,6 +2767,14 @@
             "offsetX": 0,
             "offsetY": 125
           }
+        },
+        {
+          "at": 0,
+          "sound": "s0_99"
+        },
+        {
+          "at": 0,
+          "sound": "s950_2"
         },
         {
           "at": 20,
@@ -2452,6 +2878,10 @@
       ],
       "events": [
         {
+          "at": 0,
+          "sound": "s0_69"
+        },
+        {
           "at": 13,
           "teleport": -50
         },
@@ -2467,6 +2897,10 @@
             "offsetX": 10,
             "offsetY": 50
           }
+        },
+        {
+          "at": 31,
+          "sound": "s1_34"
         }
       ],
       "invulnerable": [
@@ -2576,6 +3010,7 @@
   "sheets": [
     "aizen_atlas_0.png"
   ],
+  "assetVersion": "1881eee238",
   "atlas": [
     [
       0,
@@ -9396,5 +9831,66 @@
       "note": "Esferas escuras e o golpe final"
     }
   ],
+  "sounds": {
+    "s0_28": "sfx/s0_28.mp3",
+    "s40_2": "sfx/s40_2.mp3",
+    "s0_29": "sfx/s0_29.mp3",
+    "s0_91": "sfx/s0_91.mp3",
+    "s5_25": "sfx/s5_25.mp3",
+    "s0_16": "sfx/s0_16.mp3",
+    "s0_2": "sfx/s0_2.mp3",
+    "s1_32": "sfx/s1_32.mp3",
+    "s0_92": "sfx/s0_92.mp3",
+    "s5_35": "sfx/s5_35.mp3",
+    "s0_9": "sfx/s0_9.mp3",
+    "s5_36": "sfx/s5_36.mp3",
+    "s1_34": "sfx/s1_34.mp3",
+    "s0_10": "sfx/s0_10.mp3",
+    "s0_93": "sfx/s0_93.mp3",
+    "s340_15": "sfx/s340_15.mp3",
+    "s0_3": "sfx/s0_3.mp3",
+    "s0_31": "sfx/s0_31.mp3",
+    "s0_33": "sfx/s0_33.mp3",
+    "s0_30": "sfx/s0_30.mp3",
+    "s1_31": "sfx/s1_31.mp3",
+    "s1_30": "sfx/s1_30.mp3",
+    "s0_17": "sfx/s0_17.mp3",
+    "s0_18": "sfx/s0_18.mp3",
+    "s0_43": "sfx/s0_43.mp3",
+    "s1_35": "sfx/s1_35.mp3",
+    "s0_41": "sfx/s0_41.mp3",
+    "s0_38": "sfx/s0_38.mp3",
+    "s0_39": "sfx/s0_39.mp3",
+    "s5_41": "sfx/s5_41.mp3",
+    "s5_28": "sfx/s5_28.mp3",
+    "s0_37": "sfx/s0_37.mp3",
+    "s0_50": "sfx/s0_50.mp3",
+    "s0_51": "sfx/s0_51.mp3",
+    "s0_44": "sfx/s0_44.mp3",
+    "s0_45": "sfx/s0_45.mp3",
+    "s0_63": "sfx/s0_63.mp3",
+    "s950_1": "sfx/s950_1.mp3",
+    "s7_1": "sfx/s7_1.mp3",
+    "s0_95": "sfx/s0_95.mp3",
+    "s40_3": "sfx/s40_3.mp3",
+    "s0_61": "sfx/s0_61.mp3",
+    "s0_25": "sfx/s0_25.mp3",
+    "s900_4": "sfx/s900_4.mp3",
+    "s0_58": "sfx/s0_58.mp3",
+    "s5_48": "sfx/s5_48.mp3",
+    "s0_97": "sfx/s0_97.mp3",
+    "s0_101": "sfx/s0_101.mp3",
+    "s300_15": "sfx/s300_15.mp3",
+    "s0_96": "sfx/s0_96.mp3",
+    "s0_98": "sfx/s0_98.mp3",
+    "s0_22": "sfx/s0_22.mp3",
+    "s0_21": "sfx/s0_21.mp3",
+    "s0_13": "sfx/s0_13.mp3",
+    "s0_32": "sfx/s0_32.mp3",
+    "s0_54": "sfx/s0_54.mp3",
+    "s0_99": "sfx/s0_99.mp3",
+    "s950_2": "sfx/s950_2.mp3",
+    "s0_69": "sfx/s0_69.mp3"
+  },
   "spriteScale": 1.8
 }

@@ -20,7 +20,7 @@ const HEAVY_DAMAGE = 30;
 
 // Golpe marcado como forte (animtype Hard/Heavy no pacote MUGEN) pesa mesmo
 // com pouco dano: o fim de uma sequencia precisa "fechar" com mais impacto.
-function kindOf({ outcome, damage, heavy }) {
+export function kindOf({ outcome, damage, heavy }) {
   if (outcome === 'block') return 'block';
   if (outcome === 'ko') return 'ko';
   return heavy || damage >= HEAVY_DAMAGE ? 'heavy' : 'hit';

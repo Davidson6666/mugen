@@ -596,6 +596,9 @@ importMugenCharacter({
   airPath: resolve(PACK, 'Aizen_TYBW.air'),
   outDir: 'public/assets/characters/aizen',
   id: 'aizen',
+  // Sons dos golpes: lidos do .cns do pacote (scripts/lib/cns-sounds.mjs).
+  sndPath: resolve(PACK, 'Aizen_TYBW.snd'),
+  soundsFromDef: resolve(PACK, 'Aizen_TYBW.def'),
   name: 'Aizen',
   description: 'O ilusionista do Hogyoku',
   template: 'public/assets/characters/dummy/dummy_config.json',

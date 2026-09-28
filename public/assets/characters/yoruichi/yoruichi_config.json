@@ -154,7 +154,17 @@
       "durations": [
         600
       ],
-      "loop": false
+      "loop": false,
+      "events": [
+        {
+          "at": 0,
+          "sound": "s2_44"
+        },
+        {
+          "at": 90,
+          "sound": "s2_46"
+        }
+      ]
     },
     "defeatPose": {
       "frames": [
@@ -196,7 +206,13 @@
         "spawnFrame": 0,
         "offsetX": 0,
         "offsetY": 20
-      }
+      },
+      "events": [
+        {
+          "at": 0,
+          "sound": "s0_5"
+        }
+      ]
     },
     "dashBackward": {
       "frames": [
@@ -227,7 +243,13 @@
         "spawnFrame": 0,
         "offsetX": 0,
         "offsetY": 20
-      }
+      },
+      "events": [
+        {
+          "at": 0,
+          "sound": "s0_5"
+        }
+      ]
     },
     "airDashForward": {
       "frames": [
@@ -245,7 +267,13 @@
         "moveUntil": 1,
         "invulnerableFrom": 9,
         "invulnerableUntil": 0
-      }
+      },
+      "events": [
+        {
+          "at": 0,
+          "sound": "s0_2"
+        }
+      ]
     },
     "airDashBackward": {
       "frames": [
@@ -263,7 +291,13 @@
         "moveUntil": 1,
         "invulnerableFrom": 9,
         "invulnerableUntil": 0
-      }
+      },
+      "events": [
+        {
+          "at": 0,
+          "sound": "s0_2"
+        }
+      ]
     },
     "punch": {
       "frames": [
@@ -292,6 +326,12 @@
           "damage": 3,
           "hitstun": 18,
           "push": 5
+        }
+      ],
+      "events": [
+        {
+          "at": 0,
+          "sound": "s2_12"
         }
       ],
       "cancels": [
@@ -357,6 +397,10 @@
       ],
       "events": [
         {
+          "at": 0,
+          "sound": "s2_6"
+        },
+        {
           "at": 7,
           "vx": 3
         },
@@ -406,6 +450,12 @@
           "heavy": true
         }
       ],
+      "events": [
+        {
+          "at": 0,
+          "sound": "s2_0"
+        }
+      ],
       "cancels": [
         {
           "on": "punch",
@@ -445,6 +495,12 @@
           "damage": 3,
           "hitstun": 18,
           "push": 3
+        }
+      ],
+      "events": [
+        {
+          "at": 0,
+          "sound": "s2_14"
         }
       ],
       "cancels": [
@@ -499,6 +555,16 @@
           "push": 3
         }
       ],
+      "events": [
+        {
+          "at": 0,
+          "sound": "s2_8"
+        },
+        {
+          "at": 1,
+          "sound": "s0_0"
+        }
+      ],
       "cancels": [
         {
           "on": "special",
@@ -541,6 +607,10 @@
       ],
       "events": [
         {
+          "at": 0,
+          "sound": "s2_4"
+        },
+        {
           "at": 4,
           "vx": 8
         }
@@ -574,6 +644,12 @@
           "push": 6
         }
       ],
+      "events": [
+        {
+          "at": 0,
+          "sound": "s2_16"
+        }
+      ],
       "air": true,
       "specialCancel": true
     },
@@ -602,6 +678,12 @@
           "damage": 4,
           "hitstun": 20,
           "push": 7
+        }
+      ],
+      "events": [
+        {
+          "at": 0,
+          "sound": "s2_6"
         }
       ],
       "air": true,
@@ -637,6 +719,12 @@
           "heavy": true
         }
       ],
+      "events": [
+        {
+          "at": 0,
+          "sound": "s2_2"
+        }
+      ],
       "air": true,
       "specialCancel": true
     },
@@ -651,6 +739,10 @@
       ],
       "loop": false,
       "events": [
+        {
+          "at": 0,
+          "sound": "s2_66"
+        },
         {
           "at": 10,
           "effect": {
@@ -728,6 +820,10 @@
             "offsetX": 0,
             "offsetY": 60
           }
+        },
+        {
+          "at": 10,
+          "sound": "s1_14"
         }
       ],
       "cooldown": 90
@@ -1099,8 +1195,16 @@
       ],
       "events": [
         {
+          "at": 0,
+          "sound": "s2_80"
+        },
+        {
           "at": 8,
           "vx": 11.5
+        },
+        {
+          "at": 8,
+          "sound": "s1_16"
         }
       ],
       "onHit": {
@@ -1272,6 +1376,10 @@
         {
           "at": 32,
           "vx": 0
+        },
+        {
+          "at": 32,
+          "sound": "s2_0"
         }
       ],
       "friction": false
@@ -1359,9 +1467,17 @@
       ],
       "events": [
         {
+          "at": 0,
+          "sound": "s2_76"
+        },
+        {
           "at": 4,
           "vx": 1.25,
           "vy": -6
+        },
+        {
+          "at": 4,
+          "sound": "s1_17"
         }
       ],
       "air": true,
@@ -1687,6 +1803,10 @@
           }
         },
         {
+          "at": 0,
+          "sound": "s2_28"
+        },
+        {
           "at": 18,
           "effect": {
             "id": "throwImpact",
@@ -1727,8 +1847,16 @@
       ],
       "events": [
         {
+          "at": 0,
+          "sound": "s2_74"
+        },
+        {
           "at": 1,
           "vx": 11.5
+        },
+        {
+          "at": 1,
+          "sound": "s1_16"
         }
       ],
       "onHit": {
@@ -2007,8 +2135,16 @@
           }
         },
         {
+          "at": 0,
+          "sound": "s2_96"
+        },
+        {
           "at": 105,
           "vx": 0
+        },
+        {
+          "at": 105,
+          "sound": "s2_0"
         }
       ],
       "invulnerable": [
@@ -2128,6 +2264,7 @@
   "sheets": [
     "yoruichi_atlas_0.png"
   ],
+  "assetVersion": "a6150cc97a",
   "atlas": [
     [
       0,
@@ -3680,5 +3817,29 @@
       "input": "↓→↓→P",
       "note": "Investida e a rajada de 12 golpes com o clone"
     }
-  ]
+  ],
+  "sounds": {
+    "s2_44": "sfx/s2_44.mp3",
+    "s2_46": "sfx/s2_46.mp3",
+    "s0_5": "sfx/s0_5.mp3",
+    "s0_2": "sfx/s0_2.mp3",
+    "s2_12": "sfx/s2_12.mp3",
+    "s2_6": "sfx/s2_6.mp3",
+    "s2_0": "sfx/s2_0.mp3",
+    "s2_14": "sfx/s2_14.mp3",
+    "s2_8": "sfx/s2_8.mp3",
+    "s0_0": "sfx/s0_0.mp3",
+    "s2_4": "sfx/s2_4.mp3",
+    "s2_16": "sfx/s2_16.mp3",
+    "s2_2": "sfx/s2_2.mp3",
+    "s2_66": "sfx/s2_66.mp3",
+    "s1_14": "sfx/s1_14.mp3",
+    "s2_80": "sfx/s2_80.mp3",
+    "s1_16": "sfx/s1_16.mp3",
+    "s2_76": "sfx/s2_76.mp3",
+    "s1_17": "sfx/s1_17.mp3",
+    "s2_28": "sfx/s2_28.mp3",
+    "s2_74": "sfx/s2_74.mp3",
+    "s2_96": "sfx/s2_96.mp3"
+  }
 }

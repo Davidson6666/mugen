@@ -521,6 +521,9 @@ importMugenCharacter({
   airPath: resolve(PACK, 'anim.air'),
   outDir: 'public/assets/characters/escanor',
   id: 'escanor',
+  // Sons dos golpes: lidos do .cns do pacote (scripts/lib/cns-sounds.mjs).
+  sndPath: resolve(PACK, 'snd.snd'),
+  soundsFromDef: resolve(PACK, '../Escanor RSK OP.def'),
   name: 'Escanor',
   description: 'O Leão do Orgulho',
   template: 'public/assets/characters/dummy/dummy_config.json',

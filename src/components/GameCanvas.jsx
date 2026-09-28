@@ -7,7 +7,7 @@ import { AIController } from '../systems/AIController.js';
 import { GameStateManager } from '../systems/GameStateManager.js';
 import { Hud } from '../systems/Hud.js';
 import { EffectManager } from '../systems/EffectManager.js';
-import { HitFeedback } from '../systems/HitFeedback.js';
+import { HitFeedback, kindOf } from '../systems/HitFeedback.js';
 import { AudioManager } from '../systems/AudioManager.js';
 import { resolveAttack, resolveBodyCollision } from '../systems/CollisionDetector.js';
 import { InputHandler } from '../utils/InputHandler.js';
@@ -184,6 +184,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       if (disposed) return;
       // Os sons carregam em paralelo; a luta nao espera por eles.
       characterEntries.forEach((entry, index) => audio.preload(entry.dir, characterRecords[index].config.sounds));
+      audio.preloadImpacts();
 
       const map = mapRecord.config;
       // Os lutadores comecam a uns dois corpos de distancia, no meio do
@@ -382,7 +383,12 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
           // Fora do combate os efeitos terminam a animacao, mas nao acertam
           // mais ninguem: o round ja foi decidido.
           results.push(...effects.update(delta, fighting ? fighters : []));
-          for (const result of results) if (result) feedback.onResult(result);
+          for (const result of results) {
+            if (!result) continue;
+            feedback.onResult(result);
+            // Esquiva atravessa sem impacto (nem faisca, nem som).
+            if (result.outcome !== 'evade') audio.playImpact(kindOf(result));
+          }
         }
 
         fighters.forEach((fighter, index) => audio.update(index, fighter, characterEntries[index].dir));

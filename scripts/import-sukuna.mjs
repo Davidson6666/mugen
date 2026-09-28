@@ -587,6 +587,9 @@ importMugenCharacter({
   airPath: resolve(PACK, 'Yuji Itadori.air'),
   outDir: 'public/assets/characters/sukuna',
   id: 'sukuna',
+  // Sons dos golpes: lidos do .cns do pacote (scripts/lib/cns-sounds.mjs).
+  sndPath: resolve(PACK, 'Yuji Itadori.snd'),
+  soundsFromDef: resolve(PACK, 'Unfair Sukuna.def'),
   name: 'Sukuna',
   description: 'O rei das maldições',
   template: 'public/assets/characters/dummy/dummy_config.json',

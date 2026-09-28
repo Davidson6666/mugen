@@ -325,6 +325,9 @@ importMugenCharacter({
   airPath: resolve(PACK, 'yoruichi.air'),
   outDir: 'public/assets/characters/yoruichi',
   id: 'yoruichi',
+  // Sons dos golpes: lidos do .cns do pacote (scripts/lib/cns-sounds.mjs).
+  sndPath: resolve(PACK, 'yoruichi.snd'),
+  soundsFromDef: resolve(PACK, 'yoruichi_BMP.def'),
   name: 'Yoruichi',
   description: 'A deusa do Shunpo',
   template: 'public/assets/characters/dummy/dummy_config.json',

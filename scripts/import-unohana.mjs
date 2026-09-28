@@ -377,6 +377,9 @@ importMugenCharacter({
   airPath: resolve(PACK, 'Unohana.air'),
   outDir: 'public/assets/characters/unohana',
   id: 'unohana',
+  // Sons dos golpes: lidos do .cns do pacote (scripts/lib/cns-sounds.mjs).
+  sndPath: resolve(PACK, 'Unohana.snd'),
+  soundsFromDef: resolve(PACK, 'RetsuUnohana.def'),
   name: 'Unohana',
   description: 'A primeira Kenpachi',
   template: 'public/assets/characters/dummy/dummy_config.json',

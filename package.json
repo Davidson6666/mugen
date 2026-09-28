@@ -26,7 +26,8 @@
     "assets:tanjiro": "node scripts/import-tanjiro.mjs",
     "assets:zenitsu": "node scripts/import-zenitsu.mjs",
     "assets:nezuko": "node scripts/import-nezuko.mjs",
-    "assets:chunli": "node scripts/import-chunli.mjs"
+    "assets:chunli": "node scripts/import-chunli.mjs",
+    "assets:impact": "node scripts/make-impact-sounds.mjs"
   },
   "dependencies": {
     "@fontsource/barlow-condensed": "^5.3.0",

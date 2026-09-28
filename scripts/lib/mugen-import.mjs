@@ -19,6 +19,7 @@ import { PNG } from 'pngjs';
 import { openSff, readAct } from './sff.mjs';
 import { readAir } from './air.mjs';
 import { openSnd } from './snd.mjs';
+import { loadCnsSounds, soundEventsFor } from './cns-sounds.mjs';
 
 // Quadro com duracao -1 no MUGEN fica parado para sempre.
 const HOLD_TICKS = 600;
@@ -644,7 +645,7 @@ export function exportFightFx({ root, sffPath, airPath, outDir, effects }) {
 
 export function importMugenCharacter({
   root, sffPath, airPath, outDir, id, name, description, template,
-  animations, effects = {}, combos, buttons, moveList, airJumpEffect, modes, awakening, echo, sndPath, sounds, sffOptions, spriteScale, bodyScale = 1, portrait, hurtboxFrom = 'idle',
+  animations, effects = {}, combos, buttons, moveList, airJumpEffect, modes, awakening, echo, sndPath, sounds, soundsFromDef, sffOptions, spriteScale, bodyScale = 1, portrait, hurtboxFrom = 'idle',
 }) {
   console.log('Lendo o pacote MUGEN...');
   // SFF v1 (MUGEN antigo): as cores do personagem vem da paleta .act.
@@ -738,6 +739,13 @@ export function importMugenCharacter({
     };
   }
 
+  // Sons dos golpes lidos do .cns do pacote (soundsFromDef = caminho do .def).
+  const cnsStates = soundsFromDef ? loadCnsSounds(soundsFromDef) : null;
+  const ownSnd = soundsFromDef && sndPath ? openSnd(sndPath) : null;
+  const hasSound = (group, item) => Boolean(ownSnd?.get(group, item));
+  const autoSounds = new Set();
+  let autoEvents = 0;
+
   const built = {};
   for (const [animationId, spec] of Object.entries(animations)) {
     const { frames, cells, starts } = sources[animationId];
@@ -772,7 +780,15 @@ export function importMugenCharacter({
       }))
       : buildHits(frames, spec, grid, bodyScale);
     if (hits) animation.hits = hits;
-    if (spec.events) animation.events = buildEvents(spec.events, starts);
+    // Golpe que ja declara sons na especificacao fica como esta.
+    let specEvents = spec.events ?? [];
+    if (cnsStates && !specEvents.some((event) => event.sound)) {
+      const auto = soundEventsFor(spec, cnsStates, hasSound);
+      specEvents = [...specEvents, ...auto.events.filter((event) => starts.has(event.action))];
+      for (const used of auto.used) autoSounds.add(used);
+      autoEvents += auto.events.length;
+    }
+    if (specEvents.length > 0) animation.events = buildEvents(specEvents, starts);
     for (const key of MOVE_FIELDS) if (spec[key] !== undefined) animation[key] = spec[key];
     built[animationId] = animation;
   }
@@ -780,7 +796,11 @@ export function importMugenCharacter({
   // Hurtbox unica do personagem: as caixas clsn2 do primeiro quadro parado.
   const hurt = union(sources[hurtboxFrom].frames[0].clsn2);
   write(root, `${outDir}/${id}_portrait.png`, buildPortrait(sff, portrait));
-  const soundFiles = sounds ? exportSounds(root, outDir, sndPath, sounds) : null;
+  // Sons do .cns: uma chave sG_I por som usado, junto dos declarados na mao.
+  const allSounds = { ...(sounds ?? {}) };
+  for (const used of autoSounds) allSounds[`s${used.replace(',', '_')}`] = used.split(',').map(Number);
+  if (cnsStates) console.log(`  sons do .cns: ${autoEvents} eventos, ${autoSounds.size} sons diferentes`);
+  const soundFiles = Object.keys(allSounds).length > 0 ? exportSounds(root, outDir, sndPath, allSounds) : null;
 
   const { spriteSheet: _unused, ...rest } = base;
   const config = {

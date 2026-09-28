@@ -224,7 +224,13 @@
         "invulnerableFrom": 1,
         "invulnerableUntil": 6,
         "cancel": true
-      }
+      },
+      "events": [
+        {
+          "at": 5,
+          "sound": "s20_6"
+        }
+      ]
     },
     "dashBackward": {
       "frames": [
@@ -247,7 +253,13 @@
         "invulnerableFrom": 1,
         "invulnerableUntil": 3,
         "cancel": true
-      }
+      },
+      "events": [
+        {
+          "at": 5,
+          "sound": "s20_5"
+        }
+      ]
     },
     "airDashForward": {
       "frames": [
@@ -285,7 +297,13 @@
         "moveUntil": 11,
         "invulnerableFrom": 99,
         "invulnerableUntil": 0
-      }
+      },
+      "events": [
+        {
+          "at": 5,
+          "sound": "s20_6"
+        }
+      ]
     },
     "airDashBackward": {
       "frames": [
@@ -319,7 +337,13 @@
         "moveUntil": 9,
         "invulnerableFrom": 99,
         "invulnerableUntil": 0
-      }
+      },
+      "events": [
+        {
+          "at": 5,
+          "sound": "s20_6"
+        }
+      ]
     },
     "punch": {
       "frames": [
@@ -362,6 +386,10 @@
         {
           "at": 0,
           "vx": 6
+        },
+        {
+          "at": 0,
+          "sound": "s200_0"
         }
       ],
       "cancels": [
@@ -538,8 +566,16 @@
           "vx": -8
         },
         {
+          "at": 5,
+          "sound": "s20_6"
+        },
+        {
           "at": 8,
           "teleport": 20
+        },
+        {
+          "at": 8,
+          "sound": "s20_6"
         },
         {
           "at": 9,
@@ -602,6 +638,10 @@
             "offsetX": -10,
             "offsetY": -3
           }
+        },
+        {
+          "at": 0,
+          "sound": "s200_5"
         },
         {
           "at": 5,
@@ -673,6 +713,10 @@
             "offsetX": 70,
             "offsetY": -3
           }
+        },
+        {
+          "at": 0,
+          "sound": "s300_26"
         }
       ],
       "cancels": [
@@ -801,6 +845,10 @@
         {
           "at": 3,
           "vx": 8
+        },
+        {
+          "at": 5,
+          "sound": "s300_35"
         }
       ],
       "cancels": [
@@ -859,6 +907,10 @@
             "offsetX": 20,
             "offsetY": 30
           }
+        },
+        {
+          "at": 5,
+          "sound": "s300_56"
         }
       ],
       "cancels": [
@@ -931,6 +983,10 @@
           "vx": 10
         },
         {
+          "at": 5,
+          "sound": "s20_6"
+        },
+        {
           "at": 16,
           "vx": -10
         },
@@ -992,6 +1048,10 @@
             "offsetX": 20,
             "offsetY": 30
           }
+        },
+        {
+          "at": 5,
+          "sound": "s300_56"
         }
       ],
       "cancels": [
@@ -1059,6 +1119,10 @@
             "offsetX": -25,
             "offsetY": 30
           }
+        },
+        {
+          "at": 5,
+          "sound": "s200_4"
         }
       ],
       "air": true,
@@ -1126,6 +1190,14 @@
         }
       ],
       "events": [
+        {
+          "at": 0,
+          "sound": "s300_10"
+        },
+        {
+          "at": 0,
+          "sound": "s300_11"
+        },
         {
           "at": 3,
           "effect": {
@@ -1226,12 +1298,28 @@
       ],
       "events": [
         {
+          "at": 0,
+          "sound": "s0_18"
+        },
+        {
           "at": 28,
           "teleport": 15
         },
         {
+          "at": 28,
+          "sound": "s300_6"
+        },
+        {
+          "at": 28,
+          "sound": "s0_19"
+        },
+        {
           "at": 42,
           "vx": 6
+        },
+        {
+          "at": 47,
+          "sound": "s300_5"
         },
         {
           "at": 48,
@@ -1303,6 +1391,10 @@
             "offsetX": 70,
             "offsetY": -5
           }
+        },
+        {
+          "at": 8,
+          "sound": "s300_10"
         }
       ],
       "cooldown": 100
@@ -1344,6 +1436,10 @@
             "offsetX": 60,
             "offsetY": 30
           }
+        },
+        {
+          "at": 0,
+          "sound": "s300_35"
         },
         {
           "at": 6,
@@ -1389,6 +1485,10 @@
             "offsetX": 25,
             "offsetY": 26
           }
+        },
+        {
+          "at": 20,
+          "sound": "s0_28"
         }
       ],
       "next": "heartFinish"
@@ -1477,6 +1577,10 @@
       "loop": false,
       "events": [
         {
+          "at": 15,
+          "sound": "s300_25"
+        },
+        {
           "at": 23,
           "effect": {
             "id": "fireBurst",
@@ -1484,6 +1588,10 @@
             "offsetX": 5,
             "offsetY": 7
           }
+        },
+        {
+          "at": 38,
+          "sound": "s300_40"
         },
         {
           "at": 40,
@@ -1528,6 +1636,10 @@
           }
         },
         {
+          "at": 10,
+          "sound": "s300_25"
+        },
+        {
           "at": 40,
           "effect": {
             "id": "comet",
@@ -1550,6 +1662,14 @@
             "offsetX": -80,
             "offsetY": 200
           }
+        },
+        {
+          "at": 400,
+          "sound": "s300_9"
+        },
+        {
+          "at": 500,
+          "sound": "s300_9"
         }
       ],
       "cooldown": 200
@@ -1590,6 +1710,10 @@
           }
         },
         {
+          "at": 10,
+          "sound": "s300_25"
+        },
+        {
           "at": 20,
           "effect": {
             "id": "fireball",
@@ -1612,6 +1736,14 @@
             "offsetX": 15,
             "offsetY": 16
           }
+        },
+        {
+          "at": 400,
+          "sound": "s300_9"
+        },
+        {
+          "at": 500,
+          "sound": "s300_9"
         }
       ],
       "cooldown": 150
@@ -1636,8 +1768,24 @@
           }
         },
         {
+          "at": 0,
+          "sound": "s300_32"
+        },
+        {
+          "at": 0,
+          "sound": "s0_23"
+        },
+        {
+          "at": 0,
+          "sound": "s300_36"
+        },
+        {
           "at": 20,
           "setMode": "yuji"
+        },
+        {
+          "at": 40,
+          "sound": "s300_37"
         }
       ],
       "invulnerable": [
@@ -1662,6 +1810,10 @@
       ],
       "loop": false,
       "events": [
+        {
+          "at": 0,
+          "sound": "s300_0"
+        },
         {
           "at": 10,
           "effect": {
@@ -1843,7 +1995,13 @@
         "invulnerableFrom": 1,
         "invulnerableUntil": 4,
         "cancel": true
-      }
+      },
+      "events": [
+        {
+          "at": 5,
+          "sound": "s20_1"
+        }
+      ]
     },
     "yujiDashBackward": {
       "frames": [
@@ -1866,7 +2024,13 @@
         "invulnerableFrom": 1,
         "invulnerableUntil": 3,
         "cancel": true
-      }
+      },
+      "events": [
+        {
+          "at": 5,
+          "sound": "s20_5"
+        }
+      ]
     },
     "yujiPunch": {
       "frames": [
@@ -1905,6 +2069,10 @@
         {
           "at": 0,
           "vx": 6
+        },
+        {
+          "at": 2,
+          "sound": "s200_0"
         }
       ],
       "cancels": [
@@ -1961,6 +2129,10 @@
         {
           "at": 0,
           "vx": 5
+        },
+        {
+          "at": 5,
+          "sound": "s200_2"
         }
       ],
       "cancels": [
@@ -2050,6 +2222,10 @@
           "at": 0,
           "vx": -3,
           "vy": -3
+        },
+        {
+          "at": 20,
+          "sound": "s20_3"
         }
       ]
     },
@@ -2118,6 +2294,10 @@
             "offsetX": 18,
             "offsetY": 30
           }
+        },
+        {
+          "at": 3,
+          "sound": "s300_15"
         }
       ],
       "cancels": [
@@ -2185,6 +2365,10 @@
             "offsetX": 0,
             "offsetY": 30
           }
+        },
+        {
+          "at": 12,
+          "sound": "s300_18"
         }
       ],
       "cancels": [
@@ -2248,6 +2432,10 @@
           "vx": 8
         },
         {
+          "at": 20,
+          "sound": "s20_3"
+        },
+        {
           "at": 26,
           "vx": 0
         }
@@ -2306,6 +2494,10 @@
           }
         },
         {
+          "at": 0,
+          "sound": "s0_4"
+        },
+        {
           "at": 12,
           "effect": {
             "id": "slashLine",
@@ -2316,6 +2508,10 @@
             "offsetX": 30,
             "offsetY": 0
           }
+        },
+        {
+          "at": 12,
+          "sound": "s300_1"
         }
       ],
       "specialCancel": true
@@ -2347,6 +2543,12 @@
           "damage": 3,
           "hitstun": 20,
           "push": 4
+        }
+      ],
+      "events": [
+        {
+          "at": 8,
+          "sound": "s200_0"
         }
       ],
       "air": true,
@@ -2384,6 +2586,10 @@
           "at": 0,
           "vx": 3,
           "vy": -6
+        },
+        {
+          "at": 4,
+          "sound": "s200_4"
         },
         {
           "at": 6,
@@ -2456,6 +2662,10 @@
             "offsetX": 20,
             "offsetY": 0
           }
+        },
+        {
+          "at": 14,
+          "sound": "s1_5"
         }
       ],
       "air": true
@@ -2483,6 +2693,10 @@
       ],
       "loop": false,
       "events": [
+        {
+          "at": 5,
+          "sound": "s200_1"
+        },
         {
           "at": 10,
           "effect": {
@@ -2566,6 +2780,10 @@
       "loop": false,
       "events": [
         {
+          "at": 0,
+          "sound": "s0_4"
+        },
+        {
           "at": 5,
           "effect": {
             "id": "cursedFist",
@@ -2581,6 +2799,10 @@
             "offsetX": 20,
             "offsetY": -10
           }
+        },
+        {
+          "at": 50,
+          "sound": "s300_1"
         }
       ],
       "cooldown": 120
@@ -2651,6 +2873,10 @@
         {
           "at": 0,
           "vx": 10
+        },
+        {
+          "at": 0,
+          "sound": "s200_1"
         },
         {
           "at": 15,
@@ -2763,8 +2989,20 @@
           }
         },
         {
+          "at": 1,
+          "sound": "s300_45"
+        },
+        {
+          "at": 10,
+          "sound": "s200_6"
+        },
+        {
           "at": 22,
           "teleport": 12
+        },
+        {
+          "at": 22,
+          "sound": "s300_50"
         },
         {
           "at": 48,
@@ -2781,6 +3019,18 @@
             "offsetX": 30,
             "offsetY": 30
           }
+        },
+        {
+          "at": 60,
+          "sound": "s300_50"
+        },
+        {
+          "at": 70,
+          "sound": "s300_52"
+        },
+        {
+          "at": 108,
+          "sound": "s300_52"
         }
       ],
       "invulnerable": [
@@ -2808,6 +3058,10 @@
       ],
       "loop": false,
       "events": [
+        {
+          "at": 18,
+          "sound": "s0_12"
+        },
         {
           "at": 20,
           "standAt": -90,
@@ -2888,6 +3142,10 @@
             "offsetX": -20,
             "offsetY": 50
           }
+        },
+        {
+          "at": 80,
+          "sound": "s0_13"
         },
         {
           "at": 88,
@@ -3005,6 +3263,18 @@
             "offsetX": 0,
             "offsetY": 40
           }
+        },
+        {
+          "at": 230,
+          "sound": "s0_14"
+        },
+        {
+          "at": 300,
+          "sound": "s0_15"
+        },
+        {
+          "at": 1000,
+          "sound": "s300_4"
         }
       ],
       "invulnerable": [
@@ -3126,6 +3396,7 @@
     "sukuna_atlas_0.png",
     "sukuna_atlas_1.png"
   ],
+  "assetVersion": "2b950485f7",
   "atlas": [
     [
       1,
@@ -9412,6 +9683,49 @@
         "dashBackward": "yujiDashBackward"
       }
     }
+  },
+  "sounds": {
+    "s20_6": "sfx/s20_6.mp3",
+    "s20_5": "sfx/s20_5.mp3",
+    "s200_0": "sfx/s200_0.mp3",
+    "s200_5": "sfx/s200_5.mp3",
+    "s300_26": "sfx/s300_26.mp3",
+    "s300_35": "sfx/s300_35.mp3",
+    "s300_56": "sfx/s300_56.mp3",
+    "s200_4": "sfx/s200_4.mp3",
+    "s300_10": "sfx/s300_10.mp3",
+    "s300_11": "sfx/s300_11.mp3",
+    "s0_18": "sfx/s0_18.mp3",
+    "s300_6": "sfx/s300_6.mp3",
+    "s0_19": "sfx/s0_19.mp3",
+    "s300_5": "sfx/s300_5.mp3",
+    "s0_28": "sfx/s0_28.mp3",
+    "s300_25": "sfx/s300_25.mp3",
+    "s300_40": "sfx/s300_40.mp3",
+    "s300_9": "sfx/s300_9.mp3",
+    "s300_32": "sfx/s300_32.mp3",
+    "s0_23": "sfx/s0_23.mp3",
+    "s300_36": "sfx/s300_36.mp3",
+    "s300_37": "sfx/s300_37.mp3",
+    "s300_0": "sfx/s300_0.mp3",
+    "s20_1": "sfx/s20_1.mp3",
+    "s200_2": "sfx/s200_2.mp3",
+    "s20_3": "sfx/s20_3.mp3",
+    "s300_15": "sfx/s300_15.mp3",
+    "s300_18": "sfx/s300_18.mp3",
+    "s0_4": "sfx/s0_4.mp3",
+    "s300_1": "sfx/s300_1.mp3",
+    "s1_5": "sfx/s1_5.mp3",
+    "s200_1": "sfx/s200_1.mp3",
+    "s200_6": "sfx/s200_6.mp3",
+    "s300_45": "sfx/s300_45.mp3",
+    "s300_50": "sfx/s300_50.mp3",
+    "s300_52": "sfx/s300_52.mp3",
+    "s0_12": "sfx/s0_12.mp3",
+    "s0_13": "sfx/s0_13.mp3",
+    "s0_14": "sfx/s0_14.mp3",
+    "s0_15": "sfx/s0_15.mp3",
+    "s300_4": "sfx/s300_4.mp3"
   },
   "spriteScale": 1.7
 }

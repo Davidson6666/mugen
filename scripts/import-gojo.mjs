@@ -571,6 +571,9 @@ importMugenCharacter({
   airPath: resolve(PACK, 'DATA/anim.air'),
   outDir: 'public/assets/characters/gojo',
   id: 'gojo',
+  // Sons dos golpes: lidos do .cns do pacote (scripts/lib/cns-sounds.mjs).
+  sndPath: resolve(PACK, 'DATA/sound.snd'),
+  soundsFromDef: resolve(PACK, 'WR-Gojo.def'),
   name: 'Gojo',
   description: 'O mais forte',
   template: 'public/assets/characters/dummy/dummy_config.json',

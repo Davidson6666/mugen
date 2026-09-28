@@ -371,7 +371,17 @@
         "moveUntil": 3,
         "invulnerableFrom": 9,
         "invulnerableUntil": 0
-      }
+      },
+      "events": [
+        {
+          "at": 0,
+          "sound": "s12_0"
+        },
+        {
+          "at": 0,
+          "sound": "s100_6"
+        }
+      ]
     },
     "airDashBackward": {
       "frames": [
@@ -393,7 +403,17 @@
         "moveUntil": 3,
         "invulnerableFrom": 9,
         "invulnerableUntil": 0
-      }
+      },
+      "events": [
+        {
+          "at": 0,
+          "sound": "s12_0"
+        },
+        {
+          "at": 0,
+          "sound": "s100_6"
+        }
+      ]
     },
     "punch": {
       "frames": [
@@ -440,6 +460,10 @@
         {
           "at": 4,
           "vx": 4
+        },
+        {
+          "at": 4,
+          "sound": "s1_2"
         }
       ],
       "cancels": [
@@ -496,6 +520,10 @@
         {
           "at": 7,
           "vx": 5
+        },
+        {
+          "at": 8,
+          "sound": "s1_1"
         }
       ],
       "cancels": [
@@ -781,6 +809,14 @@
         {
           "at": 10,
           "vx": 14
+        },
+        {
+          "at": 10,
+          "sound": "s1_2"
+        },
+        {
+          "at": 10,
+          "sound": "s1_8"
         }
       ],
       "cancels": [
@@ -844,6 +880,10 @@
         {
           "at": 3,
           "vx": 5
+        },
+        {
+          "at": 3,
+          "sound": "s1_20"
         }
       ],
       "cancels": [
@@ -906,6 +946,28 @@
           "hitstun": 32,
           "push": 9,
           "heavy": true
+        }
+      ],
+      "events": [
+        {
+          "at": 10,
+          "sound": "s1_2"
+        },
+        {
+          "at": 12,
+          "sound": "s1_12"
+        },
+        {
+          "at": 12,
+          "sound": "s301_0"
+        },
+        {
+          "at": 12,
+          "sound": "s301_1"
+        },
+        {
+          "at": 12,
+          "sound": "s301_2"
         }
       ],
       "cancels": [
@@ -1157,6 +1219,10 @@
       ],
       "events": [
         {
+          "at": 4,
+          "sound": "s0_3"
+        },
+        {
           "at": 5,
           "vx": 10,
           "vy": -3
@@ -1195,6 +1261,12 @@
           "damage": 2,
           "hitstun": 16,
           "push": 2
+        }
+      ],
+      "events": [
+        {
+          "at": 2,
+          "sound": "s0_1"
         }
       ],
       "cancels": [
@@ -1258,6 +1330,10 @@
         {
           "at": 7,
           "vx": 4
+        },
+        {
+          "at": 7,
+          "sound": "s0_3"
         }
       ],
       "cancels": [
@@ -1314,6 +1390,10 @@
         {
           "at": 2,
           "vx": 4
+        },
+        {
+          "at": 2,
+          "sound": "s0_5"
         }
       ],
       "specialCancel": true
@@ -1355,6 +1435,12 @@
           "damage": 2,
           "hitstun": 18,
           "push": 3
+        }
+      ],
+      "events": [
+        {
+          "at": 3,
+          "sound": "s0_0"
         }
       ],
       "cancels": [
@@ -1411,6 +1497,12 @@
           "push": 4
         }
       ],
+      "events": [
+        {
+          "at": 2,
+          "sound": "s0_1"
+        }
+      ],
       "cancels": [
         {
           "on": "kick",
@@ -1460,6 +1552,12 @@
           "damage": 3,
           "hitstun": 20,
           "push": 4
+        }
+      ],
+      "events": [
+        {
+          "at": 5,
+          "sound": "s0_1"
         }
       ],
       "cancels": [
@@ -1517,6 +1615,12 @@
           "damage": 3,
           "hitstun": 22,
           "push": 4
+        }
+      ],
+      "events": [
+        {
+          "at": 4,
+          "sound": "s0_4"
         }
       ],
       "cancels": [
@@ -1585,6 +1689,10 @@
       ],
       "events": [
         {
+          "at": 4,
+          "sound": "s0_3"
+        },
+        {
           "at": 5,
           "vx": 5,
           "vy": -4
@@ -1627,6 +1735,14 @@
           "at": 3,
           "vx": 6,
           "vy": -2
+        },
+        {
+          "at": 3,
+          "sound": "s301_0"
+        },
+        {
+          "at": 3,
+          "sound": "s301_3"
         }
       ],
       "air": true,
@@ -1662,6 +1778,14 @@
         {
           "at": 10,
           "vx": 8
+        },
+        {
+          "at": 10,
+          "sound": "s1_2"
+        },
+        {
+          "at": 10,
+          "sound": "s1_8"
         },
         {
           "at": 14,
@@ -1757,9 +1881,21 @@
           "vy": -6
         },
         {
+          "at": 0,
+          "sound": "s666_7"
+        },
+        {
+          "at": 0,
+          "sound": "s666_8"
+        },
+        {
           "at": 9,
           "vx": 0,
           "vy": 0
+        },
+        {
+          "at": 9,
+          "sound": "s301_12"
         },
         {
           "at": 45,
@@ -1810,6 +1946,14 @@
           "at": 0,
           "teleport": -60,
           "turn": true
+        },
+        {
+          "at": 0,
+          "sound": "s301_13"
+        },
+        {
+          "at": 0,
+          "sound": "s301_14"
         },
         {
           "at": 4,
@@ -1867,6 +2011,14 @@
       "loop": false,
       "events": [
         {
+          "at": 9,
+          "sound": "s301_20"
+        },
+        {
+          "at": 9,
+          "sound": "s301_21"
+        },
+        {
           "at": 66,
           "effect": {
             "id": "redOrb",
@@ -1921,6 +2073,10 @@
             "offsetX": 0,
             "offsetY": 60
           }
+        },
+        {
+          "at": 49,
+          "sound": "s301_32"
         }
       ],
       "cooldown": 300
@@ -1976,12 +2132,20 @@
           "vx": 22
         },
         {
+          "at": 38,
+          "sound": "s301_35"
+        },
+        {
           "at": 41,
           "effect": {
             "id": "blackFlash",
             "offsetX": 68,
             "offsetY": 62
           }
+        },
+        {
+          "at": 41,
+          "sound": "s301_36"
         }
       ],
       "cooldown": 240,
@@ -2064,6 +2228,16 @@
         2
       ],
       "loop": false,
+      "events": [
+        {
+          "at": 0,
+          "sound": "s100_4"
+        },
+        {
+          "at": 0,
+          "sound": "s300_1"
+        }
+      ],
       "invulnerable": [
         0,
         19
@@ -2090,6 +2264,14 @@
         {
           "at": 0,
           "vx": 10
+        },
+        {
+          "at": 0,
+          "sound": "s300_2"
+        },
+        {
+          "at": 0,
+          "sound": "s100_4"
         },
         {
           "at": 14,
@@ -2159,6 +2341,12 @@
         2
       ],
       "loop": false,
+      "events": [
+        {
+          "at": 0,
+          "sound": "s310_0"
+        }
+      ],
       "cooldown": 40,
       "counter": {
         "from": 0,
@@ -2192,6 +2380,16 @@
           "hitstun": 24,
           "push": 14,
           "unblockable": true
+        }
+      ],
+      "events": [
+        {
+          "at": 0,
+          "sound": "s310_1"
+        },
+        {
+          "at": 0,
+          "sound": "s310_2"
         }
       ],
       "invulnerable": [
@@ -2241,8 +2439,20 @@
       ],
       "events": [
         {
+          "at": 0,
+          "sound": "s666_2"
+        },
+        {
           "at": 14,
           "vx": 3
+        },
+        {
+          "at": 19,
+          "sound": "s20_0"
+        },
+        {
+          "at": 40,
+          "sound": "s20_0"
         }
       ],
       "onHit": {
@@ -2302,8 +2512,16 @@
           "vx": 10
         },
         {
+          "at": 0,
+          "sound": "s301_4"
+        },
+        {
           "at": 2,
           "vx": 1.5
+        },
+        {
+          "at": 5,
+          "sound": "s20_0"
         },
         {
           "at": 7,
@@ -2358,6 +2576,10 @@
           }
         },
         {
+          "at": 30,
+          "sound": "s20_0"
+        },
+        {
           "at": 35,
           "effect": {
             "id": "grabHit",
@@ -2382,6 +2604,14 @@
             "offsetX": 0,
             "offsetY": 40
           }
+        },
+        {
+          "at": 55,
+          "sound": "s20_0"
+        },
+        {
+          "at": 80,
+          "sound": "s20_0"
         }
       ],
       "invulnerable": [
@@ -2515,6 +2745,18 @@
           }
         },
         {
+          "at": 0,
+          "sound": "s1000_0"
+        },
+        {
+          "at": 0,
+          "sound": "s301_9"
+        },
+        {
+          "at": 0,
+          "sound": "s301_10"
+        },
+        {
           "at": 20,
           "effect": {
             "id": "nukeExplosion",
@@ -2522,6 +2764,10 @@
             "offsetX": 0,
             "offsetY": 180
           }
+        },
+        {
+          "at": 183,
+          "sound": "s301_11"
         }
       ],
       "invulnerable": [
@@ -2556,6 +2802,22 @@
       ],
       "loop": false,
       "events": [
+        {
+          "at": 9,
+          "sound": "s301_33"
+        },
+        {
+          "at": 43,
+          "sound": "s301_34"
+        },
+        {
+          "at": 43,
+          "sound": "s301_22"
+        },
+        {
+          "at": 43,
+          "sound": "s301_8"
+        },
         {
           "at": 46,
           "effect": {
@@ -2641,6 +2903,10 @@
           }
         },
         {
+          "at": 53,
+          "sound": "s301_11"
+        },
+        {
           "at": 93,
           "effect": {
             "id": "purpleRed",
@@ -2649,12 +2915,24 @@
           }
         },
         {
+          "at": 93,
+          "sound": "s301_11"
+        },
+        {
           "at": 136,
           "effect": {
             "id": "purple",
             "offsetX": 50,
             "offsetY": 62
           }
+        },
+        {
+          "at": 136,
+          "sound": "s301_11"
+        },
+        {
+          "at": 136,
+          "sound": "s301_8"
         },
         {
           "at": 179,
@@ -2719,6 +2997,10 @@
       "loop": false,
       "events": [
         {
+          "at": 130,
+          "sound": "s301_18"
+        },
+        {
           "at": 170,
           "standAt": -110,
           "pinOpponent": {
@@ -2744,6 +3026,14 @@
             "offsetX": 0,
             "offsetY": 50
           }
+        },
+        {
+          "at": 370,
+          "sound": "s4000_0"
+        },
+        {
+          "at": 400,
+          "sound": "s301_19"
         }
       ],
       "invulnerable": [
@@ -2875,6 +3165,7 @@
     "gojo_atlas_0.png",
     "gojo_atlas_1.png"
   ],
+  "assetVersion": "1e63cb5d1c",
   "atlas": [
     [
       0,
@@ -18708,5 +18999,53 @@
     "heal": 0.16666666666666666,
     "damageScale": 1.2,
     "aura": "originAura"
+  },
+  "sounds": {
+    "s12_0": "sfx/s12_0.mp3",
+    "s100_6": "sfx/s100_6.mp3",
+    "s1_2": "sfx/s1_2.mp3",
+    "s1_1": "sfx/s1_1.mp3",
+    "s1_8": "sfx/s1_8.mp3",
+    "s1_20": "sfx/s1_20.mp3",
+    "s1_12": "sfx/s1_12.mp3",
+    "s301_0": "sfx/s301_0.mp3",
+    "s301_1": "sfx/s301_1.mp3",
+    "s301_2": "sfx/s301_2.mp3",
+    "s0_3": "sfx/s0_3.mp3",
+    "s0_1": "sfx/s0_1.mp3",
+    "s0_5": "sfx/s0_5.mp3",
+    "s0_0": "sfx/s0_0.mp3",
+    "s0_4": "sfx/s0_4.mp3",
+    "s301_3": "sfx/s301_3.mp3",
+    "s666_7": "sfx/s666_7.mp3",
+    "s666_8": "sfx/s666_8.mp3",
+    "s301_12": "sfx/s301_12.mp3",
+    "s301_13": "sfx/s301_13.mp3",
+    "s301_14": "sfx/s301_14.mp3",
+    "s301_20": "sfx/s301_20.mp3",
+    "s301_21": "sfx/s301_21.mp3",
+    "s301_32": "sfx/s301_32.mp3",
+    "s301_35": "sfx/s301_35.mp3",
+    "s301_36": "sfx/s301_36.mp3",
+    "s100_4": "sfx/s100_4.mp3",
+    "s300_1": "sfx/s300_1.mp3",
+    "s300_2": "sfx/s300_2.mp3",
+    "s310_0": "sfx/s310_0.mp3",
+    "s310_1": "sfx/s310_1.mp3",
+    "s310_2": "sfx/s310_2.mp3",
+    "s666_2": "sfx/s666_2.mp3",
+    "s20_0": "sfx/s20_0.mp3",
+    "s301_4": "sfx/s301_4.mp3",
+    "s1000_0": "sfx/s1000_0.mp3",
+    "s301_9": "sfx/s301_9.mp3",
+    "s301_10": "sfx/s301_10.mp3",
+    "s301_11": "sfx/s301_11.mp3",
+    "s301_33": "sfx/s301_33.mp3",
+    "s301_34": "sfx/s301_34.mp3",
+    "s301_22": "sfx/s301_22.mp3",
+    "s301_8": "sfx/s301_8.mp3",
+    "s301_18": "sfx/s301_18.mp3",
+    "s4000_0": "sfx/s4000_0.mp3",
+    "s301_19": "sfx/s301_19.mp3"
   }
 }

@@ -25,6 +25,23 @@ export function saveVolume(value) {
   }
 }
 
+// Sons de impacto, iguais para todo o elenco (public/assets/sfx, gerados por
+// scripts/make-impact-sounds.mjs). Cada tipo de acerto escolhe uma amostra e
+// varia a altura e o volume: o bloqueio e o nocaute reaproveitam as mesmas
+// amostras (bloqueio: mais agudo e baixo; nocaute: mais grave).
+const IMPACT_DIR = '/assets/sfx';
+const IMPACT_NAMES = ['impact_hit_a', 'impact_hit_b', 'impact_heavy'];
+const IMPACT_FILES = IMPACT_NAMES.map((name) => `${IMPACT_DIR}/${name}.mp3`);
+const IMPACT = {
+  hit: { files: [IMPACT_FILES[0], IMPACT_FILES[1]], rate: [0.94, 1.08], gain: 0.55 },
+  heavy: { files: [IMPACT_FILES[2]], rate: [0.9, 1.02], gain: 0.7 },
+  block: { files: [IMPACT_FILES[0]], rate: [1.3, 1.42], gain: 0.28 },
+  ko: { files: [IMPACT_FILES[2]], rate: [0.72, 0.8], gain: 0.85 },
+};
+// Golpe de varios acertos seguidos (uma rajada, um raio) nao vira metralhadora:
+// no maximo um impacto do mesmo tipo a cada tanto de segundo.
+const IMPACT_MIN_GAP = 0.05;
+
 export class AudioManager {
   constructor(volume = loadVolume()) {
     this.volume = volume;
@@ -60,6 +77,33 @@ export class AudioManager {
         console.warn(`Som nao carregou: ${url}`, error);
       }
     }));
+  }
+
+  // Carrega os sons de impacto compartilhados (uma vez por partida).
+  async preloadImpacts() {
+    await this.preload(IMPACT_DIR, Object.fromEntries(IMPACT_NAMES.map((name) => [name, `${name}.mp3`])));
+  }
+
+  // Impacto de um acerto: kind = 'hit' | 'heavy' | 'block' | 'ko' (o mesmo
+  // tipo que o HitFeedback usa para a faisca).
+  playImpact(kind) {
+    const spec = IMPACT[kind];
+    const context = this.ensureContext();
+    if (!spec || !context) return;
+    const now = context.currentTime;
+    this.lastImpact ??= {};
+    if (now - (this.lastImpact[kind] ?? -1) < IMPACT_MIN_GAP) return;
+    const buffer = this.buffers.get(spec.files[Math.floor(Math.random() * spec.files.length)]);
+    if (!buffer) return;
+    this.lastImpact[kind] = now;
+    const source = context.createBufferSource();
+    source.buffer = buffer;
+    source.playbackRate.value = spec.rate[0] + Math.random() * (spec.rate[1] - spec.rate[0]);
+    const level = context.createGain();
+    level.gain.value = spec.gain;
+    source.connect(level);
+    level.connect(this.gain);
+    source.start();
   }
 
   play(owner, url, { run = 0, stopWithMove = false } = {}) {
