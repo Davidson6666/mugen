@@ -340,14 +340,14 @@ const ANIMATIONS = {
   // Red Blast (3000): o feixe vermelho a frente, varios acertos.
   redBlast: {
     actions: [{ id: 3000, times: { 3: 30, 5: 60 } }],
-    cooldown: 900,
+    cooldown: 1200,
     events: [fx(46, 'redBeam', [80, -70], { scale: [1.6, 0.55] }), fx(46, 'redFlare', [80, -70])],
   },
   // Hollow Purple (3020): o azul atras, o vermelho a frente, os dois se
   // juntam no roxo, que atravessa a tela.
   hollowPurple: {
     actions: [{ id: 3020, times: { 3: 40, 5: 40, 6: 40, 8: 30, 19: 30 } }],
-    cooldown: 900,
+    cooldown: 1200,
     invulnerable: [0, 130],
     events: [
       fx(53, 'purpleBlue', [-25, -62]),
@@ -358,9 +358,11 @@ const ANIMATIONS = {
   },
   // Infinite Void (3030): a expansao de dominio. O oponente fica parado no
   // meio do vazio, perdendo vida, ate o dominio acabar.
+  // Os tres golpes que mais pesavam no torneio da IA (Infinite Void sozinho era
+  // 22% do dano dele) ganham recarga maior: 30 s, 20 s e 20 s.
   infiniteVoid: {
     actions: [{ id: 3030, times: { 4: 40, 11: 40, 12: 30, 13: 40, 14: 200, 15: 30, 16: 30 } }],
-    cooldown: 1200,
+    cooldown: 1800,
     invulnerable: [0, 380],
     events: [
       { at: 170, standAt: -110, pinOpponent: { dx: 0, lift: 0, ticks: 200 } },

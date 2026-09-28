@@ -1807,7 +1807,7 @@
           "sound": "s900_4"
         }
       ],
-      "cooldown": 240,
+      "cooldown": 420,
       "counter": {
         "from": 0,
         "until": 99,
@@ -1838,7 +1838,7 @@
             "offsetX": -65,
             "offsetY": -47
           },
-          "damage": 14,
+          "damage": 11,
           "hitstun": 50,
           "push": 14,
           "heavy": true,
@@ -2869,7 +2869,7 @@
             "offsetX": -9879,
             "offsetY": -9899
           },
-          "damage": 22,
+          "damage": 18,
           "hitstun": 70,
           "push": 18,
           "heavy": true,
@@ -3012,7 +3012,7 @@
   ],
   "assetVersion": "1881eee238",
   "balance": {
-    "damage": 1.073
+    "damage": 0.524
   },
   "atlas": [
     [

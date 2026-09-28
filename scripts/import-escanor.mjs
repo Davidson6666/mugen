@@ -195,10 +195,13 @@ const ANIMATIONS = {
     charge: charge('punch', 'sunStrike', 12, 80),
     counter: { from: 15, to: 'sunStrike' },
   },
+  // A caixa do pacote vale so o quadro 2, antes do avanco (vx 30 no quadro 3):
+  // o golpe atravessava o oponente e acertava 7% das vezes. A janela agora
+  // acompanha o avanco (quadros 2 a 5).
   sunStrike: {
     actions: [1101],
     friction: false,
-    hit: { damage: 7, hitstun: 40, push: 2, heavy: true },
+    areas: [{ rect: [30, -105, 270, -5], from: 2, until: 5, damage: 7, hitstun: 40, push: 2, heavy: true }],
     events: [{ frame: 2, vx: 10 }, { frame: 3, vx: 30 }, { frame: 4, vx: 0 }, { frame: 5, vx: 10 }],
     onHit: { to: 'sunStrikeFinish' },
   },

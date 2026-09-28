@@ -1620,12 +1620,12 @@
       "hits": [
         {
           "from": 2,
-          "until": 2,
+          "until": 5,
           "box": {
-            "width": 461,
-            "height": 51,
-            "offsetX": -355,
-            "offsetY": 96
+            "width": 240,
+            "height": 100,
+            "offsetX": 135,
+            "offsetY": 43
           },
           "damage": 7,
           "hitstun": 40,
@@ -3600,7 +3600,7 @@
   ],
   "assetVersion": "00b3171616",
   "balance": {
-    "damage": 1.542
+    "damage": 2
   },
   "atlas": [
     [

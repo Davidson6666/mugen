@@ -2892,7 +2892,7 @@
           }
         }
       ],
-      "cooldown": 900
+      "cooldown": 1200
     },
     "hollowPurple": {
       "frames": [
@@ -2996,7 +2996,7 @@
         0,
         130
       ],
-      "cooldown": 900
+      "cooldown": 1200
     },
     "infiniteVoid": {
       "frames": [
@@ -3093,7 +3093,7 @@
         0,
         380
       ],
-      "cooldown": 1200
+      "cooldown": 1800
     }
   },
   "combos": [

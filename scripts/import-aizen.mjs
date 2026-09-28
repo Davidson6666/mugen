@@ -261,15 +261,18 @@ const ANIMATIONS = {
   },
   // Kyouka Suigetsu (1100): postura; quem bater nele acerta a ilusao e ele
   // reaparece do outro lado cortando, com o vidro quebrando na tela.
+  // O contra-ataque que mais machucava do elenco (14 sem defesa e invulneravel,
+  // a cada 4 s): agora 11 a cada 7 s. O torneio da IA o mostrou responsavel por
+  // um terco do dano dele.
   kyouka: {
     actions: [{ id: 1100, lengthTicks: 100 }],
-    cooldown: 240,
+    cooldown: 420,
     counter: { from: 0, until: 99, to: 'kyoukaStrike' },
   },
   kyoukaStrike: {
     actions: [1101],
     invulnerable: [0, 59],
-    hit: { damage: 14, hitstun: 50, push: 14, heavy: true, unblockable: true },
+    hit: { damage: 11, hitstun: 50, push: 14, heavy: true, unblockable: true },
     events: [fx(0, 'illusionMark', [0, -70], { target: 'opponent' }), { at: 1, teleport: -30 }, fx(10, 'glassBreak', [0, -100], { target: 'stage' })],
   },
   // Hipnose completa (4000-4007, uma vez por round): por 8 s o oponente luta
@@ -383,7 +386,7 @@ const ANIMATIONS = {
     actions: [3010],
     invulnerable: [0, 90],
     noPush: true,
-    hit: { damage: 22, hitstun: 70, push: 18, heavy: true, unblockable: true },
+    hit: { damage: 18, hitstun: 70, push: 18, heavy: true, unblockable: true },
     events: [{ frame: 6, teleport: -50 }, { frame: 10, vx: 12 }, fx(31, 'bloodSplash', [10, -50], { target: 'opponent' })],
   },
 };

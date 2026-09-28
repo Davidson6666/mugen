@@ -49,7 +49,9 @@ export function realRoster() {
 }
 
 // Uma partida (um round de 90 s): devolve quem venceu e o que cada um fez.
-export function playRound(recordA, recordB, { difficulty = 'normal', seed = 1 } = {}) {
+// ai: qual IA comanda cada lado ('smart' = a que entende os golpes, 'legacy' =
+// a antiga, que so sorteia).
+export function playRound(recordA, recordB, { difficulty = 'normal', seed = 1, ai = ['smart', 'smart'] } = {}) {
   const restore = seedRandom(seed);
   try {
     const world = arena(recordA, CENTER - START_GAP / 2, CENTER + START_GAP / 2, recordB);
@@ -59,7 +61,7 @@ export function playRound(recordA, recordB, { difficulty = 'normal', seed = 1 } 
       return {
         fighter: fighters[index],
         detector,
-        ai: new AIController(detector.combos, difficulty),
+        ai: new AIController(detector.combos, Array.isArray(difficulty) ? difficulty[index] : difficulty, { smart: ai[index] === 'smart' }),
         damageDealt: 0,
         byMove: {},
         startsByMove: {},
@@ -128,7 +130,50 @@ export function playRound(recordA, recordB, { difficulty = 'normal', seed = 1 } 
   }
 }
 
+// Compara as duas IAs: cada personagem com a IA nova contra todos os outros
+// com a antiga (nos dois lados da arena), e o inverso. Se a nova for melhor,
+// vence mais que 50% nas duas direcoes.
+function compare() {
+  const rounds = Number(option('rounds', 4));
+  const difficulty = option('difficulty', 'normal');
+  // Dificuldades diferentes para cada IA: a nova no facil contra a antiga no
+  // normal mostra se a escada de dificuldade se manteve.
+  const newDifficulty = option('new-difficulty', difficulty);
+  const oldDifficulty = option('old-difficulty', difficulty);
+  const only = option('only', null)?.split(',');
+  const ids = realRoster().filter((id) => !only || only.includes(id));
+  const records = Object.fromEntries(ids.map((id) => [id, loadRecord(id, { balanced: true })]));
+  const perCharacter = Object.fromEntries(ids.map((id) => [id, { newWins: 0, games: 0 }]));
+  let newWins = 0;
+  let games = 0;
+  let timeouts = 0;
+  for (const id of ids) {
+    for (const other of ids) {
+      if (id === other) continue;
+      for (let round = 0; round < rounds; round += 1) {
+        for (const side of [0, 1]) {
+          // "id" joga com a IA nova, "other" com a antiga.
+          const left = side === 0 ? id : other;
+          const right = side === 0 ? other : id;
+          const ai = side === 0 ? ['smart', 'legacy'] : ['legacy', 'smart'];
+          const result = playRound(records[left], records[right], { difficulty: side === 0 ? [newDifficulty, oldDifficulty] : [oldDifficulty, newDifficulty], seed: 7000 + round * 11 + ids.indexOf(id) * 37 + ids.indexOf(other), ai });
+          games += 1;
+          perCharacter[id].games += 1;
+          if (result.winner === null) { timeouts += 1; newWins += 0.5; perCharacter[id].newWins += 0.5; } else if (result.winner === side) { newWins += 1; perCharacter[id].newWins += 1; }
+        }
+      }
+    }
+  }
+  console.log(`
+IA nova (${newDifficulty}) contra IA antiga (${oldDifficulty}), ${games} partidas: a nova vence ${((newWins / games) * 100).toFixed(1)}%`);
+  console.log('quando o personagem usa a IA nova contra a antiga dos outros:');
+  for (const id of [...ids].sort((a, b) => perCharacter[b].newWins / perCharacter[b].games - perCharacter[a].newWins / perCharacter[a].games)) {
+    console.log(`  ${id.padEnd(11)} ${((perCharacter[id].newWins / perCharacter[id].games) * 100).toFixed(0).padStart(3)}%`);
+  }
+}
+
 function main() {
+  if (args.includes('--compare')) return compare();
   const rounds = Number(option('rounds', 4));
   const difficulty = option('difficulty', 'normal');
   const only = option('only', null)?.split(',');

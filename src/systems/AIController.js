@@ -6,6 +6,8 @@
 // dela saem como sequencia de direcoes e botoes que passam pelo mesmo
 // ComboDetector do jogador. Ela joga com as mesmas regras.
 
+import { analyzeMove, buffActive, phaseOf, reachOf, requirementMet } from './AIKnowledge.js';
+
 export const DIFFICULTY_PRESETS = {
   easy: {
     reactionFrames: 26,
@@ -94,9 +96,13 @@ function isRanged(self, combo) {
 const CHAIN_GAP = 9;
 
 export class AIController {
-  constructor(combos = [], difficulty = 'normal', { random = Math.random } = {}) {
+  // smart: a IA que entende o papel de cada golpe (defender, curar, ligar
+  // bonus, punir). false e a antiga, que so sorteia: existe para o torneio de
+  // equilibrio medir se a nova e melhor.
+  constructor(combos = [], difficulty = 'normal', { random = Math.random, smart = true } = {}) {
     this.combos = combos;
     this.random = random;
+    this.smart = smart;
     this.setDifficulty(difficulty);
     this.intent = { type: 'wait' };
     this.decisionTimer = 0;
@@ -143,6 +149,127 @@ export class AIController {
   }
 
   decide(self, opponent) {
+    return this.smart ? this.decideSmart(self, opponent) : this.decideLegacy(self, opponent);
+  }
+
+  // Golpes que a IA pode soltar agora: sequencias de verdade (nao dash), fora
+  // de recarga, no modo certo, com o que exigem em campo, e os finalizadores
+  // so com o oponente fraco.
+  smartOptions(self, opponent) {
+    const opponentRatio = opponent.health / opponent.config.stats.maxHealth;
+    const options = [];
+    for (const combo of this.combos) {
+      const length = combo.tokens ? combo.tokens.length : combo.input.length;
+      if (length < 2 && !combo.hold) continue;
+      if (combo.movement || /^(dash|airDash)/.test(combo.animation ?? '')) continue;
+      if ((combo.mode ?? null) !== (self.mode ?? null)) continue;
+      const name = combo.animation ?? null;
+      if (name && self.isOnCooldown(name)) continue;
+      const info = name ? analyzeMove(self.config, name) : null;
+      if (info) {
+        if (!requirementMet(self, info)) continue;
+        if (info.finisher && opponentRatio >= info.finisher) continue;
+        if (info.perRound && (self.roundUses?.get(name) ?? 0) >= info.perRound) continue;
+      }
+      options.push({ combo, info });
+    }
+    return options;
+  }
+
+  // Sorteio pelo valor do golpe: os mais fortes saem mais, e o super espera a
+  // hora certa (oponente atordoado ou se recuperando) ou o fim da luta.
+  pickWeighted(candidates, { punish, finishing }) {
+    if (candidates.length === 0) return null;
+    const weights = candidates.map(({ info }) => {
+      let weight = 1 + (info?.damage ?? 3);
+      if (info?.super) weight *= punish ? 3 : finishing ? 2 : 0.5;
+      if (info?.finisher) weight *= 3;
+      return weight;
+    });
+    let roll = this.random() * weights.reduce((sum, value) => sum + value, 0);
+    for (let index = 0; index < candidates.length; index += 1) {
+      roll -= weights[index];
+      if (roll <= 0) return candidates[index];
+    }
+    return candidates.at(-1);
+  }
+
+  decideSmart(self, opponent) {
+    const distance = Math.abs(opponent.x - self.x);
+    const error = (this.random() - 0.5) * 2 * this.params.spacingError;
+    const range = self.attackReach + opponent.halfWidth + error;
+    const healthRatio = self.health / self.config.stats.maxHealth;
+    const opponentRatio = opponent.health / opponent.config.stats.maxHealth;
+    const phase = phaseOf(opponent);
+    const options = this.smartOptions(self, opponent);
+    const combo = (option) => ({ type: 'combo', combo: option.combo });
+
+    // Golpe do oponente comecando ou acertando perto: defende, ou solta o
+    // contra-ataque se o personagem tem um.
+    const attacking = phase.kind === 'startup' || phase.kind === 'active';
+    const opponentReach = attacking ? reachOf(opponent, opponent.animation.name) + self.halfWidth : 0;
+    const threatened = attacking && distance <= Math.max(range * 1.3, opponentReach);
+    if (threatened) {
+      // O contra-ataque so entra se a postura ficar pronta antes do golpe chegar.
+      const counter = options.find((option) => option.info?.counter
+        && (phase.kind === 'startup' ? phase.remaining >= option.info.counterFrom : option.info.counterFrom === 0));
+      if (counter && this.chance(0.5)) return combo(counter);
+      if (this.chance(this.params.blockChance)) return { type: 'block' };
+    }
+
+    // Ferida e com espaco: cura, ou recua.
+    if (healthRatio < 0.6 && !threatened) {
+      const heal = options.find((option) => option.info?.heal);
+      if (heal && (distance > range * 1.4 || phase.kind === 'stun') && this.chance(0.65)) return combo(heal);
+    }
+    if (healthRatio < this.params.retreatHealthRatio && phase.kind !== 'stun' && this.chance(0.5)) {
+      return { type: 'retreat' };
+    }
+
+    // Longe e sem perigo: liga o bonus que ainda nao esta ligado (aura, clone,
+    // modo) ou enfraquece o oponente (camera lenta).
+    if (!attacking && distance > range * 1.5) {
+      const setups = options.filter((option) => option.info && (
+        (option.info.buff && !buffActive(self, option.info))
+        || (option.info.debuff && option.info.debuff.some((kind) => !(opponent.seals?.[kind] > 0)))
+      ));
+      if (setups.length > 0 && this.chance(0.6)) return combo(setups[Math.floor(this.random() * setups.length)]);
+    }
+
+    // Golpes que machucam e alcancam o oponente daqui.
+    const front = distance - opponent.halfWidth - 4;
+    const reaching = options.filter(({ combo: entry, info }) => {
+      if (info?.utility || (info && info.damage <= 0)) return false;
+      if (info?.ranged) return true;
+      return entry.animation ? reachOf(self, entry.animation) >= front : distance <= range;
+    });
+    const punish = phase.kind === 'recovery' || phase.kind === 'stun';
+    const finishing = opponentRatio < 0.35;
+
+    if (distance > range) {
+      const pick = this.pickWeighted(reaching, { punish, finishing });
+      if (pick && this.chance(Math.min(1, this.params.aggression * this.params.comboChance * 2))) return combo(pick);
+      if (this.chance(this.params.jumpChance)) return { type: 'jump' };
+      return { type: 'approach' };
+    }
+
+    // Ao alcance: pune a recuperacao do oponente com mais vontade.
+    const attackChance = punish ? Math.min(1, this.params.aggression + 0.35) : this.params.aggression;
+    if (this.chance(attackChance)) {
+      const comboChance = punish ? Math.min(1, this.params.comboChance * 2.2) : this.params.comboChance;
+      const pick = this.pickWeighted(reaching, { punish, finishing });
+      if (pick && this.chance(comboChance)) return combo(pick);
+      const ground = self.config.buttons?.ground ?? {};
+      // So os botoes cujo golpe pode sair agora (nao esta em recarga).
+      let buttons = ['punch', 'kick', 'special'].filter((button) => button !== 'special' || ground.special);
+      const ready = buttons.filter((button) => !ground[button] || !self.isOnCooldown(ground[button]));
+      if (ready.length > 0) buttons = ready;
+      return { type: 'attack', button: buttons[Math.floor(this.random() * buttons.length)] };
+    }
+    return { type: 'wait' };
+  }
+
+  decideLegacy(self, opponent) {
     const distance = Math.abs(opponent.x - self.x);
     // A margem de erro de espacamento e o que faz a CPU facil socar o ar.
     const error = (this.random() - 0.5) * 2 * this.params.spacingError;
@@ -220,6 +347,15 @@ export class AIController {
     });
     // "↓ + botao": a direcao continua segurada no aperto.
     if (combo.hold) Object.assign(script[script.length - 1], tokenToFragment(combo.hold, self.facing));
+    // Postura de contra-ataque que se carrega segurando o botao (o sol do
+    // Escanor): soltar cedo dispara o golpe na hora, sem esperar o oponente.
+    // A IA segura o botao pela maior parte da postura.
+    const charge = this.smart && combo.animation ? self.config.animations?.[combo.animation]?.charge : null;
+    if (charge && self.config.animations[combo.animation].counter) {
+      script[script.length - 1].holding = { [charge.button]: true };
+      const ticks = Math.round(charge.max * 0.7);
+      for (let tick = 0; tick < ticks; tick += 1) script.push({ holding: { [charge.button]: true } });
+    }
     return script;
   }
 
