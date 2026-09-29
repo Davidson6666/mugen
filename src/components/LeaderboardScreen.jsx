@@ -1,0 +1,78 @@
+import { useEffect, useState } from 'react';
+import { useMenu } from '../context/MenuContext.js';
+import { useAuth } from '../context/AuthContext.js';
+import { fetchLeaderboard } from '../utils/auth.js';
+import { DiagonalBackdrop, Label } from './cvs2.jsx';
+
+// Classificacao publica por Elo. Sem partida online ainda (Fase 2+), entao
+// por enquanto todo mundo comeca e fica em 1200 - a tela ja existe pra
+// confirmar que conta/perfil estao funcionando de ponta a ponta.
+export default function LeaderboardScreen() {
+  const { back, resetTo, go } = useMenu();
+  const { profile, logout } = useAuth();
+  const [rows, setRows] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchLeaderboard().then((result) => {
+      if (cancelled) return;
+      if (result.error) setError(result.error);
+      setRows(result.rows);
+    });
+    return () => { cancelled = true; };
+  }, []);
+
+  const handleLogout = async () => {
+    await logout();
+    resetTo('mainMenu');
+  };
+
+  return (
+    <div className="cvs2-screen">
+      <svg className="cvs2-svg" viewBox="0 0 1280 720">
+        <DiagonalBackdrop lattice={false} topWord="" bottomWord="" />
+        <Label x={48} y={130} size={90}>RANKING ONLINE</Label>
+      </svg>
+
+      <div className="leaderboard-card">
+        <div className="leaderboard-card__header">
+          <span>#</span>
+          <span>JOGADOR</span>
+          <span>ELO</span>
+          <span>V</span>
+          <span>D</span>
+        </div>
+        <div className="leaderboard-card__rows">
+          {rows === null && !error && <p className="leaderboard-card__status">Carregando...</p>}
+          {error && <p className="leaderboard-card__status leaderboard-card__status--error">{error}</p>}
+          {rows?.length === 0 && <p className="leaderboard-card__status">Ninguem no ranking ainda.</p>}
+          {rows?.map((row, index) => (
+            <div
+              key={row.username}
+              className={`leaderboard-card__row${row.username === profile?.username ? ' leaderboard-card__row--self' : ''}`}
+            >
+              <span>{index + 1}</span>
+              <span>{row.username}</span>
+              <span>{row.elo_rating}</span>
+              <span>{row.wins}</span>
+              <span>{row.losses}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="leaderboard-card__footer">
+          {profile ? (
+            <>
+              <span className="leaderboard-card__me">LOGADO COMO {profile.username.toUpperCase()}</span>
+              <button type="button" className="auth-card__back" onClick={handleLogout}>SAIR</button>
+            </>
+          ) : (
+            <button type="button" className="auth-card__submit" onClick={() => go('login')}>FAZER LOGIN</button>
+          )}
+          <button type="button" className="auth-card__back" onClick={back}>VOLTAR</button>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -10,6 +10,7 @@ import { DiagonalBackdrop, Label, MenuOption, Pedestal } from './cvs2.jsx';
 const OPTIONS = [
   { id: 'versusCpu', label: 'VERSUS CPU', hint: 'ENFRENTE A MAQUINA EM UMA PARTIDA AVULSA' },
   { id: 'versusPlayer', label: 'VERSUS PLAYER', hint: 'DOIS JOGADORES NO MESMO TECLADO' },
+  { id: 'ranking', label: 'RANKING ONLINE', hint: 'CRIE UMA CONTA E VEJA A CLASSIFICACAO' },
   { id: 'story', label: 'MODO HISTORIA', hint: 'EM BREVE', disabled: true },
   { id: 'settings', label: 'CONFIGURACOES', hint: 'CONTROLES E AJUSTES' },
 ];
@@ -40,6 +41,10 @@ export default function MainMenu() {
     if (option.disabled) return;
     if (option.id === 'settings') {
       go('settings');
+      return;
+    }
+    if (option.id === 'ranking') {
+      go('leaderboard');
       return;
     }
     startSetup(option.id);

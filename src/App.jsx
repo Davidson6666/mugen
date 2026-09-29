@@ -1,5 +1,6 @@
 import { GameProvider } from './context/GameProvider.jsx';
 import { MenuProvider } from './context/MenuProvider.jsx';
+import { AuthProvider } from './context/AuthProvider.jsx';
 import { useMenu } from './context/MenuContext.js';
 import MainMenu from './components/MainMenu.jsx';
 import CharacterSelect from './components/CharacterSelect.jsx';
@@ -8,6 +9,8 @@ import VersusScreen from './components/VersusScreen.jsx';
 import Battle from './components/Battle.jsx';
 import ResultScreen from './components/ResultScreen.jsx';
 import SettingsScreen from './components/SettingsScreen.jsx';
+import LoginScreen from './components/LoginScreen.jsx';
+import LeaderboardScreen from './components/LeaderboardScreen.jsx';
 import FullscreenButton from './components/FullscreenButton.jsx';
 import { useStageScale } from './utils/useStageScale.js';
 import './App.css';
@@ -20,6 +23,8 @@ const SCREENS = {
   battle: Battle,
   result: ResultScreen,
   settings: SettingsScreen,
+  login: LoginScreen,
+  leaderboard: LeaderboardScreen,
 };
 
 function Router() {
@@ -31,15 +36,17 @@ function Router() {
 export default function App() {
   const { fullscreen, scale } = useStageScale();
   return (
-    <GameProvider>
-      <MenuProvider>
-        <div className={`app${fullscreen ? ' app--fullscreen' : ''}`} style={{ '--stage-scale': scale }}>
-          <div className="app__stage">
-            <Router />
+    <AuthProvider>
+      <GameProvider>
+        <MenuProvider>
+          <div className={`app${fullscreen ? ' app--fullscreen' : ''}`} style={{ '--stage-scale': scale }}>
+            <div className="app__stage">
+              <Router />
+            </div>
+            <FullscreenButton fullscreen={fullscreen} />
           </div>
-          <FullscreenButton fullscreen={fullscreen} />
-        </div>
-      </MenuProvider>
-    </GameProvider>
+        </MenuProvider>
+      </GameProvider>
+    </AuthProvider>
   );
 }
