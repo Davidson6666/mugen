@@ -30,7 +30,7 @@ const MENU_FIGHTERS = ['itachi']
 export default function MainMenu() {
   const { go, setAfterLogin } = useMenu();
   const { startSetup } = useGame();
-  const { profile } = useAuth();
+  const { profile, logout } = useAuth();
   const [index, setIndex] = useState(0);
 
   const move = (_player, direction) => {
@@ -68,6 +68,14 @@ export default function MainMenu() {
     <div className="cvs2-screen">
       <svg className="cvs2-svg" viewBox="0 0 1280 720">
         <DiagonalBackdrop lattice={false} topWord="" bottomWord="" />
+
+        {profile && (
+          <g onClick={logout} style={{ cursor: 'pointer' }}>
+            <Label x={1240} y={38} size={24} weight={700} anchor="end" stroke={5}>
+              LOGADO COMO {profile.username.toUpperCase()} · CLIQUE PARA SAIR
+            </Label>
+          </g>
+        )}
 
         <Label x={48} y={150} size={150} stroke={18}>MUGEN</Label>
         <Label x={96} y={260} size={120} fill={PALETTE.fieldYellow} stroke={16}>FIGHTER</Label>
