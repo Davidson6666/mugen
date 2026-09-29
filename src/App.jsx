@@ -12,7 +12,6 @@ import StoryEndingScreen from './components/StoryEndingScreen.jsx';
 import SettingsScreen from './components/SettingsScreen.jsx';
 import LoginScreen from './components/LoginScreen.jsx';
 import LeaderboardScreen from './components/LeaderboardScreen.jsx';
-import FullscreenButton from './components/FullscreenButton.jsx';
 import { useStageScale } from './utils/useStageScale.js';
 import './App.css';
 
@@ -45,7 +44,6 @@ export default function App() {
             <div className="app__stage">
               <Router />
             </div>
-            <FullscreenButton fullscreen={fullscreen} />
           </div>
         </MenuProvider>
       </GameProvider>

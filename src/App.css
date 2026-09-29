@@ -19,7 +19,8 @@
 }
 
 /* Tela cheia: o palco (tamanho fixo) e ampliado para caber na tela, centrado,
-   sem distorcer. A escala vem de useStageScale (FullscreenButton.jsx). */
+   sem distorcer. A escala vem de useStageScale (o app instalado ja abre
+   direto em tela cheia, via manifest - nao tem mais botao pra isso). */
 .app--fullscreen {
   width: 100vw;
   height: 100vh;
@@ -35,43 +36,6 @@
   flex: none;
   transform: scale(var(--stage-scale, 1));
   outline: none;
-}
-
-/* Botao de tela cheia no canto da janela: capsula amarela do CvS2 (a mesma
-   linguagem das capsulas dos menus), discreta ate o mouse passar. */
-.fullscreen-button {
-  position: fixed;
-  bottom: 12px;
-  left: 12px;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 16px 4px 12px;
-  border: 3px solid var(--color-ink);
-  border-radius: 999px;
-  background: var(--color-field-yellow);
-  color: var(--color-ink);
-  font-family: 'Barlow Condensed', sans-serif;
-  font-style: italic;
-  font-weight: 900;
-  font-size: 18px;
-  letter-spacing: 1px;
-  cursor: pointer;
-  opacity: 0.7;
-  transition: opacity 0.15s;
-}
-
-.fullscreen-button:hover {
-  opacity: 1;
-}
-
-.fullscreen-button__icon {
-  width: 16px;
-  height: 16px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2.5;
 }
 
 .screen--battle {
