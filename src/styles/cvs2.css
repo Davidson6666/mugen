@@ -191,6 +191,20 @@
 
 /* Login/cadastro (RankingOnline): unico formulario de verdade do jogo, por
    cima do cenario cvs2. */
+.auth-card__context {
+  position: absolute;
+  left: 48px;
+  top: 190px;
+  width: 420px;
+  margin: 0;
+  color: var(--color-text-primary);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 17px;
+  font-style: italic;
+  font-weight: 800;
+  text-shadow: 0 0 6px var(--color-ink), 0 0 6px var(--color-ink), 1px 1px 0 var(--color-ink);
+}
+
 .auth-card {
   position: absolute;
   left: 48px;

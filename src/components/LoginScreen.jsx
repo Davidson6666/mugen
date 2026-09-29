@@ -8,7 +8,7 @@ import { DiagonalBackdrop, Label } from './cvs2.jsx';
 // por cima do cenario cvs2, sem useMenuInput (senao digitar "s" ou "j" ia
 // mexer em menu por baixo).
 export default function LoginScreen() {
-  const { back, resetTo } = useMenu();
+  const { back, resetTo, afterLogin, setAfterLogin } = useMenu();
   const { login, register } = useAuth();
   const [mode, setMode] = useState('login');
   const [username, setUsername] = useState('');
@@ -27,15 +27,22 @@ export default function LoginScreen() {
       setError(result.error);
       return;
     }
-    resetTo('leaderboard');
+    resetTo(afterLogin ?? 'leaderboard');
+    setAfterLogin(null);
   };
 
   return (
     <div className="cvs2-screen">
       <svg className="cvs2-svg" viewBox="0 0 1280 720">
         <DiagonalBackdrop lattice={false} topWord="" bottomWord="" />
-        <Label x={48} y={130} size={90}>RANKING ONLINE</Label>
+        <Label x={48} y={130} size={90}>{afterLogin ? 'JOGADOR 1, LOGUE-SE' : 'RANKING ONLINE'}</Label>
       </svg>
+
+      {afterLogin && (
+        <p className="auth-card__context">
+          Versus Player e local (o jogador 2 entra sem conta), mas o jogador 1 precisa estar logado.
+        </p>
+      )}
 
       <form className="auth-card" onSubmit={submit}>
         <div className="auth-card__tabs">

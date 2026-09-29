@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useMenu } from '../context/MenuContext.js';
 import { useGame } from '../context/GameContext.js';
+import { useAuth } from '../context/AuthContext.js';
 import { useMenuInput } from '../utils/useMenuInput.js';
 import { PALETTE } from '../utils/palette.js';
 import characters from '../data/characters.json';
@@ -9,7 +10,7 @@ import { DiagonalBackdrop, Label, MenuOption, Pedestal } from './cvs2.jsx';
 
 const OPTIONS = [
   { id: 'versusCpu', label: 'VERSUS CPU', hint: 'ENFRENTE A MAQUINA EM UMA PARTIDA AVULSA' },
-  { id: 'versusPlayer', label: 'VERSUS PLAYER', hint: 'DOIS JOGADORES NO MESMO TECLADO' },
+  { id: 'versusPlayer', label: 'VERSUS PLAYER', hint: 'DOIS JOGADORES NO MESMO TECLADO · JOGADOR 1 PRECISA LOGAR' },
   { id: 'ranking', label: 'RANKING ONLINE', hint: 'CRIE UMA CONTA E VEJA A CLASSIFICACAO' },
   { id: 'story', label: 'MODO HISTORIA', hint: 'EM BREVE', disabled: true },
   { id: 'settings', label: 'CONFIGURACOES', hint: 'CONTROLES E AJUSTES' },
@@ -27,8 +28,9 @@ const MENU_FIGHTERS = ['itachi']
   .filter(Boolean);
 
 export default function MainMenu() {
-  const { go } = useMenu();
+  const { go, setAfterLogin } = useMenu();
   const { startSetup } = useGame();
+  const { profile } = useAuth();
   const [index, setIndex] = useState(0);
 
   const move = (_player, direction) => {
@@ -44,10 +46,19 @@ export default function MainMenu() {
       return;
     }
     if (option.id === 'ranking') {
+      setAfterLogin(null);
       go('leaderboard');
       return;
     }
     startSetup(option.id);
+    // VERSUS PLAYER e local (mesmo teclado), mas o jogador 1 precisa estar
+    // logado - o 2 entra como convidado, sem conta (como em outros jogos de
+    // luta com versus local). O VERSUS CPU continua livre.
+    if (option.id === 'versusPlayer' && !profile) {
+      setAfterLogin('characterSelect');
+      go('login');
+      return;
+    }
     go('characterSelect');
   };
 

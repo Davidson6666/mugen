@@ -8,7 +8,7 @@ import { DiagonalBackdrop, Label } from './cvs2.jsx';
 // por enquanto todo mundo comeca e fica em 1200 - a tela ja existe pra
 // confirmar que conta/perfil estao funcionando de ponta a ponta.
 export default function LeaderboardScreen() {
-  const { back, resetTo, go } = useMenu();
+  const { back, resetTo, go, setAfterLogin } = useMenu();
   const { profile, logout } = useAuth();
   const [rows, setRows] = useState(null);
   const [error, setError] = useState(null);
@@ -68,7 +68,7 @@ export default function LeaderboardScreen() {
               <button type="button" className="auth-card__back" onClick={handleLogout}>SAIR</button>
             </>
           ) : (
-            <button type="button" className="auth-card__submit" onClick={() => go('login')}>FAZER LOGIN</button>
+            <button type="button" className="auth-card__submit" onClick={() => { setAfterLogin(null); go('login'); }}>FAZER LOGIN</button>
           )}
           <button type="button" className="auth-card__back" onClick={back}>VOLTAR</button>
         </div>

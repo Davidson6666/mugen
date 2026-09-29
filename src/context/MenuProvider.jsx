@@ -5,6 +5,10 @@ import { MenuContext } from './MenuContext.js';
 // qualquer ponto do fluxo sem cada tela precisar saber de onde veio.
 export function MenuProvider({ children }) {
   const [history, setHistory] = useState(['mainMenu']);
+  // Pra onde voltar depois de um login pedido no meio de outro fluxo (ex.:
+  // VERSUS PLAYER exige o jogador 1 logado): quem manda pra 'login' guarda
+  // aqui a tela de destino; a LoginScreen le e limpa ao terminar.
+  const [afterLogin, setAfterLogin] = useState(null);
 
   const go = useCallback((screen) => {
     setHistory((current) => [...current, screen]);
@@ -19,8 +23,8 @@ export function MenuProvider({ children }) {
   }, []);
 
   const value = useMemo(
-    () => ({ screen: history.at(-1), canGoBack: history.length > 1, go, back, resetTo }),
-    [history, go, back, resetTo],
+    () => ({ screen: history.at(-1), canGoBack: history.length > 1, go, back, resetTo, afterLogin, setAfterLogin }),
+    [history, go, back, resetTo, afterLogin],
   );
 
   return <MenuContext.Provider value={value}>{children}</MenuContext.Provider>;
