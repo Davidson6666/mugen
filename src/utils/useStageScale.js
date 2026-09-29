@@ -24,5 +24,28 @@ export function useStageScale() {
     };
   }, []);
 
+  useEffect(() => {
+    // No app instalado (janela propria, sem abas/barra de endereco) nao tem
+    // mais botao de tela cheia - entao pede tela cheia sozinho assim que o
+    // jogador tocar em algo. O navegador exige um gesto real do usuario pra
+    // isso (nao rola pedir isso ja no carregamento da pagina), entao usa o
+    // primeiro clique/tecla como esse gesto.
+    const installed = window.matchMedia?.('(display-mode: standalone)').matches
+      || window.matchMedia?.('(display-mode: fullscreen)').matches;
+    if (!installed || document.fullscreenElement) return;
+
+    const requestOnce = () => {
+      document.documentElement.requestFullscreen?.().catch(() => {});
+      window.removeEventListener('keydown', requestOnce);
+      window.removeEventListener('pointerdown', requestOnce);
+    };
+    window.addEventListener('keydown', requestOnce);
+    window.addEventListener('pointerdown', requestOnce);
+    return () => {
+      window.removeEventListener('keydown', requestOnce);
+      window.removeEventListener('pointerdown', requestOnce);
+    };
+  }, []);
+
   return { fullscreen, scale };
 }
