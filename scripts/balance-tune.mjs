@@ -15,6 +15,10 @@
 //   node scripts/balance-tune.mjs --iterations 14 --rounds 5
 //   node scripts/balance-tune.mjs --dry                 so mostra, nao grava
 //   node scripts/balance-tune.mjs --reset               volta tudo a x1
+//   node scripts/balance-tune.mjs --freeze ensina_god    entra no torneio (os
+//                                                         outros aprendem contra
+//                                                         ele) mas o multiplicador
+//                                                         dele fica travado
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -39,6 +43,9 @@ const max = Number(option('max', 2));
 // Quanto de cada correcao aplicar por iteracao (1 = toda; menos evita oscilar).
 const step = Number(option('step', 0.3));
 const dry = flag('dry');
+// Personagens que entram no torneio (os outros jogam contra eles de verdade)
+// mas cujo multiplicador nao e mexido - o Ensina GOD e forte de proposito.
+const frozen = new Set((option('freeze', '') || '').split(',').map((id) => id.trim()).filter(Boolean));
 // Quanto da correcao medida entra no jogo: o multiplicador aplicado e o medido
 // elevado a isto (1 = tudo). A IA usa mal os kits, entao aplicar tudo
 // exageraria; abaixo de 1 corrige o desnivel sem apostar tudo nela.
@@ -92,14 +99,16 @@ for (let iteration = 0; iteration < iterations; iteration += 1) {
   const current = error(rates);
   if (current < best.error) best = { multiplier: { ...multiplier }, error: current };
   if (iteration === iterations - 1) break;
-  for (const id of ids) {
+  const tunable = ids.filter((id) => !frozen.has(id));
+  for (const id of tunable) {
     const p = Math.min(0.95, Math.max(0.05, rates[id]));
     multiplier[id] *= Math.exp(-step * logit(p));
   }
   // O nivel geral de dano nao muda: a media geometrica dos multiplicadores
-  // fica em 1, e cada um respeita os limites.
-  const mean = Math.exp(ids.reduce((sum, id) => sum + Math.log(multiplier[id]), 0) / ids.length);
-  for (const id of ids) multiplier[id] = Math.min(max, Math.max(min, multiplier[id] / mean));
+  // fica em 1, e cada um respeita os limites. So entram os ajustaveis: um
+  // congelado fora da curva (o Ensina GOD) nao pode puxar a media dos outros.
+  const mean = Math.exp(tunable.reduce((sum, id) => sum + Math.log(multiplier[id]), 0) / tunable.length);
+  for (const id of tunable) multiplier[id] = Math.min(max, Math.max(min, multiplier[id] / mean));
   apply();
 }
 
@@ -110,7 +119,7 @@ apply();
 console.log('\nCorrecao inteira, sorteios novos:');
 show(evaluate(50000), 'inteira     ');
 const measured = { ...multiplier };
-for (const id of ids) multiplier[id] = Math.min(max, Math.max(min, measured[id] ** strength));
+for (const id of ids) if (!frozen.has(id)) multiplier[id] = Math.min(max, Math.max(min, measured[id] ** strength));
 apply();
 const final = evaluate(50000);
 console.log(`Correcao aplicada (a medida elevada a ${strength}):`);
