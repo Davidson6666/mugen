@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useMenu } from '../context/MenuContext.js';
 import { useAuth } from '../context/AuthContext.js';
+import { useMenuInput } from '../utils/useMenuInput.js';
 import { fetchLeaderboard } from '../utils/auth.js';
 import { DiagonalBackdrop, Label } from './cvs2.jsx';
 
@@ -28,11 +29,16 @@ export default function LeaderboardScreen() {
     resetTo('mainMenu');
   };
 
+  // K/Esc volta, como em toda tela do jogo (sem input de texto aqui, entao
+  // pode usar o mesmo navegador de menu das outras).
+  useMenuInput({ onCancel: back });
+
   return (
     <div className="cvs2-screen">
       <svg className="cvs2-svg" viewBox="0 0 1280 720">
         <DiagonalBackdrop lattice={false} topWord="" bottomWord="" />
         <Label x={48} y={130} size={90}>RANKING ONLINE</Label>
+        <Label x={1240} y={700} size={22} weight={600} anchor="end" stroke={5}>K OU ESC VOLTA</Label>
       </svg>
 
       <div className="leaderboard-card">

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMenu } from '../context/MenuContext.js';
 import { useAuth } from '../context/AuthContext.js';
 import { DiagonalBackdrop, Label } from './cvs2.jsx';
@@ -6,7 +6,8 @@ import { DiagonalBackdrop, Label } from './cvs2.jsx';
 // Login/cadastro: e a unica tela com campo de texto de verdade (as outras
 // sao tudo navegacao por seta/botao), entao aqui e um formulario HTML normal
 // por cima do cenario cvs2, sem useMenuInput (senao digitar "s" ou "j" ia
-// mexer em menu por baixo).
+// mexer em menu por baixo) - so o Esc e ouvido a parte, ele nao atrapalha
+// digitar e e o mesmo que fecha formulario em qualquer site.
 export default function LoginScreen() {
   const { back, resetTo, afterLogin, setAfterLogin } = useMenu();
   const { login, register } = useAuth();
@@ -30,6 +31,12 @@ export default function LoginScreen() {
     resetTo(afterLogin ?? 'leaderboard');
     setAfterLogin(null);
   };
+
+  useEffect(() => {
+    const onKeyDown = (event) => { if (event.code === 'Escape') back(); };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [back]);
 
   return (
     <div className="cvs2-screen">
@@ -94,7 +101,7 @@ export default function LoginScreen() {
           {busy ? 'UM MOMENTO...' : mode === 'login' ? 'ENTRAR' : 'CRIAR CONTA'}
         </button>
         <button type="button" className="auth-card__back" onClick={back}>
-          VOLTAR
+          VOLTAR (ESC)
         </button>
       </form>
     </div>
