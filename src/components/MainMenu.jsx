@@ -12,7 +12,7 @@ const OPTIONS = [
   { id: 'versusCpu', label: 'VERSUS CPU', hint: 'ENFRENTE A MAQUINA EM UMA PARTIDA AVULSA' },
   { id: 'versusPlayer', label: 'VERSUS PLAYER', hint: 'DOIS JOGADORES NO MESMO TECLADO · JOGADOR 1 PRECISA LOGAR' },
   { id: 'ranking', label: 'RANKING ONLINE', hint: 'CRIE UMA CONTA E VEJA A CLASSIFICACAO' },
-  { id: 'story', label: 'MODO HISTORIA', hint: 'EM BREVE', disabled: true },
+  { id: 'story', label: 'MODO HISTORIA', hint: 'ENFRENTE UMA SEQUENCIA DE LUTAS ATE O FINAL' },
   { id: 'settings', label: 'CONFIGURACOES', hint: 'CONTROLES E AJUSTES' },
 ];
 

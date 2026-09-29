@@ -7,10 +7,10 @@ import characters from '../data/characters.json';
 import FighterSprite from './FighterSprite.jsx';
 import { Capsule, DiagonalBackdrop, Label, MenuOption, Pedestal } from './cvs2.jsx';
 
-const OPTIONS = [
-  { id: 'rematch', label: 'REVANCHE' },
-  { id: 'menu', label: 'MENU PRINCIPAL' },
-];
+const MENU_OPTION = { id: 'menu', label: 'MENU PRINCIPAL' };
+const DEFAULT_OPTIONS = [{ id: 'rematch', label: 'REVANCHE' }, MENU_OPTION];
+const STORY_LOSS_OPTIONS = [{ id: 'retry', label: 'TENTAR NOVAMENTE' }, MENU_OPTION];
+const STORY_WIN_OPTIONS = [{ id: 'continue', label: 'PROXIMA LUTA' }, MENU_OPTION];
 
 const optionPosition = (index) => {
   const y = 470 + index * 72;
@@ -21,12 +21,18 @@ const STAND = [230, 560];
 
 export default function ResultScreen() {
   const { resetTo } = useMenu();
-  const { setup, result } = useGame();
+  const { setup, result, advanceStory } = useGame();
   const [index, setIndex] = useState(0);
 
   const winnerIndex = result?.winner ?? 0;
   const winner = characters.find((entry) => entry.id === setup.characters[winnerIndex]) ?? characters[0];
-  const winnerLabel = winnerIndex === 1 && setup.mode === 'versusCpu' ? 'CPU' : `${winnerIndex + 1}P`;
+  const isStory = setup.mode === 'story';
+  const winnerLabel = winnerIndex === 1 && (setup.mode === 'versusCpu' || isStory) ? 'CPU' : `${winnerIndex + 1}P`;
+
+  // No Modo Historia, derrota deixa tentar a mesma luta de novo e vitoria
+  // avanca pra proxima (a ultima vitoria pula direto pra tela de campanha
+  // vencida, em Battle.jsx - esta tela nao chega a aparecer nesse caso).
+  const OPTIONS = isStory ? (winnerIndex === 0 ? STORY_WIN_OPTIONS : STORY_LOSS_OPTIONS) : DEFAULT_OPTIONS;
 
   const onMove = (_player, direction) => {
     if (direction === 'up' || direction === 'down') {
@@ -36,7 +42,13 @@ export default function ResultScreen() {
   };
 
   const onConfirm = () => {
-    resetTo(OPTIONS[index].id === 'rematch' ? 'versus' : 'mainMenu');
+    const optionId = OPTIONS[index].id;
+    if (optionId === 'continue') {
+      advanceStory();
+      resetTo('stageSelect');
+      return;
+    }
+    resetTo(optionId === 'rematch' || optionId === 'retry' ? 'versus' : 'mainMenu');
   };
 
   useMenuInput({ onMove, onConfirm });

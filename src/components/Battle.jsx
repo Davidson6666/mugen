@@ -108,8 +108,12 @@ export default function Battle() {
 
   const handleMatchEnd = useCallback((result) => {
     finishMatch(result);
-    resetTo('result');
-  }, [finishMatch, resetTo]);
+    // Vencer a ultima luta da campanha pula a tela de resultado normal e vai
+    // direto pra tela de vitoria do Modo Historia.
+    const isFinalStoryWin = setup.mode === 'story' && result.winner === 0
+      && setup.storyIndex >= setup.storyOpponents.length - 1;
+    resetTo(isFinalStoryWin ? 'storyEnding' : 'result');
+  }, [finishMatch, resetTo, setup]);
 
   return (
     <div className="screen screen--battle">

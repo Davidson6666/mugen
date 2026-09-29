@@ -14,6 +14,17 @@ const DIFFICULTIES = [
   { id: 'hard', label: 'DIFICIL' },
 ];
 
+// Modo Historia: 6 lutas, dificuldade sobe a cada duas.
+const STORY_DIFFICULTY_BY_STAGE = ['easy', 'easy', 'normal', 'normal', 'hard', 'hard'];
+
+function buildStoryLadder() {
+  const shuffled = [...characters].sort(() => Math.random() - 0.5);
+  return STORY_DIFFICULTY_BY_STAGE.map((difficulty, index) => ({
+    opponentId: shuffled[index].id,
+    difficulty,
+  }));
+}
+
 // Previa do cenario numa moldura inclinada, como as barras de vida.
 const PREVIEW = [[76, 138], [700, 138], [664, 488], [40, 488]];
 const CURSOR_COLORS = [PALETTE.cursorP1, PALETTE.cursorP2];
@@ -23,8 +34,9 @@ const optionPosition = (index) => [900 - index * 18, 150 + index * 66];
 
 export default function StageSelect() {
   const { go, back } = useMenu();
-  const { setup, chooseMap, chooseCharacter, chooseDifficulty } = useGame();
+  const { setup, chooseMap, chooseCharacter, chooseDifficulty, setStoryOpponents } = useGame();
   const twoPlayers = setup.mode === 'versusPlayer';
+  const isStory = setup.mode === 'story';
 
   const [cursors, setCursors] = useState([0, maps.length - 1]);
   const [votes, setVotes] = useState([null, null]);
@@ -35,7 +47,18 @@ export default function StageSelect() {
 
   function startMatch(mapId) {
     chooseMap(mapId);
-    if (!twoPlayers) {
+    if (isStory) {
+      // A escala de adversarios/dificuldade da campanha e sorteada uma vez,
+      // na primeira luta, e reaproveitada nas seguintes.
+      let ladder = setup.storyOpponents;
+      if (ladder.length === 0) {
+        ladder = buildStoryLadder();
+        setStoryOpponents(ladder);
+      }
+      const stage = ladder[setup.storyIndex];
+      chooseDifficulty(stage.difficulty);
+      chooseCharacter(1, stage.opponentId);
+    } else if (!twoPlayers) {
       chooseDifficulty(DIFFICULTIES[difficultyIndex].id);
       // O oponente da CPU sai no sorteio: contra a maquina espelho e permitido.
       const opponent = characters[Math.floor(Math.random() * characters.length)];
@@ -47,7 +70,7 @@ export default function StageSelect() {
   const onMove = (player, direction) => {
     if (player === 1 && !twoPlayers) return;
 
-    if (!twoPlayers && section === 'difficulty') {
+    if (!twoPlayers && !isStory && section === 'difficulty') {
       if (direction === 'up') setSection('maps');
       if (direction === 'left') {
         setDifficultyIndex((current) => (current - 1 + DIFFICULTIES.length) % DIFFICULTIES.length);
@@ -58,8 +81,9 @@ export default function StageSelect() {
 
     if (votes[player] || (direction !== 'up' && direction !== 'down')) return;
 
-    // Contra a CPU, descer do ultimo cenario leva a escolha de dificuldade.
-    if (!twoPlayers && direction === 'down' && cursors[player] === maps.length - 1) {
+    // Contra a CPU (fora da campanha), descer do ultimo cenario leva a
+    // escolha de dificuldade - no Modo Historia a dificuldade ja vem definida.
+    if (!twoPlayers && !isStory && direction === 'down' && cursors[player] === maps.length - 1) {
       setSection('difficulty');
       return;
     }
@@ -158,7 +182,7 @@ export default function StageSelect() {
           );
         })}
 
-        {!twoPlayers && (
+        {!twoPlayers && !isStory && (
           <g>
             <Label
               x={1240} y={538} size={30} weight={800} anchor="end"
@@ -181,6 +205,12 @@ export default function StageSelect() {
               />
             ))}
           </g>
+        )}
+
+        {isStory && (
+          <Label x={1240} y={610} size={30} weight={800} anchor="end" fill={PALETTE.fieldYellow} stroke={6}>
+            {`MODO HISTORIA · LUTA ${setup.storyIndex + 1} DE ${STORY_DIFFICULTY_BY_STAGE.length}`}
+          </Label>
         )}
 
         <Label x={1240} y={700} size={22} weight={600} anchor="end" stroke={5}>

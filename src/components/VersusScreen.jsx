@@ -94,7 +94,12 @@ export default function VersusScreen() {
         <Label x={640} y={392} size={180} anchor="middle" fill={PALETTE.fieldYellow} stroke={16}>VS</Label>
 
         <Capsule x={420} y={498} width={440} size={34}>{`STAGE · ${stage.name.toUpperCase()}`}</Capsule>
-        <Label x={640} y={590} size={28} weight={800} anchor="middle" fill={loaded ? PALETTE.fieldYellow : PALETTE.textPrimary} stroke={6}>
+        {setup.mode === 'story' && (
+          <Capsule x={420} y={545} width={440} size={26}>
+            {`MODO HISTORIA · LUTA ${setup.storyIndex + 1} DE ${setup.storyOpponents.length}`}
+          </Capsule>
+        )}
+        <Label x={640} y={615} size={28} weight={800} anchor="middle" fill={loaded ? PALETTE.fieldYellow : PALETTE.textPrimary} stroke={6}>
           {loaded ? 'PRONTO!' : 'CARREGANDO...'}
         </Label>
       </svg>

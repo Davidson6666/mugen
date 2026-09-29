@@ -8,6 +8,7 @@ import StageSelect from './components/StageSelect.jsx';
 import VersusScreen from './components/VersusScreen.jsx';
 import Battle from './components/Battle.jsx';
 import ResultScreen from './components/ResultScreen.jsx';
+import StoryEndingScreen from './components/StoryEndingScreen.jsx';
 import SettingsScreen from './components/SettingsScreen.jsx';
 import LoginScreen from './components/LoginScreen.jsx';
 import LeaderboardScreen from './components/LeaderboardScreen.jsx';
@@ -22,6 +23,7 @@ const SCREENS = {
   versus: VersusScreen,
   battle: Battle,
   result: ResultScreen,
+  storyEnding: StoryEndingScreen,
   settings: SettingsScreen,
   login: LoginScreen,
   leaderboard: LeaderboardScreen,

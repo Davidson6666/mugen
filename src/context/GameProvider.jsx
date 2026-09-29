@@ -6,6 +6,10 @@ const EMPTY_SETUP = {
   characters: [null, null],
   mapId: null,
   difficulty: 'normal',
+  // So usado no Modo Historia: lista de adversarios/dificuldade sorteada no
+  // inicio da campanha, e em qual luta dela o jogador esta agora.
+  storyOpponents: [],
+  storyIndex: 0,
 };
 
 // Tudo que a partida precisa saber antes de comecar, e o resultado depois que
@@ -35,6 +39,14 @@ export function GameProvider({ children }) {
     setSetup((current) => ({ ...current, difficulty }));
   }, []);
 
+  const setStoryOpponents = useCallback((opponents) => {
+    setSetup((current) => ({ ...current, storyOpponents: opponents }));
+  }, []);
+
+  const advanceStory = useCallback(() => {
+    setSetup((current) => ({ ...current, storyIndex: current.storyIndex + 1 }));
+  }, []);
+
   const value = useMemo(
     () => ({
       setup,
@@ -43,9 +55,11 @@ export function GameProvider({ children }) {
       chooseCharacter,
       chooseMap,
       chooseDifficulty,
+      setStoryOpponents,
+      advanceStory,
       finishMatch: setResult,
     }),
-    [setup, result, startSetup, chooseCharacter, chooseMap, chooseDifficulty],
+    [setup, result, startSetup, chooseCharacter, chooseMap, chooseDifficulty, setStoryOpponents, advanceStory],
   );
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
