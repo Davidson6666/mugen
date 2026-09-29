@@ -1,4 +1,6 @@
 import { useEffect, useRef } from 'react';
+import { connectedGamepads } from './gamepad.js';
+import { MenuInputGate } from './MenuInputGate.js';
 
 // Navegacao de menu por teclado e gamepad, com os mesmos controles da luta.
 // A leitura aqui e por evento (e nao por frame como na arena) porque menu
@@ -51,6 +53,7 @@ export function useMenuInput(handlers, enabled = true) {
     };
 
     const onKeyDown = (event) => {
+      if (event.repeat) return;
       const binding = KEY_BINDINGS[event.code];
       if (!binding) return;
       // Player 2 so navega quando a tela pede dois cursores.
@@ -62,19 +65,26 @@ export function useMenuInput(handlers, enabled = true) {
     window.addEventListener('keydown', onKeyDown);
 
     const held = new Map();
+    const devices = new Map();
+    const gate = new MenuInputGate();
     let frame = 0;
 
     const pollGamepads = () => {
       frame = requestAnimationFrame(pollGamepads);
       if (!navigator.getGamepads) return;
 
-      const pads = navigator.getGamepads();
+      const pads = connectedGamepads();
       const players = handlersRef.current.twoPlayers ? 2 : 1;
       const now = performance.now();
 
       for (let player = 0; player < players; player += 1) {
         const pad = pads[player];
-        if (!pad) continue;
+        const identity=pad?`${pad.index}:${pad.id}`:null;
+        if(devices.get(player)!==identity) {
+          for(const key of held.keys())if(key.startsWith(`${player}:`))held.delete(key);
+          devices.set(player,identity);
+        }
+        if (!gate.ready(player, pad)) continue;
 
         const [axisX = 0, axisY = 0] = pad.axes;
         const directions = new Set();

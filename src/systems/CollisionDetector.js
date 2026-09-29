@@ -89,6 +89,8 @@ export function applyHit(attacker, defender, attack, hitRect, serial = attacker.
   // Sem arredondar: o ajuste fino de equilibrio (x1.15 num golpe de dano 2)
   // precisa valer na media.
   if (scale !== 1) attack = { ...attack, damage: attack.damage * scale };
+  // Finalizadores removem a vida restante, independentemente do balanceamento.
+  if (attack.instantKill) attack = { ...attack, damage: defender.health, unblockable: true };
   const heavy = Boolean(attack.heavy);
   // Esquiva (Genjutsu do dedo): o golpe atravessa sem dano nem hitstun.
   if (!attack.guaranteed && !defender.blocking && defender.tryEvade?.()) return { outcome: 'evade', damage: 0, point };

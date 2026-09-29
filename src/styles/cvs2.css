@@ -135,9 +135,29 @@
 
 .movelist__keys {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 4px;
   align-items: center;
 }
+
+.movelist__controller {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:10px 24px;
+  margin:10px 45px 0;
+  font-size:19px;
+}
+.movelist__controller kbd {
+  display:inline-block;
+  padding:1px 7px;
+  border:1px solid var(--color-field-yellow);
+  border-radius:4px;
+  font-family:inherit;
+  color:var(--color-field-yellow);
+}
+.movelist__shortcut { display:inline-flex; align-items:center; gap:5px; margin-left:4px; font-size:16px; }
 
 .movelist__keys kbd {
   min-width: 26px;

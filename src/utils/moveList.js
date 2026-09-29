@@ -1,3 +1,4 @@
+import { padLabel } from './gamepad.js';
 // Lista de golpes do personagem para a tela de pausa: de onde vem os golpes e
 // como a notacao (→↓↘ + P/K/S) vira as teclas de cada jogador.
 
@@ -36,8 +37,12 @@ export function groupBySection(moves) {
 // Notacao -> teclas do jogador (0 = 1P, 1 = 2P). Direcoes ficam como setas
 // (valem olhando para a direita); botoes viram a tecla. Direcao segurada
 // ("hold") vira a primeira tecla, marcada.
-export function keysFor(move, player) {
-  const buttons = BUTTON_KEYS[player];
+export function keysFor(move, player, family = null) {
+  const buttons = family ? {P:padLabel('punch',family),K:padLabel('kick',family),S:padLabel('special',family)} : BUTTON_KEYS[player];
+  if(family && ['↑','↑↑'].includes(move.input) && !move.hold) {
+    const action='jump';
+    return Array.from({length:move.input==='↑↑'?2:1},()=>({label:padLabel(action,family),button:true}));
+  }
   const keys = [];
   if (move.hold) keys.push({ label: move.hold, held: true });
   for (const token of move.input) {

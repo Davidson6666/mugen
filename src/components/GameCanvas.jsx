@@ -11,6 +11,7 @@ import { HitFeedback, kindOf } from '../systems/HitFeedback.js';
 import { AudioManager } from '../systems/AudioManager.js';
 import { resolveAttack, resolveBodyCollision } from '../systems/CollisionDetector.js';
 import { InputHandler } from '../utils/InputHandler.js';
+import { buildCommand, PRESS_ACTIONS } from '../utils/combatInput.js';
 import { PALETTE, PALETTE_HEX } from '../utils/palette.js';
 import characters from '../data/characters.json';
 import maps from '../data/maps.json';
@@ -55,25 +56,6 @@ const NEUTRAL_COMMAND = {
 // Traduz o estado bruto do InputHandler no comando que o Fighter consome.
 // A IA produz esse mesmo formato, entao o Fighter nao precisa saber quem esta
 // no controle.
-function buildCommand(input, player) {
-  const held = input.state(player);
-  return {
-    left: held.left,
-    right: held.right,
-    up: held.up,
-    down: held.down,
-    jump: input.pressed(player, 'up'),
-    punch: input.pressed(player, 'punch'),
-    kick: input.pressed(player, 'kick'),
-    special: input.pressed(player, 'special'),
-    // Botoes seguros (golpes de carregar).
-    holding: { punch: held.punch, kick: held.kick, special: held.special },
-  };
-}
-
-// Botoes que valem por toque (e nao por tecla segurada).
-const PRESS_ACTIONS = ['jump', 'punch', 'kick', 'special'];
-
 // Sombra no chao: ancora o personagem no cenario e mostra a altura do pulo.
 function groundShadow() {
   const shadow = new Graphics();
@@ -371,7 +353,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
               latched[index] = {};
               // O buffer le a direcao ja relativa ao lado que o personagem
               // encara, por isso o flip precisa acontecer antes.
-              command.combo = detectors[index].feed(command, fighter.facing, now, fighter.comboModes);
+              command = { ...command, combo: detectors[index].feed(command, fighter.facing, now, fighter.comboModes) };
             }
             fighter.update(command, delta);
           });

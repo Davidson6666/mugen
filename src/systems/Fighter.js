@@ -566,7 +566,7 @@ export class Fighter {
       if (this.state !== 'attack' && this.state !== 'dash') this.checkModeTrigger();
 
       if (this.state !== 'attack' && this.state !== 'dash' && this.grounded) {
-        const direction = (command.right ? 1 : 0) - (command.left ? 1 : 0);
+        const direction = command.guard ? 0 : (command.right ? 1 : 0) - (command.left ? 1 : 0);
         const wasCrouching = this.state === 'crouch';
         if (command.jump && !this.seals.noJump) {
           this.vy = -jumpForce;
@@ -596,7 +596,7 @@ export class Fighter {
     // guarda continua de pe, senao o segundo golpe da sequencia passaria direto.
     this.blocking = !this.seals.noGuard && (
       this.state === 'blockstun' ||
-      (this.canAct && this.grounded && back && this.state !== 'attack' && this.state !== 'dash')
+      (this.canAct && this.grounded && (back || Boolean(command.guard)) && this.state !== 'attack' && this.state !== 'dash')
     );
 
     // Baixou a guarda: a animacao de sair da defesa.
@@ -664,7 +664,7 @@ export class Fighter {
   airJump(command) {
     if (this.airJumpsLeft <= 0 || this.seals.noJump) return;
     const { walkSpeed, jumpForce } = this.config.stats;
-    const direction = (command.right ? 1 : 0) - (command.left ? 1 : 0);
+    const direction = command.guard ? 0 : (command.right ? 1 : 0) - (command.left ? 1 : 0);
     this.airJumpsLeft -= 1;
     this.vy = -jumpForce * AIR_JUMP_RATIO;
     this.vx = direction * walkSpeed;
@@ -1054,6 +1054,7 @@ export class Fighter {
     this.effectSpawned = false;
     this.attackSerial += 1;
     this.vx = 0;
+    this.vy = 0;
     this.animation.play(name, { restart: true });
     return true;
   }
@@ -1188,7 +1189,8 @@ export class Fighter {
       this.transient = null;
     }
     if (!this.grounded) {
-      this.animation.play(this.base(this.jumpAnimation));
+      const falling = this.vy > 0 && this.hasAnimation('jumpFall');
+      this.animation.play(this.base(falling ? 'jumpFall' : this.jumpAnimation));
       return;
     }
     if (this.state === 'crouch') {

@@ -1,0 +1,42 @@
+<!doctype html><html lang="pt-BR"><meta charset="utf-8"><title>Ensina — revisão das animações</title>
+<style>body{margin:0;background:#11101b;color:#eee;font:16px system-ui}header{padding:18px}button{padding:10px;margin:4px;background:#33264d;color:white;border:1px solid #9472b7;border-radius:6px}canvas{max-width:100%}#status{padding:12px}h1{font-size:22px;margin:0 0 10px}</style>
+<header><h1>Ensina GOD • Movimento & I AM ATOMIC</h1><button id="walk">Caminhar</button><button id="jump">Double jump</button><button id="dash">Dash aéreo</button><button id="atomic">I AM ATOMIC</button><button id="costume">Ver roupa</button><button id="release">Ver explosão</button><button id="pause">Pausar</button><button id="reset">Reiniciar</button></header><div id="stage"></div><div id="status">Carregando…</div>
+<script type="module">
+import {Application,Container,Graphics} from 'pixi.js';
+import {SpriteSheetManager} from '/src/systems/SpriteSheetManager.js';
+import {Fighter} from '/src/systems/Fighter.js';
+import {EffectManager} from '/src/systems/EffectManager.js';
+import {AudioManager} from '/src/systems/AudioManager.js';
+const app=new Application();await app.init({width:1200,height:600,background:'#181429',antialias:false});document.querySelector('#stage').append(app.canvas);
+const manager=new SpriteSheetManager(),dir='/assets/characters/ensina_god';
+const record=await manager.loadCharacter({id:'ensina_god',dir,config:'ensina_god_config.json'});
+const map={groundLevel:490,leftBound:80,rightBound:1120};
+const bg=new Graphics().rect(0,490,1200,110).fill('#262035');
+for(let x=0;x<1200;x+=60)bg.moveTo(x,490).lineTo(x,600).stroke({color:'#43345b',width:1});
+app.stage.addChild(bg);
+const back=new Container(),front=new Container();app.stage.addChild(back);
+const a=new Fighter({record,map,x:430,facing:1}),b=new Fighter({record,map,x:780,facing:-1});
+a.opponent=b;b.opponent=a;app.stage.addChild(a.sprite,b.sprite,front);
+const effects=new EffectManager({back,front,bounds:{left:0,right:1200}}),audio=new AudioManager(0.8);
+await audio.preload(dir,record.config.sounds);
+let tick=0,mode='',paused=false;
+const neutral={};
+function reset(){a.resetForRound(430,1);b.resetForRound(780,-1);effects.clear();audio.stopAll();tick=0;paused=false;}
+function step(){
+  let cmd={};
+  if(mode==='walk')cmd=tick%120<60?{right:true}:{left:true};
+  if(mode==='jump'&&(tick===0||tick===12))cmd={jump:true};
+  if(mode==='dash'&&tick===0)cmd={jump:true};
+  if(mode==='dash'&&tick===10)cmd={combo:{animation:'dashForward',movement:true}};
+  if(mode==='atomic'&&tick===0)cmd={combo:{animation:'iAmAtomic'}};
+  a.update(cmd,1);b.update(neutral,1);effects.collect([a,b]);effects.update(1,[a,b]);audio.update(0,a,dir);audio.update(1,b,dir);
+  document.querySelector('#status').textContent=`${a.animation.name} · quadro ${a.animation.sheetFrame} · vida do rival ${b.health} · tempo ${tick}`;
+  tick++;
+}
+for(const name of ['walk','jump','dash','atomic'])document.querySelector('#'+name).onclick=()=>{reset();mode=name;audio.resume();};
+document.querySelector('#reset').onclick=()=>{reset();mode='';};
+document.querySelector('#pause').onclick=()=>{paused=!paused;if(paused)audio.pause();else audio.resume();};
+document.querySelector('#costume').onclick=()=>{reset();mode='atomic';while(tick<150)step();paused=true;audio.stopAll();};
+document.querySelector('#release').onclick=()=>{reset();mode='atomic';const release=record.config.animations.iAmAtomic.events.find(e=>e.sound==='atomicBlast').at;while(tick<release+20)step();paused=true;audio.stopAll();};
+app.ticker.add(()=>{if(!paused)step();});
+</script></html>
