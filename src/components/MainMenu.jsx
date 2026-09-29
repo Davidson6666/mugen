@@ -69,10 +69,16 @@ export default function MainMenu() {
       <svg className="cvs2-svg" viewBox="0 0 1280 720">
         <DiagonalBackdrop lattice={false} topWord="" bottomWord="" />
 
-        {profile && (
+        {profile ? (
           <g onClick={logout} style={{ cursor: 'pointer' }}>
             <Label x={1240} y={38} size={24} weight={700} anchor="end" stroke={5}>
               LOGADO COMO {profile.username.toUpperCase()} · CLIQUE PARA SAIR
+            </Label>
+          </g>
+        ) : (
+          <g onClick={() => { setAfterLogin(null); go('login'); }} style={{ cursor: 'pointer' }}>
+            <Label x={1240} y={38} size={24} weight={700} anchor="end" fill={PALETTE.fieldYellow} stroke={5}>
+              NAO LOGADO · CLIQUE PARA ENTRAR
             </Label>
           </g>
         )}
