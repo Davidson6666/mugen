@@ -28,7 +28,9 @@ export default function LoginScreen() {
       setError(result.error);
       return;
     }
-    resetTo(afterLogin ?? 'leaderboard');
+    // Sem destino marcado (veio direto do "FAZER LOGIN"), volta pro menu
+    // principal - so o VERSUS PLAYER pede um destino especifico (afterLogin).
+    resetTo(afterLogin ?? 'mainMenu');
     setAfterLogin(null);
   };
 
