@@ -37,18 +37,6 @@ O script `scripts/import-yoruichi.mjs` converte o pacote (SFF v1 com a paleta `1
 
 Yoruichi Shihouin e Bleach são propriedade de Tite Kubo / Shueisha / Studio Pierrot.
 
-## Ichigo
-
-Personagem importado do pacote MUGEN **"Ichigo FinalBankai"**, usado sem fins comerciais em projeto acadêmico. Créditos do próprio pacote:
-
-- programação: **A.C.Z**
-
-O script `scripts/import-ichigo.mjs` converte o pacote (SFF v1 com a paleta `Ichigo FinalBankai.act`). O pacote fica em `assets-src/ichigo/mugen/`, fora do git. Para regerar: `npm run assets:ichigo`.
-
-O pacote traz golpes citados no `.cmd` (Getsuga Tenshou, Getsuga Negro, Getsuga Final, "1000 Slice", combo aéreo do Bankai) cujos estados não existem em nenhum arquivo do pacote — apertar o botão não faz nada no MUGEN original também. Só os golpes que realmente funcionam entraram no jogo.
-
-Ichigo Kurosaki e Bleach são propriedade de Tite Kubo / Shueisha / Studio Pierrot.
-
 ## Aizen
 
 Personagem importado do pacote MUGEN **"Aizen Sosuke TYBW"**, usado sem fins comerciais em projeto acadêmico. Créditos do próprio pacote (`Aizen_TYBW.def`): autor **Null**, a partir do trabalho de **Salah**.
