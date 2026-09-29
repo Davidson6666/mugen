@@ -14,8 +14,8 @@ export default defineConfig({
       // cada personagem/cenario, em vez de baixar tudo de uma vez na
       // instalacao.
       manifest: {
-        name: 'Mugen Fighter',
-        short_name: 'Mugen Fighter',
+        name: 'Ruptura Arena',
+        short_name: 'Ruptura Arena',
         description: 'Jogo de luta com personagens de anime e ranking online.',
         start_url: '/',
         display: 'standalone',

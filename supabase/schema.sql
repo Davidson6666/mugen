@@ -1,4 +1,4 @@
--- Mugen Fighter: ranking online (Fase 1 - contas e perfis).
+-- Ruptura Arena: ranking online (Fase 1 - contas e perfis).
 -- Cole isto inteiro no painel do Supabase, em "SQL Editor" > "New query",
 -- e aperte "Run". Pode rodar de novo sem problema (usa "if not exists").
 

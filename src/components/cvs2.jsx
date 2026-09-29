@@ -79,7 +79,7 @@ const SPEED_LINES = [
 
 // Fundo das telas de menu: campos diagonais, letreiro gigante apagado, linhas
 // de velocidade e a faixa preta, com a grade vazada quando a tela tem casas.
-export function DiagonalBackdrop({ topWord = 'MUGEN', bottomWord = 'FIGHTER', lattice = true }) {
+export function DiagonalBackdrop({ topWord = 'RUPTURA', bottomWord = 'ARENA', lattice = true }) {
   return (
     <g>
       <rect width={1280} height={720} fill={PALETTE.fieldOrange} />

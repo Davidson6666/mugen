@@ -83,8 +83,8 @@ export default function MainMenu() {
           </g>
         )}
 
-        <Label x={48} y={150} size={150} stroke={18}>MUGEN</Label>
-        <Label x={96} y={260} size={120} fill={PALETTE.fieldYellow} stroke={16}>FIGHTER</Label>
+        <Label x={48} y={150} size={130} stroke={18}>RUPTURA</Label>
+        <Label x={96} y={260} size={120} fill={PALETTE.fieldYellow} stroke={16}>ARENA</Label>
 
         <Pedestal x={180} y={470} halfWidth={150} />
 
