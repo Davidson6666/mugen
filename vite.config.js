@@ -18,7 +18,11 @@ export default defineConfig({
         short_name: 'Ruptura Arena',
         description: 'Jogo de luta com personagens de anime e ranking online.',
         start_url: '/',
-        display: 'standalone',
+        // 'fullscreen' faz o app instalado abrir ja em tela cheia de
+        // verdade (sem precisar clicar no botao); display_override e a
+        // lista de fallback pra quando o navegador nao suportar isso.
+        display: 'fullscreen',
+        display_override: ['fullscreen', 'standalone'],
         background_color: '#0A0A0C',
         theme_color: '#F53C17',
         icons: [
