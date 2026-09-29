@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useMenu } from '../context/MenuContext.js';
 import { useGame } from '../context/GameContext.js';
+import { useAuth } from '../context/AuthContext.js';
 import { useMenuInput } from '../utils/useMenuInput.js';
 import { PALETTE } from '../utils/palette.js';
 import characters from '../data/characters.json';
@@ -47,7 +48,7 @@ const SIDES = [
   { tab: { x: 1244, y: 578, align: 'end' }, status: [1240, 566, 'end'], stand: [1070, 500] },
 ];
 
-function SideInfo({ player, character, confirmed, isCpu }) {
+function SideInfo({ player, character, confirmed, isCpu, label }) {
   const { tab, status, stand } = SIDES[player];
   let statusText = confirmed ? 'PRONTO!' : 'ESCOLHENDO...';
   if (isCpu) statusText = 'SORTEADA';
@@ -57,7 +58,7 @@ function SideInfo({ player, character, confirmed, isCpu }) {
       {isCpu && <Label x={stand[0]} y={stand[1] - 30} size={120} anchor="middle">?</Label>}
       <Capsule {...tab}>{isCpu ? '???' : character.name.toUpperCase()}</Capsule>
       <Label x={status[0]} y={status[1]} size={28} anchor={status[2]} fill={confirmed ? PALETTE.fieldYellow : PALETTE.textPrimary} stroke={6}>
-        {isCpu ? 'CPU' : `${player + 1}P`} · {statusText}
+        {label ?? (isCpu ? 'CPU' : `${player + 1}P`)} · {statusText}
       </Label>
     </g>
   );
@@ -66,7 +67,11 @@ function SideInfo({ player, character, confirmed, isCpu }) {
 export default function CharacterSelect() {
   const { go, back } = useMenu();
   const { setup, chooseCharacter } = useGame();
+  const { profile } = useAuth();
   const twoPlayers = setup.mode === 'versusPlayer';
+  // No local (VERSUS PLAYER) o 1P e o dono da conta logada; o 2P e sempre
+  // convidado, sem conta (o login so foi exigido do 1P na tela anterior).
+  const sideLabels = twoPlayers ? [profile?.username?.toUpperCase() ?? '1P', 'CONVIDADO'] : [null, null];
 
   const [cursors, setCursors] = useState([0, characters.length - 1]);
   const [confirmed, setConfirmed] = useState([null, null]);
@@ -152,8 +157,8 @@ export default function CharacterSelect() {
 
         <Label x={410} y={58} size={40} weight={800}>PLAYER SELECT</Label>
 
-        <SideInfo player={0} character={shown[0]} confirmed={Boolean(confirmed[0])} />
-        <SideInfo player={1} character={shown[1]} confirmed={Boolean(confirmed[1])} isCpu={!twoPlayers} />
+        <SideInfo player={0} character={shown[0]} confirmed={Boolean(confirmed[0])} label={sideLabels[0]} />
+        <SideInfo player={1} character={shown[1]} confirmed={Boolean(confirmed[1])} isCpu={!twoPlayers} label={sideLabels[1]} />
 
         {warning && (
           <g>
