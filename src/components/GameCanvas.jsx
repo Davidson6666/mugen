@@ -12,6 +12,7 @@ import { AudioManager } from '../systems/AudioManager.js';
 import { resolveAttack, resolveBodyCollision } from '../systems/CollisionDetector.js';
 import { InputHandler } from '../utils/InputHandler.js';
 import { buildCommand, PRESS_ACTIONS } from '../utils/combatInput.js';
+import { createRandom, randomSeed } from '../utils/rng.js';
 import { PALETTE, PALETTE_HEX } from '../utils/palette.js';
 import characters from '../data/characters.json';
 import maps from '../data/maps.json';
@@ -20,6 +21,15 @@ export const STAGE_WIDTH = 1280;
 export const STAGE_HEIGHT = 720;
 
 const START_GAP = 220;
+
+// Passo fixo da logica: 60 ticks por segundo, cada um com delta = 1 (o mesmo
+// valor que os testes usam). O desenho continua acompanhando a taxa do
+// monitor; so a simulacao anda em fatias iguais, que e o que permite os dois
+// lados de uma partida online chegarem exatamente no mesmo resultado.
+const MS_PER_TICK = 1000 / 60;
+// Depois de um engasgo grande (aba em segundo plano, por exemplo) o jogo nao
+// tenta recuperar todo o tempo perdido de uma vez - o excesso e descartado.
+const MAX_CATCHUP_TICKS = 5;
 
 // Camera: zoom na arena para o personagem nao ficar minusculo. Com 1.5x, os
 // 700px da arena mais os pilares ocupam a largura da tela, e o chao fica em
@@ -190,11 +200,17 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       const world = new Container();
       scene.addChild(world);
 
+      // Um sorteio so para a luta inteira (lutadores, efeitos e IA bebem
+      // dele). Numa partida online a semente vem do servidor, igual para os
+      // dois; aqui, sem semente combinada, sorteia uma.
+      const random = createRandom(matchSetup.seed ?? randomSeed());
+
       const fighters = spawns.map((x, index) => new Fighter({
         record: characterRecords[index],
         map,
         x,
         facing: index === 0 ? 1 : -1,
+        random,
       }));
       // Teleportes e golpes que surgem no oponente precisam saber onde ele esta.
       fighters[0].opponent = fighters[1];
@@ -204,7 +220,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       );
       // A IA recebe os combos ja interpretados pelo detector, com tokens e
       // animacao resolvidos.
-      const ai = new AIController(detectors[1].combos, matchSetup.difficulty);
+      const ai = new AIController(detectors[1].combos, matchSetup.difficulty, { random });
       const match = new GameStateManager({ introFrames: ROUND_INTRO_FRAMES });
       const cpuEnabled = matchSetup.mode !== 'versusPlayer';
       let matchEndTimer = 0;
@@ -314,11 +330,18 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       // martela para encadear aperta justamente nessa hora. O toque fica
       // guardado e vale no primeiro tick depois da pausa.
       const latched = [{}, {}];
-      instance.ticker.add((ticker) => {
-        if (pausedRef.current) return;
+      let accumulator = 0;
+      let tick = 0;
 
-        const delta = ticker.deltaTime;
-        input.poll();
+      // Um tick de logica. Sempre delta = 1: nada aqui dentro pode depender do
+      // relogio real, senao a mesma partida daria resultados diferentes em
+      // dois computadores.
+      function stepLogic() {
+        const delta = 1;
+        // Relogio da logica em ms, contado por tick em vez de performance.now():
+        // o reconhecedor de combos mede janelas de 500ms/250ms e precisa
+        // enxergar o mesmo tempo dos dois lados.
+        const now = tick * MS_PER_TICK;
 
         if (matchEndTimer > 0) {
           matchEndTimer -= delta;
@@ -328,7 +351,6 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
         }
 
         const fighting = match.phase === 'fighting';
-        const now = performance.now();
 
         // Durante a pausa de impacto a luta inteira congela; so faisca,
         // tremor e HUD continuam.
@@ -380,7 +402,11 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
 
         const event = match.update(fighters, delta);
         if (event) handleMatchEvent(event);
+      }
 
+      // Desenho: acontece uma vez por quadro, com o delta real do monitor.
+      // Nada aqui muda o resultado da luta.
+      function renderFrame(frameDelta) {
         fighters.forEach((fighter, index) => {
           fighter.syncSprite();
           const lift = Math.min(1, (map.groundLevel - fighter.y) / SHADOW_FADE_HEIGHT);
@@ -398,10 +424,27 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
             suddenDeath: match.isSuddenDeath,
             roundsToWin: match.roundsToWin,
           },
-          delta,
+          frameDelta,
         );
 
         if (debugLayer.visible) drawBoxes(debugLayer, fighters, effects.effects);
+      }
+
+      instance.ticker.add((ticker) => {
+        if (pausedRef.current) return;
+
+        input.poll();
+
+        accumulator += ticker.deltaMS;
+        let steps = Math.floor(accumulator / MS_PER_TICK);
+        accumulator -= steps * MS_PER_TICK;
+        if (steps > MAX_CATCHUP_TICKS) steps = MAX_CATCHUP_TICKS;
+        for (let step = 0; step < steps; step += 1) {
+          tick += 1;
+          stepLogic();
+        }
+
+        renderFrame(ticker.deltaTime);
 
         elapsed += ticker.deltaMS;
         if (elapsed >= 250) {

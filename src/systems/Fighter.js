@@ -76,7 +76,11 @@ function overrideFrom(combo) {
 //   invulnerable [de, ate] ticks em que nada acerta
 //   noPush       atravessa o oponente (sem colisao de corpo)
 export class Fighter {
-  constructor({ record, map, x, facing = 1 }) {
+  // "random": o sorteio da partida. Fora dos testes ele vem com semente
+  // (src/utils/rng.js), pra mesma partida dar o mesmo resultado nos dois lados
+  // de um jogo online.
+  constructor({ record, map, x, facing = 1, random = Math.random }) {
+    this.random = random;
     this.config = record.config;
     this.frames = record.frames;
     this.effectFrames = record.effectFrames ?? {};
@@ -434,7 +438,7 @@ export class Fighter {
     if (move.illusion) this.illusion = { ticks: move.illusion.ticks, to: move.illusion.to };
     // Golpe sorteado (as musicas do Hatsune Music): segue para uma das
     // variacoes, na hora.
-    if (move.randomNext?.length) return this.continueMove(move.randomNext[Math.floor(Math.random() * move.randomNext.length)]);
+    if (move.randomNext?.length) return this.continueMove(move.randomNext[Math.floor(this.random() * move.randomNext.length)]);
     this.fireEvents();
     return true;
   }
@@ -823,7 +827,7 @@ export class Fighter {
       }
     }
     // Reaparece num ponto qualquer ate "randomX" px de onde estava.
-    if (event.randomX) this.x += (Math.random() * 2 - 1) * event.randomX * k;
+    if (event.randomX) this.x += (this.random() * 2 - 1) * event.randomX * k;
     if (event.consume) this.pendingConsumes.push(event.consume);
     if (event.sound) this.pendingSounds.push({ key: event.sound, run: this.moveRun, stopWithMove: Boolean(event.stopWithMove) });
     // Cura (o Minazuki da Unohana): nunca passa da vida maxima.
@@ -926,7 +930,7 @@ export class Fighter {
       return true;
     }
     if (!this.buffs.crowEvade || !this.grounded || this.isKnockedOut) return false;
-    if (!this.config.animations.crowEvade || Math.random() >= 0.5) return false;
+    if (!this.config.animations.crowEvade || this.random() >= 0.5) return false;
     this.stunTimer = 0;
     this.startAttack('crowEvade', null, { chained: true });
     return true;

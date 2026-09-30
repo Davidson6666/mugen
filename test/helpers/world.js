@@ -35,10 +35,13 @@ const NEUTRAL = { left: false, right: false, up: false, down: false, jump: false
 export const command = (overrides = {}) => ({ ...NEUTRAL, ...overrides });
 export const cast = (animation) => command({ combo: { animation } });
 
-export function arena(record, leftX, rightX, rivalRecord = record) {
+// random: sorteio da luta. Sem ele, cada Fighter cai no Math.random (que e o
+// que os testes de mecanica querem); o teste de determinismo passa um com
+// semente para repetir a mesma luta.
+export function arena(record, leftX, rightX, rivalRecord = record, { random } = {}) {
   const fighters = [
-    new Fighter({ record, map, x: leftX, facing: 1 }),
-    new Fighter({ record: rivalRecord, map, x: rightX, facing: -1 }),
+    new Fighter({ record, map, x: leftX, facing: 1, random }),
+    new Fighter({ record: rivalRecord, map, x: rightX, facing: -1, random }),
   ];
   fighters[0].opponent = fighters[1];
   fighters[1].opponent = fighters[0];

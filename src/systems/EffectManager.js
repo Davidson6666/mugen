@@ -26,6 +26,9 @@ const FALLBACK_HITSTUN = 15;
 export class Effect {
   constructor({ owner, spawn, attack, serial, opponent, parent = null }) {
     this.owner = owner;
+    // O sorteio vem do lutador dono do efeito, pra tudo que muda o resultado
+    // da luta sair da mesma sequencia com semente (src/utils/rng.js).
+    this.random = owner.random ?? Math.random;
     this.spawn = spawn;
     this.parent = parent;
     this.opponent = opponent;
@@ -60,8 +63,8 @@ export class Effect {
     // nasce sempre no mesmo pixel.
     const [spreadX = 0, spreadY = 0] = spawn.spread ?? [];
     this.offset = {
-      x: (spawn.offsetX ?? 0) + (Math.random() * 2 - 1) * spreadX,
-      y: (spawn.offsetY ?? 0) + (Math.random() * 2 - 1) * spreadY,
+      x: (spawn.offsetX ?? 0) + (this.random() * 2 - 1) * spreadX,
+      y: (spawn.offsetY ?? 0) + (this.random() * 2 - 1) * spreadY,
     };
     this.anchorFacing = parent?.facing ?? owner.facing;
     this.place();
@@ -69,8 +72,8 @@ export class Effect {
     // "lifetime" do pedido (cada kunai dura ate o proprio disparo + voo).
     this.lifetime = spawn.lifetime ?? this.definition.lifetime;
     const [jitterX = 0, jitterY = 0] = spawn.velocitySpread ?? [];
-    this.vx = ((spawn.velocityX ?? this.definition.velocityX ?? 0) + (Math.random() * 2 - 1) * jitterX) * this.facing * this.unit;
-    this.vy = ((spawn.velocityY ?? this.definition.velocityY ?? 0) + (Math.random() * 2 - 1) * jitterY) * this.unit;
+    this.vx = ((spawn.velocityX ?? this.definition.velocityX ?? 0) + (this.random() * 2 - 1) * jitterX) * this.facing * this.unit;
+    this.vy = ((spawn.velocityY ?? this.definition.velocityY ?? 0) + (this.random() * 2 - 1) * jitterY) * this.unit;
     this.motionIndex = 0;
 
     this.sprite = new Sprite(this.frames[this.animation.sheetFrame]);
@@ -315,7 +318,7 @@ export class Effect {
     // oponente) nasce junto e dura o mesmo tempo.
     if (definition.seal) {
       const { kinds, ticks } = definition.seal;
-      const chosen = kinds[Math.floor(Math.random() * kinds.length)];
+      const chosen = kinds[Math.floor(this.random() * kinds.length)];
       data.seal = { kind: chosen.kind, ticks };
       if (chosen.mark) this.pendingSpawns.push({ id: chosen.mark, target: 'opponent', follow: 'target', offsetY: 95 });
     }
