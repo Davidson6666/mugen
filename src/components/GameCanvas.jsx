@@ -370,6 +370,13 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       // dois computadores.
       function stepLogic() {
         const delta = 1;
+        // Le o teclado/controle uma vez por TICK, nao por quadro. "Apertou
+        // agora" e detectado comparando com a leitura anterior (InputHandler.
+        // pressed), entao um poll que acontece sem um tick atras dele engole o
+        // toque: num monitor de 144Hz a maioria dos quadros nao roda tick
+        // nenhum, e mais da metade dos golpes sumia antes de chegar no jogo.
+        input.poll();
+
         // Relogio da logica em ms, contado por tick em vez de performance.now():
         // o reconhecedor de combos mede janelas de 500ms/250ms e precisa
         // enxergar o mesmo tempo dos dois lados.
@@ -484,8 +491,6 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
 
       instance.ticker.add((ticker) => {
         if (pausedRef.current) return;
-
-        input.poll();
 
         accumulator += ticker.deltaMS;
         let steps = Math.floor(accumulator / MS_PER_TICK);
