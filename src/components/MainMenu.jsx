@@ -11,14 +11,20 @@ import { DiagonalBackdrop, Label, MenuOption, Pedestal } from './cvs2.jsx';
 const OPTIONS = [
   { id: 'versusCpu', label: 'VERSUS CPU', hint: 'ENFRENTE A MAQUINA EM UMA PARTIDA AVULSA' },
   { id: 'versusPlayer', label: 'VERSUS PLAYER', hint: 'DOIS JOGADORES NO MESMO TECLADO · JOGADOR 1 PRECISA LOGAR' },
+  { id: 'online', label: 'PARTIDA ONLINE', hint: 'ENTRE NA FILA E ENFRENTE OUTRA PESSOA PELA INTERNET' },
   { id: 'ranking', label: 'RANKING ONLINE', hint: 'CRIE UMA CONTA E VEJA A CLASSIFICACAO' },
   { id: 'story', label: 'MODO HISTORIA', hint: 'ENFRENTE UMA SEQUENCIA DE LUTAS ATE O FINAL' },
   { id: 'settings', label: 'CONFIGURACOES', hint: 'CONTROLES E AJUSTES' },
 ];
 
-// As opcoes descem acompanhando a borda da faixa diagonal, no campo azul.
+// As opcoes descem acompanhando a borda da faixa diagonal, no campo azul. A
+// largura e o passo sao apertados o suficiente pras seis caberem entre o topo
+// (onde a barra ainda nao ultrapassa a borda direita da tela) e a linha de
+// dica la embaixo.
+const OPTION_WIDTH = 340;
+
 const optionPosition = (index) => {
-  const y = 330 + index * 72;
+  const y = 290 + index * 60;
   return [1212 - y - 16, y];
 };
 
@@ -30,7 +36,7 @@ const MENU_FIGHTERS = ['itachi']
 export default function MainMenu() {
   const { go, setAfterLogin } = useMenu();
   const { startSetup } = useGame();
-  const { profile, logout } = useAuth();
+  const { profile, loading, logout } = useAuth();
   const [index, setIndex] = useState(0);
 
   const move = (_player, direction) => {
@@ -41,6 +47,10 @@ export default function MainMenu() {
   const confirm = () => {
     const option = OPTIONS[index];
     if (option.disabled) return;
+    // Enquanto a sessao salva ainda esta sendo lida do Supabase, quem tem
+    // conta ainda aparece como deslogado aqui - confirmar uma opcao que exige
+    // login nesse instante mandaria pro login sem necessidade.
+    if (loading && (option.id === 'online' || option.id === 'versusPlayer')) return;
     if (option.id === 'settings') {
       go('settings');
       return;
@@ -48,6 +58,17 @@ export default function MainMenu() {
     if (option.id === 'ranking') {
       setAfterLogin(null);
       go('leaderboard');
+      return;
+    }
+    // Partida online vale Elo, entao aqui a conta e obrigatoria (nao tem lado
+    // "convidado" como no versus local).
+    if (option.id === 'online') {
+      if (!profile) {
+        setAfterLogin('matchmaking');
+        go('login');
+        return;
+      }
+      go('matchmaking');
       return;
     }
     startSetup(option.id);
@@ -69,7 +90,11 @@ export default function MainMenu() {
       <svg className="cvs2-svg" viewBox="0 0 1280 720">
         <DiagonalBackdrop lattice={false} topWord="" bottomWord="" />
 
-        {profile ? (
+        {loading ? (
+          <Label x={1240} y={38} size={24} weight={700} anchor="end" stroke={5}>
+            CARREGANDO CONTA...
+          </Label>
+        ) : profile ? (
           <g onClick={logout} style={{ cursor: 'pointer' }}>
             <Label x={1240} y={38} size={24} weight={700} anchor="end" stroke={5}>
               LOGADO COMO {profile.username.toUpperCase()} · CLIQUE PARA SAIR
@@ -93,7 +118,7 @@ export default function MainMenu() {
           return (
             <MenuOption
               key={option.id}
-              x={x} y={y}
+              x={x} y={y} width={OPTION_WIDTH}
               label={option.label}
               active={position === index}
               disabled={option.disabled}
@@ -103,8 +128,8 @@ export default function MainMenu() {
           );
         })}
 
-        <Label x={1240} y={660} size={26} weight={800} anchor="end" stroke={6}>{OPTIONS[index].hint}</Label>
-        <Label x={1240} y={700} size={22} weight={600} anchor="end" stroke={5}>W/S NAVEGA · J CONFIRMA</Label>
+        <Label x={1240} y={674} size={26} weight={800} anchor="end" stroke={6}>{OPTIONS[index].hint}</Label>
+        <Label x={1240} y={708} size={22} weight={600} anchor="end" stroke={5}>W/S NAVEGA · J CONFIRMA</Label>
       </svg>
 
       {MENU_FIGHTERS.map((fighter, position) => (

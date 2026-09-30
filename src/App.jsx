@@ -12,6 +12,7 @@ import StoryEndingScreen from './components/StoryEndingScreen.jsx';
 import SettingsScreen from './components/SettingsScreen.jsx';
 import LoginScreen from './components/LoginScreen.jsx';
 import LeaderboardScreen from './components/LeaderboardScreen.jsx';
+import MatchmakingScreen from './components/MatchmakingScreen.jsx';
 import { useStageScale } from './utils/useStageScale.js';
 import './App.css';
 
@@ -26,6 +27,7 @@ const SCREENS = {
   settings: SettingsScreen,
   login: LoginScreen,
   leaderboard: LeaderboardScreen,
+  matchmaking: MatchmakingScreen,
 };
 
 function Router() {

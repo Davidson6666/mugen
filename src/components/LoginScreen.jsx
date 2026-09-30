@@ -8,6 +8,13 @@ import { DiagonalBackdrop, Label } from './cvs2.jsx';
 // por cima do cenario cvs2, sem useMenuInput (senao digitar "s" ou "j" ia
 // mexer em menu por baixo) - so o Esc e ouvido a parte, ele nao atrapalha
 // digitar e e o mesmo que fecha formulario em qualquer site.
+// Por que o login esta sendo pedido, quando ele foi pedido no meio de outro
+// fluxo (o destino guardado em afterLogin).
+const CONTEXT = {
+  characterSelect: 'Versus Player e local (o jogador 2 entra sem conta), mas o jogador 1 precisa estar logado.',
+  matchmaking: 'Partida online vale ranking, entao so da pra entrar na fila com uma conta.',
+};
+
 export default function LoginScreen() {
   const { back, resetTo, afterLogin, setAfterLogin } = useMenu();
   const { login, register } = useAuth();
@@ -44,14 +51,10 @@ export default function LoginScreen() {
     <div className="cvs2-screen">
       <svg className="cvs2-svg" viewBox="0 0 1280 720">
         <DiagonalBackdrop lattice={false} topWord="" bottomWord="" />
-        <Label x={48} y={130} size={90}>{afterLogin ? 'JOGADOR 1, LOGUE-SE' : 'RANKING ONLINE'}</Label>
+        <Label x={48} y={130} size={90}>ENTRE NA SUA CONTA</Label>
       </svg>
 
-      {afterLogin && (
-        <p className="auth-card__context">
-          Versus Player e local (o jogador 2 entra sem conta), mas o jogador 1 precisa estar logado.
-        </p>
-      )}
+      {CONTEXT[afterLogin] && <p className="auth-card__context">{CONTEXT[afterLogin]}</p>}
 
       <form className="auth-card" onSubmit={submit}>
         <div className="auth-card__tabs">
