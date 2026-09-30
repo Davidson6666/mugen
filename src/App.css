@@ -38,6 +38,37 @@
   outline: none;
 }
 
+/* Aviso de versao nova, no canto da janela: capsula amarela do CvS2 (a mesma
+   linguagem das capsulas dos menus). Fica por cima de qualquer tela, inclusive
+   da luta, porque so aparece quando tem atualizacao esperando. */
+.update-button {
+  position: fixed;
+  bottom: 12px;
+  left: 12px;
+  z-index: 10;
+  padding: 6px 18px;
+  border: 3px solid var(--color-ink);
+  border-radius: 999px;
+  background: var(--color-field-yellow);
+  color: var(--color-ink);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-style: italic;
+  font-weight: 900;
+  font-size: 18px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  animation: update-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes update-pulse {
+  50% { opacity: 0.55; }
+}
+
+/* Quem prefere menos movimento na tela ve a capsula parada. */
+@media (prefers-reduced-motion: reduce) {
+  .update-button { animation: none; }
+}
+
 .screen--battle {
   position: absolute;
   inset: 0;

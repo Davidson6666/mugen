@@ -7,7 +7,14 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      // 'prompt': a versao nova fica esperando em vez de entrar sozinha, e
+      // quem decide a hora e o jogador pelo aviso na tela (UpdateBanner.jsx).
+      // Entrar sozinha no meio de uma partida seria pior.
+      registerType: 'prompt',
+      // O registro do service worker acontece no UpdateBanner, pra ele saber
+      // quando tem versao nova esperando; sem isto, o plugin injetaria um
+      // segundo registro por fora.
+      injectRegister: null,
       // So o app em si (JS/CSS/HTML) entra no precache - os assets de
       // personagens e cenarios (public/assets, ~90MB) sao cacheados sob
       // demanda pelo runtimeCaching abaixo, conforme o jogador de fato usa

@@ -13,6 +13,7 @@ import SettingsScreen from './components/SettingsScreen.jsx';
 import LoginScreen from './components/LoginScreen.jsx';
 import LeaderboardScreen from './components/LeaderboardScreen.jsx';
 import MatchmakingScreen from './components/MatchmakingScreen.jsx';
+import UpdateBanner from './components/UpdateBanner.jsx';
 import { useStageScale } from './utils/useStageScale.js';
 import './App.css';
 
@@ -46,6 +47,7 @@ export default function App() {
             <div className="app__stage">
               <Router />
             </div>
+            <UpdateBanner />
           </div>
         </MenuProvider>
       </GameProvider>
