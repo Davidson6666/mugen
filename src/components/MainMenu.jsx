@@ -15,17 +15,20 @@ const OPTIONS = [
   { id: 'online', label: 'PARTIDA ONLINE', hint: 'ENTRE NA FILA E ENFRENTE OUTRA PESSOA PELA INTERNET' },
   { id: 'ranking', label: 'RANKING ONLINE', hint: 'CRIE UMA CONTA E VEJA A CLASSIFICACAO' },
   { id: 'story', label: 'MODO HISTORIA', hint: 'ENFRENTE UMA SEQUENCIA DE LUTAS ATE O FINAL' },
+  { id: 'training', label: 'AREA DE TREINO', hint: 'TREINE GOLPES E COMBOS NUM BONECO QUE NAO REVIDA' },
   { id: 'settings', label: 'CONFIGURACOES', hint: 'CONTROLES E AJUSTES' },
 ];
 
-// As opcoes descem acompanhando a borda da faixa diagonal, no campo azul. A
-// largura e o passo sao apertados o suficiente pras seis caberem entre o topo
-// (onde a barra ainda nao ultrapassa a borda direita da tela) e a linha de
-// dica la embaixo.
+// As opcoes descem acompanhando a borda da faixa diagonal, no campo azul.
+// Como elas andam para a esquerda conforme descem, a primeira nao pode subir
+// mais que isto (sairia pela direita da tela), e a ultima nao pode passar da
+// linha de dica la embaixo - por isso as sete cabem apertadas, com a capsula
+// mais baixa que o padrao.
 const OPTION_WIDTH = 340;
+const OPTION_HEIGHT = 46;
 
 const optionPosition = (index) => {
-  const y = 290 + index * 60;
+  const y = 286 + index * 52;
   return [1212 - y - 16, y];
 };
 
@@ -137,7 +140,7 @@ export default function MainMenu() {
           return (
             <MenuOption
               key={option.id}
-              x={x} y={y} width={OPTION_WIDTH}
+              x={x} y={y} width={OPTION_WIDTH} height={OPTION_HEIGHT}
               label={option.label}
               active={position === index}
               disabled={option.disabled}

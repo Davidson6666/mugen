@@ -79,8 +79,12 @@ export class Fighter {
   // "random": o sorteio da partida. Fora dos testes ele vem com semente
   // (src/utils/rng.js), pra mesma partida dar o mesmo resultado nos dois lados
   // de um jogo online.
-  constructor({ record, map, x, facing = 1, random = Math.random }) {
+  // "minHealth": piso de vida. Fica em 0 numa luta de verdade; o boneco da
+  // area de treino usa 1, e como o nocaute so dispara quando a vida chega
+  // exatamente a zero, ele apanha o quanto for sem nunca cair.
+  constructor({ record, map, x, facing = 1, random = Math.random, minHealth = 0 }) {
     this.random = random;
+    this.minHealth = minHealth;
     this.config = record.config;
     this.frames = record.frames;
     this.effectFrames = record.effectFrames ?? {};
@@ -944,7 +948,7 @@ export class Fighter {
     this.fillAwakening(this.awakening?.onHit ?? 0);
     // Arredondado a 6 casas: o dano pode ser fracionario (ajuste de equilibrio)
     // e a sobra de ponto flutuante nao pode impedir o nocaute.
-    this.health = Math.max(0, Math.round((this.health - damage) * 1e6) / 1e6);
+    this.health = Math.max(this.minHealth, Math.round((this.health - damage) * 1e6) / 1e6);
     const away = from === null ? -this.facing : (this.x >= from ? 1 : -1);
     if (this.health === 0) {
       this.knockOut({ launch, away, scale });
@@ -1099,7 +1103,7 @@ export class Fighter {
 
   takeBlockedHit(damage, blockstun) {
     const crouching = this.state === 'crouch';
-    this.health = Math.max(0, Math.round((this.health - damage) * 1e6) / 1e6);
+    this.health = Math.max(this.minHealth, Math.round((this.health - damage) * 1e6) / 1e6);
     if (this.health === 0) {
       this.knockOut();
       return 'ko';

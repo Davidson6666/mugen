@@ -77,6 +77,10 @@ function groundShadow() {
 // Quanto mais alto no pulo, menor e mais fraca a sombra.
 const SHADOW_FADE_HEIGHT = 160;
 
+// Quanto tempo o boneco de treino fica sem apanhar antes da vida voltar ao
+// topo (90 ticks = 1,5 segundo).
+const TRAINING_REFILL_TICKS = 90;
+
 const STATUS_MESSAGE = {
   loading: 'Carregando assets...',
   waiting: 'Esperando o adversario entrar na luta...',
@@ -219,6 +223,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
         x,
         facing: index === 0 ? 1 : -1,
         random,
+        minHealth: training && index === 1 ? 1 : 0,
       }));
       // Teleportes e golpes que surgem no oponente precisam saber onde ele esta.
       fighters[0].opponent = fighters[1];
@@ -229,12 +234,15 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       // A IA recebe os combos ja interpretados pelo detector, com tokens e
       // animacao resolvidos.
       const ai = new AIController(detectors[1].combos, matchSetup.difficulty, { random });
-      const match = new GameStateManager({ introFrames: ROUND_INTRO_FRAMES });
+      // Area de treino: o lado 2 e um boneco - nao e movido nem pela IA nem
+      // por teclado, e a luta nao acaba.
+      const training = matchSetup.mode === 'training';
+      const match = new GameStateManager({ introFrames: ROUND_INTRO_FRAMES, training });
       // Online: os dois lados sao gente de verdade, a IA fica de fora e o lado
       // do adversario e movido pelo input que chega pela rede.
       const online = matchSetup.mode === 'online';
       const localIndex = online ? (matchSetup.localPlayerIndex ?? 0) : 0;
-      const cpuEnabled = !online && matchSetup.mode !== 'versusPlayer';
+      const cpuEnabled = !online && !training && matchSetup.mode !== 'versusPlayer';
       let matchEndTimer = 0;
       let walkoverSent = false;
 
@@ -365,6 +373,21 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       let accumulator = 0;
       let tick = 0;
 
+      // Boneco de treino: a vida desce normalmente, pra dar pra ver o quanto
+      // um combo tirou, e volta a encher sozinha depois de um tempo sem
+      // apanhar. Quem segura ela acima de zero e o proprio lutador
+      // (minHealth), porque o nocaute dispara dentro do dano - travar por
+      // aqui chegaria tarde demais.
+      let dummyHealth = fighters[1].health;
+      let dummyIdle = 0;
+
+      function keepDummyAlive(delta) {
+        const dummy = fighters[1];
+        dummyIdle = dummy.health < dummyHealth ? 0 : dummyIdle + delta;
+        if (dummyIdle >= TRAINING_REFILL_TICKS) dummy.health = dummy.config.stats.maxHealth;
+        dummyHealth = dummy.health;
+      }
+
       // Um tick de logica. Sempre delta = 1: nada aqui dentro pode depender do
       // relogio real, senao a mesma partida daria resultados diferentes em
       // dois computadores.
@@ -408,7 +431,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
         const frozen = feedback.update(delta);
         if (frozen && fighting) {
           for (const index of [0, 1]) {
-            if (index === 1 && cpuEnabled) continue;
+            if (index === 1 && (cpuEnabled || training)) continue;
             if (online && index !== localIndex) continue;
             const pressed = buildCommand(input, online ? 0 : index);
             for (const action of PRESS_ACTIONS) if (pressed[action]) latched[index][action] = true;
@@ -426,6 +449,9 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
                 // de alguns ticks atras e o dele que chegou pela rede.
                 const scheduled = index === localIndex ? net.localCommand(tick) : net.remoteCommand(tick);
                 command = scheduled ?? { ...NEUTRAL_COMMAND };
+              } else if (index === 1 && training) {
+                // O boneco fica parado: nem IA, nem o teclado do jogador 2.
+                command = { ...NEUTRAL_COMMAND };
               } else {
                 command = index === 1 && cpuEnabled
                   ? ai.update(fighter, fighters[0], delta)
@@ -456,6 +482,8 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
             if (result.outcome !== 'evade') audio.playImpact(kindOf(result));
           }
         }
+
+        if (training) keepDummyAlive(delta);
 
         fighters.forEach((fighter, index) => audio.update(index, fighter, characterEntries[index].dir));
 

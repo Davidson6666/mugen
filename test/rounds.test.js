@@ -288,3 +288,51 @@ test('com abertura, cada round novo passa de novo pelo FIGHT', () => {
   for (const fighter of fighters) fighter.health = characterConfig.stats.maxHealth;
   assert.deepEqual(runUntilEvent(match, fighters), { type: 'fight', round: 2 });
 });
+
+// Area de treino: a luta nao acaba de jeito nenhum, porque o jogador esta ali
+// so pra praticar. Quem sai, sai pela pausa.
+test('treino: nem nocaute nem cronometro terminam o round', () => {
+  const match = new GameStateManager({ training: true });
+  const fighters = makePair();
+
+  assert.equal(match.timeRemaining, Infinity, 'sem cronometro');
+
+  // Zerar a vida dos dois nao encerra nada.
+  fighters[0].health = 0;
+  fighters[1].health = 0;
+  assert.equal(runUntilEvent(match, fighters, 600), null, 'nenhum evento de fim');
+  assert.equal(match.phase, 'fighting');
+  assert.deepEqual(match.wins, [0, 0], 'ninguem pontua');
+  assert.equal(match.matchWinner, null);
+  assert.equal(match.timeRemaining, Infinity, 'o cronometro nao andou');
+});
+
+test('treino: fora dele o round continua acabando normalmente', () => {
+  const match = new GameStateManager();
+  const fighters = makePair();
+  fighters[1].health = 0;
+  assert.equal(runUntilEvent(match, fighters).type, 'roundEnd');
+});
+
+// O boneco da area de treino: o nocaute dispara dentro do proprio dano, entao
+// o piso de vida precisa estar no lutador, nao numa correcao por fora.
+test('boneco de treino aguenta um golpe que mataria, e nao e nocauteado', () => {
+  const dummy = new Fighter({ record, map, x: 840, facing: -1, minHealth: 1 });
+  const cheio = dummy.health;
+
+  dummy.takeHit(cheio * 10, 20, 0, null);
+  assert.equal(dummy.health, 1, 'a vida para em 1');
+  assert.equal(dummy.isKnockedOut, false, 'nao caiu');
+
+  // De novo, ja no piso: continua de pe.
+  dummy.takeHit(cheio * 10, 20, 0, null);
+  assert.equal(dummy.health, 1);
+  assert.equal(dummy.isKnockedOut, false);
+});
+
+test('sem o piso, o mesmo golpe nocauteia normalmente', () => {
+  const normal = new Fighter({ record, map, x: 840, facing: -1 });
+  normal.takeHit(normal.health * 10, 20, 0, null);
+  assert.equal(normal.health, 0);
+  assert.equal(normal.isKnockedOut, true);
+});

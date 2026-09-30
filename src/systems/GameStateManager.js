@@ -15,18 +15,22 @@ export class GameStateManager {
     roundsToWin = ROUNDS_TO_WIN,
     endDelayFrames = 150,
     introFrames = 0,
+    training = false,
   } = {}) {
     this.roundTimeSeconds = roundTimeSeconds;
     this.roundsToWin = roundsToWin;
     this.endDelayFrames = endDelayFrames;
     this.introFrames = introFrames;
+    // Area de treino: a luta nao acaba nunca - sem cronometro, sem nocaute e
+    // sem placar. Quem sai, sai pela pausa.
+    this.training = training;
     this.reset();
   }
 
   reset() {
     this.wins = [0, 0];
     this.roundNumber = 1;
-    this.timeRemaining = this.roundTimeSeconds;
+    this.timeRemaining = this.training ? Infinity : this.roundTimeSeconds;
     this.endTimer = 0;
     this.beginRound();
     this.lastResult = null;
@@ -60,6 +64,10 @@ export class GameStateManager {
   }
 
   updateFighting(fighters, delta) {
+    // No treino nada encerra o round: nem o cronometro (que nem corre) nem a
+    // vida do boneco (que o proprio treino segura acima de zero).
+    if (this.training) return null;
+
     if (!this.isSuddenDeath) {
       this.timeRemaining = Math.max(0, this.timeRemaining - delta / FRAMES_PER_SECOND);
     }

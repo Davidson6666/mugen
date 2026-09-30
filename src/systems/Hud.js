@@ -216,7 +216,10 @@ export class Hud {
       if (showCombo) side.comboCount.text = String(fighter.comboCount);
     });
 
-    this.timer.text = suddenDeath ? '--' : String(Math.ceil(timeRemaining)).padStart(2, '0');
+    // Morte subita e treino nao tem cronometro correndo.
+    this.timer.text = suddenDeath || !Number.isFinite(timeRemaining)
+      ? '--'
+      : String(Math.ceil(timeRemaining)).padStart(2, '0');
     this.roundLabel.text = suddenDeath ? 'FINAL ROUND' : `ROUND ${roundNumber}`;
 
     if (this.announcementTimer > 0) {

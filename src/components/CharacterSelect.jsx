@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext.js';
 import { useMenuInput } from '../utils/useMenuInput.js';
 import { PALETTE } from '../utils/palette.js';
 import characters from '../data/characters.json';
+import { TRAINING_DUMMY, TRAINING_MAP } from '../data/training.js';
 import FighterSprite from './FighterSprite.jsx';
 import { Capsule, DiagonalBackdrop, Label, Pedestal, PortraitCell } from './cvs2.jsx';
 import { cellAt } from '../utils/cvs2Layout.js';
@@ -51,7 +52,7 @@ const SIDES = [
 // O que dizer do lado direito enquanto ele ainda e "???": no versus avulso o
 // adversario e sorteado na hora, na campanha ele ja esta escrito na escada, e
 // no online ainda nem existe (depende de quem a fila trouxer).
-const STATUS_2P = { online: 'AINDA NA FILA', story: 'JA DEFINIDO' };
+const STATUS_2P = { online: 'AINDA NA FILA', story: 'JA DEFINIDO', training: 'BONECO DE TREINO' };
 
 function SideInfo({ player, character, confirmed, isCpu, label, hiddenStatus }) {
   const { tab, status, stand } = SIDES[player];
@@ -71,11 +72,12 @@ function SideInfo({ player, character, confirmed, isCpu, label, hiddenStatus }) 
 
 export default function CharacterSelect() {
   const { go, back } = useMenu();
-  const { setup, chooseCharacter, applyStoryStage } = useGame();
+  const { setup, chooseCharacter, chooseMap, applyStoryStage } = useGame();
   const { profile } = useAuth();
   const twoPlayers = setup.mode === 'versusPlayer';
   const online = setup.mode === 'online';
   const story = setup.mode === 'story';
+  const training = setup.mode === 'training';
   // No local (VERSUS PLAYER) o 1P e o dono da conta logada; o 2P e sempre
   // convidado, sem conta (o login so foi exigido do 1P na tela anterior). No
   // online quem esta do outro lado ainda nem existe: a escolha dele so chega
@@ -131,6 +133,14 @@ export default function CharacterSelect() {
     // montada daqui, sem passar pela escolha de cenario.
     if (story) {
       applyStoryStage(0);
+      go('versus');
+      return;
+    }
+    // Treino: o boneco e o cenario sao fixos (src/data/training.js), entao
+    // escolher o personagem tambem e a unica coisa a fazer aqui.
+    if (training) {
+      chooseCharacter(1, TRAINING_DUMMY);
+      chooseMap(TRAINING_MAP);
       go('versus');
       return;
     }

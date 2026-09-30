@@ -72,6 +72,7 @@ export default function VersusScreen() {
   }
 
   let tags = ['1P', setup.mode === 'versusPlayer' ? '2P' : 'CPU'];
+  if (setup.mode === 'training') tags = ['1P', 'BONECO'];
   if (setup.mode === 'online') {
     const opponent = (setup.opponentName ?? 'ADVERSARIO').toUpperCase();
     tags = setup.localPlayerIndex === 1 ? [opponent, 'VOCE'] : ['VOCE', opponent];
