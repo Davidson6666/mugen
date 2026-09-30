@@ -31,7 +31,7 @@ const STAND = [230, 560];
 
 export default function ResultScreen() {
   const { resetTo } = useMenu();
-  const { setup, result, advanceStory } = useGame();
+  const { setup, result, applyStoryStage } = useGame();
   const [index, setIndex] = useState(0);
 
   const winnerIndex = result?.winner ?? 0;
@@ -87,8 +87,10 @@ export default function ResultScreen() {
   const onConfirm = () => {
     const optionId = OPTIONS[index].id;
     if (optionId === 'continue') {
-      advanceStory();
-      resetTo('stageSelect');
+      // A proxima luta da campanha ja vem pronta da escada: adversario,
+      // cenario e dificuldade. Nao passa por escolha de cenario nenhuma.
+      applyStoryStage(setup.storyIndex + 1);
+      resetTo('versus');
       return;
     }
     resetTo(optionId === 'rematch' || optionId === 'retry' ? 'versus' : 'mainMenu');

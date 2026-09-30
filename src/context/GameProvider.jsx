@@ -1,14 +1,15 @@
 import { useCallback, useMemo, useState } from 'react';
 import { GameContext } from './GameContext.js';
+import { STORY_LADDER } from '../data/storyLadder.js';
 
 const EMPTY_SETUP = {
   mode: null,
   characters: [null, null],
   mapId: null,
   difficulty: 'normal',
-  // So usado no Modo Historia: lista de adversarios/dificuldade sorteada no
-  // inicio da campanha, e em qual luta dela o jogador esta agora.
-  storyOpponents: [],
+  // So usado no Modo Historia: em qual luta da campanha o jogador esta. Quem
+  // e o adversario, o cenario e a dificuldade de cada luta vem da escada fixa
+  // (src/data/storyLadder.js), nao daqui.
   storyIndex: 0,
   // So usado na partida online: identificacao da partida no servidor, a
   // semente que faz os dois lados sortearem igual, qual dos dois lados sou eu
@@ -49,12 +50,19 @@ export function GameProvider({ children }) {
     setSetup((current) => ({ ...current, difficulty }));
   }, []);
 
-  const setStoryOpponents = useCallback((opponents) => {
-    setSetup((current) => ({ ...current, storyOpponents: opponents }));
-  }, []);
-
-  const advanceStory = useCallback(() => {
-    setSetup((current) => ({ ...current, storyIndex: current.storyIndex + 1 }));
+  // Modo Historia: monta a luta de numero "index" da escada fixa - adversario,
+  // cenario e dificuldade de uma vez so. Serve tanto pra primeira luta (logo
+  // depois de escolher o personagem) quanto pra avancar pra proxima.
+  const applyStoryStage = useCallback((index) => {
+    const stage = STORY_LADDER[index];
+    if (!stage) return;
+    setSetup((current) => ({
+      ...current,
+      storyIndex: index,
+      characters: [current.characters[0], stage.opponentId],
+      mapId: stage.mapId,
+      difficulty: stage.difficulty,
+    }));
   }, []);
 
   // Partida online: os dois lados montam exatamente este mesmo setup (mesma
@@ -73,12 +81,11 @@ export function GameProvider({ children }) {
       chooseCharacter,
       chooseMap,
       chooseDifficulty,
-      setStoryOpponents,
-      advanceStory,
+      applyStoryStage,
       startOnlineMatch,
       finishMatch: setResult,
     }),
-    [setup, result, startSetup, chooseCharacter, chooseMap, chooseDifficulty, setStoryOpponents, advanceStory, startOnlineMatch],
+    [setup, result, startSetup, chooseCharacter, chooseMap, chooseDifficulty, applyStoryStage, startOnlineMatch],
   );
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

@@ -8,6 +8,7 @@ import characters from '../data/characters.json';
 import maps from '../data/maps.json';
 import FighterSprite from './FighterSprite.jsx';
 import { Capsule, DiagonalBackdrop, Label, Pedestal, Shape } from './cvs2.jsx';
+import { STORY_LADDER } from '../data/storyLadder.js';
 
 const MINIMUM_DISPLAY_MS = 1800;
 
@@ -100,7 +101,7 @@ export default function VersusScreen() {
         <Capsule x={420} y={498} width={440} size={34}>{`STAGE · ${stage.name.toUpperCase()}`}</Capsule>
         {setup.mode === 'story' && (
           <Capsule x={420} y={545} width={440} size={26}>
-            {`MODO HISTORIA · LUTA ${setup.storyIndex + 1} DE ${setup.storyOpponents.length}`}
+            {`MODO HISTORIA · LUTA ${setup.storyIndex + 1} DE ${STORY_LADDER.length}`}
           </Capsule>
         )}
         <Label x={640} y={615} size={28} weight={800} anchor="middle" fill={loaded ? PALETTE.fieldYellow : PALETTE.textPrimary} stroke={6}>

@@ -48,6 +48,11 @@ const SIDES = [
   { tab: { x: 1244, y: 578, align: 'end' }, status: [1240, 566, 'end'], stand: [1070, 500] },
 ];
 
+// O que dizer do lado direito enquanto ele ainda e "???": no versus avulso o
+// adversario e sorteado na hora, na campanha ele ja esta escrito na escada, e
+// no online ainda nem existe (depende de quem a fila trouxer).
+const STATUS_2P = { online: 'AINDA NA FILA', story: 'JA DEFINIDO' };
+
 function SideInfo({ player, character, confirmed, isCpu, label, hiddenStatus }) {
   const { tab, status, stand } = SIDES[player];
   let statusText = confirmed ? 'PRONTO!' : 'ESCOLHENDO...';
@@ -66,10 +71,11 @@ function SideInfo({ player, character, confirmed, isCpu, label, hiddenStatus }) 
 
 export default function CharacterSelect() {
   const { go, back } = useMenu();
-  const { setup, chooseCharacter } = useGame();
+  const { setup, chooseCharacter, applyStoryStage } = useGame();
   const { profile } = useAuth();
   const twoPlayers = setup.mode === 'versusPlayer';
   const online = setup.mode === 'online';
+  const story = setup.mode === 'story';
   // No local (VERSUS PLAYER) o 1P e o dono da conta logada; o 2P e sempre
   // convidado, sem conta (o login so foi exigido do 1P na tela anterior). No
   // online quem esta do outro lado ainda nem existe: a escolha dele so chega
@@ -119,9 +125,18 @@ export default function CharacterSelect() {
     chooseCharacter(player, picked.id);
 
     const done = twoPlayers ? next[0] && next[1] : next[0];
-    // No online nao tem escolha de cenario: ele sai da semente da partida,
-    // igual pros dois. O proximo passo e a fila.
-    if (done) go(online ? 'matchmaking' : 'stageSelect');
+    if (!done) return;
+    // Modo Historia: a campanha inteira ja esta definida, entao escolher o
+    // personagem e a unica coisa que o jogador faz - a primeira luta sai
+    // montada daqui, sem passar pela escolha de cenario.
+    if (story) {
+      applyStoryStage(0);
+      go('versus');
+      return;
+    }
+    // No online tambem nao tem escolha de cenario: ele sai da semente da
+    // partida, igual pros dois. O proximo passo e a fila.
+    go(online ? 'matchmaking' : 'stageSelect');
   };
 
   const onCancel = (player) => {
@@ -167,7 +182,7 @@ export default function CharacterSelect() {
         <SideInfo player={0} character={shown[0]} confirmed={Boolean(confirmed[0])} label={sideLabels[0]} />
         <SideInfo
           player={1} character={shown[1]} confirmed={Boolean(confirmed[1])} isCpu={!twoPlayers}
-          label={sideLabels[1]} hiddenStatus={online ? 'AINDA NA FILA' : undefined}
+          label={sideLabels[1]} hiddenStatus={STATUS_2P[setup.mode]}
         />
 
         {warning && (

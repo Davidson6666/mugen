@@ -8,6 +8,7 @@ import { connectedGamepads, buttonDown, PAD_BUTTONS, padLabel } from '../utils/g
 import { useGamepads } from '../utils/useGamepads.js';
 import { PALETTE } from '../utils/palette.js';
 import { Label, MenuOption } from './cvs2.jsx';
+import { STORY_LADDER } from '../data/storyLadder.js';
 
 const PAUSE_KEYS = ['Escape', 'ShiftLeft', 'ShiftRight'];
 const PAUSE_OPTIONS = [
@@ -111,7 +112,7 @@ export default function Battle() {
     // Vencer a ultima luta da campanha pula a tela de resultado normal e vai
     // direto pra tela de vitoria do Modo Historia.
     const isFinalStoryWin = setup.mode === 'story' && result.winner === 0
-      && setup.storyIndex >= setup.storyOpponents.length - 1;
+      && setup.storyIndex >= STORY_LADDER.length - 1;
     resetTo(isFinalStoryWin ? 'storyEnding' : 'result');
   }, [finishMatch, resetTo, setup]);
 
