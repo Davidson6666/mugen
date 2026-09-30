@@ -47,5 +47,19 @@ export function useStageScale() {
     };
   }, []);
 
+  useEffect(() => {
+    // Em tela cheia, o Esc normalmente sai da tela cheia - um saco num jogo
+    // onde Esc e a tecla de pausa e de voltar. A Keyboard Lock existe pra
+    // isso: com ela, o Esc chega no jogo em vez de o navegador engolir. Quem
+    // quiser mesmo sair da tela cheia segura o Esc por ~2 segundos.
+    //
+    // So funciona em navegador baseado em Chromium e em pagina segura
+    // (https ou localhost); onde nao houver, o Esc volta a sair da tela
+    // cheia como antes, e o jogo continua funcionando igual.
+    if (!fullscreen) return undefined;
+    navigator.keyboard?.lock?.(['Escape']).catch(() => {});
+    return () => navigator.keyboard?.unlock?.();
+  }, [fullscreen]);
+
   return { fullscreen, scale };
 }
