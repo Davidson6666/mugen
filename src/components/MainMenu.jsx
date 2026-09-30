@@ -61,14 +61,16 @@ export default function MainMenu() {
       return;
     }
     // Partida online vale Elo, entao aqui a conta e obrigatoria (nao tem lado
-    // "convidado" como no versus local).
+    // "convidado" como no versus local). Escolhe o personagem antes de entrar
+    // na fila: a escolha e trocada com o adversario quando a partida forma.
     if (option.id === 'online') {
+      startSetup('online');
       if (!profile) {
-        setAfterLogin('matchmaking');
+        setAfterLogin('characterSelect');
         go('login');
         return;
       }
-      go('matchmaking');
+      go('characterSelect');
       return;
     }
     startSetup(option.id);

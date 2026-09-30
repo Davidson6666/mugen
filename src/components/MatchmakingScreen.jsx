@@ -1,26 +1,35 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useMenu } from '../context/MenuContext.js';
+import { useGame } from '../context/GameContext.js';
 import { useAuth } from '../context/AuthContext.js';
 import { useMenuInput } from '../utils/useMenuInput.js';
-import { findMatch, leaveQueue, fetchProfileById } from '../utils/matchmaking.js';
+import { findMatch, leaveQueue, fetchProfileById, exchangePicks, markMatchStarted } from '../utils/matchmaking.js';
 import { PALETTE } from '../utils/palette.js';
+import maps from '../data/maps.json';
 import { Capsule, DiagonalBackdrop, Label } from './cvs2.jsx';
 
 const POLL_MS = 2000;
+// Depois que os dois ja sabem a escolha um do outro, o canal fica no ar mais
+// um instante: o outro lado pode estar recebendo a minha mensagem agora.
+const HANDSHAKE_GRACE_MS = 900;
 
-// Fila de partida online (Fase 2). Entra na fila, fica perguntando de dois em
-// dois segundos se ja apareceu adversario, e mostra quem caiu contra voce. A
-// partida em si (os dois jogando de verdade) ainda depende das fases de
-// motor deterministico e rede.
+// Fila de partida online. Entra na fila, espera formar par, combina com o
+// adversario qual personagem cada um escolheu e entao os dois montam
+// exatamente a mesma partida (mesma ordem de personagens, mesmo cenario,
+// mesma semente) antes de cair na luta.
 export default function MatchmakingScreen() {
-  const { back } = useMenu();
+  const { back, resetTo } = useMenu();
+  const { setup, startOnlineMatch } = useGame();
   const { profile, loading } = useAuth();
   const myId = profile?.id;
+  const myCharacter = setup.characters[0];
 
   const [status, setStatus] = useState('searching');
   const [opponent, setOpponent] = useState(null);
   const [error, setError] = useState(null);
   const [seconds, setSeconds] = useState(0);
+  // O setup montado fica aqui ate a carencia do aperto de mao passar.
+  const startRef = useRef(null);
 
   useMenuInput({ onCancel: back });
 
@@ -31,10 +40,35 @@ export default function MatchmakingScreen() {
   }, [status]);
 
   useEffect(() => {
-    if (loading || !myId) return undefined;
+    if (loading || !myId || !myCharacter) return undefined;
 
     let cancelled = false;
     let timer = 0;
+    let stopExchange = null;
+    let graceTimer = 0;
+
+    const beginMatch = (match, opponentPick, opponentProfile) => {
+      const iAmPlayer1 = match.player1_id === myId;
+      const characters = iAmPlayer1 ? [myCharacter, opponentPick] : [opponentPick, myCharacter];
+      const seed = Number(match.seed);
+      startRef.current = {
+        characters,
+        // Cenario sorteado pela semente: os dois caem no mesmo sem precisar
+        // combinar nada.
+        mapId: maps[seed % maps.length].id,
+        matchId: match.id,
+        seed,
+        localPlayerIndex: iAmPlayer1 ? 0 : 1,
+        opponentName: opponentProfile?.username ?? 'ADVERSARIO',
+      };
+      markMatchStarted(match.id);
+      graceTimer = setTimeout(() => {
+        if (cancelled) return;
+        stopExchange?.();
+        startOnlineMatch(startRef.current);
+        resetTo('versus');
+      }, HANDSHAKE_GRACE_MS);
+    };
 
     const tick = async () => {
       const { match, error: rpcError } = await findMatch();
@@ -48,11 +82,22 @@ export default function MatchmakingScreen() {
         timer = setTimeout(tick, POLL_MS);
         return;
       }
+
       const otherId = match.player1_id === myId ? match.player2_id : match.player1_id;
       const { profile: other } = await fetchProfileById(otherId);
       if (cancelled) return;
       setOpponent(other ?? null);
-      setStatus('found');
+      setStatus('pairing');
+
+      stopExchange = exchangePicks({
+        matchId: match.id,
+        userId: myId,
+        characterId: myCharacter,
+        onOpponentPick: (characterId) => {
+          if (cancelled || startRef.current) return;
+          beginMatch(match, characterId, other);
+        },
+      });
     };
 
     tick();
@@ -60,18 +105,20 @@ export default function MatchmakingScreen() {
     return () => {
       cancelled = true;
       clearTimeout(timer);
+      clearTimeout(graceTimer);
+      stopExchange?.();
       // Sair da tela (ou fechar o jogo) tira da fila: ninguem fica esperando
       // por alguem que nao esta mais na frente do computador.
       leaveQueue();
     };
-  }, [loading, myId]);
+  }, [loading, myId, myCharacter, startOnlineMatch, resetTo]);
 
   const dots = '.'.repeat(seconds % 4);
-  // Estar deslogado aqui e so um caso de tela, nao um estado que precisa
-  // virar setState (a tela do menu ja exige login antes de chegar aqui).
-  const loggedOut = !loading && !myId;
-  const shownStatus = loggedOut ? 'error' : status;
-  const shownError = loggedOut ? 'Precisa estar logado para procurar partida.' : error;
+  // Estar deslogado ou sem personagem aqui e so um caso de tela, nao um estado
+  // que precisa virar setState (o menu ja exige as duas coisas antes).
+  const missing = !loading && (!myId || !myCharacter);
+  const shownStatus = missing ? 'error' : status;
+  const shownError = missing ? 'Escolha um personagem e entre na conta antes.' : error;
 
   return (
     <div className="cvs2-screen">
@@ -90,7 +137,7 @@ export default function MatchmakingScreen() {
           </g>
         )}
 
-        {shownStatus === 'found' && (
+        {shownStatus === 'pairing' && (
           <g>
             <Label x={640} y={300} size={56} anchor="middle" fill={PALETTE.fieldYellow} stroke={10}>
               ADVERSARIO ENCONTRADO!
@@ -98,11 +145,11 @@ export default function MatchmakingScreen() {
             <Label x={640} y={400} size={90} anchor="middle" stroke={14}>
               {(opponent?.username ?? '???').toUpperCase()}
             </Label>
-            <Capsule x={490} y={432} width={300} size={32} align="start">
+            <Capsule x={490} y={432} width={300} size={32}>
               {`ELO ${opponent?.elo_rating ?? '?'}`}
             </Capsule>
-            <Label x={640} y={560} size={26} weight={800} anchor="middle" stroke={6}>
-              A PARTIDA EM SI AINDA NAO RODA: FALTAM AS FASES DE MOTOR E REDE
+            <Label x={640} y={560} size={28} weight={800} anchor="middle" stroke={6}>
+              COMBINANDO OS PERSONAGENS...
             </Label>
           </g>
         )}
@@ -119,9 +166,7 @@ export default function MatchmakingScreen() {
           </Capsule>
         )}
 
-        <Label x={1240} y={700} size={22} weight={600} anchor="end" stroke={5}>
-          {shownStatus === 'found' ? 'K OU ESC VOLTA' : 'K OU ESC CANCELA'}
-        </Label>
+        <Label x={1240} y={700} size={22} weight={600} anchor="end" stroke={5}>K OU ESC CANCELA</Label>
       </svg>
     </div>
   );

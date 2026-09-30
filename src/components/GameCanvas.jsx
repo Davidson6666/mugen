@@ -13,6 +13,7 @@ import { resolveAttack, resolveBodyCollision } from '../systems/CollisionDetecto
 import { InputHandler } from '../utils/InputHandler.js';
 import { buildCommand, PRESS_ACTIONS } from '../utils/combatInput.js';
 import { createRandom, randomSeed } from '../utils/rng.js';
+import { LockstepClient, NET_INPUT_DELAY } from '../systems/net/LockstepClient.js';
 import { PALETTE, PALETTE_HEX } from '../utils/palette.js';
 import characters from '../data/characters.json';
 import maps from '../data/maps.json';
@@ -143,6 +144,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
     const audio = new AudioManager();
     audioRef.current = audio;
     let onDebugKey = null;
+    let net = null;
 
     async function boot() {
       const instance = new Application();
@@ -222,8 +224,19 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       // animacao resolvidos.
       const ai = new AIController(detectors[1].combos, matchSetup.difficulty, { random });
       const match = new GameStateManager({ introFrames: ROUND_INTRO_FRAMES });
-      const cpuEnabled = matchSetup.mode !== 'versusPlayer';
+      // Online: os dois lados sao gente de verdade, a IA fica de fora e o lado
+      // do adversario e movido pelo input que chega pela rede.
+      const online = matchSetup.mode === 'online';
+      const localIndex = online ? (matchSetup.localPlayerIndex ?? 0) : 0;
+      const cpuEnabled = !online && matchSetup.mode !== 'versusPlayer';
       let matchEndTimer = 0;
+      let walkoverSent = false;
+
+      if (online) {
+        net = new LockstepClient({ matchId: matchSetup.matchId });
+        await net.join();
+        if (disposed) return;
+      }
 
       const shadows = [groundShadow(), groundShadow()];
       for (const shadow of shadows) world.addChild(shadow);
@@ -352,13 +365,26 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
 
         const fighting = match.phase === 'fighting';
 
+        // Online: o que estou apertando agora so vale daqui a alguns ticks, e
+        // ja sai para o adversario. O agendamento acontece em todo tick (mesmo
+        // congelado ou fora do combate), senao abriria buraco na sequencia e o
+        // outro lado ficaria esperando para sempre.
+        if (online) {
+          // Sempre o teclado principal (WASD + J/K/L), nao importa se eu sou o
+          // lado esquerdo ou o direito da partida.
+          const pressed = { ...buildCommand(input, 0), ...latched[localIndex] };
+          latched[localIndex] = {};
+          net.schedule(tick + NET_INPUT_DELAY, pressed);
+        }
+
         // Durante a pausa de impacto a luta inteira congela; so faisca,
         // tremor e HUD continuam.
         const frozen = feedback.update(delta);
         if (frozen && fighting) {
           for (const index of [0, 1]) {
             if (index === 1 && cpuEnabled) continue;
-            const pressed = buildCommand(input, index);
+            if (online && index !== localIndex) continue;
+            const pressed = buildCommand(input, online ? 0 : index);
             for (const action of PRESS_ACTIONS) if (pressed[action]) latched[index][action] = true;
           }
         }
@@ -369,10 +395,17 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
           fighters.forEach((fighter, index) => {
             let command = { ...NEUTRAL_COMMAND };
             if (fighting) {
-              command = index === 1 && cpuEnabled
-                ? ai.update(fighter, fighters[0], delta)
-                : { ...buildCommand(input, index), ...latched[index] };
-              latched[index] = {};
+              if (online) {
+                // Os dois lados leem da mesma sequencia agendada: o meu input
+                // de alguns ticks atras e o dele que chegou pela rede.
+                const scheduled = index === localIndex ? net.localCommand(tick) : net.remoteCommand(tick);
+                command = scheduled ?? { ...NEUTRAL_COMMAND };
+              } else {
+                command = index === 1 && cpuEnabled
+                  ? ai.update(fighter, fighters[0], delta)
+                  : { ...buildCommand(input, index), ...latched[index] };
+                latched[index] = {};
+              }
               // O buffer le a direcao ja relativa ao lado que o personagem
               // encara, por isso o flip precisa acontecer antes.
               command = { ...command, combo: detectors[index].feed(command, fighter.facing, now, fighter.comboModes) };
@@ -440,8 +473,26 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
         accumulator -= steps * MS_PER_TICK;
         if (steps > MAX_CATCHUP_TICKS) steps = MAX_CATCHUP_TICKS;
         for (let step = 0; step < steps; step += 1) {
+          // Online: sem o input do adversario para o proximo tick, a luta
+          // espera nele em vez de adivinhar (e o preco do lockstep). O tempo
+          // parado nao fica guardado, senao o jogo dispararia em camera
+          // rapida quando o pacote chegasse.
+          if (online && !net.canStep(tick + 1)) {
+            accumulator = 0;
+            break;
+          }
           tick += 1;
           stepLogic();
+        }
+
+        if (online) {
+          net.flushIfStale();
+          net.forget(tick);
+          // Adversario sumiu no meio da luta: vitoria por W.O.
+          if (net.abandoned && !walkoverSent) {
+            walkoverSent = true;
+            onMatchEndRef.current?.({ winner: localIndex, wins: [...match.wins], walkover: true });
+          }
         }
 
         renderFrame(ticker.deltaTime);
@@ -468,6 +519,8 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       input.detach();
       audio.dispose();
       audioRef.current = null;
+      net?.dispose();
+      net = null;
       if (onDebugKey) window.removeEventListener('keydown', onDebugKey);
       if (app) {
         app.destroy(true, { children: true });

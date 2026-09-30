@@ -70,7 +70,11 @@ export default function VersusScreen() {
     );
   }
 
-  const tags = ['1P', setup.mode === 'versusCpu' ? 'CPU' : '2P'];
+  let tags = ['1P', setup.mode === 'versusPlayer' ? '2P' : 'CPU'];
+  if (setup.mode === 'online') {
+    const opponent = (setup.opponentName ?? 'ADVERSARIO').toUpperCase();
+    tags = setup.localPlayerIndex === 1 ? [opponent, 'VOCE'] : ['VOCE', opponent];
+  }
 
   return (
     <div className="cvs2-screen">

@@ -10,6 +10,13 @@ const EMPTY_SETUP = {
   // inicio da campanha, e em qual luta dela o jogador esta agora.
   storyOpponents: [],
   storyIndex: 0,
+  // So usado na partida online: identificacao da partida no servidor, a
+  // semente que faz os dois lados sortearem igual, qual dos dois lados sou eu
+  // e o nome de quem esta do outro lado.
+  matchId: null,
+  seed: null,
+  localPlayerIndex: 0,
+  opponentName: null,
 };
 
 // Tudo que a partida precisa saber antes de comecar, e o resultado depois que
@@ -47,6 +54,14 @@ export function GameProvider({ children }) {
     setSetup((current) => ({ ...current, storyIndex: current.storyIndex + 1 }));
   }, []);
 
+  // Partida online: os dois lados montam exatamente este mesmo setup (mesma
+  // ordem de personagens, mesmo cenario, mesma semente), so mudando qual e o
+  // lado local.
+  const startOnlineMatch = useCallback((online) => {
+    setSetup({ ...EMPTY_SETUP, mode: 'online', ...online });
+    setResult(null);
+  }, []);
+
   const value = useMemo(
     () => ({
       setup,
@@ -57,9 +72,10 @@ export function GameProvider({ children }) {
       chooseDifficulty,
       setStoryOpponents,
       advanceStory,
+      startOnlineMatch,
       finishMatch: setResult,
     }),
-    [setup, result, startSetup, chooseCharacter, chooseMap, chooseDifficulty, setStoryOpponents, advanceStory],
+    [setup, result, startSetup, chooseCharacter, chooseMap, chooseDifficulty, setStoryOpponents, advanceStory, startOnlineMatch],
   );
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

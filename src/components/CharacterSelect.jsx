@@ -48,10 +48,10 @@ const SIDES = [
   { tab: { x: 1244, y: 578, align: 'end' }, status: [1240, 566, 'end'], stand: [1070, 500] },
 ];
 
-function SideInfo({ player, character, confirmed, isCpu, label }) {
+function SideInfo({ player, character, confirmed, isCpu, label, hiddenStatus }) {
   const { tab, status, stand } = SIDES[player];
   let statusText = confirmed ? 'PRONTO!' : 'ESCOLHENDO...';
-  if (isCpu) statusText = 'SORTEADA';
+  if (isCpu) statusText = hiddenStatus ?? 'SORTEADA';
   return (
     <g>
       <Pedestal x={stand[0]} y={stand[1]} />
@@ -69,9 +69,14 @@ export default function CharacterSelect() {
   const { setup, chooseCharacter } = useGame();
   const { profile } = useAuth();
   const twoPlayers = setup.mode === 'versusPlayer';
+  const online = setup.mode === 'online';
   // No local (VERSUS PLAYER) o 1P e o dono da conta logada; o 2P e sempre
-  // convidado, sem conta (o login so foi exigido do 1P na tela anterior).
-  const sideLabels = twoPlayers ? [profile?.username?.toUpperCase() ?? '1P', 'CONVIDADO'] : [null, null];
+  // convidado, sem conta (o login so foi exigido do 1P na tela anterior). No
+  // online quem esta do outro lado ainda nem existe: a escolha dele so chega
+  // depois, quando a fila formar a partida.
+  let sideLabels = [null, null];
+  if (twoPlayers) sideLabels = [profile?.username?.toUpperCase() ?? '1P', 'CONVIDADO'];
+  if (online) sideLabels = [profile?.username?.toUpperCase() ?? '1P', 'ADVERSARIO'];
 
   const [cursors, setCursors] = useState([0, characters.length - 1]);
   const [confirmed, setConfirmed] = useState([null, null]);
@@ -114,7 +119,9 @@ export default function CharacterSelect() {
     chooseCharacter(player, picked.id);
 
     const done = twoPlayers ? next[0] && next[1] : next[0];
-    if (done) go('stageSelect');
+    // No online nao tem escolha de cenario: ele sai da semente da partida,
+    // igual pros dois. O proximo passo e a fila.
+    if (done) go(online ? 'matchmaking' : 'stageSelect');
   };
 
   const onCancel = (player) => {
@@ -158,7 +165,10 @@ export default function CharacterSelect() {
         <Label x={410} y={58} size={40} weight={800}>PLAYER SELECT</Label>
 
         <SideInfo player={0} character={shown[0]} confirmed={Boolean(confirmed[0])} label={sideLabels[0]} />
-        <SideInfo player={1} character={shown[1]} confirmed={Boolean(confirmed[1])} isCpu={!twoPlayers} label={sideLabels[1]} />
+        <SideInfo
+          player={1} character={shown[1]} confirmed={Boolean(confirmed[1])} isCpu={!twoPlayers}
+          label={sideLabels[1]} hiddenStatus={online ? 'AINDA NA FILA' : undefined}
+        />
 
         {warning && (
           <g>

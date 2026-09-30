@@ -108,12 +108,15 @@ begin
     raise exception 'precisa estar logado para procurar partida';
   end if;
 
-  -- Alguem ja me pegou enquanto eu esperava?
+  -- Alguem ja me pegou enquanto eu esperava? So vale partida que acabou de
+  -- ser formada: uma partida velha parada em "pending" (o adversario fechou o
+  -- jogo antes de comecar) nao pode ser devolvida pra quem entrou na fila de
+  -- novo, senao ele fica preso esperando um adversario que ja foi embora.
   select * into found_match
   from public.matches
   where status = 'pending'
     and (player1_id = me or player2_id = me)
-    and created_at > now() - interval '2 minutes'
+    and created_at > now() - interval '20 seconds'
   order by created_at desc
   limit 1;
 
@@ -159,3 +162,24 @@ $$;
 
 revoke execute on function public.find_match() from public;
 grant execute on function public.find_match() to authenticated;
+
+-- Assim que a luta comeca de verdade, a partida sai de "pending". Sem isso,
+-- quem sai da luta e volta pra fila na sequencia cairia na mesma partida de
+-- novo, agora sem ninguem do outro lado.
+create or replace function public.start_match(match_id uuid)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  update public.matches
+  set status = 'playing'
+  where id = match_id
+    and status = 'pending'
+    and (player1_id = auth.uid() or player2_id = auth.uid());
+end;
+$$;
+
+revoke execute on function public.start_match(uuid) from public;
+grant execute on function public.start_match(uuid) to authenticated;

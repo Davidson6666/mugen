@@ -26,12 +26,53 @@ export async function findMatch() {
   return { match: match?.id ? match : null };
 }
 
+// Tira a partida de "pending" quando a luta comeca, pra fila nao devolver ela
+// de novo pra quem voltar a procurar partida logo em seguida.
+export async function markMatchStarted(matchId) {
+  if (!supabase) return;
+  await supabase.rpc('start_match', { match_id: matchId });
+}
+
 export async function leaveQueue() {
   if (!supabase) return;
   const { data: session } = await supabase.auth.getSession();
   const userId = session.session?.user?.id;
   if (!userId) return;
   await supabase.from('queue').delete().eq('user_id', userId);
+}
+
+// Combina com o adversario qual personagem cada um escolheu, antes da luta
+// comecar. Os dois ficam anunciando a propria escolha ate saber a do outro
+// (o Realtime nao guarda mensagem pra quem chega depois, entao repetir e o
+// jeito simples de garantir que os dois recebem). Devolve uma funcao pra
+// desligar o canal.
+export function exchangePicks({ matchId, userId, characterId, onOpponentPick }) {
+  if (!supabase) return () => {};
+  const channel = supabase.channel(`match:${matchId}:setup`, { config: { broadcast: { self: false } } });
+  const announce = () => channel.send({
+    type: 'broadcast',
+    event: 'pick',
+    payload: { userId, characterId },
+  });
+
+  let timer = 0;
+  channel.on('broadcast', { event: 'pick' }, ({ payload }) => {
+    if (payload.userId === userId) return;
+    // Responde na hora: se ele ja mandou a dele, e porque esta esperando a
+    // minha, e eu posso estar prestes a sair do canal.
+    announce();
+    onOpponentPick(payload.characterId);
+  });
+  channel.subscribe((status) => {
+    if (status !== 'SUBSCRIBED') return;
+    announce();
+    timer = setInterval(announce, 500);
+  });
+
+  return () => {
+    clearInterval(timer);
+    supabase.removeChannel(channel);
+  };
 }
 
 // Nome e Elo do adversario (perfis sao de leitura publica).
