@@ -169,7 +169,8 @@ export default function MainMenu() {
       </svg>
 
       {MENU_FIGHTERS.map((fighter, position) => (
-        <div key={fighter.id} className="cvs2-sprite" style={{ left: 125 + position * 110, top: 470 }}>
+        // Mesmo ponto do pedestal: o sprite fica em pe em cima dele, centrado.
+        <div key={fighter.id} className="cvs2-sprite" style={{ left: 180 + position * 110, top: 470 }}>
           <FighterSprite entry={fighter} flip={position === 1} />
         </div>
       ))}

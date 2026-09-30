@@ -44,12 +44,18 @@ export default function FighterSprite({ entry, animation = 'idle', scale: baseSc
 
   // Personagem de sprite pequeno aparece na mesma escala da luta.
   const scale = baseScale * (config.spriteScale ?? 1);
-  const { frameWidth, frameHeight } = config.spriteGridSize;
+  const { frameWidth, frameHeight, baseline = frameHeight } = config.spriteGridSize;
   const frame = frameAt(clip, ticks);
+  // O pe nao fica no fundo do quadro, e sim na linha "baseline" (e o mesmo
+  // numero que a luta usa para apoiar o personagem no chao). Sem descer essa
+  // sobra, quem tem muito espaco vazio embaixo flutua acima do pedestal - a
+  // Chun-Li, por exemplo, por 195px.
+  const footGap = (frameHeight - baseline) * scale;
   const box = {
     width: frameWidth * scale,
     height: frameHeight * scale,
-    transform: flip ? 'scaleX(-1)' : undefined,
+    transform: [flip ? 'scaleX(-1)' : null, footGap ? `translateY(${footGap}px)` : null]
+      .filter(Boolean).join(' ') || undefined,
     // Ampliado: suave, sem pixel em bloco.
     imageRendering: scale === 1 ? undefined : 'auto',
   };
