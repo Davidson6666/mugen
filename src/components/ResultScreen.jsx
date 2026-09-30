@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMenu } from '../context/MenuContext.js';
 import { useGame } from '../context/GameContext.js';
 import { useMenuInput } from '../utils/useMenuInput.js';
+import { reportMatchResult } from '../utils/matchmaking.js';
 import { PALETTE } from '../utils/palette.js';
 import characters from '../data/characters.json';
 import FighterSprite from './FighterSprite.jsx';
@@ -12,6 +13,14 @@ const DEFAULT_OPTIONS = [{ id: 'rematch', label: 'REVANCHE' }, MENU_OPTION];
 const STORY_LOSS_OPTIONS = [{ id: 'retry', label: 'TENTAR NOVAMENTE' }, MENU_OPTION];
 const STORY_WIN_OPTIONS = [{ id: 'continue', label: 'PROXIMA LUTA' }, MENU_OPTION];
 const ONLINE_OPTIONS = [MENU_OPTION];
+
+// O que mostrar depois de reportar quem ganhou pro servidor.
+const RANKING_MESSAGE = {
+  fechada: 'RANKING ATUALIZADO',
+  esperando: 'ESPERANDO O ADVERSARIO CONFIRMAR O RESULTADO',
+  conflito: 'OS DOIS LADOS DISCORDARAM: NINGUEM GANHOU ELO',
+  'ja fechada': 'RANKING JA ATUALIZADO',
+};
 
 const optionPosition = (index) => {
   const y = 470 + index * 72;
@@ -45,6 +54,29 @@ export default function ResultScreen() {
   if (isStory) OPTIONS = winnerIndex === 0 ? STORY_WIN_OPTIONS : STORY_LOSS_OPTIONS;
   if (online) OPTIONS = ONLINE_OPTIONS;
 
+  const [ranking, setRanking] = useState(null);
+
+  // Partida online: conta pro servidor quem ganhou. O Elo so mexe quando os
+  // dois lados reportarem a mesma coisa; o W.O. nao vale ranking justamente
+  // porque quem saiu nunca vai confirmar.
+  const matchId = setup.matchId;
+  const winnerUserId = online ? setup.playerIds?.[winnerIndex] : null;
+  const walkover = Boolean(result?.walkover);
+  useEffect(() => {
+    if (!matchId || !winnerUserId || walkover) return undefined;
+    let cancelled = false;
+    reportMatchResult(matchId, winnerUserId).then(({ status, error: reportError }) => {
+      if (cancelled) return;
+      setRanking(reportError ? 'NAO FOI POSSIVEL ATUALIZAR O RANKING' : RANKING_MESSAGE[status] ?? null);
+    });
+    return () => { cancelled = true; };
+  }, [matchId, winnerUserId, walkover]);
+
+  // W.O. nao vale ranking, e isso ja da pra dizer na hora de desenhar.
+  const rankingMessage = walkover && online
+    ? 'O ADVERSARIO SAIU: A PARTIDA NAO VALE RANKING'
+    : ranking;
+
   const onMove = (_player, direction) => {
     if (direction === 'up' || direction === 'down') {
       setIndex((current) => (current + (direction === 'up' ? -1 : 1) + OPTIONS.length)
@@ -76,6 +108,9 @@ export default function ResultScreen() {
         <Label x={48} y={300} size={56} fill={PALETTE.fieldYellow} stroke={10}>WINS!</Label>
         {result?.walkover && (
           <Label x={48} y={356} size={30} weight={800} stroke={6}>O ADVERSARIO SAIU DA PARTIDA</Label>
+        )}
+        {rankingMessage && (
+          <Label x={48} y={404} size={26} weight={800} fill={PALETTE.fieldYellow} stroke={6}>{rankingMessage}</Label>
         )}
 
         <Pedestal x={STAND[0]} y={STAND[1]} />

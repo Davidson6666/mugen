@@ -477,7 +477,12 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
           // espera nele em vez de adivinhar (e o preco do lockstep). O tempo
           // parado nao fica guardado, senao o jogo dispararia em camera
           // rapida quando o pacote chegasse.
-          if (online && !net.canStep(tick + 1)) {
+          //
+          // Depois que a partida ja tem vencedor, os ticks que faltam sao so
+          // a pose de vitoria e o anuncio: ai nao da mais pra esperar input
+          // nenhum, porque quem termina primeiro sai da tela e para de
+          // mandar - e quem ficou atras travaria aqui para sempre.
+          if (online && match.matchWinner === null && !net.canStep(tick + 1)) {
             accumulator = 0;
             break;
           }
@@ -488,8 +493,9 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
         if (online) {
           net.flushIfStale();
           net.forget(tick);
-          // Adversario sumiu no meio da luta: vitoria por W.O.
-          if (net.abandoned && !walkoverSent) {
+          // Adversario sumiu no meio da luta: vitoria por W.O. Com a partida
+          // ja decidida isso nao vale mais - o resultado de verdade ja existe.
+          if (net.abandoned && !walkoverSent && match.matchWinner === null) {
             walkoverSent = true;
             onMatchEndRef.current?.({ winner: localIndex, wins: [...match.wins], walkover: true });
           }

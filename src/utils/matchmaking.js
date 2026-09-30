@@ -33,6 +33,20 @@ export async function markMatchStarted(matchId) {
   await supabase.rpc('start_match', { match_id: matchId });
 }
 
+// Reporta quem ganhou. O Elo so mexe quando os dois lados reportam a mesma
+// coisa (a funcao no servidor cuida disso), entao aqui nao da pra inventar
+// vitoria. Devolve { status } com 'esperando' | 'fechada' | 'conflito' |
+// 'ja fechada', ou { error }.
+export async function reportMatchResult(matchId, winnerUserId) {
+  if (!supabase) return { error: 'Supabase nao configurado.' };
+  const { data, error } = await supabase.rpc('report_match_result', {
+    match_id: matchId,
+    winner: winnerUserId,
+  });
+  if (error) return { error: error.message };
+  return { status: data };
+}
+
 export async function leaveQueue() {
   if (!supabase) return;
   const { data: session } = await supabase.auth.getSession();

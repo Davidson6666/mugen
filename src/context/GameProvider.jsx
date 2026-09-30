@@ -17,6 +17,9 @@ const EMPTY_SETUP = {
   seed: null,
   localPlayerIndex: 0,
   opponentName: null,
+  // Dono de cada lado, na mesma ordem dos personagens: precisa pra dizer ao
+  // servidor quem ganhou no fim.
+  playerIds: [null, null],
 };
 
 // Tudo que a partida precisa saber antes de comecar, e o resultado depois que

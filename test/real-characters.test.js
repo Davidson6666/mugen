@@ -35,10 +35,12 @@ const cast = (animation) => command({ combo: { animation } });
 
 // Mesma ordem do game loop em GameCanvas, com os efeitos. Guarda por onde o
 // atacante passou (nomes das animacoes) e tudo o que conectou.
-function arena(leftX, rightX) {
+// random: sorteio da luta, para o teste poder forcar o que e sorteado (a
+// esquiva do corvo, por exemplo) em vez de depender da sorte.
+function arena(leftX, rightX, { random } = {}) {
   const fighters = [
-    new Fighter({ record, map, x: leftX, facing: 1 }),
-    new Fighter({ record, map, x: rightX, facing: -1 }),
+    new Fighter({ record, map, x: leftX, facing: 1, random }),
+    new Fighter({ record, map, x: rightX, facing: -1, random }),
   ];
   fighters[0].opponent = fighters[1];
   fighters[1].opponent = fighters[0];
@@ -244,12 +246,13 @@ test('itachi: selo sem defesa impede a guarda', () => {
   assert.equal(defender.blocking, false);
 });
 
-test('itachi: Genjutsu do dedo faz metade dos golpes virar corvos e deixa um clone explosivo', (t) => {
-  const world = run(arena(600, 640), cast('finger'), 200);
+test('itachi: Genjutsu do dedo faz metade dos golpes virar corvos e deixa um clone explosivo', () => {
+  // Sorteio fixo abaixo de 0.5: a esquiva sempre sai, senao o teste dependeria
+  // de dar sorte na metade das vezes.
+  const world = run(arena(600, 640, { random: () => 0.4 }), cast('finger'), 200);
   const [itachi, rival] = world.fighters;
   assert.ok(itachi.buffs.crowEvade > 0, 'o genjutsu pegou');
 
-  t.mock.method(Math, 'random', () => 0.4);
   const before = itachi.health;
   // O rival (dummy sem efeitos: usa o proprio Itachi) ataca.
   world.results.length = 0;

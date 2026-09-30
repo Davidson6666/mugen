@@ -183,3 +183,104 @@ $$;
 
 revoke execute on function public.start_match(uuid) from public;
 grant execute on function public.start_match(uuid) to authenticated;
+
+
+-- ===================================================================
+-- Fase 5: resultado da partida mexe no Elo
+-- ===================================================================
+
+-- Quem cada lado disse que ganhou. O Elo so mexe quando os dois dizem a mesma
+-- coisa: sozinho, ninguem consegue inventar que venceu.
+alter table public.matches add column if not exists report_player1 uuid references auth.users(id);
+alter table public.matches add column if not exists report_player2 uuid references auth.users(id);
+
+-- Fecha a partida e atualiza o ranking dos dois. Roda como funcao de servidor
+-- porque a tabela profiles nao tem policy de UPDATE nenhuma: nem o dono da
+-- conta consegue mexer no proprio Elo pela API: so por aqui.
+--
+-- Formula de Elo padrao, K = 32: quem ganha de alguem muito melhor sobe
+-- bastante, quem ganha de alguem muito pior sobe quase nada.
+--
+-- Devolve: 'esperando' (falta o outro reportar), 'fechada' (Elo atualizado),
+-- 'conflito' (cada um disse que ganhou) ou 'ja fechada'.
+create or replace function public.report_match_result(match_id uuid, winner uuid)
+returns text
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  me uuid := auth.uid();
+  found_match public.matches;
+  loser uuid;
+  winner_elo integer;
+  loser_elo integer;
+  expected numeric;
+  k constant integer := 32;
+begin
+  if me is null then
+    raise exception 'precisa estar logado';
+  end if;
+
+  select * into found_match from public.matches where id = match_id for update;
+  if not found then
+    raise exception 'partida nao encontrada';
+  end if;
+  if me <> found_match.player1_id and me <> found_match.player2_id then
+    raise exception 'voce nao joga essa partida';
+  end if;
+  if winner <> found_match.player1_id and winner <> found_match.player2_id then
+    raise exception 'vencedor nao e dessa partida';
+  end if;
+  if found_match.status = 'finished' then
+    return 'ja fechada';
+  end if;
+
+  if me = found_match.player1_id then
+    found_match.report_player1 := winner;
+    update public.matches set report_player1 = winner where id = match_id;
+  else
+    found_match.report_player2 := winner;
+    update public.matches set report_player2 = winner where id = match_id;
+  end if;
+
+  if found_match.report_player1 is null or found_match.report_player2 is null then
+    return 'esperando';
+  end if;
+
+  -- Cada um diz que ganhou: ninguem leva Elo, e a partida fica marcada como
+  -- estragada em vez de premiar um chute.
+  if found_match.report_player1 <> found_match.report_player2 then
+    update public.matches set status = 'abandoned' where id = match_id;
+    return 'conflito';
+  end if;
+
+  loser := case when winner = found_match.player1_id
+    then found_match.player2_id else found_match.player1_id end;
+
+  select elo_rating into winner_elo from public.profiles where id = winner for update;
+  select elo_rating into loser_elo from public.profiles where id = loser for update;
+
+  -- Chance que o vencedor tinha de ganhar, pelo Elo dos dois antes da partida.
+  expected := 1.0 / (1.0 + power(10.0, (loser_elo - winner_elo)::numeric / 400.0));
+
+  update public.profiles
+    set elo_rating = elo_rating + round(k * (1 - expected))::integer,
+        wins = wins + 1
+    where id = winner;
+
+  update public.profiles
+    set elo_rating = greatest(100, elo_rating - round(k * (1 - expected))::integer),
+        losses = losses + 1
+    where id = loser;
+
+  update public.matches
+    set status = 'finished', winner_id = winner
+    where id = match_id;
+
+  return 'fechada';
+end;
+$$;
+
+revoke execute on function public.report_match_result(uuid, uuid) from public;
+grant execute on function public.report_match_result(uuid, uuid) to authenticated;

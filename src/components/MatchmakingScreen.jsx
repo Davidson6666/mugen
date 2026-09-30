@@ -60,6 +60,7 @@ export default function MatchmakingScreen() {
         seed,
         localPlayerIndex: iAmPlayer1 ? 0 : 1,
         opponentName: opponentProfile?.username ?? 'ADVERSARIO',
+        playerIds: [match.player1_id, match.player2_id],
       };
       markMatchStarted(match.id);
       graceTimer = setTimeout(() => {
