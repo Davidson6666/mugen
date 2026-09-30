@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMenu } from '../context/MenuContext.js';
 import { useGame } from '../context/GameContext.js';
 import { useAuth } from '../context/AuthContext.js';
 import { useMenuInput } from '../utils/useMenuInput.js';
+import { fetchLeaderboard } from '../utils/auth.js';
 import { PALETTE } from '../utils/palette.js';
 import characters from '../data/characters.json';
 import FighterSprite from './FighterSprite.jsx';
@@ -33,11 +34,27 @@ const MENU_FIGHTERS = ['itachi']
   .map((id) => characters.find((entry) => entry.id === id))
   .filter(Boolean);
 
+// Podio no canto de baixo: so entra quem ja jogou alguma partida online. Com
+// o ranking zerado (todo mundo em 1200, sem partida) nao tem podio nenhum.
+const PODIUM_SIZE = 3;
+const PODIUM_COLORS = [PALETTE.fieldYellow, PALETTE.textPrimary, PALETTE.fieldOrangeLight];
+
 export default function MainMenu() {
   const { go, setAfterLogin } = useMenu();
   const { startSetup } = useGame();
   const { profile, loading, logout } = useAuth();
   const [index, setIndex] = useState(0);
+  const [podium, setPodium] = useState([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchLeaderboard().then(({ rows }) => {
+      if (cancelled) return;
+      const played = (rows ?? []).filter((row) => row.wins + row.losses > 0);
+      setPodium(played.slice(0, PODIUM_SIZE));
+    });
+    return () => { cancelled = true; };
+  }, []);
 
   const move = (_player, direction) => {
     if (direction === 'up') setIndex((current) => (current - 1 + OPTIONS.length) % OPTIONS.length);
@@ -129,6 +146,23 @@ export default function MainMenu() {
             />
           );
         })}
+
+        {podium.length > 0 && (
+          <g>
+            <Label x={44} y={534} size={30} weight={800} fill={PALETTE.fieldYellow} stroke={6}>
+              MELHORES DO RANKING
+            </Label>
+            {podium.map((row, position) => (
+              <Label
+                key={row.username}
+                x={44} y={578 + position * 42} size={32} weight={800}
+                fill={PODIUM_COLORS[position]} stroke={6}
+              >
+                {`${position + 1}  ${row.username.toUpperCase()}  ·  ${row.elo_rating}`}
+              </Label>
+            ))}
+          </g>
+        )}
 
         <Label x={1240} y={674} size={26} weight={800} anchor="end" stroke={6}>{OPTIONS[index].hint}</Label>
         <Label x={1240} y={708} size={22} weight={600} anchor="end" stroke={5}>W/S NAVEGA · J CONFIRMA</Label>
