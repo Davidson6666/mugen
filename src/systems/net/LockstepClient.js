@@ -21,6 +21,10 @@ const SILENCE_TIMEOUT_MS = 10000;
 // Antes da primeira mensagem dele a espera e maior: pode estar carregando os
 // sprites ainda.
 const JOIN_TIMEOUT_MS = 40000;
+// Quanto tempo esperar o adversario ficar pronto antes de desistir dele, e de
+// quanto em quanto tempo reavisar que eu ja estou.
+const READY_TIMEOUT_MS = 90000;
+const READY_RETRY_MS = 250;
 // Ticks antigos sao jogados fora: uma luta longa encheria a memoria a 60/s.
 const KEEP_TICKS = 600;
 
@@ -60,6 +64,8 @@ export class LockstepClient {
     this.lastFlush = 0;
     this.lastRemoteAt = null;
     this.joinedAt = Date.now();
+    this.opponentReady = false;
+    this.disposed = false;
   }
 
   async join() {
@@ -73,11 +79,50 @@ export class LockstepClient {
         this.remoteByTick.set(frame.t, decodeCommand(frame.m));
       }
     });
+    this.channel.on('broadcast', { event: 'ready' }, () => {
+      this.lastRemoteAt = Date.now();
+      if (this.opponentReady) return;
+      this.opponentReady = true;
+      // Responde na hora: o meu "pronto" pode ter saido antes de ele entrar no
+      // canal, e nesse caso ele nunca recebeu.
+      this.sendReady();
+    });
     await new Promise((resolve, reject) => {
       this.channel.subscribe((status) => {
         if (status === 'SUBSCRIBED') resolve();
         if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') reject(new Error(`canal: ${status}`));
       });
+    });
+  }
+
+  sendReady() {
+    this.channel?.send({ type: 'broadcast', event: 'ready', payload: {} });
+  }
+
+  // Ninguem pode comecar a simular antes dos dois estarem no canal: o
+  // Realtime nao guarda mensagem pra quem chega depois, entao o input que o
+  // mais rapido mandasse enquanto o outro ainda carregava se perderia, e o
+  // que chegasse depois travaria esperando ticks que nunca vem.
+  //
+  // Devolve false se o adversario nunca apareceu (fechou o jogo carregando).
+  async waitForOpponent(timeoutMs = READY_TIMEOUT_MS) {
+    if (this.opponentReady) return true;
+    this.sendReady();
+    const started = Date.now();
+    return new Promise((resolve) => {
+      const timer = setInterval(() => {
+        if (this.opponentReady || this.disposed) {
+          clearInterval(timer);
+          resolve(this.opponentReady);
+          return;
+        }
+        if (Date.now() - started > timeoutMs) {
+          clearInterval(timer);
+          resolve(false);
+          return;
+        }
+        this.sendReady();
+      }, READY_RETRY_MS);
     });
   }
 
@@ -131,6 +176,7 @@ export class LockstepClient {
   }
 
   dispose() {
+    this.disposed = true;
     if (!this.channel) return;
     supabase.removeChannel(this.channel);
     this.channel = null;

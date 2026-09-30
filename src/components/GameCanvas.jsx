@@ -77,6 +77,12 @@ function groundShadow() {
 // Quanto mais alto no pulo, menor e mais fraca a sombra.
 const SHADOW_FADE_HEIGHT = 160;
 
+const STATUS_MESSAGE = {
+  loading: 'Carregando assets...',
+  waiting: 'Esperando o adversario entrar na luta...',
+  error: 'Erro ao carregar. Veja o console.',
+};
+
 function debugText() {
   return new Text({
     text: '',
@@ -236,6 +242,19 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
         net = new LockstepClient({ matchId: matchSetup.matchId });
         await net.join();
         if (disposed) return;
+        // Um computador carrega muito mais rapido que o outro. Quem chega
+        // primeiro espera aqui, no canal ja aberto: comecar a simular antes
+        // do outro entrar jogaria o input dos primeiros ticks no vazio (o
+        // Realtime nao guarda mensagem pra quem chega depois), e os dois
+        // acabariam travados esperando ticks que nunca chegam.
+        setStatus('waiting');
+        const ready = await net.waitForOpponent();
+        if (disposed) return;
+        if (!ready) {
+          // Nunca apareceu: nem comeca a partida.
+          onMatchEndRef.current?.({ winner: localIndex, wins: [0, 0], walkover: true });
+          return;
+        }
       }
 
       const shadows = [groundShadow(), groundShadow()];
@@ -540,7 +559,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       <div ref={containerRef} className="game-canvas__surface" />
       {status !== 'ready' && (
         <p className="game-canvas__status">
-          {status === 'loading' ? 'Carregando assets...' : 'Erro ao carregar. Veja o console.'}
+          {STATUS_MESSAGE[status] ?? STATUS_MESSAGE.error}
         </p>
       )}
     </div>
