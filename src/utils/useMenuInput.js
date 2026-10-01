@@ -1,28 +1,34 @@
 import { useEffect, useRef } from 'react';
 import { connectedGamepads } from './gamepad.js';
 import { MenuInputGate } from './MenuInputGate.js';
+import { currentControls } from './controls.js';
 
 // Navegacao de menu por teclado e gamepad, com os mesmos controles da luta.
 // A leitura aqui e por evento (e nao por frame como na arena) porque menu
 // reage a toque de tecla, nao a tecla segurada.
 
-const KEY_BINDINGS = {
-  KeyW: [0, 'move', 'up'],
-  KeyS: [0, 'move', 'down'],
-  KeyA: [0, 'move', 'left'],
-  KeyD: [0, 'move', 'right'],
-  KeyJ: [0, 'confirm'],
-  KeyK: [0, 'cancel'],
+// Teclas que valem em menu sempre, mesmo que o jogador remapeie tudo: sao a
+// saida de emergencia de quem se perder no proprio mapa.
+const FIXED_BINDINGS = {
   Enter: [0, 'confirm'],
   Space: [0, 'confirm'],
   Escape: [0, 'cancel'],
-  ArrowUp: [1, 'move', 'up'],
-  ArrowDown: [1, 'move', 'down'],
-  ArrowLeft: [1, 'move', 'left'],
-  ArrowRight: [1, 'move', 'right'],
-  Numpad1: [1, 'confirm'],
-  Numpad2: [1, 'cancel'],
 };
+
+// Menu usa o mesmo controle da luta: as direcoes navegam, o soco confirma e o
+// chute volta. Montado na hora porque o jogador pode ter acabado de trocar uma
+// tecla na tela de configuracoes.
+function keyBindings() {
+  const bindings = { ...FIXED_BINDINGS };
+  currentControls().forEach((map, player) => {
+    for (const direction of ['up', 'down', 'left', 'right']) {
+      if (map[direction]) bindings[map[direction]] = [player, 'move', direction];
+    }
+    if (map.punch) bindings[map.punch] = [player, 'confirm'];
+    if (map.kick) bindings[map.kick] = [player, 'cancel'];
+  });
+  return bindings;
+}
 
 const GAMEPAD_DIRECTIONS = [
   [12, 'up'],
@@ -54,7 +60,7 @@ export function useMenuInput(handlers, enabled = true) {
 
     const onKeyDown = (event) => {
       if (event.repeat) return;
-      const binding = KEY_BINDINGS[event.code];
+      const binding = keyBindings()[event.code];
       if (!binding) return;
       // Player 2 so navega quando a tela pede dois cursores.
       if (binding[0] === 1 && !handlersRef.current.twoPlayers) return;

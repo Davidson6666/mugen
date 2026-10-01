@@ -3,28 +3,8 @@
 // que a logica de jogo enxergue o mesmo input do inicio ao fim do tick.
 
 import { buttonDown, connectedGamepads, PAD_BUTTONS } from './gamepad.js';
+import { currentControls } from './controls.js';
 export const ACTIONS = ['up', 'down', 'left', 'right', 'punch', 'kick', 'special', 'jump', 'guard'];
-
-const KEYBOARD_MAPS = [
-  {
-    up: 'KeyW',
-    left: 'KeyA',
-    down: 'KeyS',
-    right: 'KeyD',
-    punch: 'KeyJ',
-    kick: 'KeyK',
-    special: 'KeyL',
-  },
-  {
-    up: 'ArrowUp',
-    left: 'ArrowLeft',
-    down: 'ArrowDown',
-    right: 'ArrowRight',
-    punch: 'Numpad1',
-    kick: 'Numpad2',
-    special: 'Numpad3',
-  },
-];
 
 const PAUSE_KEYS = ['Escape', 'ShiftLeft', 'ShiftRight'];
 
@@ -74,7 +54,9 @@ export class InputHandler {
 
   readPlayer(player, pads = connectedGamepads()) {
     const state = blankState();
-    const map = KEYBOARD_MAPS[player];
+    // Lido na hora: quem troca uma tecla nas configuracoes nao precisa
+    // reiniciar o jogo pra valer.
+    const map = currentControls()[player];
     for (const action of ACTIONS) {
       if (this.keys.has(map[action])) state[action] = true;
     }
