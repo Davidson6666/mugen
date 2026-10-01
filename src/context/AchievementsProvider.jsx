@@ -51,7 +51,13 @@ export function AchievementsProvider({ children }) {
   // devolve so o que e novo, que vira aviso na tela.
   const report = useCallback(async (outcome) => {
     if (!userId) return [];
-    const { unlocked } = await reportMatch(outcome);
+    const { unlocked, error } = await reportMatch(outcome);
+    // Falha aqui some sem deixar rastro: o jogador nao ganha a conquista e
+    // nada avisa. Entao reclama alto no console.
+    if (error) {
+      console.error('Nao foi possivel registrar a partida nas conquistas:', error);
+      return [];
+    }
     if (unlocked.length === 0) return [];
     setLoaded((current) => ({ userId, ids: [...new Set([...current.ids, ...unlocked])] }));
     setToasts((current) => [...current, ...unlocked]);

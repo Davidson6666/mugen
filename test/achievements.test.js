@@ -62,7 +62,7 @@ test('nenhum outro personagem nasce travado', () => {
 // elenco mudar, lembrando de atualizar o banco junto.
 test('o numero de personagens bate com o que o SQL espera', () => {
   const noSql = readFileSync(new URL('../supabase/schema.sql', import.meta.url), 'utf8');
-  const esperado = Number(noSql.match(/if vencidos >= (\d+) then\s*\n\s*candidatas := candidatas \|\| 'all_characters'/)?.[1]);
+  const esperado = Number(noSql.match(/if vencidos >= (\d+) then\s*\n\s*candidatas := array_append\(candidatas, 'all_characters'\)/)?.[1]);
   assert.ok(Number.isFinite(esperado), 'nao achei o numero no schema.sql');
   assert.equal(
     characters.length,
@@ -76,4 +76,40 @@ test('as conquistas novas estao na lista', () => {
     assert.ok(achievementById(id), `faltou ${id}`);
   }
   assert.equal(ACHIEVEMENTS.length, 10);
+});
+
+// Uma partida ja foi perdida assim: "candidatas || 'first_win'" faz o Postgres
+// tentar ler o texto como array e a funcao inteira quebra em tempo de
+// execucao, sem o jogo perceber. Como nao da pra rodar Postgres no teste, o
+// jeito e nao deixar o padrao perigoso voltar pro arquivo.
+test('o SQL nao concatena texto solto em array', () => {
+  const sql = readFileSync(new URL('../supabase/schema.sql', import.meta.url), 'utf8');
+  const suspeitas = sql.split('\n').filter((linha) => /\w+ := \w+ \|\| '[^']*';/.test(linha));
+  assert.deepEqual(
+    suspeitas, [],
+    `use array_append: "array || 'texto'" quebra com malformed array literal.\n${suspeitas.join('\n')}`,
+  );
+});
+
+// Toda conquista que o servidor pode conceder precisa existir na lista do app,
+// senao o aviso no canto apareceria vazio.
+test('toda conquista concedida pelo SQL existe na lista do jogo', () => {
+  const sql = readFileSync(new URL('../supabase/schema.sql', import.meta.url), 'utf8');
+  const concedidas = [...sql.matchAll(/array_append\(candidatas, '([a-z_0-9]+)'\)/g)].map((m) => m[1]);
+  assert.ok(concedidas.length > 0, 'nao achei nenhuma concessao no SQL');
+  for (const id of new Set(concedidas)) {
+    assert.ok(achievementById(id), `o SQL concede "${id}", que nao esta em src/data/achievements.js`);
+  }
+});
+
+// E o contrario: conquista na lista que o servidor nunca concede seria uma
+// promessa que o jogo nao cumpre.
+test('toda conquista da lista pode ser concedida pelo SQL', () => {
+  const sql = readFileSync(new URL('../supabase/schema.sql', import.meta.url), 'utf8');
+  for (const entry of ACHIEVEMENTS) {
+    assert.ok(
+      sql.includes(`array_append(candidatas, '${entry.id}')`),
+      `"${entry.id}" esta na lista mas o SQL nunca concede: ninguem conseguiria ganhar`,
+    );
+  }
 });

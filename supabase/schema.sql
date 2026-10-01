@@ -349,6 +349,8 @@ set search_path = public
 as $$
 declare
   me uuid := auth.uid();
+  -- array_append em vez de "candidatas || 'nome'": com o ||, o Postgres tenta
+  -- ler o texto solto como array e quebra ("malformed array literal").
   candidatas text[] := '{}';
   vencidos integer;
   novas text[];
@@ -365,40 +367,40 @@ begin
   end if;
 
   if p_won then
-    candidatas := candidatas || 'first_win';
+    candidatas := array_append(candidatas, 'first_win');
   end if;
   if p_won and p_shutout then
-    candidatas := candidatas || 'flawless';
+    candidatas := array_append(candidatas, 'flawless');
   end if;
   if p_mode = 'online' then
-    candidatas := candidatas || 'online_debut';
+    candidatas := array_append(candidatas, 'online_debut');
     if p_won then
-      candidatas := candidatas || 'online_win';
+      candidatas := array_append(candidatas, 'online_win');
     end if;
   end if;
   if p_story_complete then
-    candidatas := candidatas || 'story_champion';
+    candidatas := array_append(candidatas, 'story_champion');
   end if;
   -- Defendeu nao conta como levar golpe: o contador do jogo so sobe em golpe
   -- que passou pela guarda.
   if p_won and p_untouched then
-    candidatas := candidatas || 'untouched';
+    candidatas := array_append(candidatas, 'untouched');
   end if;
   if p_comeback then
-    candidatas := candidatas || 'comeback';
+    candidatas := array_append(candidatas, 'comeback');
   end if;
   if p_best_combo >= 15 then
-    candidatas := candidatas || 'combo_15';
+    candidatas := array_append(candidatas, 'combo_15');
   end if;
 
   select count(*) into vencidos from public.character_wins where user_id = me;
   if vencidos >= 5 then
-    candidatas := candidatas || 'five_characters';
+    candidatas := array_append(candidatas, 'five_characters');
   end if;
   -- TOTAL_PERSONAGENS: se o elenco crescer, mude aqui tambem. Existe um teste
   -- (test/achievements.test.js) que quebra de proposito pra lembrar disso.
   if vencidos >= 18 then
-    candidatas := candidatas || 'all_characters';
+    candidatas := array_append(candidatas, 'all_characters');
   end if;
 
   -- Insere todas de uma vez: o "on conflict do nothing" faz o returning
