@@ -235,8 +235,8 @@
   "spriteScale": 0.39183673469387753,
   "stats": {
     "maxHealth": 100,
-    "walkSpeed": 2.7,
-    "jumpForce": 8.5,
+    "walkSpeed": 3.24,
+    "jumpForce": 9.6,
     "jumpGravity": 0.55
   },
   "hurtbox": {
@@ -485,7 +485,7 @@
         {
           "from": 1,
           "until": 1,
-          "damage": 7,
+          "damage": 6.826,
           "hitstun": 15,
           "box": {
             "offsetX": 185,
@@ -525,7 +525,7 @@
         {
           "from": 1,
           "until": 1,
-          "damage": 8,
+          "damage": 7.801,
           "hitstun": 15,
           "box": {
             "offsetX": 185,
@@ -559,7 +559,7 @@
         {
           "from": 1,
           "until": 1,
-          "damage": 11,
+          "damage": 10.726,
           "hitstun": 15,
           "box": {
             "offsetX": 180,
@@ -1709,5 +1709,8 @@
     "delay": 12,
     "gap": 14,
     "height": 125
+  },
+  "balance": {
+    "damage": 0.586
   }
 }

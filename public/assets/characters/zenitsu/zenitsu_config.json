@@ -258,7 +258,7 @@
         3
       ],
       "loop": false,
-      "damage": 14.54,
+      "damage": 13.175,
       "hitstun": 12,
       "hits": [
         {
@@ -270,7 +270,7 @@
             "offsetX": 102,
             "offsetY": 40
           },
-          "damage": 2.91,
+          "damage": 2.637,
           "hitstun": 18,
           "push": 3
         }
@@ -330,7 +330,7 @@
         5
       ],
       "loop": false,
-      "damage": 17.45,
+      "damage": 15.812,
       "hitstun": 14,
       "hits": [
         {
@@ -342,7 +342,7 @@
             "offsetX": 95,
             "offsetY": 40
           },
-          "damage": 2.91,
+          "damage": 2.637,
           "hitstun": 20,
           "push": 3
         }
@@ -413,7 +413,7 @@
             "offsetX": 95,
             "offsetY": 22
           },
-          "damage": 4.85,
+          "damage": 4.395,
           "hitstun": 22,
           "push": 5
         }
@@ -2316,7 +2316,7 @@
   ],
   "assetVersion": "7fad4fe8b6",
   "balance": {
-    "damage": 1.477
+    "damage": 1.517
   },
   "atlas": [
     [

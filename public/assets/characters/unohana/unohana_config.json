@@ -347,7 +347,7 @@
         5
       ],
       "loop": false,
-      "damage": 17.83,
+      "damage": 16.362,
       "hitstun": 12,
       "hits": [
         {
@@ -359,7 +359,7 @@
             "offsetX": 112,
             "offsetY": 24
           },
-          "damage": 3.57,
+          "damage": 3.276,
           "hitstun": 18,
           "push": 4
         }
@@ -416,7 +416,7 @@
             "offsetX": 119,
             "offsetY": 41
           },
-          "damage": 3.57,
+          "damage": 3.276,
           "hitstun": 20,
           "push": 5
         }
@@ -471,7 +471,7 @@
         7
       ],
       "loop": false,
-      "damage": 21.4,
+      "damage": 19.638,
       "hitstun": 14,
       "hits": [
         {
@@ -483,7 +483,7 @@
             "offsetX": 126,
             "offsetY": 37
           },
-          "damage": 3.57,
+          "damage": 3.276,
           "hitstun": 20,
           "push": 5
         }
@@ -548,7 +548,7 @@
             "offsetX": 121,
             "offsetY": 8
           },
-          "damage": 4.76,
+          "damage": 4.368,
           "hitstun": 28,
           "push": 9,
           "heavy": true,
@@ -2120,7 +2120,7 @@
   ],
   "assetVersion": "59b9fc18ee",
   "balance": {
-    "damage": 1.066
+    "damage": 1.221
   },
   "atlas": [
     [

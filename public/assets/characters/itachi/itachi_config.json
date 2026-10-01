@@ -279,7 +279,7 @@
         6
       ],
       "loop": false,
-      "damage": 16.79,
+      "damage": 15.864,
       "hitstun": 12,
       "hits": [
         {
@@ -291,7 +291,7 @@
             "offsetX": 126,
             "offsetY": 65
           },
-          "damage": 4.48,
+          "damage": 4.233,
           "hitstun": 22,
           "push": 5
         }
@@ -340,7 +340,7 @@
             "offsetX": 150,
             "offsetY": 58
           },
-          "damage": 4.48,
+          "damage": 4.233,
           "hitstun": 26,
           "push": 5
         }
@@ -410,7 +410,7 @@
             "offsetX": 151,
             "offsetY": 75
           },
-          "damage": 4.48,
+          "damage": 4.233,
           "hitstun": 38,
           "push": 6
         }
@@ -576,7 +576,7 @@
             "offsetX": 145,
             "offsetY": 48
           },
-          "damage": 6.72,
+          "damage": 6.349,
           "hitstun": 40,
           "push": 6,
           "heavy": true
@@ -638,7 +638,7 @@
             "offsetX": 143,
             "offsetY": 51
           },
-          "damage": 8.96,
+          "damage": 8.466,
           "hitstun": 28,
           "push": 12,
           "heavy": true,
@@ -673,7 +673,7 @@
         6
       ],
       "loop": false,
-      "damage": 20.15,
+      "damage": 19.038,
       "hitstun": 14,
       "hits": [
         {
@@ -685,7 +685,7 @@
             "offsetX": 128,
             "offsetY": 66
           },
-          "damage": 4.48,
+          "damage": 4.233,
           "hitstun": 24,
           "push": 5
         }
@@ -741,7 +741,7 @@
             "offsetX": 130,
             "offsetY": 55
           },
-          "damage": 4.48,
+          "damage": 4.233,
           "hitstun": 30,
           "push": 5
         }
@@ -833,7 +833,7 @@
             "offsetX": 156,
             "offsetY": 55
           },
-          "damage": 3.36,
+          "damage": 3.175,
           "hitstun": 22,
           "push": 6
         },
@@ -846,7 +846,7 @@
             "offsetX": 154,
             "offsetY": 54
           },
-          "damage": 3.36,
+          "damage": 3.175,
           "hitstun": 70,
           "push": 3,
           "heavy": true
@@ -4863,7 +4863,7 @@
   ],
   "assetVersion": "e81aff32b8",
   "balance": {
-    "damage": 0.823
+    "damage": 0.945
   },
   "atlas": [
     [

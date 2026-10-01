@@ -258,7 +258,7 @@
         4
       ],
       "loop": false,
-      "damage": 7.64,
+      "damage": 5.247,
       "hitstun": 12,
       "hits": [
         {
@@ -270,7 +270,7 @@
             "offsetX": 119,
             "offsetY": 54
           },
-          "damage": 2.55,
+          "damage": 1.751,
           "hitstun": 34,
           "push": 4,
           "heavy": true
@@ -359,7 +359,7 @@
             "offsetX": 113,
             "offsetY": 26
           },
-          "damage": 2.55,
+          "damage": 1.751,
           "hitstun": 30,
           "push": 4,
           "heavy": true
@@ -471,7 +471,7 @@
             "offsetX": 119,
             "offsetY": 69
           },
-          "damage": 0.51,
+          "damage": 0.35,
           "hitstun": 20,
           "push": 1
         }
@@ -635,7 +635,7 @@
             "offsetX": 94,
             "offsetY": 70
           },
-          "damage": 3.06,
+          "damage": 2.102,
           "hitstun": 30,
           "push": 10,
           "heavy": true,
@@ -809,7 +809,7 @@
         4
       ],
       "loop": false,
-      "damage": 9.17,
+      "damage": 6.298,
       "hitstun": 14,
       "hits": [
         {
@@ -821,7 +821,7 @@
             "offsetX": 118,
             "offsetY": 77
           },
-          "damage": 2.55,
+          "damage": 1.751,
           "hitstun": 30,
           "push": 4,
           "heavy": true
@@ -909,7 +909,7 @@
             "offsetX": 112,
             "offsetY": 71
           },
-          "damage": 2.55,
+          "damage": 1.751,
           "hitstun": 30,
           "push": 4,
           "heavy": true
@@ -1002,7 +1002,7 @@
             "offsetX": 103,
             "offsetY": 76
           },
-          "damage": 3.06,
+          "damage": 2.102,
           "hitstun": 36,
           "push": 16,
           "heavy": true
@@ -3864,7 +3864,7 @@
   ],
   "assetVersion": "512877ac35",
   "balance": {
-    "damage": 2.405
+    "damage": 2.284
   },
   "atlas": [
     [
