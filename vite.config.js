@@ -42,9 +42,20 @@ export default defineConfig({
         runtimeCaching: [
           {
             urlPattern: /\/assets\/(characters|maps|sfx)\//,
-            handler: 'CacheFirst',
+            // NetworkFirst, e nao CacheFirst: com CacheFirst o app servia pra
+            // sempre o personagem que ja estava gravado e nem perguntava ao
+            // servidor. Um personagem atualizado so aparecia com Ctrl+Shift+R
+            // e voltava ao antigo assim que o app era reaberto - foi o que
+            // aconteceu com o Humberto, e aconteceria com qualquer mudanca em
+            // personagem ou cenario.
+            //
+            // Perguntar primeiro e barato: o servidor responde "nao mudou"
+            // (304) quando o arquivo e o mesmo, sem reenviar os megabytes. Sem
+            // internet, cai no cache e o jogo continua jogavel.
+            handler: 'NetworkFirst',
             options: {
               cacheName: 'mugen-game-assets',
+              networkTimeoutSeconds: 3,
               expiration: { maxEntries: 600, maxAgeSeconds: 60 * 60 * 24 * 90 },
               cacheableResponse: { statuses: [0, 200] },
             },
