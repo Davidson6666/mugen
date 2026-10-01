@@ -37,9 +37,11 @@ export const ACHIEVEMENTS = [
     description: 'VENCEU COM CINCO PERSONAGENS DIFERENTES',
   },
   {
+    // O id continua "untouched" de proposito: e o que esta gravado nas contas
+    // que ja ganharam. Nome e descricao sao so o que aparece na tela.
     id: 'untouched',
-    name: 'IMPECAVEL',
-    description: 'GANHOU UMA PARTIDA SEM LEVAR UM UNICO GOLPE',
+    name: 'PERFECT',
+    description: 'VENCEU OS DOIS ROUNDS COM A VIDA INTACTA',
   },
   {
     id: 'comeback',

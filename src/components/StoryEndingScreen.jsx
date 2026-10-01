@@ -30,7 +30,7 @@ export default function StoryEndingScreen() {
       storyComplete: true,
       // A luta final da campanha nao passa pela tela de resultado, entao os
       // numeros dela sao contados aqui.
-      untouched: (result?.hitsTaken?.[0] ?? 1) === 0,
+      untouched: Boolean(result?.perfect?.[0]),
       comeback: Boolean(result?.comeback),
       bestCombo: result?.bestCombo?.[0] ?? 0,
       shutout: (result?.wins?.[1] ?? 1) === 0,

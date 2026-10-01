@@ -13,6 +13,7 @@ import { resolveAttack, resolveBodyCollision } from '../systems/CollisionDetecto
 import { InputHandler } from '../utils/InputHandler.js';
 import { buildCommand, PRESS_ACTIONS } from '../utils/combatInput.js';
 import { createRandom, randomSeed } from '../utils/rng.js';
+import { roundEndAnnounce } from '../utils/roundAnnounce.js';
 import { LockstepClient, NET_INPUT_DELAY } from '../systems/net/LockstepClient.js';
 import { PALETTE, PALETTE_HEX } from '../utils/palette.js';
 import characters from '../data/characters.json';
@@ -45,13 +46,6 @@ const HUD_FONTS = ['italic 900 40px "Barlow Condensed"', 'italic 800 28px "Barlo
 // controle e liberado, como nos Street Fighter de fliperama.
 const ROUND_INTRO_FRAMES = 80;
 const FIGHT_ANNOUNCE_FRAMES = 45;
-
-const ROUND_END_MESSAGE = {
-  ko: 'K.O.',
-  timeout: 'TEMPO ESGOTADO',
-  doubleKo: 'EMPATE',
-  timeDraw: 'EMPATE',
-};
 
 const NEUTRAL_COMMAND = {
   left: false,
@@ -254,6 +248,9 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       // se perdeu nao e virada nenhuma.
       let bestCombo = [0, 0];
       let roundLowHealth = [1, 1];
+      // A menor vida da partida inteira (esta nao zera na virada de round): e
+      // o que decide o PERFECT da conquista, que pede os dois rounds limpos.
+      let matchLowHealth = [1, 1];
       let comeback = false;
       const healthPct = (fighter) => fighter.health / fighter.config.stats.maxHealth;
 
@@ -339,7 +336,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
         if (event.type === 'roundEnd') {
           // Virada: ganhou o round depois de ter estado a menos de 10% de vida.
           if (event.winner !== null && roundLowHealth[event.winner] < 0.1) comeback = true;
-          hud.announce(ROUND_END_MESSAGE[event.reason], 140);
+          hud.announce(roundEndAnnounce(event.reason, event.winner, roundLowHealth), 140);
           if (event.winner !== null) {
             fighters[event.winner].playRoundEndPose(true);
             fighters[1 - event.winner].playRoundEndPose(false);
@@ -426,7 +423,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
               winner: match.matchWinner,
               wins: [...match.wins],
               bestCombo: [...bestCombo],
-              hitsTaken: fighters.map((fighter) => fighter.hitsTaken),
+              perfect: matchLowHealth.map((low) => low === 1),
               comeback,
             });
           }
@@ -506,7 +503,9 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
         if (fighting) {
           fighters.forEach((fighter, index) => {
             bestCombo[index] = Math.max(bestCombo[index], fighter.comboCount);
-            roundLowHealth[index] = Math.min(roundLowHealth[index], healthPct(fighter));
+            const pct = healthPct(fighter);
+            roundLowHealth[index] = Math.min(roundLowHealth[index], pct);
+            matchLowHealth[index] = Math.min(matchLowHealth[index], pct);
           });
         }
 

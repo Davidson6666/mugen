@@ -83,9 +83,10 @@ export default function ResultScreen() {
   const shutout = playerWon && score[playerSide] >= 2 && score[1 - playerSide] === 0;
   const myCharacter = setup.characters[playerSide];
   const mode = setup.mode;
-  // "Sem levar um golpe" conta golpe que passou pela guarda: defender nao
-  // estraga a conquista, levar sim.
-  const untouched = playerWon && (result?.hitsTaken?.[playerSide] ?? 1) === 0;
+  // PERFECT: venceu com a barra de vida intacta nos dois rounds. Defender
+  // custa um tiquinho de vida, entao quem defendeu ja nao fez perfect - e o
+  // mesmo criterio do PERFECT que aparece na tela no fim do round.
+  const untouched = playerWon && Boolean(result?.perfect?.[playerSide]);
   const comeback = Boolean(result?.comeback);
   const bestCombo = result?.bestCombo?.[playerSide] ?? 0;
   useEffect(() => {

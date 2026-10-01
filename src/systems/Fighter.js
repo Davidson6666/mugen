@@ -131,11 +131,6 @@ export class Fighter {
     this.illusion = null;
     this.comboCount = 0;
     this.comboTimer = 0;
-    // Quantos golpes este lutador levou sem defender, somando a partida
-    // inteira. E uma estatistica pras conquistas, nao estado de luta: por isso
-    // nao zera na virada de round (resetForRound). Golpe defendido nao conta -
-    // defender e justamente nao levar o golpe.
-    this.hitsTaken = 0;
     // Selos do Kotoamatsukami: impedem defender/pular por alguns ticks.
     this.seals = {};
     // Estados temporarios a favor (ex.: crowEvade, do Genjutsu do dedo).
@@ -948,7 +943,6 @@ export class Fighter {
   // launch: { vx, vy } do golpe que derruba; from: x de quem bateu (para que
   // lado cair); scale: escala de quem bateu (o avanco vem em px do pacote).
   takeHit(damage, hitstun, { launch = null, from = null, scale = 1, heavy = false } = {}) {
-    this.hitsTaken += 1;
     this.chainUsed.clear();
     this.breakCombo();
     this.fillAwakening(this.awakening?.onHit ?? 0);
