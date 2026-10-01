@@ -1,11 +1,11 @@
-// Regras de round e condicao de vitoria: melhor de 3, 90 segundos por round, e
+// Regras de round e condicao de vitoria: melhor de 3, 120 segundos por round, e
 // o round de desempate (1 a 1) rodando sem cronometro ate o nocaute.
 //
 // Abertura (introFrames): cada round comeca com o anuncio "ROUND N" e os
 // lutadores parados, sem cronometro; quando ela acaba sai o evento "fight" e
 // a luta vale. Com introFrames = 0 (o padrao), o round ja comeca valendo.
 
-export const ROUND_TIME_SECONDS = 90;
+export const ROUND_TIME_SECONDS = 120;
 export const ROUNDS_TO_WIN = 2;
 const FRAMES_PER_SECOND = 60;
 

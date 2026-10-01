@@ -90,8 +90,12 @@ test('equilibrio: o multiplicador de dano vale (x2 causa o dobro; fracionario se
   };
   const base = damageOf(1);
   assert.ok(base.hits >= 1 && base.taken > 0);
-  assert.equal(damageOf(2).taken, base.taken * 2);
-  assert.equal(damageOf(0.5).taken, base.taken / 2);
+  // Com dano fracionario, o dobro de 3.04 nao bate casa a casa em ponto
+  // flutuante: a conta chega a 6.079999999999998 por um lado e
+  // 6.0800000000000125 pelo outro. O que importa e o multiplicador valer.
+  const igual = (a, b) => Math.abs(a - b) < 1e-9;
+  assert.ok(igual(damageOf(2).taken, base.taken * 2), `${damageOf(2).taken} != ${base.taken * 2}`);
+  assert.ok(igual(damageOf(0.5).taken, base.taken / 2), `${damageOf(0.5).taken} != ${base.taken / 2}`);
 });
 
 test('equilibrio: dano fracionario nao impede o nocaute (sem sobra de ponto flutuante)', () => {

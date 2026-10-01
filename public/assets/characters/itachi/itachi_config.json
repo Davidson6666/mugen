@@ -9,8 +9,8 @@
   },
   "stats": {
     "maxHealth": 100,
-    "walkSpeed": 2.5,
-    "jumpForce": 8.5,
+    "walkSpeed": 3,
+    "jumpForce": 9.6,
     "jumpGravity": 0.55
   },
   "animations": {
@@ -279,7 +279,7 @@
         6
       ],
       "loop": false,
-      "damage": 15,
+      "damage": 16.79,
       "hitstun": 12,
       "hits": [
         {
@@ -291,7 +291,7 @@
             "offsetX": 126,
             "offsetY": 65
           },
-          "damage": 4,
+          "damage": 4.48,
           "hitstun": 22,
           "push": 5
         }
@@ -340,7 +340,7 @@
             "offsetX": 150,
             "offsetY": 58
           },
-          "damage": 4,
+          "damage": 4.48,
           "hitstun": 26,
           "push": 5
         }
@@ -410,7 +410,7 @@
             "offsetX": 151,
             "offsetY": 75
           },
-          "damage": 4,
+          "damage": 4.48,
           "hitstun": 38,
           "push": 6
         }
@@ -576,7 +576,7 @@
             "offsetX": 145,
             "offsetY": 48
           },
-          "damage": 6,
+          "damage": 6.72,
           "hitstun": 40,
           "push": 6,
           "heavy": true
@@ -638,7 +638,7 @@
             "offsetX": 143,
             "offsetY": 51
           },
-          "damage": 8,
+          "damage": 8.96,
           "hitstun": 28,
           "push": 12,
           "heavy": true,
@@ -673,7 +673,7 @@
         6
       ],
       "loop": false,
-      "damage": 18,
+      "damage": 20.15,
       "hitstun": 14,
       "hits": [
         {
@@ -685,7 +685,7 @@
             "offsetX": 128,
             "offsetY": 66
           },
-          "damage": 4,
+          "damage": 4.48,
           "hitstun": 24,
           "push": 5
         }
@@ -741,7 +741,7 @@
             "offsetX": 130,
             "offsetY": 55
           },
-          "damage": 4,
+          "damage": 4.48,
           "hitstun": 30,
           "push": 5
         }
@@ -833,7 +833,7 @@
             "offsetX": 156,
             "offsetY": 55
           },
-          "damage": 3,
+          "damage": 3.36,
           "hitstun": 22,
           "push": 6
         },
@@ -846,7 +846,7 @@
             "offsetX": 154,
             "offsetY": 54
           },
-          "damage": 3,
+          "damage": 3.36,
           "hitstun": 70,
           "push": 3,
           "heavy": true
@@ -3600,7 +3600,7 @@
           "count": 7,
           "damage": 1,
           "hitstun": 16,
-          "push": 5
+          "push": 0
         }
       ],
       "events": [
@@ -4863,7 +4863,7 @@
   ],
   "assetVersion": "e81aff32b8",
   "balance": {
-    "damage": 0.804
+    "damage": 0.823
   },
   "atlas": [
     [
@@ -11151,7 +11151,7 @@
           "count": 5,
           "damage": 1,
           "hitstun": 24,
-          "push": 3
+          "push": 0
         }
       ],
       "spawns": [
@@ -12807,7 +12807,7 @@
           "count": 4,
           "damage": 1,
           "hitstun": 16,
-          "push": 2
+          "push": 0
         }
       ],
       "spawns": [

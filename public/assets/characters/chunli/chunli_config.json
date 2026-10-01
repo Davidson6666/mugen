@@ -9,8 +9,8 @@
   },
   "stats": {
     "maxHealth": 100,
-    "walkSpeed": 2.5,
-    "jumpForce": 8.5,
+    "walkSpeed": 3,
+    "jumpForce": 9.6,
     "jumpGravity": 0.55
   },
   "animations": {
@@ -598,7 +598,7 @@
         2
       ],
       "loop": false,
-      "damage": 15,
+      "damage": 28.41,
       "hitstun": 12,
       "hits": [
         {
@@ -610,7 +610,7 @@
             "offsetX": 452,
             "offsetY": 223
           },
-          "damage": 1,
+          "damage": 1.89,
           "hitstun": 14,
           "push": 3
         }
@@ -678,7 +678,7 @@
             "offsetX": 437,
             "offsetY": 217
           },
-          "damage": 2,
+          "damage": 3.79,
           "hitstun": 18,
           "push": 4
         }
@@ -776,7 +776,7 @@
             "offsetX": 435,
             "offsetY": 238
           },
-          "damage": 4,
+          "damage": 7.58,
           "hitstun": 26,
           "push": 8,
           "heavy": true
@@ -845,7 +845,7 @@
         3
       ],
       "loop": false,
-      "damage": 18,
+      "damage": 34.1,
       "hitstun": 14,
       "hits": [
         {
@@ -857,7 +857,7 @@
             "offsetX": 421,
             "offsetY": 264
           },
-          "damage": 1,
+          "damage": 1.89,
           "hitstun": 14,
           "push": 3
         }
@@ -926,7 +926,7 @@
             "offsetX": 409,
             "offsetY": 205
           },
-          "damage": 2,
+          "damage": 3.79,
           "hitstun": 18,
           "push": 5
         }
@@ -1009,7 +1009,7 @@
             "offsetX": 420,
             "offsetY": 230
           },
-          "damage": 4,
+          "damage": 7.58,
           "hitstun": 26,
           "push": 9,
           "heavy": true
@@ -3350,7 +3350,7 @@
           },
           "damage": 2,
           "hitstun": 30,
-          "push": 1,
+          "push": 0,
           "every": 4,
           "count": 6,
           "launch": {
@@ -4306,7 +4306,7 @@
   ],
   "assetVersion": "d411703b36",
   "balance": {
-    "damage": 1.267
+    "damage": 1.44
   },
   "atlas": [
     [

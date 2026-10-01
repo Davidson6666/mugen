@@ -42,10 +42,13 @@ for (const [name, gap, minimum] of [
   });
 }
 
+// O chute sai na descida do pulo. Com o pulo mais alto de hoje, bater logo na
+// subida passa por cima da cabeca do alvo: o golpe nao mudou, o arco do pulo
+// e que ficou mais alto.
 test('pikachu: chute no ar', () => {
   const world = arena(record, 500, 560);
   step(world, command({ up: true, jump: true }));
-  for (let tick = 0; tick < 6; tick += 1) step(world);
+  for (let tick = 0; tick < 16; tick += 1) step(world);
   run(world, command({ combo: { animation: 'airKick', airAnimation: 'airKick' } }), 60);
   assert.ok(hits(world).length >= 1);
 });

@@ -9,8 +9,8 @@
   },
   "stats": {
     "maxHealth": 100,
-    "walkSpeed": 2.5,
-    "jumpForce": 8.5,
+    "walkSpeed": 3,
+    "jumpForce": 9.6,
     "jumpGravity": 0.55
   },
   "animations": {
@@ -464,7 +464,7 @@
         3
       ],
       "loop": false,
-      "damage": 15,
+      "damage": 21.6,
       "hitstun": 12,
       "hits": [
         {
@@ -476,7 +476,7 @@
             "offsetX": 129,
             "offsetY": 126
           },
-          "damage": 3,
+          "damage": 4.32,
           "hitstun": 18,
           "push": 4
         }
@@ -953,7 +953,7 @@
         3
       ],
       "loop": false,
-      "damage": 18,
+      "damage": 25.92,
       "hitstun": 14,
       "hits": [
         {
@@ -965,7 +965,7 @@
             "offsetX": 179,
             "offsetY": 163
           },
-          "damage": 3,
+          "damage": 4.32,
           "hitstun": 18,
           "push": 4
         }
@@ -1034,7 +1034,7 @@
             "offsetX": 157,
             "offsetY": 145
           },
-          "damage": 2,
+          "damage": 2.88,
           "hitstun": 20,
           "push": 4
         }
@@ -1121,7 +1121,7 @@
             "offsetX": 145,
             "offsetY": 79
           },
-          "damage": 5,
+          "damage": 7.2,
           "hitstun": 28,
           "push": 8,
           "heavy": true,
@@ -1391,7 +1391,7 @@
             "offsetX": 141,
             "offsetY": 143
           },
-          "damage": 5,
+          "damage": 7.2,
           "hitstun": 28,
           "push": 6,
           "heavy": true,
@@ -1649,7 +1649,7 @@
             "offsetX": 164,
             "offsetY": 124
           },
-          "damage": 1,
+          "damage": 1.44,
           "hitstun": 14,
           "push": 0,
           "every": 8,
@@ -1664,7 +1664,7 @@
             "offsetX": 151,
             "offsetY": 141
           },
-          "damage": 6,
+          "damage": 8.64,
           "hitstun": 36,
           "push": 12,
           "heavy": true,
@@ -3883,7 +3883,7 @@
           },
           "damage": 1,
           "hitstun": 20,
-          "push": 1,
+          "push": 0,
           "every": 4,
           "count": 9,
           "launch": {
@@ -7931,7 +7931,7 @@
   ],
   "assetVersion": "724851f684",
   "balance": {
-    "damage": 0.71
+    "damage": 0.819
   },
   "atlas": [
     [

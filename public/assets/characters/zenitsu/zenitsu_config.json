@@ -9,8 +9,8 @@
   },
   "stats": {
     "maxHealth": 100,
-    "walkSpeed": 2.5,
-    "jumpForce": 8.5,
+    "walkSpeed": 3,
+    "jumpForce": 9.6,
     "jumpGravity": 0.55
   },
   "animations": {
@@ -258,7 +258,7 @@
         3
       ],
       "loop": false,
-      "damage": 15,
+      "damage": 14.54,
       "hitstun": 12,
       "hits": [
         {
@@ -270,7 +270,7 @@
             "offsetX": 102,
             "offsetY": 40
           },
-          "damage": 3,
+          "damage": 2.91,
           "hitstun": 18,
           "push": 3
         }
@@ -330,7 +330,7 @@
         5
       ],
       "loop": false,
-      "damage": 18,
+      "damage": 17.45,
       "hitstun": 14,
       "hits": [
         {
@@ -342,7 +342,7 @@
             "offsetX": 95,
             "offsetY": 40
           },
-          "damage": 3,
+          "damage": 2.91,
           "hitstun": 20,
           "push": 3
         }
@@ -413,7 +413,7 @@
             "offsetX": 95,
             "offsetY": 22
           },
-          "damage": 5,
+          "damage": 4.85,
           "hitstun": 22,
           "push": 5
         }
@@ -2316,7 +2316,7 @@
   ],
   "assetVersion": "7fad4fe8b6",
   "balance": {
-    "damage": 1.284
+    "damage": 1.477
   },
   "atlas": [
     [

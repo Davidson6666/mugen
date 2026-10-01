@@ -9,8 +9,8 @@
   },
   "stats": {
     "maxHealth": 100,
-    "walkSpeed": 2.5,
-    "jumpForce": 8.5,
+    "walkSpeed": 3,
+    "jumpForce": 9.6,
     "jumpGravity": 0.55
   },
   "animations": {
@@ -347,7 +347,7 @@
         5
       ],
       "loop": false,
-      "damage": 15,
+      "damage": 17.83,
       "hitstun": 12,
       "hits": [
         {
@@ -359,7 +359,7 @@
             "offsetX": 112,
             "offsetY": 24
           },
-          "damage": 3,
+          "damage": 3.57,
           "hitstun": 18,
           "push": 4
         }
@@ -416,7 +416,7 @@
             "offsetX": 119,
             "offsetY": 41
           },
-          "damage": 3,
+          "damage": 3.57,
           "hitstun": 20,
           "push": 5
         }
@@ -471,7 +471,7 @@
         7
       ],
       "loop": false,
-      "damage": 18,
+      "damage": 21.4,
       "hitstun": 14,
       "hits": [
         {
@@ -483,7 +483,7 @@
             "offsetX": 126,
             "offsetY": 37
           },
-          "damage": 3,
+          "damage": 3.57,
           "hitstun": 20,
           "push": 5
         }
@@ -548,7 +548,7 @@
             "offsetX": 121,
             "offsetY": 8
           },
-          "damage": 4,
+          "damage": 4.76,
           "hitstun": 28,
           "push": 9,
           "heavy": true,
@@ -2120,7 +2120,7 @@
   ],
   "assetVersion": "59b9fc18ee",
   "balance": {
-    "damage": 0.972
+    "damage": 1.066
   },
   "atlas": [
     [
@@ -4054,7 +4054,7 @@
           },
           "damage": 3,
           "hitstun": 14,
-          "push": 2,
+          "push": 0,
           "every": 6,
           "count": 4,
           "launch": {
@@ -4181,7 +4181,7 @@
           },
           "damage": 2,
           "hitstun": 20,
-          "push": 3,
+          "push": 0,
           "every": 8,
           "count": 6,
           "launch": {
