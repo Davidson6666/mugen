@@ -284,3 +284,114 @@ $$;
 
 revoke execute on function public.report_match_result(uuid, uuid) from public;
 grant execute on function public.report_match_result(uuid, uuid) to authenticated;
+
+
+-- ===================================================================
+-- Conquistas
+-- ===================================================================
+
+-- Uma linha por conquista ganha. A chave composta impede ganhar a mesma duas
+-- vezes, e nao existe policy de UPDATE nem DELETE: conquista nao se perde nem
+-- muda de data depois de ganha.
+create table if not exists public.achievements (
+  user_id uuid not null references auth.users(id) on delete cascade,
+  achievement_id text not null,
+  earned_at timestamptz not null default now(),
+  primary key (user_id, achievement_id)
+);
+
+-- Com quais personagens a conta ja venceu. Serve pra conquista de vencer com
+-- varios personagens diferentes - precisa lembrar quais, nao so quantos.
+create table if not exists public.character_wins (
+  user_id uuid not null references auth.users(id) on delete cascade,
+  character_id text not null,
+  primary key (user_id, character_id)
+);
+
+alter table public.achievements enable row level security;
+alter table public.character_wins enable row level security;
+
+-- Cada um ve so as proprias conquistas ("minhas conquistas").
+drop policy if exists "Cada um ve as proprias conquistas" on public.achievements;
+create policy "Cada um ve as proprias conquistas"
+  on public.achievements for select
+  using (auth.uid() = user_id);
+
+drop policy if exists "Cada um ve os proprios personagens vencedores" on public.character_wins;
+create policy "Cada um ve os proprios personagens vencedores"
+  on public.character_wins for select
+  using (auth.uid() = user_id);
+
+-- De proposito sem policy de INSERT: quem grava e a funcao abaixo, que decide
+-- o que foi conquistado. Assim o app nao escreve conquista na mao.
+
+-- Conta o que aconteceu numa partida e devolve SO as conquistas novas (as que
+-- ainda nao tinham sido ganhas), pra tela mostrar o aviso no canto.
+--
+-- Importante ser honesto sobre o limite disto: conquista de um jogador so nao
+-- tem como ser verificada pelo servidor - ele nao assistiu a partida. O que a
+-- funcao garante e que ninguem ganha duas vezes, ninguem escreve conquista de
+-- outra pessoa e ninguem inventa uma conquista que nao existe na lista.
+create or replace function public.record_match_result(
+  p_mode text,
+  p_won boolean,
+  p_character text,
+  p_shutout boolean,
+  p_story_complete boolean
+)
+returns text[]
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  me uuid := auth.uid();
+  candidatas text[] := '{}';
+  novas text[];
+begin
+  -- Sem conta nao ha conquista: elas sao da conta, nao do computador.
+  if me is null then
+    return '{}';
+  end if;
+
+  if p_won and p_character is not null then
+    insert into public.character_wins (user_id, character_id)
+    values (me, p_character)
+    on conflict do nothing;
+  end if;
+
+  if p_won then
+    candidatas := candidatas || 'first_win';
+  end if;
+  if p_won and p_shutout then
+    candidatas := candidatas || 'flawless';
+  end if;
+  if p_mode = 'online' then
+    candidatas := candidatas || 'online_debut';
+    if p_won then
+      candidatas := candidatas || 'online_win';
+    end if;
+  end if;
+  if p_story_complete then
+    candidatas := candidatas || 'story_champion';
+  end if;
+  if (select count(*) from public.character_wins where user_id = me) >= 5 then
+    candidatas := candidatas || 'five_characters';
+  end if;
+
+  -- Insere todas de uma vez: o "on conflict do nothing" faz o returning
+  -- devolver exatamente as que ainda nao existiam, que sao as novas.
+  with inseridas as (
+    insert into public.achievements (user_id, achievement_id)
+    select me, id from unnest(candidatas) as id
+    on conflict do nothing
+    returning achievement_id
+  )
+  select coalesce(array_agg(achievement_id), '{}') into novas from inseridas;
+
+  return novas;
+end;
+$$;
+
+revoke execute on function public.record_match_result(text, boolean, text, boolean, boolean) from public;
+grant execute on function public.record_match_result(text, boolean, text, boolean, boolean) to authenticated;

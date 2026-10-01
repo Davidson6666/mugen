@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { useMenu } from '../context/MenuContext.js';
 import { useGame } from '../context/GameContext.js';
+import { useAchievements } from '../context/AchievementsContext.js';
 import { useMenuInput } from '../utils/useMenuInput.js';
 import { PALETTE } from '../utils/palette.js';
 import characters from '../data/characters.json';
@@ -13,8 +15,18 @@ const STAND = [230, 560];
 export default function StoryEndingScreen() {
   const { resetTo } = useMenu();
   const { setup } = useGame();
+  const { report } = useAchievements();
 
   const winner = characters.find((entry) => entry.id === setup.characters[0]) ?? characters[0];
+
+  // Chegar aqui e ter vencido a campanha inteira, inclusive o Ensina GOD: e o
+  // que da a conquista que libera ele.
+  const championCharacter = setup.characters[0];
+  useEffect(() => {
+    report({ mode: 'story', won: true, characterId: championCharacter, storyComplete: true });
+    // So no fim da campanha, uma vez.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useMenuInput({ onConfirm: () => resetTo('mainMenu'), onCancel: () => resetTo('mainMenu') });
 

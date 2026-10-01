@@ -3,6 +3,7 @@ import { useMenu } from '../context/MenuContext.js';
 import { useGame } from '../context/GameContext.js';
 import { useMenuInput } from '../utils/useMenuInput.js';
 import { reportMatchResult } from '../utils/matchmaking.js';
+import { useAchievements } from '../context/AchievementsContext.js';
 import { PALETTE } from '../utils/palette.js';
 import characters from '../data/characters.json';
 import FighterSprite from './FighterSprite.jsx';
@@ -32,6 +33,7 @@ const STAND = [230, 560];
 export default function ResultScreen() {
   const { resetTo } = useMenu();
   const { setup, result, applyStoryStage } = useGame();
+  const { report } = useAchievements();
   const [index, setIndex] = useState(0);
 
   const winnerIndex = result?.winner ?? 0;
@@ -71,6 +73,23 @@ export default function ResultScreen() {
     });
     return () => { cancelled = true; };
   }, [matchId, winnerUserId, walkover]);
+
+  // Conta a partida pra contabilidade das conquistas. O jogador e sempre o
+  // lado 0, menos no online, onde depende de que lado a fila colocou ele.
+  // W.O. fica de fora: ninguem jogou de verdade.
+  const playerSide = online ? (setup.localPlayerIndex ?? 0) : 0;
+  const playerWon = winnerIndex === playerSide;
+  const score = result?.wins ?? [0, 0];
+  const shutout = playerWon && score[playerSide] >= 2 && score[1 - playerSide] === 0;
+  const myCharacter = setup.characters[playerSide];
+  const mode = setup.mode;
+  useEffect(() => {
+    if (!result || walkover) return;
+    report({ mode, won: playerWon, characterId: myCharacter, shutout });
+    // Roda uma vez por fim de partida: as dependencias sao todas o retrato
+    // dessa mesma partida.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // W.O. nao vale ranking, e isso ja da pra dizer na hora de desenhar.
   const rankingMessage = walkover && online

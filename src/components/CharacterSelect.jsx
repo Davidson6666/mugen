@@ -6,6 +6,7 @@ import { useMenuInput } from '../utils/useMenuInput.js';
 import { PALETTE } from '../utils/palette.js';
 import characters from '../data/characters.json';
 import { TRAINING_DUMMY, TRAINING_MAP } from '../data/training.js';
+import { useAchievements } from '../context/AchievementsContext.js';
 import FighterSprite from './FighterSprite.jsx';
 import { Capsule, DiagonalBackdrop, Label, Pedestal, PortraitCell } from './cvs2.jsx';
 import { cellAt } from '../utils/cvs2Layout.js';
@@ -74,6 +75,17 @@ export default function CharacterSelect() {
   const { go, back } = useMenu();
   const { setup, chooseCharacter, chooseMap, applyStoryStage } = useGame();
   const { profile } = useAuth();
+  const { isCharacterUnlocked } = useAchievements();
+
+  // Dois motivos diferentes pra nao poder escolher alguem:
+  //  - proibido naquele modo (o Ensina GOD nao entra em PvP, online nem
+  //    historia, porque e forte demais e desequilibraria);
+  //  - ainda travado (so libera com a conquista que pede).
+  const blockedReason = (character) => {
+    if (character.bannedIn?.includes(setup.mode)) return 'NAO ENTRA NESTE MODO: FORTE DEMAIS';
+    if (!isCharacterUnlocked(character.id)) return 'TRAVADO: VENCA O MODO HISTORIA PARA LIBERAR';
+    return null;
+  };
   const twoPlayers = setup.mode === 'versusPlayer';
   const online = setup.mode === 'online';
   const story = setup.mode === 'story';
@@ -114,6 +126,11 @@ export default function CharacterSelect() {
     if (confirmed[player]) return;
 
     const picked = characters[cursors[player]];
+    const blocked = blockedReason(picked);
+    if (blocked) {
+      showWarning(blocked);
+      return;
+    }
     const other = confirmed[1 - player];
     // Sem partida espelhada: o segundo jogador precisa escolher outro.
     if (twoPlayers && other === picked.id) {
@@ -180,6 +197,7 @@ export default function CharacterSelect() {
             image={`${character.dir}/${character.portrait}`}
             portraitRect={character.portraitRect}
             cursors={activePlayers.filter((player) => cursors[player] === index)}
+            blocked={Boolean(blockedReason(character))}
             onPointerEnter={() => {
               if (!confirmed[0]) setCursors((current) => [index, current[1]]);
             }}

@@ -1,6 +1,7 @@
 import { GameProvider } from './context/GameProvider.jsx';
 import { MenuProvider } from './context/MenuProvider.jsx';
 import { AuthProvider } from './context/AuthProvider.jsx';
+import { AchievementsProvider } from './context/AchievementsProvider.jsx';
 import { useMenu } from './context/MenuContext.js';
 import MainMenu from './components/MainMenu.jsx';
 import CharacterSelect from './components/CharacterSelect.jsx';
@@ -13,6 +14,8 @@ import SettingsScreen from './components/SettingsScreen.jsx';
 import LoginScreen from './components/LoginScreen.jsx';
 import LeaderboardScreen from './components/LeaderboardScreen.jsx';
 import MatchmakingScreen from './components/MatchmakingScreen.jsx';
+import AchievementsScreen from './components/AchievementsScreen.jsx';
+import AchievementToast from './components/AchievementToast.jsx';
 import UpdateBanner from './components/UpdateBanner.jsx';
 import { useStageScale } from './utils/useStageScale.js';
 import './App.css';
@@ -29,6 +32,7 @@ const SCREENS = {
   login: LoginScreen,
   leaderboard: LeaderboardScreen,
   matchmaking: MatchmakingScreen,
+  achievements: AchievementsScreen,
 };
 
 function Router() {
@@ -38,19 +42,29 @@ function Router() {
 }
 
 export default function App() {
-  const { fullscreen, scale } = useStageScale();
   return (
     <AuthProvider>
-      <GameProvider>
-        <MenuProvider>
-          <div className={`app${fullscreen ? ' app--fullscreen' : ''}`} style={{ '--stage-scale': scale }}>
-            <div className="app__stage">
-              <Router />
-            </div>
-            <UpdateBanner />
-          </div>
-        </MenuProvider>
-      </GameProvider>
+      <AchievementsProvider>
+        <GameProvider>
+          <MenuProvider>
+            <Stage />
+          </MenuProvider>
+        </GameProvider>
+      </AchievementsProvider>
     </AuthProvider>
+  );
+}
+
+// Separado do App porque o hook da escala precisa rodar dentro dos providers.
+function Stage() {
+  const { fullscreen, scale } = useStageScale();
+  return (
+    <div className={`app${fullscreen ? ' app--fullscreen' : ''}`} style={{ '--stage-scale': scale }}>
+      <div className="app__stage">
+        <Router />
+      </div>
+      <AchievementToast />
+      <UpdateBanner />
+    </div>
   );
 }

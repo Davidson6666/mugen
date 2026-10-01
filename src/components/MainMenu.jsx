@@ -14,6 +14,7 @@ const OPTIONS = [
   { id: 'versusPlayer', label: 'VERSUS PLAYER', hint: 'DOIS JOGADORES NO MESMO TECLADO · JOGADOR 1 PRECISA LOGAR' },
   { id: 'online', label: 'PARTIDA ONLINE', hint: 'ENTRE NA FILA E ENFRENTE OUTRA PESSOA PELA INTERNET' },
   { id: 'ranking', label: 'RANKING ONLINE', hint: 'CRIE UMA CONTA E VEJA A CLASSIFICACAO' },
+  { id: 'achievements', label: 'CONQUISTAS', hint: 'O QUE VOCE JA CONQUISTOU JOGANDO · UMA LISTA POR CONTA' },
   { id: 'story', label: 'MODO HISTORIA', hint: 'ENFRENTE UMA SEQUENCIA DE LUTAS ATE O FINAL' },
   { id: 'training', label: 'AREA DE TREINO', hint: 'TREINE GOLPES E COMBOS NUM BONECO QUE NAO REVIDA' },
   { id: 'settings', label: 'CONFIGURACOES', hint: 'CONTROLES E AJUSTES' },
@@ -25,10 +26,10 @@ const OPTIONS = [
 // linha de dica la embaixo - por isso as sete cabem apertadas, com a capsula
 // mais baixa que o padrao.
 const OPTION_WIDTH = 340;
-const OPTION_HEIGHT = 46;
+const OPTION_HEIGHT = 42;
 
 const optionPosition = (index) => {
-  const y = 286 + index * 52;
+  const y = 286 + index * 45;
   return [1212 - y - 16, y];
 };
 
@@ -78,6 +79,12 @@ export default function MainMenu() {
     if (option.id === 'ranking') {
       setAfterLogin(null);
       go('leaderboard');
+      return;
+    }
+    // A lista e por conta, mas da pra espiar deslogado: a tela avisa que
+    // precisa entrar pra ganhar e guardar.
+    if (option.id === 'achievements') {
+      go('achievements');
       return;
     }
     // Partida online vale Elo, entao aqui a conta e obrigatoria (nao tem lado

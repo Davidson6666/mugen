@@ -147,6 +147,12 @@
       16,
       90,
       100
+    ],
+    "unlockedBy": "story_champion",
+    "bannedIn": [
+      "versusPlayer",
+      "online",
+      "story"
     ]
   }
 ]

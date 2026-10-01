@@ -111,7 +111,10 @@ const CURSOR_COLORS = [PALETTE.cursorP1, PALETTE.cursorP2];
 // Casa da grade com retrato no tamanho nativo, recortado pelo losango. Os
 // cursores sao molduras coloridas; "1P" fica a esquerda e "2P" a direita, para
 // nunca se cobrirem em casas vizinhas.
-export function PortraitCell({ at, image, portraitRect, id, cursors = [], onPointerEnter, onClick }) {
+// blocked: personagem que nao da pra escolher agora (travado ou proibido no
+// modo). Continua aparecendo na grade, so que apagado e com cadeado - some
+// da lista seria pior, porque ninguem ficaria sabendo que ele existe.
+export function PortraitCell({ at, image, portraitRect, id, cursors = [], blocked = false, onPointerEnter, onClick }) {
   const [cx, cy] = at;
   const clipId = `cell-${id}`;
   const shape = diamond(at, CELL_RADIUS);
@@ -129,6 +132,12 @@ export function PortraitCell({ at, image, portraitRect, id, cursors = [], onPoin
           href={image} x={cx - 25} y={cy - 27} width={50} height={55}
           clipPath={`url(#${clipId})`} style={{ imageRendering: 'pixelated' }}
         />
+      )}
+      {blocked && (
+        <g>
+          <polygon points={toPoints(shape)} fill={PALETTE.ink} opacity={0.72} />
+          <Label x={cx} y={cy + 12} size={34} anchor="middle" stroke={5}>🔒</Label>
+        </g>
       )}
       {cursors.map((player, order) => (
         <g key={player}>
