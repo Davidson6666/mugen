@@ -217,6 +217,16 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       // dois; aqui, sem semente combinada, sorteia uma.
       const random = createRandom(matchSetup.seed ?? randomSeed());
 
+      // Quem move cada lado. Precisa vir antes dos lutadores: o boneco da
+      // area de treino nasce com piso de vida.
+      //  - treino: o lado 2 e um boneco, nao e movido por nada e nao cai;
+      //  - online: os dois lados sao gente, a IA fica de fora e o adversario
+      //    e movido pelo input que chega pela rede.
+      const training = matchSetup.mode === 'training';
+      const online = matchSetup.mode === 'online';
+      const localIndex = online ? (matchSetup.localPlayerIndex ?? 0) : 0;
+      const cpuEnabled = !online && !training && matchSetup.mode !== 'versusPlayer';
+
       const fighters = spawns.map((x, index) => new Fighter({
         record: characterRecords[index],
         map,
@@ -234,15 +244,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       // A IA recebe os combos ja interpretados pelo detector, com tokens e
       // animacao resolvidos.
       const ai = new AIController(detectors[1].combos, matchSetup.difficulty, { random });
-      // Area de treino: o lado 2 e um boneco - nao e movido nem pela IA nem
-      // por teclado, e a luta nao acaba.
-      const training = matchSetup.mode === 'training';
       const match = new GameStateManager({ introFrames: ROUND_INTRO_FRAMES, training });
-      // Online: os dois lados sao gente de verdade, a IA fica de fora e o lado
-      // do adversario e movido pelo input que chega pela rede.
-      const online = matchSetup.mode === 'online';
-      const localIndex = online ? (matchSetup.localPlayerIndex ?? 0) : 0;
-      const cpuEnabled = !online && !training && matchSetup.mode !== 'versusPlayer';
       let matchEndTimer = 0;
       let walkoverSent = false;
 
