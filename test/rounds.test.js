@@ -336,3 +336,17 @@ test('sem o piso, o mesmo golpe nocauteia normalmente', () => {
   assert.equal(normal.health, 0);
   assert.equal(normal.isKnockedOut, true);
 });
+
+// "Sem levar um golpe" se apoia neste contador: defender nao pode estragar a
+// conquista, levar o golpe sim.
+test('golpe levado conta; golpe defendido nao', () => {
+  const fighter = new Fighter({ record, map, x: 840, facing: -1 });
+  assert.equal(fighter.hitsTaken, 0);
+
+  fighter.takeBlockedHit(1, 10);
+  assert.equal(fighter.hitsTaken, 0, 'defendeu: nao levou golpe');
+
+  fighter.takeHit(1, 10, {});
+  fighter.takeHit(1, 10, {});
+  assert.equal(fighter.hitsTaken, 2, 'dois golpes passaram');
+});

@@ -337,7 +337,10 @@ create or replace function public.record_match_result(
   p_won boolean,
   p_character text,
   p_shutout boolean,
-  p_story_complete boolean
+  p_story_complete boolean,
+  p_untouched boolean default false,
+  p_comeback boolean default false,
+  p_best_combo integer default 0
 )
 returns text[]
 language plpgsql
@@ -347,6 +350,7 @@ as $$
 declare
   me uuid := auth.uid();
   candidatas text[] := '{}';
+  vencidos integer;
   novas text[];
 begin
   -- Sem conta nao ha conquista: elas sao da conta, nao do computador.
@@ -375,8 +379,26 @@ begin
   if p_story_complete then
     candidatas := candidatas || 'story_champion';
   end if;
-  if (select count(*) from public.character_wins where user_id = me) >= 5 then
+  -- Defendeu nao conta como levar golpe: o contador do jogo so sobe em golpe
+  -- que passou pela guarda.
+  if p_won and p_untouched then
+    candidatas := candidatas || 'untouched';
+  end if;
+  if p_comeback then
+    candidatas := candidatas || 'comeback';
+  end if;
+  if p_best_combo >= 15 then
+    candidatas := candidatas || 'combo_15';
+  end if;
+
+  select count(*) into vencidos from public.character_wins where user_id = me;
+  if vencidos >= 5 then
     candidatas := candidatas || 'five_characters';
+  end if;
+  -- TOTAL_PERSONAGENS: se o elenco crescer, mude aqui tambem. Existe um teste
+  -- (test/achievements.test.js) que quebra de proposito pra lembrar disso.
+  if vencidos >= 18 then
+    candidatas := candidatas || 'all_characters';
   end if;
 
   -- Insere todas de uma vez: o "on conflict do nothing" faz o returning
@@ -393,5 +415,9 @@ begin
 end;
 $$;
 
-revoke execute on function public.record_match_result(text, boolean, text, boolean, boolean) from public;
-grant execute on function public.record_match_result(text, boolean, text, boolean, boolean) to authenticated;
+revoke execute on function public.record_match_result(text, boolean, text, boolean, boolean, boolean, boolean, integer) from public;
+grant execute on function public.record_match_result(text, boolean, text, boolean, boolean, boolean, boolean, integer) to authenticated;
+
+-- A versao antiga (cinco parametros) sai de cena: senao o Postgres ficaria com
+-- as duas e nao saberia qual chamar.
+drop function if exists public.record_match_result(text, boolean, text, boolean, boolean);

@@ -36,6 +36,26 @@ export const ACHIEVEMENTS = [
     name: 'CURIOSO',
     description: 'VENCEU COM CINCO PERSONAGENS DIFERENTES',
   },
+  {
+    id: 'untouched',
+    name: 'IMPECAVEL',
+    description: 'GANHOU UMA PARTIDA SEM LEVAR UM UNICO GOLPE',
+  },
+  {
+    id: 'comeback',
+    name: 'VIRADA',
+    description: 'VENCEU UM ROUND COM MENOS DE 10% DE VIDA',
+  },
+  {
+    id: 'combo_15',
+    name: 'MAQUINA DE COMBO',
+    description: 'ACERTOU UM COMBO DE 15 GOLPES',
+  },
+  {
+    id: 'all_characters',
+    name: 'ELENCO COMPLETO',
+    description: 'VENCEU COM TODOS OS PERSONAGENS DO JOGO',
+  },
 ];
 
 export const achievementById = (id) => ACHIEVEMENTS.find((entry) => entry.id === id) ?? null;

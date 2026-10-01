@@ -83,9 +83,14 @@ export default function ResultScreen() {
   const shutout = playerWon && score[playerSide] >= 2 && score[1 - playerSide] === 0;
   const myCharacter = setup.characters[playerSide];
   const mode = setup.mode;
+  // "Sem levar um golpe" conta golpe que passou pela guarda: defender nao
+  // estraga a conquista, levar sim.
+  const untouched = playerWon && (result?.hitsTaken?.[playerSide] ?? 1) === 0;
+  const comeback = Boolean(result?.comeback);
+  const bestCombo = result?.bestCombo?.[playerSide] ?? 0;
   useEffect(() => {
     if (!result || walkover) return;
-    report({ mode, won: playerWon, characterId: myCharacter, shutout });
+    report({ mode, won: playerWon, characterId: myCharacter, shutout, untouched, comeback, bestCombo });
     // Roda uma vez por fim de partida: as dependencias sao todas o retrato
     // dessa mesma partida.
     // eslint-disable-next-line react-hooks/exhaustive-deps

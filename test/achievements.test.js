@@ -56,3 +56,24 @@ test('nenhum outro personagem nasce travado', () => {
   const travados = characters.filter((entry) => entry.unlockedBy).map((entry) => entry.id);
   assert.deepEqual(travados, ['ensina_god']);
 });
+
+// A conquista de vencer com o elenco inteiro compara contra um numero fixo
+// dentro do SQL (record_match_result). Este teste existe pra quebrar quando o
+// elenco mudar, lembrando de atualizar o banco junto.
+test('o numero de personagens bate com o que o SQL espera', () => {
+  const noSql = readFileSync(new URL('../supabase/schema.sql', import.meta.url), 'utf8');
+  const esperado = Number(noSql.match(/if vencidos >= (\d+) then\s*\n\s*candidatas := candidatas \|\| 'all_characters'/)?.[1]);
+  assert.ok(Number.isFinite(esperado), 'nao achei o numero no schema.sql');
+  assert.equal(
+    characters.length,
+    esperado,
+    `o elenco tem ${characters.length} personagens mas o SQL cobra ${esperado}: ajuste "vencidos >= ${characters.length}" em supabase/schema.sql`,
+  );
+});
+
+test('as conquistas novas estao na lista', () => {
+  for (const id of ['untouched', 'comeback', 'combo_15', 'all_characters']) {
+    assert.ok(achievementById(id), `faltou ${id}`);
+  }
+  assert.equal(ACHIEVEMENTS.length, 10);
+});

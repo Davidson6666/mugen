@@ -248,6 +248,15 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       let matchEndTimer = 0;
       let walkoverSent = false;
 
+      // Numeros que as conquistas precisam saber no fim da partida. O maior
+      // combo precisa ser guardado porque o contador do lutador zera sozinho,
+      // e a menor vida e por round: ter chegado perto da morte num round que
+      // se perdeu nao e virada nenhuma.
+      let bestCombo = [0, 0];
+      let roundLowHealth = [1, 1];
+      let comeback = false;
+      const healthPct = (fighter) => fighter.health / fighter.config.stats.maxHealth;
+
       if (online) {
         net = new LockstepClient({ matchId: matchSetup.matchId });
         await net.join();
@@ -314,6 +323,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       instance.stage.addChild(overlay);
 
       function startRound(round) {
+        roundLowHealth = [1, 1];
         fighters.forEach((fighter, index) => {
           fighter.resetForRound(spawns[index], index === 0 ? 1 : -1);
         });
@@ -327,6 +337,8 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
 
       function handleMatchEvent(event) {
         if (event.type === 'roundEnd') {
+          // Virada: ganhou o round depois de ter estado a menos de 10% de vida.
+          if (event.winner !== null && roundLowHealth[event.winner] < 0.1) comeback = true;
           hud.announce(ROUND_END_MESSAGE[event.reason], 140);
           if (event.winner !== null) {
             fighters[event.winner].playRoundEndPose(true);
@@ -410,7 +422,13 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
         if (matchEndTimer > 0) {
           matchEndTimer -= delta;
           if (matchEndTimer <= 0) {
-            onMatchEndRef.current?.({ winner: match.matchWinner, wins: [...match.wins] });
+            onMatchEndRef.current?.({
+              winner: match.matchWinner,
+              wins: [...match.wins],
+              bestCombo: [...bestCombo],
+              hitsTaken: fighters.map((fighter) => fighter.hitsTaken),
+              comeback,
+            });
           }
         }
 
@@ -483,6 +501,13 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
             // Esquiva atravessa sem impacto (nem faisca, nem som).
             if (result.outcome !== 'evade') audio.playImpact(kindOf(result));
           }
+        }
+
+        if (fighting) {
+          fighters.forEach((fighter, index) => {
+            bestCombo[index] = Math.max(bestCombo[index], fighter.comboCount);
+            roundLowHealth[index] = Math.min(roundLowHealth[index], healthPct(fighter));
+          });
         }
 
         if (training) keepDummyAlive(delta);

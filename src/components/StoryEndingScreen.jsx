@@ -14,7 +14,7 @@ const STAND = [230, 560];
 // diferenciar por personagem (nenhum deles tem um final proprio).
 export default function StoryEndingScreen() {
   const { resetTo } = useMenu();
-  const { setup } = useGame();
+  const { setup, result } = useGame();
   const { report } = useAchievements();
 
   const winner = characters.find((entry) => entry.id === setup.characters[0]) ?? characters[0];
@@ -23,7 +23,18 @@ export default function StoryEndingScreen() {
   // que da a conquista que libera ele.
   const championCharacter = setup.characters[0];
   useEffect(() => {
-    report({ mode: 'story', won: true, characterId: championCharacter, storyComplete: true });
+    report({
+      mode: 'story',
+      won: true,
+      characterId: championCharacter,
+      storyComplete: true,
+      // A luta final da campanha nao passa pela tela de resultado, entao os
+      // numeros dela sao contados aqui.
+      untouched: (result?.hitsTaken?.[0] ?? 1) === 0,
+      comeback: Boolean(result?.comeback),
+      bestCombo: result?.bestCombo?.[0] ?? 0,
+      shutout: (result?.wins?.[1] ?? 1) === 0,
+    });
     // So no fim da campanha, uma vez.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

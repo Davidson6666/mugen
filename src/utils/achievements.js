@@ -16,7 +16,11 @@ export async function fetchEarned() {
 // Conta o fim de uma partida e devolve so as conquistas novas, pra tela poder
 // avisar. Quem decide o que foi conquistado e o servidor (record_match_result
 // no schema.sql), nao esta tela.
-export async function reportMatch({ mode, won, characterId, shutout = false, storyComplete = false }) {
+export async function reportMatch({
+  mode, won, characterId,
+  shutout = false, storyComplete = false,
+  untouched = false, comeback = false, bestCombo = 0,
+}) {
   if (!supabase) return { unlocked: [] };
   const { data, error } = await supabase.rpc('record_match_result', {
     p_mode: mode ?? null,
@@ -24,6 +28,9 @@ export async function reportMatch({ mode, won, characterId, shutout = false, sto
     p_character: characterId ?? null,
     p_shutout: Boolean(shutout),
     p_story_complete: Boolean(storyComplete),
+    p_untouched: Boolean(untouched),
+    p_comeback: Boolean(comeback),
+    p_best_combo: Number(bestCombo) || 0,
   });
   if (error) return { unlocked: [], error: error.message };
   return { unlocked: data ?? [] };
