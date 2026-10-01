@@ -14,6 +14,20 @@ const DIFFICULTIES = [
   { id: 'hard', label: 'DIFICIL' },
 ];
 
+// Contra a CPU a tela e um passo a passo: escolhe o cenario e confirma,
+// escolhe a dificuldade e confirma, e so entao o botao de comecar fica
+// disponivel. Antes a partida comecava no primeiro confirmar, com o que
+// estivesse destacado - rapido pra quem ja conhecia, confuso pra quem nao.
+//
+// Confirmar cada passo tambem resolve um problema antigo de outro jeito: como
+// a escolha fica guardada, andar com o cursor depois nao troca mais o cenario
+// sem querer.
+const STEPS = [
+  { id: 'map', title: 'ESCOLHA O CENARIO', hint: 'W/S ESCOLHE · J CONFIRMA · K VOLTA' },
+  { id: 'difficulty', title: 'ESCOLHA A DIFICULDADE', hint: 'A/D ESCOLHE · J CONFIRMA · K VOLTA AO CENARIO' },
+  { id: 'start', title: 'TUDO PRONTO', hint: 'J COMECA A PARTIDA · K VOLTA A DIFICULDADE' },
+];
+
 // Previa do cenario numa moldura inclinada, como as barras de vida.
 const PREVIEW = [[76, 138], [700, 138], [664, 488], [40, 488]];
 const CURSOR_COLORS = [PALETTE.cursorP1, PALETTE.cursorP2];
@@ -32,10 +46,15 @@ export default function StageSelect() {
     Math.max(0, DIFFICULTIES.findIndex((entry) => entry.id === setup.difficulty)),
   );
 
-  function startMatch(mapId) {
+  const [stepIndex, setStepIndex] = useState(0);
+  const [chosenMap, setChosenMap] = useState(null);
+  const [chosenDifficulty, setChosenDifficulty] = useState(null);
+  const step = STEPS[stepIndex].id;
+
+  function startMatch(mapId, difficulty) {
     chooseMap(mapId);
     if (!twoPlayers) {
-      chooseDifficulty(DIFFICULTIES[difficultyIndex].id);
+      chooseDifficulty(difficulty);
       // O oponente da CPU sai no sorteio: contra a maquina espelho e permitido.
       const opponent = characters[Math.floor(Math.random() * characters.length)];
       chooseCharacter(1, opponent.id);
@@ -47,24 +66,28 @@ export default function StageSelect() {
     if (player === 1 && !twoPlayers) return;
     if (votes[player]) return;
 
-    // A dificuldade fica sempre a um toque: esquerda e direita mexem nela de
-    // qualquer cenario. Antes era preciso descer ate o ultimo mapa pra
-    // alcanca-la, e como o cenario que vale e o que esta destacado, isso
-    // obrigava a levar o ultimo mapa junto - nao dava pra escolher o primeiro
-    // cenario e a dificuldade ao mesmo tempo.
-    if (!twoPlayers && (direction === 'left' || direction === 'right')) {
-      setDifficultyIndex((current) => (
-        (current + (direction === 'left' ? -1 : 1) + DIFFICULTIES.length) % DIFFICULTIES.length
-      ));
-      return;
+    if (!twoPlayers) {
+      if (step === 'difficulty') {
+        if (direction === 'up') { setStepIndex(0); return; }
+        if (direction === 'left' || direction === 'right') {
+          setDifficultyIndex((current) => (
+            (current + (direction === 'left' ? -1 : 1) + DIFFICULTIES.length) % DIFFICULTIES.length
+          ));
+        }
+        return;
+      }
+      if (step === 'start') {
+        if (direction === 'up') setStepIndex(1);
+        return;
+      }
     }
 
     if (direction !== 'up' && direction !== 'down') return;
 
     setCursors((current) => {
       const next = [...current];
-      const step = direction === 'up' ? -1 : 1;
-      next[player] = (next[player] + step + maps.length) % maps.length;
+      const stepBy = direction === 'up' ? -1 : 1;
+      next[player] = (next[player] + stepBy + maps.length) % maps.length;
       return next;
     });
   };
@@ -73,7 +96,19 @@ export default function StageSelect() {
     if (player === 1 && !twoPlayers) return;
 
     if (!twoPlayers) {
-      startMatch(maps[cursors[0]].id);
+      // Um passo por confirmada: cenario, dificuldade, e so entao comecar.
+      if (step === 'map') {
+        setChosenMap(cursors[0]);
+        setStepIndex(1);
+        return;
+      }
+      if (step === 'difficulty') {
+        setChosenDifficulty(difficultyIndex);
+        setStepIndex(2);
+        return;
+      }
+      if (chosenMap === null || chosenDifficulty === null) return;
+      startMatch(maps[chosenMap].id, DIFFICULTIES[chosenDifficulty].id);
       return;
     }
 
@@ -86,7 +121,7 @@ export default function StageSelect() {
     // Votos iguais valem direto; votos diferentes sorteiam entre os dois
     // escolhidos, nunca entre todos os mapas.
     const chosen = next[0] === next[1] ? next[0] : next[Math.floor(Math.random() * 2)];
-    startMatch(chosen);
+    startMatch(chosen, DIFFICULTIES[difficultyIndex].id);
   };
 
   const onCancel = (player) => {
@@ -99,6 +134,17 @@ export default function StageSelect() {
       });
       return;
     }
+    // Volta um passo de cada vez; so sai da tela quando ja esta no primeiro.
+    if (!twoPlayers && step === 'start') {
+      setChosenDifficulty(null);
+      setStepIndex(1);
+      return;
+    }
+    if (!twoPlayers && step === 'difficulty') {
+      setChosenMap(null);
+      setStepIndex(0);
+      return;
+    }
     if (player === 0) back();
   };
 
@@ -106,13 +152,19 @@ export default function StageSelect() {
 
   const activePlayers = twoPlayers ? [0, 1] : [0];
   const previewed = maps[cursors[0]];
+  const ready = chosenMap !== null && chosenDifficulty !== null;
 
   return (
     <div className="cvs2-screen">
       <svg className="cvs2-svg" viewBox="0 0 1280 720">
         <DiagonalBackdrop lattice={false} topWord="" bottomWord="" />
 
-        <Label x={48} y={112} size={72}>{twoPlayers ? 'VOTEM O CENARIO' : 'STAGE SELECT'}</Label>
+        <Label x={48} y={100} size={62}>{twoPlayers ? 'VOTEM O CENARIO' : 'STAGE SELECT'}</Label>
+        {!twoPlayers && (
+          <Label x={48} y={132} size={26} weight={800} fill={PALETTE.fieldYellow} stroke={6}>
+            {`PASSO ${stepIndex + 1} DE 3 · ${STEPS[stepIndex].title}`}
+          </Label>
+        )}
 
         <defs><clipPath id="stage-preview"><polygon points={toPoints(PREVIEW)} /></clipPath></defs>
         <Shape points={PREVIEW} fill={PALETTE.ink} />
@@ -127,14 +179,22 @@ export default function StageSelect() {
           const [x, y] = optionPosition(index);
           const here = activePlayers.filter((player) => cursors[player] === index);
           const votedBy = activePlayers.filter((player) => votes[player] === stage.id);
+          const picked = !twoPlayers && chosenMap === index;
           return (
             <g key={stage.id}>
               <MenuOption
                 x={x} y={y} width={340}
-                label={stage.name.toUpperCase()}
-                active={cursors[0] === index}
-                onPointerEnter={() => setCursors((current) => [index, current[1]])}
-                onClick={() => onConfirm(0)}
+                label={picked ? `${stage.name.toUpperCase()} ✓` : stage.name.toUpperCase()}
+                active={picked || (step === 'map' && cursors[0] === index)}
+                marker={!picked}
+                onPointerEnter={() => {
+                  if (twoPlayers || step === 'map') setCursors((current) => [index, current[1]]);
+                }}
+                onClick={() => {
+                  if (!twoPlayers && step !== 'map') return;
+                  setCursors((current) => [index, current[1]]);
+                  onConfirm(0);
+                }}
               />
               {here.map((player, order) => (
                 <Label
@@ -152,29 +212,47 @@ export default function StageSelect() {
           <g>
             <Label
               x={1240} y={566} size={30} weight={800} anchor="end"
-              fill={PALETTE.fieldYellow} stroke={6}
+              fill={step === 'map' ? PALETTE.textSecondary : PALETTE.fieldYellow} stroke={6}
             >
               DIFICULDADE DA CPU
             </Label>
-            {DIFFICULTIES.map((entry, index) => (
-              <MenuOption
-                key={entry.id}
-                x={742 + index * 168} y={582} width={150}
-                label={entry.label}
-                active={index === difficultyIndex}
-                marker={false}
-                onPointerEnter={() => setDifficultyIndex(index)}
-                onClick={() => setDifficultyIndex(index)}
-              />
-            ))}
+            {DIFFICULTIES.map((entry, index) => {
+              const picked = chosenDifficulty === index;
+              return (
+                <MenuOption
+                  key={entry.id}
+                  x={742 + index * 168} y={582} width={150}
+                  label={entry.label}
+                  active={picked || (step === 'difficulty' && index === difficultyIndex)}
+                  disabled={step === 'map'}
+                  marker={false}
+                  onPointerEnter={() => { if (step !== 'map') setDifficultyIndex(index); }}
+                  onClick={() => {
+                    if (step === 'map') return;
+                    setDifficultyIndex(index);
+                    setChosenDifficulty(index);
+                    setStepIndex(2);
+                  }}
+                />
+              );
+            })}
           </g>
         )}
 
+        {!twoPlayers && (
+          <MenuOption
+            x={48} y={580} width={420}
+            label={ready ? 'COMECAR PARTIDA' : 'ESCOLHA CENARIO E DIFICULDADE'}
+            active={step === 'start'}
+            disabled={!ready}
+            onClick={() => { if (ready) onConfirm(0); }}
+          />
+        )}
 
         <Label x={1240} y={700} size={22} weight={600} anchor="end" stroke={5}>
           {twoPlayers
             ? 'CADA JOGADOR VOTA · VOTOS DIFERENTES SORTEIAM ENTRE OS DOIS'
-            : 'W/S ESCOLHE O CENARIO · A/D AJUSTA A DIFICULDADE · J CONFIRMA · K VOLTA'}
+            : STEPS[stepIndex].hint}
         </Label>
       </svg>
     </div>
