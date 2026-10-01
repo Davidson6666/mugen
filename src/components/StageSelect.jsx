@@ -28,7 +28,6 @@ export default function StageSelect() {
 
   const [cursors, setCursors] = useState([0, maps.length - 1]);
   const [votes, setVotes] = useState([null, null]);
-  const [section, setSection] = useState('maps');
   const [difficultyIndex, setDifficultyIndex] = useState(
     Math.max(0, DIFFICULTIES.findIndex((entry) => entry.id === setup.difficulty)),
   );
@@ -46,23 +45,21 @@ export default function StageSelect() {
 
   const onMove = (player, direction) => {
     if (player === 1 && !twoPlayers) return;
+    if (votes[player]) return;
 
-    if (!twoPlayers && section === 'difficulty') {
-      if (direction === 'up') setSection('maps');
-      if (direction === 'left') {
-        setDifficultyIndex((current) => (current - 1 + DIFFICULTIES.length) % DIFFICULTIES.length);
-      }
-      if (direction === 'right') setDifficultyIndex((current) => (current + 1) % DIFFICULTIES.length);
+    // A dificuldade fica sempre a um toque: esquerda e direita mexem nela de
+    // qualquer cenario. Antes era preciso descer ate o ultimo mapa pra
+    // alcanca-la, e como o cenario que vale e o que esta destacado, isso
+    // obrigava a levar o ultimo mapa junto - nao dava pra escolher o primeiro
+    // cenario e a dificuldade ao mesmo tempo.
+    if (!twoPlayers && (direction === 'left' || direction === 'right')) {
+      setDifficultyIndex((current) => (
+        (current + (direction === 'left' ? -1 : 1) + DIFFICULTIES.length) % DIFFICULTIES.length
+      ));
       return;
     }
 
-    if (votes[player] || (direction !== 'up' && direction !== 'down')) return;
-
-    // Contra a CPU, descer do ultimo cenario leva a escolha de dificuldade.
-    if (!twoPlayers && direction === 'down' && cursors[player] === maps.length - 1) {
-      setSection('difficulty');
-      return;
-    }
+    if (direction !== 'up' && direction !== 'down') return;
 
     setCursors((current) => {
       const next = [...current];
@@ -102,10 +99,6 @@ export default function StageSelect() {
       });
       return;
     }
-    if (!twoPlayers && section === 'difficulty') {
-      setSection('maps');
-      return;
-    }
     if (player === 0) back();
   };
 
@@ -139,11 +132,8 @@ export default function StageSelect() {
               <MenuOption
                 x={x} y={y} width={340}
                 label={stage.name.toUpperCase()}
-                active={section === 'maps' && cursors[0] === index}
-                onPointerEnter={() => {
-                  setSection('maps');
-                  setCursors((current) => [index, current[1]]);
-                }}
+                active={cursors[0] === index}
+                onPointerEnter={() => setCursors((current) => [index, current[1]])}
                 onClick={() => onConfirm(0)}
               />
               {here.map((player, order) => (
@@ -161,23 +151,20 @@ export default function StageSelect() {
         {!twoPlayers && (
           <g>
             <Label
-              x={1240} y={538} size={30} weight={800} anchor="end"
-              fill={section === 'difficulty' ? PALETTE.fieldYellow : PALETTE.textPrimary} stroke={6}
+              x={1240} y={566} size={30} weight={800} anchor="end"
+              fill={PALETTE.fieldYellow} stroke={6}
             >
               DIFICULDADE DA CPU
             </Label>
             {DIFFICULTIES.map((entry, index) => (
               <MenuOption
                 key={entry.id}
-                x={742 + index * 168} y={556} width={150}
+                x={742 + index * 168} y={582} width={150}
                 label={entry.label}
                 active={index === difficultyIndex}
                 marker={false}
-                onPointerEnter={() => {
-                  setSection('difficulty');
-                  setDifficultyIndex(index);
-                }}
-                onClick={() => startMatch(maps[cursors[0]].id)}
+                onPointerEnter={() => setDifficultyIndex(index)}
+                onClick={() => setDifficultyIndex(index)}
               />
             ))}
           </g>
@@ -187,7 +174,7 @@ export default function StageSelect() {
         <Label x={1240} y={700} size={22} weight={600} anchor="end" stroke={5}>
           {twoPlayers
             ? 'CADA JOGADOR VOTA · VOTOS DIFERENTES SORTEIAM ENTRE OS DOIS'
-            : 'W/S ESCOLHE · J CONFIRMA · K VOLTA'}
+            : 'W/S ESCOLHE O CENARIO · A/D AJUSTA A DIFICULDADE · J CONFIRMA · K VOLTA'}
         </Label>
       </svg>
     </div>
