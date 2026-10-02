@@ -34,6 +34,9 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const PACK = resolve(ROOT, 'assets-src/sukuna-heian/mugen');
 
 const fx = (at, id, pos = [0, 0], extra = {}) => ({ at, effect: { id, pos, ...extra } });
+// Efeito que se repete: o "repeat" e campo do evento, nao do efeito - varios
+// golpes do pacote soltam o mesmo Explod a cada N ticks ate um certo tempo.
+const fxLoop = (at, id, pos, every, until, extra = {}) => ({ at, repeat: { every, until }, effect: { id, pos, ...extra } });
 // Janela de acerto declarada: quadros from..until, caixa em px do pacote.
 const strike = (from, until, rect, data) => ({ from, until, rect, ...data });
 
@@ -254,9 +257,37 @@ const ANIMATIONS = {
     events: [fx(0, 'ringSlash', [0, -30], { scale: 0.6 }), fx(2, 'groundRings', [0, 0], { scale: 0.5 })],
   },
 
+  // ---- Golpes que a primeira versao deixou de fora ----
+  // 700: a cotovelada curta, caixa baixa (o autor desenhou so [10,-26,30,0]).
+  elbow: {
+    actions: [{ id: 700, times: { 1: 14 } }],
+    ...NORMAL,
+    areas: [strike(1, 1, [10, -26, 30, 0], { damage: 3, hitstun: 22, push: 5 })],
+    events: [fx(10, 'ringBurst', [20, -15], { scale: 0.5 })],
+    cancels: [{ on: 'special', to: 'lance', after: 12 }],
+  },
+  // 3803 (estado 319): ele sobe e fica chamando os cortes la de cima, que vem
+  // do helper 396 - o unico golpe dele que acerta de longe por um bom tempo.
+  summon: {
+    actions: [{ id: 3803, times: { 10: 14, 11: 6, 12: 6, 13: 6 } }],
+    cooldown: 300,
+    invulnerable: [14, 60],
+    events: [
+      fx(14, 'shockRing', [17, 38]),
+      fxLoop(20, 'crossCut', [60, -70], 8, 60, { target: 'opponent' }),
+      fxLoop(24, 'slashArc', [0, -40], 8, 60, { target: 'opponent' }),
+      fx(62, 'groundRocks', [0, 0], { target: 'opponent' }),
+    ],
+  },
   // ---- Especiais ----
-  // 11070 (↓→P): ele encara, para tudo, e abre o corte. No pacote a caixa
-  // pega a tela inteira (-129..135); aqui so o que esta a frente.
+  // A estrutura de cada um saiu do proprio .cns: quais Explod/Helper o estado
+  // solta, em que quadro e em que posicao. A primeira versao deste import
+  // trazia dois ou tres efeitos por golpe, e o pacote solta de seis a vinte e
+  // cinco - era por isso que os especiais pareciam vazios perto do original.
+  //
+  // 11070 (↓→P): a carga enche a tela de cortes e colunas em volta dele, o
+  // selo acende, e no quadro 7 sai o corte grande. No pacote a caixa pega a
+  // tela inteira (-129..135); aqui so o que esta a frente.
   dismantle: {
     launch: { vx: 4, vy: 5 },
     actions: [{ id: 11070, times: { 5: 20, 10: 8 } }],
@@ -264,13 +295,35 @@ const ANIMATIONS = {
     invulnerable: [0, 44],
     areas: [strike(6, 7, [0, -110, 130, 5], { damage: 8, hitstun: 40, push: 14, heavy: true })],
     events: [
-      fx(20, 'redSpark', [10, -45], { scale: 0.5 }),
+      fxLoop(0, 'debrisRing', [0, 0], 14, 38),
+      fxLoop(10, 'plume', [-50, -25], 6, 38),
+      fxLoop(13, 'plume', [45, -20], 6, 38),
+      fxLoop(12, 'crossCut', [-60, -70], 4, 38),
+      fxLoop(14, 'crossCut', [70, -95], 4, 38),
+      fx(20, 'cursedSigil', [0, -49]),
       fx(40, 'crescent', [70, -45], { scale: 0.9 }),
+      fx(40, 'groundLine', [0, 5]),
       fx(42, 'crossCut', [80, -40], { scale: 0.6 }),
       fx(44, 'darkStreaks', [60, -40], { scale: 0.7 }),
     ],
   },
-  // 3000 (↓←P): a carga longa que termina na explosao amaldicoada.
+  // 11050 (↓→P no ar): a mesma abertura, de cima.
+  airDismantle: {
+    launch: { vx: 4, vy: 4 },
+    actions: [{ id: 11050, times: { 5: 18, 10: 6 } }],
+    air: true,
+    cooldown: 200,
+    areas: [strike(6, 7, [-20, -90, 120, 60], { damage: 8, hitstun: 38, push: 12, heavy: true })],
+    events: [
+      fxLoop(10, 'plume', [-40, -20], 6, 34),
+      fxLoop(12, 'crossCut', [60, -60], 5, 34),
+      fx(18, 'cursedSigil', [0, -49]),
+      fx(36, 'crescent', [60, -30], { scale: 0.9 }),
+      fx(38, 'darkStreaks', [50, -25], { scale: 0.7 }),
+    ],
+  },
+  // 3000 (↓←P): a carga longa. O pacote acende o anel vermelho e a cruz
+  // branca no quadro 4, a estrela no 7 e o impacto no 8.
   cursedBlast: {
     actions: [{ id: 3000, durationScale: 0.4 }],
     cooldown: 300,
@@ -278,71 +331,120 @@ const ANIMATIONS = {
     areas: [strike(6, 8, [10, -120, 150, 5], { damage: 10, hitstun: 44, push: 16, heavy: true })],
     events: [
       fx(4, 'redSpark', [0, -40]),
+      fx(26, 'whiteCross', [-1, -46]),
+      fx(28, 'redRing', [-1, -46]),
+      fx(28, 'coreBurst', [-1, -46]),
+      fx(30, 'darkOrb', [-1, -46]),
       fx(40, 'cursedPlume', [60, -10]),
       fx(52, 'cursedPlume', [110, -10]),
-      fx(56, 'burstRing', [100, -45]),
-      fx(58, 'fireBall', [105, -50]),
-      fx(60, 'rubble', [110, 0]),
+      fx(56, 'starBurst', [100, -50]),
+      fxLoop(56, 'flashRing', [100, -45], 6, 66),
+      fx(67, 'bigImpact', [95, -55]),
+      fx(70, 'fireBall', [105, -50]),
+      fx(72, 'rubble', [110, 0]),
     ],
   },
-  // 2999 (↓→K): o redemoinho que abre na frente dele.
+  // 2999 (↓→K): os tres raios vermelhos, a fumaca e o redemoinho.
   vortex: {
     actions: [{ id: 2999, times: { 2: 20, 4: 18 } }],
     cooldown: 200,
     events: [
-      fx(10, 'redBolt', [35, -40], { scale: 0.5 }),
-      fx(14, 'voidSpiral', [75, -45]),
-      fx(20, 'sparkles', [75, -45], { scale: 0.5 }),
+      fx(15, 'smokePillar', [38, -50]),
+      fx(15, 'voidSpiral', [75, -45]),
+      fx(18, 'redBolt', [38, -41]),
+      fx(22, 'redBolt', [46, -41]),
+      fx(26, 'redBolt', [30, -41]),
+      fx(20, 'darkOrbs', [25, -60]),
+      fx(36, 'darkOrbs', [25, -40]),
+      fx(36, 'streak', [18, -52]),
+      fx(38, 'sparkles', [75, -45]),
     ],
   },
-  // 3900 (↓←K): o chao se levanta e o raio desce em cima.
+  // 3900 (↓←K): o estouro no quadro 7 e, logo atras, a coluna de fogo em cima
+  // do adversario, com detritos e anuis caindo ate o fim - e o golpe mais
+  // longo dele fora os supers.
   eruption: {
-    actions: [{ id: 3900, times: { 5: 14, 6: 12 } }],
-    cooldown: 220,
+    actions: [{ id: 3900, times: { 5: 26, 6: 34 } }],
+    cooldown: 260,
     events: [
-      fx(34, 'ledge', [90, 0], { scale: 0.5 }),
-      fx(38, 'boltPillar', [90, -20]),
-      fx(40, 'ringFlash', [90, -5], { scale: 0.6 }),
+      fx(34, 'burstBig', [37, -57]),
+      fx(34, 'burstSmall', [37, -57]),
+      fx(38, 'fireColumn', [0, 0], { target: 'opponent' }),
+      fx(42, 'boltPillar', [90, -20]),
+      fxLoop(40, 'rubble', [70, 0], 10, 86),
+      fxLoop(36, 'ringFlash', [60, -30], 7, 86),
     ],
   },
-  // 3800 (↓→S): ele abre o portal amaldicoado em cima do adversario.
+  // 3800 (↓→S): o baque no chao, o anel do portal, e o portal abrindo.
   portal: {
-    actions: [{ id: 3800, lengthTicks: 50 }],
+    actions: [{ id: 3800 }, { id: 3801 }],
     cooldown: 260,
-    events: [fx(6, 'redSpark', [0, -40]), fx(12, 'cursedPortal', [75, -30])],
+    events: [
+      fx(7, 'shockRing', [0, 3]),
+      { action: 3801, at: 0, effect: { id: 'portalRing', pos: [0, 0] } },
+      { action: 3801, at: 2, effect: { id: 'plume', pos: [-20, 23] } },
+      { action: 3801, at: 27, effect: { id: 'cursedPortal', pos: [75, -30] } },
+    ],
   },
-  // 11300 (↓←S): o santuario inteiro desce a frente.
+  // 11300 (↓←S): a coluna de fogo no quadro 3, depois os aneis, o estouro e a
+  // estrela, com a fumaca saindo o tempo todo por tras.
   shrineCall: {
-    actions: [{ id: 11300, durationScale: 0.45 }],
+    actions: [{ id: 11300, times: { 0: 10, 1: 16, 2: 30, 3: 12, 4: 12, 5: 20 } }],
     cooldown: 280,
-    events: [fx(10, 'shrine', [70, 0]), fx(24, 'shrineSmoke', [70, -30], { scale: 0.6 })],
+    events: [
+      fx(26, 'fireColumn', [31, -46]),
+      fxLoop(38, 'lowSmoke', [-25, 5], 15, 95),
+      fxLoop(70, 'flashRing', [34, -55], 10, 90),
+      fx(76, 'haloRing', [34, -55]),
+      fx(76, 'wideBlast', [34, -15]),
+      fx(76, 'starBurst', [34, -55]),
+      fx(80, 'streak', [10, -57]),
+      fx(83, 'coneRing', [26, -55]),
+      fx(84, 'shrine', [70, 0]),
+      fx(88, 'purpleBolt', [34, -15]),
+    ],
   },
 
   // ---- Supers ----
-  // 3001 (X): ele se firma e o vazio engole a frente.
+  // 3001 (↓→↓→K): no pacote o estado espera 200 ticks antes de entregar - a
+  // primeira versao daqui cortava em 85 e o golpe acabava antes do pagamento.
+  // Agora a carga enche a tela de energia amaldicoada e o vazio fecha no fim.
   voidStorm: {
-    actions: [{ id: 3001, times: { 2: 50 } }],
+    actions: [{ id: 3001, times: { 2: 110 } }],
     cooldown: 900,
-    invulnerable: [0, 60],
+    invulnerable: [0, 130],
+    areas: [strike(2, 2, [0, -130, 190, 10], { damage: 4, hitstun: 30, push: 6, every: 14, count: 5 })],
     events: [
-      fx(10, 'redSpark', [0, -40], { scale: 0.7 }),
-      fx(18, 'voidSpiral', [70, -45], { scale: 1.4 }),
-      fx(26, 'clawSlash', [70, -45], { scale: 0.9 }),
-      fx(38, 'crossCut', [70, -40], { scale: 0.7 }),
-      fx(50, 'crescent', [70, -45], { scale: 1.1 }),
+      fx(8, 'redSpark', [0, -40]),
+      fx(14, 'redHaze', [0, -40], { target: 'stage' }),
+      fx(20, 'cursedCloud', [70, -45]),
+      fx(26, 'voidSpiral', [75, -45], { scale: 1.4 }),
+      fx(40, 'cursedCloud', [110, -60]),
+      fx(60, 'cursedCloud', [50, -30]),
+      fx(70, 'clawSlash', [80, -45], { scale: 0.9 }),
+      fx(90, 'crossCut', [80, -40], { scale: 0.7 }),
+      fx(104, 'voidBlast', [80, -45]),
+      fx(112, 'crescent', [80, -45], { scale: 1.1 }),
+      fx(118, 'splash', [80, -20]),
     ],
   },
-  // 13000 (Y): Dominio - Santuario Maligno. Prende o oponente e corta ate o
-  // fim, como o MUGEN faz com o helper 20010.
+  // 13000 (↓→↓→P): Dominio - Santuario Maligno. O pacote tinge a tela de
+  // vermelho e abre o portal; aqui ele prende o adversario e corta ate o fim.
   domain: {
     actions: [{ id: 13000, times: { 3: 70 } }],
     cooldown: 1500,
     invulnerable: [0, 165],
     events: [
       { at: 24, standAt: -80, pinOpponent: { dx: 0, lift: 0, ticks: 140 } },
+      fx(20, 'redTint', [0, 0], { target: 'stage' }),
       fx(24, 'cutIn', [0, -60], { target: 'stage' }),
+      fx(28, 'cursedSigil', [0, -60]),
       fx(30, 'shrineField', [-60, 0], { target: 'stage' }),
+      fx(34, 'redBands', [0, 0], { target: 'stage' }),
+      fx(40, 'voidBlast', [0, -40], { target: 'opponent' }),
       ...DOMAIN_CUTS,
+      fx(190, 'splash', [0, -20], { target: 'opponent' }),
+      fx(196, 'groundRocks', [0, 0], { target: 'opponent' }),
       fx(200, 'cursedSkull', [0, -40], { target: 'opponent' }),
     ],
   },
@@ -350,8 +452,8 @@ const ANIMATIONS = {
 
 const EFFECTS = {
   // Os tamanhos (size) foram medidos pela celula gerada: o pacote desenha
-  // efeito de tela cheia (o portal tem 402 px de celula, quatro vezes o
-  // lutador), entao cada um foi reduzido ate ficar na escala da arena.
+  // efeito de tela cheia (a nuvem amaldicoada e um 1024x1024), entao cada um
+  // foi reduzido ate ficar na escala da arena.
   // Faiscas e poeira
   dust: { actions: [7019], harmless: true },
   redSpark: { actions: [9011], size: 0.16, harmless: true },
@@ -360,6 +462,12 @@ const EFFECTS = {
   groundRings: { actions: [30203], size: 0.25, harmless: true },
   ringFlash: { actions: [829], size: 0.18, harmless: true },
   shrineSmoke: { actions: [{ id: 7054, lengthTicks: 50 }], size: 0.23, alpha: 0.8, layer: 'back', harmless: true },
+  debrisRing: { actions: [30216], size: 0.4, harmless: true },
+  groundLine: { actions: [{ id: 7017, lengthTicks: 24 }], size: 0.35, harmless: true },
+  shockRing: { actions: [30201], size: 0.6, harmless: true },
+  lowSmoke: { actions: [7003], size: 0.5, layer: 'back', harmless: true },
+  groundRocks: { actions: [3021], size: 0.35, harmless: true },
+  splash: { actions: [{ id: 7046, lengthTicks: 40 }], size: 0.2, harmless: true },
 
   // Cortes
   slashArc: { actions: [332], size: 0.4, harmless: true },
@@ -381,9 +489,12 @@ const EFFECTS = {
   darkStreaks: { actions: [1345], size: 0.4, harmless: true },
   ringSlash: { actions: [7037], size: 0.16, harmless: true },
   ringBurst: { actions: [9014], size: 0.3, harmless: true },
+  streak: { actions: [30024], size: 0.3, harmless: true },
+  cursedSigil: { actions: [524], size: 0.35, harmless: true },
 
   // Fogo e energia
   redBolt: { actions: [1013], size: 0.15, harmless: true },
+  plume: { actions: [7000], size: 0.3, harmless: true },
   cursedPlume: {
     actions: [{ id: 7530, lengthTicks: 30 }],
     size: 0.5,
@@ -402,6 +513,27 @@ const EFFECTS = {
     scale: 0.7,
     area: { rect: [-70, -300, 70, 10], until: 20, damage: 2, hitstun: 28, push: 5, every: 6, count: 5 },
   },
+  // A coluna de fogo do pacote tem 88 quadros; aqui vai cortada pela metade.
+  fireColumn: {
+    actions: [{ id: 1550, lengthTicks: 46 }],
+    size: 0.3,
+    area: { rect: [-90, -340, 90, 10], until: 40, damage: 2, hitstun: 30, push: 5, every: 7, count: 6 },
+  },
+  burstBig: { actions: [1141], size: 0.25, harmless: true },
+  burstSmall: { actions: [1142], size: 0.35, harmless: true },
+  starBurst: { actions: [1320], size: 0.25, harmless: true },
+  redRing: { actions: [{ id: 830, lengthTicks: 26 }], size: 0.18, harmless: true },
+  whiteCross: { actions: [9080], size: 0.3, harmless: true },
+  coreBurst: { actions: [{ id: 9081, lengthTicks: 30 }], size: 0.25, harmless: true },
+  darkOrb: { actions: [{ id: 8007, lengthTicks: 26 }], size: 0.35, harmless: true },
+  darkOrbs: { actions: [{ id: 1938, lengthTicks: 24 }], size: 0.35, harmless: true },
+  smokePillar: { actions: [8062], size: 0.25, layer: 'back', harmless: true },
+  flashRing: { actions: [30315], size: 0.3, harmless: true },
+  bigImpact: { actions: [30214], size: 0.22, harmless: true },
+  purpleBolt: { actions: [1420], size: 0.3, harmless: true },
+  haloRing: { actions: [4101], size: 0.4, harmless: true },
+  coneRing: { actions: [4102], size: 0.4, harmless: true },
+  wideBlast: { actions: [{ id: 7038, lengthTicks: 34 }], size: 0.25, harmless: true },
 
   // Vazio e santuario
   voidSpiral: {
@@ -410,19 +542,35 @@ const EFFECTS = {
     scale: 0.8,
     area: { rect: [-130, -130, 130, 130], until: 40, damage: 1, hitstun: 24, push: 2, every: 5, count: 8 },
   },
-  // O portal nasce do chao cortando: e ele que da o dano do golpe, nao o pose.
+  // Nuvem de energia amaldicoada: 1024x1024 no pacote, cortada em tamanho e
+  // em numero de quadros para nao estourar o atlas.
+  cursedCloud: {
+    actions: [{ id: 3651, lengthTicks: 34 }],
+    size: 0.14,
+    area: { rect: [-320, -320, 320, 200], until: 30, damage: 1, hitstun: 22, push: 2, every: 6, count: 5 },
+  },
+  voidBlast: {
+    actions: [{ id: 7506, lengthTicks: 28 }],
+    size: 0.2,
+    area: { rect: [-200, -120, 200, 60], until: 4, damage: 4, hitstun: 34, push: 10, heavy: true },
+  },
   cursedPortal: {
     actions: [{ id: 6070, lengthTicks: 54 }],
     size: 0.27,
     layer: 'back',
     area: { rect: [-150, -400, 150, 10], until: 30, damage: 2, hitstun: 28, push: 5, every: 7, count: 4 },
   },
+  portalRing: { actions: [6110], size: 0.5, harmless: true },
   shrine: {
     actions: [{ id: 8060, lengthTicks: 60 }],
     size: 0.6,
     area: { rect: [-120, -200, 120, 10], until: 40, damage: 2, hitstun: 30, push: 6, every: 8, count: 5 },
   },
   shrineField: { actions: [{ id: 3010, lengthTicks: 150 }], size: 0.7, layer: 'back', alpha: 0.85, harmless: true },
+  // Tintas de tela cheia do pacote: entram como cobertura, nao como sprite.
+  redTint: { actions: [{ id: 4010, lengthTicks: 150 }], scale: 0.2, cover: [1280, 720], alpha: 0.35, layer: 'back', harmless: true },
+  redBands: { actions: [{ id: 4011, lengthTicks: 140 }], scale: 0.2, cover: [1280, 300], alpha: 0.45, layer: 'back', harmless: true },
+  redHaze: { actions: [{ id: 4075, lengthTicks: 120 }], scale: 0.2, cover: [1280, 720], alpha: 0.3, layer: 'back', harmless: true },
   cutIn: { actions: [{ id: 7096, lengthTicks: 50 }], scale: 0.6, cover: [520, 430], alpha: 0.9, harmless: true },
   cursedSkull: {
     actions: [{ id: 13003, lengthTicks: 40 }],
@@ -432,10 +580,14 @@ const EFFECTS = {
   },
 };
 
+
 const COMBOS = [
   { id: 'domain', input: '↓→↓→P', animation: 'domain' },
   { id: 'void-storm', input: '↓→↓→K', animation: 'voidStorm' },
   { id: 'dismantle', input: '↓→P', animation: 'dismantle' },
+  { id: 'air-dismantle', input: '↓↓P', animation: 'airDismantle' },
+  { id: 'summon', input: '↓↓S', animation: 'summon' },
+  { id: 'elbow', input: '→P', animation: 'elbow' },
   { id: 'cursed-blast', input: '↓←P', animation: 'cursedBlast' },
   { id: 'vortex', input: '↓→K', animation: 'vortex' },
   { id: 'eruption', input: '↓←K', animation: 'eruption' },
@@ -460,10 +612,13 @@ const MOVE_LIST = [
   { section: 'Golpes', name: 'Sequência do chute', input: 'KKKKK', note: 'Fecha chamando o corte à distância' },
   { section: 'Golpes', name: 'Sequência da lança', input: 'SSS', note: 'A estocada é o golpe de maior alcance dele' },
   { section: 'Golpes', name: 'No ar', input: 'PKS', note: 'O especial mergulha de lança em riste' },
+  { section: 'Golpes', name: 'Cotovelada', input: '→P', note: 'Curta e baixa; emenda na lança' },
   { section: 'Golpes', name: 'Cortes rasteiros', input: 'P', hold: '↓' },
   { section: 'Golpes', name: 'Mergulho baixo', input: 'K', hold: '↓' },
   { section: 'Golpes', name: 'Explosão de cortes', input: 'S', hold: '↓', note: 'Pega dos dois lados, inclusive atrás' },
   { section: 'Especiais', name: 'Dismantle', input: '↓→P', note: 'Para tudo e abre o corte à frente' },
+  { section: 'Especiais', name: 'Dismantle aéreo', input: '↓↓P', note: 'A mesma abertura, de cima' },
+  { section: 'Especiais', name: 'Chamado', input: '↓↓S', note: 'Sobe e manda os cortes de longe' },
   { section: 'Especiais', name: 'Explosão amaldiçoada', input: '↓←P', note: 'Carrega demorado e dá o maior dano dele' },
   { section: 'Especiais', name: 'Redemoinho', input: '↓→K', note: 'Vários acertos à frente' },
   { section: 'Especiais', name: 'Erupção', input: '↓←K', note: 'O chão sobe e o raio desce em cima' },

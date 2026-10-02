@@ -55,6 +55,9 @@ for (const [name, [leftX, rightX], ticks, minimum] of [
   ['eruption', [560, 660], 100, 2],
   ['shrineCall', [560, 660], 130, 2],
   ['voidStorm', [560, 680], 140, 2],
+  ['elbow', [600, 640], 40, 1],
+  ['summon', [560, 700], 110, 2],
+  ['portal', [560, 680], 90, 2],
 ]) {
   test(`sukuna: ${name} acerta`, () => {
     const world = run(arena(record, leftX, rightX), cast(name), ticks);
@@ -72,6 +75,16 @@ test('sukuna: o dominio prende o oponente sob os cortes', () => {
   const world = run(arena(record, 400, 700), cast('domain'), 280);
   assert.ok(hits(world).length >= 8, `${hits(world).length} acertos`);
   assert.ok(world.fighters[1].health <= config.stats.maxHealth - 20, `vida ${world.fighters[1].health}`);
+});
+
+// Os especiais do pacote nao sao o pose: o ataque vem de helpers encadeados,
+// que aqui viram efeitos. Um especial com dois ou tres efeitos e sinal de que
+// a leitura do .cns se perdeu - foi assim que a primeira versao saiu vazia.
+test('sukuna: os especiais soltam os efeitos do pacote, nao dois ou tres', () => {
+  const contagem = (nome) => (config.animations[nome].events ?? []).filter((evento) => evento.effect).length;
+  for (const nome of ['dismantle', 'cursedBlast', 'eruption', 'shrineCall', 'voidStorm', 'domain']) {
+    assert.ok(contagem(nome) >= 10, `${nome}: so ${contagem(nome)} efeitos`);
+  }
 });
 
 test('sukuna: comandos', () => {
