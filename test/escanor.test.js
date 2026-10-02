@@ -129,3 +129,43 @@ test('escanor: The One - sol teleguiado e golpe final', () => {
   run(finisher, cast('theOneFinisher'), 150);
   assert.ok(hits(finisher).length >= 2);
 });
+
+// No The One o Escanor troca de sprite. As animacoes de passagem (agachar,
+// levantar) nao tem versao do modo no pacote, e o jogo tocava a versao normal
+// - o personagem piscava de volta ao Escanor comum toda vez que agachava.
+test('escanor: agachar no The One nao pisca de volta ao Escanor normal', () => {
+  const world = arena(record, 500, 900);
+  const [escanor] = world.fighters;
+  escanor.mode = 'theOne';
+
+  const vistas = new Set();
+  for (let tick = 0; tick < 30; tick += 1) {
+    step(world, command({ down: true }));
+    vistas.add(escanor.animation.name);
+  }
+  assert.ok(!vistas.has('crouchDown'), `tocou a passagem do Escanor normal: ${[...vistas]}`);
+  assert.ok(!vistas.has('crouch'), `tocou o agachado do Escanor normal: ${[...vistas]}`);
+  assert.ok(vistas.has('theOneCrouch'), `nunca chegou no agachado do modo: ${[...vistas]}`);
+
+  // E ao levantar, a mesma coisa.
+  const aoLevantar = new Set();
+  for (let tick = 0; tick < 30; tick += 1) {
+    step(world, command());
+    aoLevantar.add(escanor.animation.name);
+  }
+  assert.ok(!aoLevantar.has('crouchUp'), `tocou o levantar do Escanor normal: ${[...aoLevantar]}`);
+  assert.ok(aoLevantar.has('theOneIdle'), `nao voltou para a pose do modo: ${[...aoLevantar]}`);
+});
+
+// Fora do modo, a passagem continua valendo: a correcao nao pode comer o
+// enfeite de quem nao esta em modo nenhum.
+test('escanor: fora do modo, agachar continua passando pelo crouchDown', () => {
+  const world = arena(record, 500, 900);
+  const [escanor] = world.fighters;
+  const vistas = new Set();
+  for (let tick = 0; tick < 20; tick += 1) {
+    step(world, command({ down: true }));
+    vistas.add(escanor.animation.name);
+  }
+  assert.ok(vistas.has('crouchDown'), `a passagem sumiu fora do modo: ${[...vistas]}`);
+});

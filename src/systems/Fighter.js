@@ -248,6 +248,15 @@ export class Fighter {
   }
 
   playTransient(name) {
+    // Animacao de passagem (agachar, levantar, virar, aterrissar) e enfeite.
+    // Num modo que troca o visual do personagem (o The One do Escanor, o Yuji
+    // do Sukuna) ela so vale se o proprio modo tiver a dele: tocar a versao
+    // normal faz o personagem piscar de volta ao visual de fora do modo por
+    // alguns quadros. Sem o enfeite, ele vai direto para a pose - o que ninguem
+    // estranha. Modo que so mexe em atributos (o Origin do Gojo) nao tem esse
+    // problema e segue com as passagens normais.
+    const doModo = this.modeDef?.animations;
+    if (doModo && Object.keys(doModo).length > 0 && !doModo[name]) return;
     if (!this.hasAnimation(name)) return;
     this.transient = this.base(name);
     this.animation.play(this.transient, { restart: true });

@@ -140,3 +140,18 @@ test('gojo: Hollow Nuke so com o oponente abaixo de 1/3 da vida, e acaba com ele
   for (const name of ['hollowNuke', 'nukeRed', 'nukeBlast']) assert.ok(world.visited.has(name), name);
   assert.equal(world.fighters[1].health, 0);
 });
+
+// O Origin do Gojo so mexe em atributos, nao troca sprite nenhum. A regra que
+// pula a animacao de passagem nos modos que trocam o visual (o The One do
+// Escanor) nao pode comer a passagem aqui.
+test('gojo: no Origin, agachar continua passando pelo crouchDown', () => {
+  const world = arena(record, 500, 900);
+  const [gojo] = world.fighters;
+  gojo.mode = 'origin';
+  const vistas = new Set();
+  for (let tick = 0; tick < 20; tick += 1) {
+    step(world, command({ down: true }));
+    vistas.add(gojo.animation.name);
+  }
+  assert.ok(vistas.has('crouchDown'), `a passagem sumiu no Origin: ${[...vistas]}`);
+});
