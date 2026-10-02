@@ -55,9 +55,9 @@ Satoru Gojo e Jujutsu Kaisen são propriedade de Gege Akutami / Shueisha / MAPPA
 
 ## Sukuna
 
-Personagem importado do pacote MUGEN **"Unfair Sukuna"**, usado sem fins comerciais em projeto acadêmico. Créditos do próprio pacote (`Unfair Sukuna.def`): **Joey Joestar**, editado por **AikijinX**, **JeanneSoul**, **Adventurer**, **Sage Of Mugen** e **Kuro**.
+Personagem importado do pacote MUGEN **"Sukuna Heian"**, usado sem fins comerciais em projeto acadêmico. Créditos do próprio pacote (`Sukuna Heian.def`): **jonhny6969**, com **DARKNIGHT**, **INSEPH**, **AIKIJINXX** e **Dr.Animation**.
 
-No pacote, todo golpe acerta a tela inteira; o script `scripts/import-sukuna.mjs` troca isso por caixas de acerto do tamanho do golpe e dano normal. O pacote fica em `assets-src/sukuna/mugen/`, fora do git. Para regerar: `npm run assets:sukuna`.
+As caixas de acerto são as que o autor desenhou no `.air` (clsn1), quadro a quadro. Nos especiais, que no MUGEN acertam por helpers que este motor não roda, o script `scripts/import-sukuna.mjs` declara a caixa do tamanho do desenho. O pacote fica em `assets-src/sukuna-heian/mugen/`, fora do git. Para regerar: `npm run assets:sukuna`.
 
 Ryōmen Sukuna e Jujutsu Kaisen são propriedade de Gege Akutami / Shueisha / MAPPA.
 

@@ -201,7 +201,11 @@ class CellPacker {
   // o claro escurece a tela, entao vira preto com opacidade pelo brilho.
   // center: a imagem fica centrada na celula, ignorando o eixo (fundos de
   // tela cheia com o eixo no canto, que o cover estica pelo centro).
-  constructor(sff, scale = 1, { opaque = false, remap, shade = false, center = false, palfx } = {}) {
+  // trim: borda transparente cortada antes de medir a celula (ver
+  // trimTransparent). Fica desligado por padrao: ligar muda a geometria da
+  // folha de quem ja foi importado.
+  constructor(sff, scale = 1, { opaque = false, remap, shade = false, center = false, palfx, trim = false } = {}) {
+    this.trim = trim;
     this.palfx = palfx;
     this.center = center;
     this.sff = sff;
@@ -226,6 +230,7 @@ class CellPacker {
         // (o instante em que o personagem some, a caixa invisivel de um golpe).
         decoded = { width: 1, height: 1, axisX: 0, axisY: 0, rgba: new Uint8Array(4) };
       }
+      if (this.trim) decoded = trimTransparent(decoded);
       // Escala/rotacao do quadro (MUGEN 1.1) junto com a escala guardada.
       const transformed = (frame.xscale ?? 1) !== 1 || (frame.yscale ?? 1) !== 1 || (frame.angle ?? 0) !== 0;
       let image = transformed
@@ -543,6 +548,35 @@ function flatten(image) {
   return { ...image, rgba };
 }
 
+// Borda totalmente transparente cortada fora, com o eixo acompanhando. Alguns
+// pacotes guardam poses dentro de telas inteiras (o Sukuna Heian desenha a
+// estocada da lanca num sprite 349x372 com o desenho ocupando 98x71): como a
+// celula do atlas e medida pelo retangulo do sprite, um quadro desses sozinho
+// multiplica o tamanho de todas as paginas. Cortar nao mexe no desenho nem em
+// onde ele aparece - so tira pixel vazio.
+function trimTransparent(image) {
+  let x1 = image.width, y1 = image.height, x2 = -1, y2 = -1;
+  for (let y = 0; y < image.height; y += 1) {
+    for (let x = 0; x < image.width; x += 1) {
+      if (image.rgba[((y * image.width) + x) * 4 + 3] === 0) continue;
+      if (x < x1) x1 = x;
+      if (x > x2) x2 = x;
+      if (y < y1) y1 = y;
+      if (y > y2) y2 = y;
+    }
+  }
+  // Quadro vazio de proposito: deixa como esta, que o resto ja trata.
+  if (x2 < x1) return image;
+  if (x1 === 0 && y1 === 0 && x2 === image.width - 1 && y2 === image.height - 1) return image;
+  const width = x2 - x1 + 1, height = y2 - y1 + 1;
+  const rgba = new Uint8Array(width * height * 4);
+  for (let y = 0; y < height; y += 1) {
+    const from = (((y + y1) * image.width) + x1) * 4;
+    rgba.set(image.rgba.subarray(from, from + width * 4), y * width * 4);
+  }
+  return { width, height, axisX: image.axisX - x1, axisY: image.axisY - y1, rgba };
+}
+
 // Sprite reduzido por media de area, com o eixo acompanhando.
 function scaleDown(image, scale) {
   const width = Math.max(1, Math.round(image.width * scale));
@@ -692,7 +726,7 @@ export function exportFightFx({ root, sffPath, airPath, outDir, effects }) {
 
 export function importMugenCharacter({
   root, sffPath, airPath, outDir, id, name, description, template,
-  animations, effects = {}, combos, buttons, moveList, airJumpEffect, modes, awakening, echo, sndPath, sounds, soundsFromDef, sffOptions, spriteScale, bodyScale = 1, portrait, hurtboxFrom = 'idle',
+  animations, effects = {}, combos, buttons, moveList, airJumpEffect, modes, awakening, echo, sndPath, sounds, soundsFromDef, sffOptions, spriteScale, bodyScale = 1, trimFrames = false, portrait, hurtboxFrom = 'idle',
 }) {
   console.log('Lendo o pacote MUGEN...');
   // SFF v1 (MUGEN antigo): as cores do personagem vem da paleta .act.
@@ -725,7 +759,7 @@ export function importMugenCharacter({
   console.log('Personagem...');
   // bodyScale: resolucao guardada do corpo (pacotes em alta resolucao, como o
   // Dante com xscale 0.5, guardam menos e o spriteScale fecha o tamanho).
-  const body = new CellPacker(sff, bodyScale);
+  const body = new CellPacker(sff, bodyScale, { trim: trimFrames });
   const sources = {};
   for (const [animationId, spec] of Object.entries(animations)) {
     const collected = collectFrames(air, spec);

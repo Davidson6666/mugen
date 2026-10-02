@@ -9,7 +9,7 @@ const roster = JSON.parse(readFileSync(new URL('../src/data/characters.json', im
 
 // Lidos do .cns do pacote (scripts/lib/cns-sounds.mjs), com quantos golpes
 // costumam ficar com som (piso, para pegar uma leitura que quebre).
-const FROM_CNS = { escanor: 30, yoruichi: 14, unohana: 20, aizen: 40, gojo: 25, sukuna: 30 };
+const FROM_CNS = { escanor: 30, yoruichi: 14, unohana: 20, aizen: 40, gojo: 25, sukuna: 25 };
 
 // Personagens de rascunho nao tem atlas nem sons: so os importados entram.
 const readConfig = (id) => JSON.parse(readFileSync(new URL(`../public/assets/characters/${id}/${id}_config.json`, import.meta.url)));
