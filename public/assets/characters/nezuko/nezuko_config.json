@@ -548,8 +548,7 @@
       ],
       "events": [
         {
-          "at": 0,
-          "sound": "voice16"
+          "at": 0
         },
         {
           "at": 5,

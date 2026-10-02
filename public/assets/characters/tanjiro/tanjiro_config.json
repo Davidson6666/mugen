@@ -307,8 +307,7 @@
       ],
       "events": [
         {
-          "at": 0,
-          "sound": "voice0"
+          "at": 0
         },
         {
           "at": 0,
@@ -367,8 +366,7 @@
       ],
       "events": [
         {
-          "at": 0,
-          "sound": "voice1"
+          "at": 0
         },
         {
           "at": 0,
@@ -432,8 +430,7 @@
       ],
       "events": [
         {
-          "at": 0,
-          "sound": "voice2"
+          "at": 0
         },
         {
           "at": 0,
@@ -499,8 +496,7 @@
       ],
       "events": [
         {
-          "at": 0,
-          "sound": "voice8"
+          "at": 0
         },
         {
           "at": 0,

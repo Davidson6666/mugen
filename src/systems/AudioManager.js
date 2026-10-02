@@ -6,6 +6,12 @@
 const STORAGE_KEY = 'mugen.volume';
 const DEFAULT_VOLUME = 0.8;
 
+// Acima disto o som e tratado como fala, nao como zunido: so uma por lutador
+// ao mesmo tempo, e ela morre junto com o golpe que a chamou - senao uma fala
+// longa (o Hado 90 do Aizen tem 21s para um golpe de 2,5s) continua tocando
+// pelo resto do round.
+const VOICE_SECONDS = 1.2;
+
 export function loadVolume() {
   try {
     const stored = window.localStorage.getItem(STORAGE_KEY);
@@ -110,11 +116,27 @@ export class AudioManager {
     const context = this.ensureContext();
     const buffer = this.buffers.get(url);
     if (!context || !buffer) return;
+
+    // O mesmo som do mesmo lutador nao recomeca enquanto ainda esta tocando.
+    // Isso se ajusta sozinho ao clipe: um zunido de 0,1s pode sair a cada
+    // soco, uma fala de 2s nao empilha em cima dela mesma.
+    if (this.playing.some((item) => item.owner === owner && item.url === url)) return;
+
+    // Fala nova corta a fala anterior do mesmo lutador: duas vozes do mesmo
+    // personagem falando por cima uma da outra nao e mixagem, e barulho.
+    const voice = buffer.duration >= VOICE_SECONDS;
+    if (voice) {
+      for (const item of [...this.playing]) {
+        if (item.owner === owner && item.voice) this.stop(item);
+      }
+    }
+
     const source = context.createBufferSource();
     source.buffer = buffer;
     source.connect(this.gain);
     source.start();
-    const entry = { owner, source, run, stopWithMove };
+    // Fala longa morre junto com o golpe, mesmo sem stopWithMove no config.
+    const entry = { owner, url, source, run, voice, stopWithMove: stopWithMove || voice };
     source.onended = () => {
       this.playing = this.playing.filter((item) => item !== entry);
     };

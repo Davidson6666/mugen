@@ -685,8 +685,7 @@
       ],
       "events": [
         {
-          "at": 0,
-          "sound": "voiceMid"
+          "at": 0
         },
         {
           "at": 1,
@@ -792,8 +791,7 @@
           "sound": "swingHeavy"
         },
         {
-          "at": 8,
-          "sound": "voiceMid"
+          "at": 8
         },
         {
           "at": 8,
@@ -945,8 +943,7 @@
           "dx": 5
         },
         {
-          "at": 4,
-          "sound": "voiceMid"
+          "at": 4
         }
       ],
       "cancels": [
@@ -1017,8 +1014,7 @@
       ],
       "events": [
         {
-          "at": 4,
-          "sound": "voiceHeavy"
+          "at": 4
         },
         {
           "at": 9,
