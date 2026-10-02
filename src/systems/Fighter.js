@@ -75,6 +75,28 @@ function overrideFrom(combo) {
 //   air/float    golpe aereo (acaba ao tocar o chao) / sem gravidade
 //   invulnerable [de, ate] ticks em que nada acerta
 //   noPush       atravessa o oponente (sem colisao de corpo)
+// Qual pose do modo usar quando ele nao tem a animacao pedida. So vale para
+// modo que troca o visual; modo de atributos (o Origin do Gojo) nunca chega
+// aqui.
+const MODE_FALLBACK = {
+  jumpUp: 'jump',
+  jumpForward: 'jump',
+  jumpBack: 'jump',
+  jumpFall: 'jump',
+  falling: 'jump',
+  hitAir: 'jump',
+  launched: 'jump',
+  blockStanding: 'idle',
+  guardEndStanding: 'idle',
+  hitReaction: 'idle',
+  victoryPose: 'idle',
+  blockCrouching: 'crouch',
+  guardEndCrouching: 'crouch',
+  knockdown: 'crouch',
+  getUp: 'crouch',
+  ko: 'crouch',
+};
+
 export class Fighter {
   // "random": o sorteio da partida. Fora dos testes ele vem com semente
   // (src/utils/rng.js), pra mesma partida dar o mesmo resultado nos dois lados
@@ -225,7 +247,19 @@ export class Fighter {
 
   // Nome da animacao base no modo atual.
   base(name) {
-    return this.modeDef?.animations?.[name] ?? name;
+    const doModo = this.modeDef?.animations;
+    if (!doModo) return name;
+    if (doModo[name]) return doModo[name];
+    // Modo que troca o visual (o The One do Escanor, o Yuji do Sukuna) quase
+    // nunca tem o pacote completo: faltam pular, defender, apanhar. Cair no
+    // sprite de fora do modo faz o personagem piscar de volta ao normal no
+    // meio da luta, que e pior do que ficar numa pose parecida. Entao procura
+    // a pose equivalente dentro do proprio modo antes de desistir.
+    if (Object.keys(doModo).length > 0) {
+      const parecida = MODE_FALLBACK[name];
+      if (parecida && doModo[parecida]) return doModo[parecida];
+    }
+    return name;
   }
 
   // O personagem tem essa animacao? As comuns do MUGEN (virar, cair, levantar)

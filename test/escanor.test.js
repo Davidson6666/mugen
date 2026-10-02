@@ -169,3 +169,41 @@ test('escanor: fora do modo, agachar continua passando pelo crouchDown', () => {
   }
   assert.ok(vistas.has('crouchDown'), `a passagem sumiu fora do modo: ${[...vistas]}`);
 });
+
+// O modo nao pode largar o visual dele em situacao nenhuma: pular, defender,
+// apanhar, cair. O pacote do The One so tem parado/andar/agachar/pular/dash,
+// entao o resto precisa cair numa pose do proprio modo - nunca no Escanor
+// normal.
+test('escanor: no The One, nenhuma situacao volta ao sprite do Escanor normal', () => {
+  const world = arena(record, 500, 900);
+  const [escanor] = world.fighters;
+  escanor.mode = 'theOne';
+
+  // Tudo que o motor pode pedir fora dos golpes.
+  // Fora as de passagem (crouchDown, crouchUp, turn, landing): num modo que
+  // troca o visual elas nao chegam a tocar, o personagem vai direto para a
+  // pose - e o que o teste de agachar logo acima garante.
+  const situacoes = [
+    'idle', 'walkForward', 'walkBackward', 'crouch',
+    'jumpUp', 'jumpForward', 'jumpBack', 'jumpFall', 'falling',
+    'blockStanding', 'blockCrouching', 'guardEndStanding', 'guardEndCrouching',
+    'hitReaction', 'hitAir', 'launched', 'knockdown', 'getUp', 'ko', 'victoryPose',
+  ];
+  const vazando = situacoes.filter((nome) => {
+    const escolhida = escanor.base(nome);
+    // So conta como vazamento se o personagem TEM a versao normal e o modo
+    // acabou escolhendo justamente ela.
+    return config.animations[nome] && escolhida === nome;
+  });
+  assert.deepEqual(vazando, [], `estas situacoes ainda mostram o Escanor normal: ${vazando.join(', ')}`);
+});
+
+test('escanor: no The One, pular e defender usam sprite do proprio modo', () => {
+  const world = arena(record, 500, 900);
+  const [escanor] = world.fighters;
+  escanor.mode = 'theOne';
+  assert.equal(escanor.base('jumpUp'), 'theOneJump');
+  assert.equal(escanor.base('jumpFall'), 'theOneJump');
+  assert.equal(escanor.base('blockStanding'), 'theOneIdle');
+  assert.equal(escanor.base('blockCrouching'), 'theOneCrouch');
+});
