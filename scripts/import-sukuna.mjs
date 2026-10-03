@@ -10,18 +10,23 @@
 //   B: 300 -> 310 -> 320 -> 330 -> 340
 //   C: 400 -> 410 -> 430                                (a corrente da lanca)
 //   no ar: 600 (soco), 615 (chute), 3599 (mergulho com a lanca)
-//   especiais: 11070, 3000, 2999, 3900, 3800, 11300
+//   especiais: 11070 (Dismantle), 3000 (onda gigante), 1000 (vazio + pilar),
+//   3900 (erupcao), 3800 (portal), 11300 (Fuga, a flecha de fogo)
+//   ↓ + botao: 270 (rajada de cortes), 21999 -> 22000 (voadora), 2998 (pilar)
+//   1200 (corte instantaneo), 1300 (arremesso da lanca)
 //   supers: 3001 (X) e 13000 (Y, o dominio)
 //
-// Onde o autor desenhou clsn1, a caixa daqui e a dele, quadro a quadro; onde
-// nao desenhou (os especiais, que no MUGEN acertam por helpers que este motor
-// nao roda), a caixa foi declarada do tamanho do desenho, medida pela caixa
-// opaca do sprite.
+// O pose do Sukuna e so a casca: o ataque de cada especial mora em Explod e
+// Helper encadeados do .cns (que este motor nao roda), e os de longo alcance
+// - a onda 1505, a flecha 11303, os cortes 390, a lanca 1350 - viram EFFECTS
+// que andam (velocityX) e acertam. Os desenhos a escolher tem pegadinha: o
+// 3051 e um anel escuro quase invisivel (o corte branco e o 1505), o 7064 e a
+// fogueira e o 7051 o rastro de chama no chao, e o 1550 e uma coluna
+// retangular que o MUGEN deixa sair da tela (aqui ela afunila e dissolve).
 //
-// O ataque de verdade dos especiais mora nos helpers do pacote, que aqui viram
-// EFFECTS: o corte branco (3051), a cruz de cortes (7027), o pilar de raio
-// (8425), o redemoinho (7092/7280), o portal (6070), o torii do Santuario
-// Maligno (3010) e o respingo amaldicoado com a caveira (13003).
+// Onde o autor desenhou clsn1, a caixa daqui e a dele, quadro a quadro; onde
+// nao desenhou (os especiais), a caixa foi declarada do tamanho do desenho,
+// medida pela caixa opaca do sprite.
 //
 // O sprite parado tem 83 px: spriteScale 1.3 poe ele na altura do elenco (a
 // caixa de dano fica em 95, que e a do Gojo, do Humberto e do Ensina).
@@ -233,28 +238,77 @@ const ANIMATIONS = {
   },
 
   // ---- Segurando ↓ ----
-  // 270: agachado, ele chama os cortes a frente.
-  crouchSummon: {
-    actions: [{ id: 270, times: { 1: 18, 2: 8 } }],
-    cooldown: 60,
-    areas: [strike(1, 2, [15, -60, 95, 3], { damage: 4, hitstun: 26, push: 6 })],
-    events: [fx(8, 'redSpark', [45, -25], { scale: 0.45 }), fx(10, 'crossCut', [60, -25], { scale: 0.35 })],
+  // Os tres do pacote sao golpes de alcance: o 270 (↓A) e ele apontando e
+  // soltando cortes verticais que cruzam a tela (helper 390, velocidade 20); o
+  // 21999 -> 22000 (↓B) e a voadora que atravessa a arena; o 2998 (↓C) cai um
+  // pilar em cima do adversario onde ele estiver (helper 445). Eu tinha feito
+  // os tres como golpes curtos de perto.
+  cutBarrage: {
+    actions: [{ id: 270, times: { 0: 8, 1: 38, 2: 8, 3: 6 } }],
+    cooldown: 100,
+    events: [
+      fx(6, 'redSpark', [36, -52], { scale: 0.4 }),
+      fx(10, 'cutWave', [34, -52]),
+      fx(18, 'cutWave', [34, -44]),
+      fx(26, 'cutWave', [34, -58]),
+      fx(34, 'cutWave', [34, -50]),
+    ],
   },
-  // 21999 -> 22000: ele se firma e explode em cortes ao redor (a caixa do
-  // 22000 pega dos dois lados, inclusive atras).
-  spearCharge: {
-    actions: [{ id: 21999, times: { 1: 10, 2: 6 } }],
-    cooldown: 150,
-    invulnerable: [14, 26],
-    events: [fx(14, 'ringBurst', [0, -35], { scale: 0.5 })],
-    next: 'spearBurst',
+  flyKick: {
+    actions: [{ id: 21999, times: { 0: 6, 1: 12, 2: 6 } }],
+    cooldown: 140,
+    events: [fx(8, 'ringBurst', [0, -35], { scale: 0.5 })],
+    next: 'flyKickDash',
   },
-  spearBurst: {
-    launch: { vx: 4, vy: 6 },
-    actions: [{ id: 22000, lengthTicks: 26 }],
+  flyKickDash: {
+    launch: { vx: 5, vy: 6 },
+    actions: [{ id: 22000, lengthTicks: 24 }],
     noPush: true,
-    areas: [strike(0, 99, [-46, -57, 40, 1], { damage: 6, hitstun: 34, push: 10, heavy: true })],
-    events: [fx(0, 'ringSlash', [0, -30], { scale: 0.6 }), fx(2, 'groundRings', [0, 0], { scale: 0.5 })],
+    areas: [strike(0, 99, [-10, -57, 64, 1], { damage: 6, hitstun: 36, push: 10, heavy: true })],
+    events: [
+      { at: 0, vx: 13 }, { at: 6, vx: 13 }, { at: 12, vx: 11 }, { at: 18, vx: 7 },
+      fxLoop(0, 'darkStreaks', [-30, 0], 3, 22),
+      fx(0, 'ringSlash', [45, -30], { scale: 0.8 }),
+      fx(0, 'groundRings', [0, 0], { scale: 0.5 }),
+    ],
+  },
+  pillar: {
+    actions: [{ id: 2998, times: { 0: 8, 1: 5, 2: 8, 3: 4, 4: 26 } }],
+    cooldown: 150,
+    events: [
+      fx(8, 'redSpark', [34, -52], { scale: 0.4 }),
+      fx(8, 'pillarMark', [0, 0], { target: 'opponent', follow: 'target' }),
+      fx(21, 'blackPillar', [0, 0], { target: 'opponent' }),
+      fx(21, 'emberSplash', [0, 0], { target: 'opponent' }),
+      fx(23, 'smokeBurst', [0, 0], { target: 'opponent' }),
+    ],
+  },
+  // 1200: o corte instantaneo. No pacote ele some e reaparece colado no
+  // adversario (PosAdd de ate 300 px) e corta; so a caixa do quadro 5 acerta.
+  cleave: {
+    launch: { vx: 5, vy: 6 },
+    actions: [{ id: 1200, times: { 0: 3, 1: 3, 2: 6, 3: 4, 4: 2, 5: 5, 6: 12, 7: 4, 8: 8 } }],
+    cooldown: 220,
+    invulnerable: [6, 22],
+    events: [
+      fx(10, 'ringBurst', [0, -40], { scale: 0.5 }),
+      fx(10, 'darkStreaks', [0, 0], { scale: 0.8 }),
+      { at: 12, teleport: 62 },
+      fx(14, 'ringBurst', [30, -40], { scale: 0.5 }),
+      fx(18, 'clawSweep', [40, -45]),
+      fx(18, 'crossCut', [45, -40], { scale: 0.5 }),
+    ],
+  },
+  // 1300 (Y): o arremesso da lanca. O pacote solta o helper 1350 no quadro 6,
+  // que voa a velocidade 20 e tira 100 de dano.
+  hiten: {
+    actions: [{ id: 1300, times: { 0: 5, 1: 5, 2: 5, 3: 10, 4: 3, 5: 12 } }],
+    cooldown: 240,
+    events: [
+      fx(8, 'redSpark', [30, -60]),
+      fx(28, 'hitenSpear', [44, -60]),
+      fx(28, 'ringBurst', [46, -60], { scale: 0.6 }),
+    ],
   },
 
   // ---- Golpes que a primeira versao deixou de fora ----
@@ -322,57 +376,67 @@ const ANIMATIONS = {
       fx(38, 'darkStreaks', [50, -25], { scale: 0.7 }),
     ],
   },
-  // 3000 (↓←P): a carga longa. O pacote acende o anel vermelho e a cruz
-  // branca no quadro 4, a estrela no 7 e o impacto no 8.
+  // 3000 (↓←P): a carga longa. No quadro 8 o pacote solta o helper 1505: uma
+  // onda de corte gigante que cruza a tela a velocidade 25 e tira um terco da
+  // vida. Era isso o golpe - eu tinha deixado so um clarao parado na frente.
   cursedBlast: {
     actions: [{ id: 3000, durationScale: 0.4 }],
     cooldown: 300,
     invulnerable: [0, 52],
-    areas: [strike(6, 8, [10, -120, 150, 5], { damage: 10, hitstun: 44, push: 16, heavy: true })],
     events: [
       fx(4, 'redSpark', [0, -40]),
       fx(26, 'whiteCross', [-1, -46]),
       fx(28, 'redRing', [-1, -46]),
       fx(28, 'coreBurst', [-1, -46]),
       fx(30, 'darkOrb', [-1, -46]),
-      fx(40, 'cursedPlume', [60, -10]),
-      fx(52, 'cursedPlume', [110, -10]),
-      fx(56, 'starBurst', [100, -50]),
-      fxLoop(56, 'flashRing', [100, -45], 6, 66),
-      fx(67, 'bigImpact', [95, -55]),
-      fx(70, 'fireBall', [105, -50]),
-      fx(72, 'rubble', [110, 0]),
+      fx(58, 'starBurst', [40, -52]),
+      fx(66, 'bigWave', [26, -3]),
+      fx(66, 'flashRing', [40, -50]),
+      fx(68, 'coreBurst', [40, -50]),
     ],
   },
-  // 2999 (↓→K): os tres raios vermelhos, a fumaca e o redemoinho.
+  // 1000 (↓→K): os relampagos vermelhos saem da mao e o helper 1040 abre um
+  // vazio no ceu EM CIMA do adversario (PosAdd ate o oponente, PosSet y = -270);
+  // meio segundo depois o golpe cai nele (helper 20001, o dano grande do
+  // pacote). Alcance total: nao importa onde ele esteja quando comeca.
   vortex: {
-    actions: [{ id: 2999, times: { 2: 20, 4: 18 } }],
-    cooldown: 200,
+    actions: [{ id: 2999, times: { 2: 20, 4: 46 } }],
+    cooldown: 220,
     events: [
-      fx(15, 'smokePillar', [38, -50]),
-      fx(15, 'voidSpiral', [75, -45]),
+      fx(8, 'redSpark', [38, -52]),
       fx(18, 'redBolt', [38, -41]),
       fx(22, 'redBolt', [46, -41]),
       fx(26, 'redBolt', [30, -41]),
       fx(20, 'darkOrbs', [25, -60]),
-      fx(36, 'darkOrbs', [25, -40]),
-      fx(36, 'streak', [18, -52]),
-      fx(38, 'sparkles', [75, -45]),
+      fx(26, 'streak', [18, -52]),
+      fx(24, 'voidEye', [0, -150], { target: 'opponent', follow: 'target' }),
+      fx(30, 'pillarMark', [0, 0], { target: 'opponent', follow: 'target' }),
+      fx(46, 'pillarMark', [0, 0], { target: 'opponent', follow: 'target' }),
+      fx(60, 'voidPillar', [0, 0], { target: 'opponent' }),
+      fx(60, 'emberSplash', [0, 0], { target: 'opponent' }),
+      fx(62, 'smokeBurst', [0, 0], { target: 'opponent' }),
+      fx(64, 'sidePillar', [-95, 0], { target: 'opponent' }),
+      fx(66, 'sidePillar', [95, 0], { target: 'opponent' }),
+      fx(66, 'sparkles', [0, -60], { target: 'opponent' }),
     ],
   },
   // 3900 (↓←K): o estouro no quadro 7 e, logo atras, a coluna de fogo em cima
-  // do adversario, com detritos e anuis caindo ate o fim - e o golpe mais
-  // longo dele fora os supers.
+  // do adversario. A coluna do pacote (1550) e um retangulo que sai pela parte
+  // de cima da tela; aqui ela afunila e dissolve, e a base vira fogueira e
+  // brasa (7064, 7063), que sao as chamas de verdade do pacote.
   eruption: {
     actions: [{ id: 3900, times: { 5: 26, 6: 34 } }],
     cooldown: 260,
     events: [
-      fx(34, 'burstBig', [37, -57]),
+      fx(34, 'burstBig', [37, -57], { scale: 0.6 }),
       fx(34, 'burstSmall', [37, -57]),
-      fx(38, 'fireColumn', [0, 0], { target: 'opponent' }),
-      fx(42, 'boltPillar', [90, -20]),
-      fxLoop(40, 'rubble', [70, 0], 10, 86),
-      fxLoop(36, 'ringFlash', [60, -30], 7, 86),
+      fx(36, 'emberBed', [0, 0], { target: 'opponent', follow: 'target' }),
+      fx(38, 'fireColumn', [0, 0], { target: 'opponent', follow: 'target', scale: [0.8, 1.5] }),
+      fx(38, 'emberSplash', [0, 0], { target: 'opponent' }),
+      fx(38, 'bonfireShort', [-42, 0], { target: 'opponent', follow: 'target' }),
+      fx(41, 'bonfireShort', [0, 0], { target: 'opponent', follow: 'target', scale: 1.3 }),
+      fx(44, 'bonfireShort', [42, 0], { target: 'opponent', follow: 'target' }),
+      fxLoop(40, 'rubble', [70, 0], 12, 86, { scale: 0.6 }),
     ],
   },
   // 3800 (↓→S): o baque no chao, o anel do portal, e o portal abrindo.
@@ -386,22 +450,19 @@ const ANIMATIONS = {
       { action: 3801, at: 27, effect: { id: 'cursedPortal', pos: [75, -30] } },
     ],
   },
-  // 11300 (↓←S): a coluna de fogo no quadro 3, depois os aneis, o estouro e a
-  // estrela, com a fumaca saindo o tempo todo por tras.
+  // 11300 (↓←S): no pacote e a flecha de fogo (helper "arrow", Fuga). Ele
+  // arma, ela sai a velocidade 16 e, onde bate, vira uma explosao que fica
+  // queimando o chao. Antes eu tinha feito uma coluna de fogo parada na altura
+  // da mao, que e o que parecia estranho.
   shrineCall: {
-    actions: [{ id: 11300, times: { 0: 10, 1: 16, 2: 30, 3: 12, 4: 12, 5: 20 } }],
+    actions: [{ id: 11300, times: { 0: 8, 1: 12, 2: 26, 3: 8, 4: 8, 5: 26 } }],
     cooldown: 280,
     events: [
-      fx(26, 'fireColumn', [31, -46]),
-      fxLoop(38, 'lowSmoke', [-25, 5], 15, 95),
-      fxLoop(70, 'flashRing', [34, -55], 10, 90),
-      fx(76, 'haloRing', [34, -55]),
-      fx(76, 'wideBlast', [34, -15]),
-      fx(76, 'starBurst', [34, -55]),
-      fx(80, 'streak', [10, -57]),
-      fx(83, 'coneRing', [26, -55]),
-      fx(84, 'shrine', [70, 0]),
-      fx(88, 'purpleBolt', [34, -15]),
+      fx(10, 'arrowGlow', [36, -46], { lifetime: 56 }),
+      fxLoop(14, 'emberPuff', [26, -40], 6, 60, { follow: 'owner' }),
+      fx(62, 'fugaArrow', [40, -46]),
+      fx(62, 'flashRing', [42, -46]),
+      fx(64, 'redSpark', [40, -46]),
     ],
   },
 
@@ -471,10 +532,13 @@ const EFFECTS = {
 
   // Cortes
   slashArc: { actions: [332], size: 0.4, harmless: true },
+  // O 3051 que eu usava aqui e um anel escuro quase invisivel; o corte branco
+  // de verdade e a varredura 1505, comprimida para durar o que o golpe pede.
   crescent: {
-    actions: [3051],
-    size: 0.4,
-    area: { rect: [-120, -70, 120, 50], until: 4, damage: 2, hitstun: 26, push: 4 },
+    actions: [1505],
+    durationScale: 0.35,
+    size: 0.22,
+    area: { fromFrame: 3, widthRatio: 0.7, heightRatio: 0.9, until: 4, damage: 2, hitstun: 26, push: 4 },
   },
   crossCut: {
     actions: [7027],
@@ -517,6 +581,8 @@ const EFFECTS = {
   fireColumn: {
     actions: [{ id: 1550, lengthTicks: 46 }],
     size: 0.3,
+    shape: { taper: 0.4, from: 0.25, fadeTop: 0.32, ragged: 0.22, soften: 0.22, grain: 2 },
+    palfx: { mul: [256, 185, 110] },
     area: { rect: [-90, -340, 90, 10], until: 40, damage: 2, hitstun: 30, push: 5, every: 7, count: 6 },
   },
   burstBig: { actions: [1141], size: 0.25, harmless: true },
@@ -534,6 +600,133 @@ const EFFECTS = {
   haloRing: { actions: [4101], size: 0.4, harmless: true },
   coneRing: { actions: [4102], size: 0.4, harmless: true },
   wideBlast: { actions: [{ id: 7038, lengthTicks: 34 }], size: 0.25, harmless: true },
+
+  // Corte vertical que cruza a tela (o helper 390 do pacote: caixa de 9x95).
+  cutWave: {
+    actions: [30029],
+    pick: [0, 1, 2],
+    times: { 0: 3, 1: 3, 2: 3 },
+    loop: true,
+    size: 0.8,
+    velocityX: 14,
+    lifetime: 46,
+    destroyOnHit: true,
+    endAtWall: true,
+    area: { widthRatio: 0.9, heightRatio: 0.9, damage: 3, hitstun: 22, push: 5 },
+    onHitSpawn: { id: 'cutHit', pos: [0, 0] },
+  },
+  cutHit: { actions: [7027], size: 0.4, harmless: true },
+  // Pilar que cai em cima do adversario (2998 -> helper 445, anim 8062).
+  pillarMark: { actions: [{ id: 30203, lengthTicks: 14 }], size: 0.35, harmless: true },
+  blackPillar: {
+    actions: [8062],
+    size: 0.5,
+    blend: 'normal',
+    shape: { taper: 0.12, from: 0.2, fadeTop: 0.28, ragged: 0.4, soften: 0.16, grain: 4 },
+    launch: { vx: 3, vy: 8 },
+    area: { fromFrame: 3, widthRatio: 0.5, heightRatio: 0.92, until: 6, damage: 7, hitstun: 42, push: 8, heavy: true },
+  },
+  // O vazio que se abre em cima do alvo: so visual (o dano e do pilar).
+  voidEye: {
+    actions: [{ id: 7092, lengthTicks: 44 }],
+    size: 0.5,
+    scale: 1.2,
+    harmless: true,
+  },
+  // O pilar do redemoinho: o mesmo desenho do pilar rapido, maior e mais forte.
+  voidPillar: {
+    actions: [8062],
+    size: 0.62,
+    blend: 'normal',
+    shape: { taper: 0.12, from: 0.2, fadeTop: 0.28, ragged: 0.4, soften: 0.16, grain: 4 },
+    launch: { vx: 3, vy: 9 },
+    area: { fromFrame: 3, widthRatio: 0.5, heightRatio: 0.92, until: 6, damage: 11, hitstun: 54, push: 10, heavy: true },
+  },
+  sidePillar: {
+    actions: [8062],
+    size: 0.4,
+    blend: 'normal',
+    shape: { taper: 0.12, from: 0.2, fadeTop: 0.28, ragged: 0.4, soften: 0.16, grain: 4 },
+    launch: { vx: 3, vy: 6 },
+    area: { fromFrame: 3, widthRatio: 0.5, heightRatio: 0.92, until: 6, damage: 2, hitstun: 30, push: 4 },
+  },
+  emberSplash: { actions: [331], size: 0.3, harmless: true },
+  smokeBurst: { actions: [1014], size: 0.28, blend: 'normal', harmless: true },
+  // Arremesso da lanca (Hiten, helper 1350).
+  hitenSpear: {
+    actions: [1415],
+    rotate: 90,
+    size: 1.7,
+    loop: true,
+    velocityX: 18,
+    lifetime: 48,
+    destroyOnHit: true,
+    endAtWall: true,
+    launch: { vx: 5, vy: 7 },
+    area: { widthRatio: 1, heightRatio: 1.6, damage: 9, hitstun: 50, push: 14, heavy: true },
+    onHitSpawn: { id: 'hitenImpact', pos: [0, 0] },
+    spawns: [
+      { at: 0, repeat: { every: 3, until: 46 }, effect: { id: 'spikeWake', pos: [-30, 0] } },
+      { at: 1, repeat: { every: 4, until: 46 }, effect: { id: 'slashFan', pos: [-40, 0] } },
+    ],
+  },
+  spikeWake: { actions: [7022], size: 0.2, harmless: true },
+  slashFan: { actions: [1362], size: 0.4, harmless: true },
+  hitenImpact: { actions: [1141], size: 0.2, harmless: true },
+  clawSweep: { actions: [1212], size: 0.35, harmless: true },
+
+  // Onda de corte gigante (1505, a varredura que o pacote desenha a 38%).
+  bigWave: {
+    actions: [1505],
+    size: 0.32,
+    velocityX: 15,
+    lifetime: 46,
+    maxHits: 1,
+    endAtWall: true,
+    launch: { vx: 5, vy: 7 },
+    area: { fromFrame: 3, widthRatio: 0.55, heightRatio: 0.9, damage: 10, hitstun: 46, push: 14, heavy: true },
+    spawns: [
+      { at: 0, repeat: { every: 3, until: 44 }, effect: { id: 'darkStreaks', pos: [-50, 0] } },
+      { at: 2, repeat: { every: 4, until: 44 }, effect: { id: 'rubble', pos: [60, 0], scale: 0.7 } },
+    ],
+  },
+
+  // Fuga: a flecha, o rastro, a explosao e as chamas que ficam no chao.
+  arrowGlow: { actions: [8060], size: 0.6, loop: true, harmless: true },
+  emberPuff: { actions: [7054], size: 0.1, harmless: true },
+  fugaArrow: {
+    actions: [8060],
+    size: 0.85,
+    loop: true,
+    velocityX: 15,
+    lifetime: 70,
+    endAtWall: true,
+    destroyOnHit: true,
+    area: { widthRatio: 0.9, heightRatio: 1, damage: 4, hitstun: 30, push: 6 },
+    onDeathSpawn: { id: 'fugaBlast', pos: [0, 0] },
+    spawns: [{ at: 0, repeat: { every: 4, until: 68 }, effect: { id: 'emberPuff', pos: [-50, 0] } }],
+  },
+  fugaBlast: {
+    actions: [7054],
+    size: 0.3,
+    launch: { vx: 4, vy: 6 },
+    area: { widthRatio: 0.7, heightRatio: 0.8, until: 5, damage: 5, hitstun: 40, push: 12, heavy: true },
+    spawns: [
+      { at: 0, effect: { id: 'fireBed', pos: [0, 46] } },
+      { at: 0, effect: { id: 'emberBed', pos: [0, 46] } },
+      { at: 3, effect: { id: 'bonfire', pos: [-48, 46] } },
+      { at: 6, effect: { id: 'bonfire', pos: [0, 46], scale: 1.25 } },
+      { at: 9, effect: { id: 'bonfire', pos: [48, 46] } },
+    ],
+  },
+  fireBed: {
+    actions: [{ id: 7051, lengthTicks: 110 }],
+    size: 0.8,
+    area: { rect: [-130, -110, 130, 0], until: 99, damage: 2, hitstun: 22, push: 2, every: 10, count: 9 },
+  },
+  emberBed: { actions: [{ id: 7063, lengthTicks: 110 }], size: 0.4, layer: 'back', harmless: true },
+  bonfire: { actions: [{ id: 7064, lengthTicks: 100 }], size: 0.55, harmless: true },
+  bonfireShort: { actions: [{ id: 7064, lengthTicks: 56 }], size: 0.55, harmless: true },
 
   // Vazio e santuario
   voidSpiral: {
@@ -593,9 +786,11 @@ const COMBOS = [
   { id: 'eruption', input: '↓←K', animation: 'eruption' },
   { id: 'portal', input: '↓→S', animation: 'portal' },
   { id: 'shrine-call', input: '↓←S', animation: 'shrineCall' },
-  { id: 'crouch-summon', input: 'P', hold: '↓', animation: 'crouchSummon' },
-  { id: 'low-dive', input: 'K', hold: '↓', animation: 'punch4' },
-  { id: 'spear-burst', input: 'S', hold: '↓', animation: 'spearCharge' },
+  { id: 'cut-barrage', input: 'P', hold: '↓', animation: 'cutBarrage' },
+  { id: 'fly-kick', input: 'K', hold: '↓', animation: 'flyKick' },
+  { id: 'pillar', input: 'S', hold: '↓', animation: 'pillar' },
+  { id: 'cleave', input: '↓↓K', animation: 'cleave' },
+  { id: 'hiten', input: '→↓↘S', animation: 'hiten' },
 ];
 
 const BUTTONS = {
@@ -613,12 +808,14 @@ const MOVE_LIST = [
   { section: 'Golpes', name: 'Sequência da lança', input: 'SSS', note: 'A estocada é o golpe de maior alcance dele' },
   { section: 'Golpes', name: 'No ar', input: 'PKS', note: 'O especial mergulha de lança em riste' },
   { section: 'Golpes', name: 'Cotovelada', input: '→P', note: 'Curta e baixa; emenda na lança' },
-  { section: 'Golpes', name: 'Cortes rasteiros', input: 'P', hold: '↓' },
-  { section: 'Golpes', name: 'Mergulho baixo', input: 'K', hold: '↓' },
-  { section: 'Golpes', name: 'Explosão de cortes', input: 'S', hold: '↓', note: 'Pega dos dois lados, inclusive atrás' },
+  { section: 'Golpes', name: 'Rajada de cortes', input: 'P', hold: '↓', note: 'Quatro cortes verticais que cruzam a tela' },
+  { section: 'Golpes', name: 'Voadora', input: 'K', hold: '↓', note: 'Atravessa a arena de ponta a ponta' },
+  { section: 'Golpes', name: 'Pilar', input: 'S', hold: '↓', note: 'Cai em cima do adversário onde ele estiver' },
   { section: 'Especiais', name: 'Dismantle', input: '↓→P', note: 'Para tudo e abre o corte à frente' },
   { section: 'Especiais', name: 'Dismantle aéreo', input: '↓↓P', note: 'A mesma abertura, de cima' },
   { section: 'Especiais', name: 'Chamado', input: '↓↓S', note: 'Sobe e manda os cortes de longe' },
+  { section: 'Especiais', name: 'Corte instantâneo', input: '↓↓K', note: 'Some e reaparece colado no adversário' },
+  { section: 'Especiais', name: 'Arremesso da lança', input: '→↓↘S', note: 'A lança cruza a tela e derruba' },
   { section: 'Especiais', name: 'Explosão amaldiçoada', input: '↓←P', note: 'Carrega demorado e dá o maior dano dele' },
   { section: 'Especiais', name: 'Redemoinho', input: '↓→K', note: 'Vários acertos à frente' },
   { section: 'Especiais', name: 'Erupção', input: '↓←K', note: 'O chão sobe e o raio desce em cima' },

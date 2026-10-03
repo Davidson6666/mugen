@@ -46,14 +46,19 @@ test('sukuna: a estocada da lanca alcanca mais que o soco', () => {
   assert.ok(hits(longe('lance')).length >= 1);
 });
 
+// Os golpes de alcance acertam de longe: o oponente fica fora do alcance de
+// qualquer golpe de perto (o soco vai a 39 px), a 280-400 px.
 for (const [name, [leftX, rightX], ticks, minimum] of [
-  ['crouchSummon', [560, 650], 60, 1],
+  ['cutBarrage', [560, 900], 90, 1],
+  ['pillar', [560, 960], 80, 1],
+  ['cleave', [500, 900], 90, 1],
+  ['hiten', [500, 900], 110, 1],
+  ['cursedBlast', [500, 900], 170, 1],
+  ['shrineCall', [500, 860], 170, 2],
   ['airStrong', [560, 620], 40, 1],
   ['dismantle', [500, 650], 110, 1],
-  ['cursedBlast', [500, 680], 140, 1],
-  ['vortex', [560, 680], 90, 2],
+  ['vortex', [560, 680], 100, 1],
   ['eruption', [560, 660], 100, 2],
-  ['shrineCall', [560, 660], 130, 2],
   ['voidStorm', [560, 680], 140, 2],
   ['elbow', [600, 640], 40, 1],
   ['summon', [560, 700], 110, 2],
@@ -65,10 +70,32 @@ for (const [name, [leftX, rightX], ticks, minimum] of [
   });
 }
 
-test('sukuna: a explosao de cortes passa pela carga e pega atras tambem', () => {
-  const world = run(arena(record, 600, 560), cast('spearCharge'), 80);
-  assert.ok(world.visited.has('spearBurst'), 'spearBurst');
+test('sukuna: a voadora passa pela carga e atravessa a arena', () => {
+  const world = run(arena(record, 500, 820), cast('flyKick'), 90);
+  assert.ok(world.visited.has('flyKickDash'), 'flyKickDash');
   assert.ok(hits(world).length >= 1, `${hits(world).length} acertos`);
+});
+
+// O corte instantaneo some e reaparece colado no adversario: ele acaba
+// do lado de la do ponto de partida, perto do alvo.
+test('sukuna: o corte instantaneo chega no adversario de longe', () => {
+  const world = run(arena(record, 400, 900), cast('cleave'), 90);
+  const [attacker, target] = world.fighters;
+  assert.ok(Math.abs(target.x - attacker.x) < 160, `ficou a ${Math.abs(target.x - attacker.x)} px`);
+});
+
+// O pilar cai onde o adversario esta quando ele cai, nao onde o Sukuna esta.
+test('sukuna: o pilar acerta o adversario no outro lado da arena', () => {
+  const world = run(arena(record, 300, 1000), cast('pillar'), 90);
+  assert.ok(hits(world).length >= 1, `${hits(world).length} acertos`);
+});
+
+// Golpe de projetil e o que da o alcance: precisa soltar um efeito que anda.
+test('sukuna: a onda gigante, a flecha, a lanca e os cortes sao projeteis que andam', () => {
+  for (const id of ['bigWave', 'fugaArrow', 'hitenSpear', 'cutWave']) {
+    assert.ok(config.effects[id].velocityX > 0, `${id} nao anda`);
+    assert.ok(config.effects[id].hits?.length > 0, `${id} nao acerta`);
+  }
 });
 
 test('sukuna: o dominio prende o oponente sob os cortes', () => {
@@ -82,7 +109,7 @@ test('sukuna: o dominio prende o oponente sob os cortes', () => {
 // a leitura do .cns se perdeu - foi assim que a primeira versao saiu vazia.
 test('sukuna: os especiais soltam os efeitos do pacote, nao dois ou tres', () => {
   const contagem = (nome) => (config.animations[nome].events ?? []).filter((evento) => evento.effect).length;
-  for (const nome of ['dismantle', 'cursedBlast', 'eruption', 'shrineCall', 'voidStorm', 'domain']) {
+  for (const nome of ['dismantle', 'eruption', 'voidStorm', 'domain']) {
     assert.ok(contagem(nome) >= 10, `${nome}: so ${contagem(nome)} efeitos`);
   }
 });
@@ -99,4 +126,12 @@ test('sukuna: comandos', () => {
   // O dominio e o quarto de volta repetido: precisa ganhar do Dismantle, que
   // e o prefixo dele.
   assert.equal(feed([{ down: true }, { right: true }, { down: true }, { right: true, punch: true }]), 'domain');
+  // Os golpes de alcance: ↓ segurado + botao, o duplo toque ↓↓K (que precisa
+  // ganhar da voadora, que e o mesmo botao com ↓ segurado) e o arremesso da
+  // lanca em →↓↘S.
+  assert.equal(feed([{ down: true, punch: true }]), 'cutBarrage');
+  assert.equal(feed([{ down: true, kick: true }]), 'flyKick');
+  assert.equal(feed([{ down: true, special: true }]), 'pillar');
+  assert.equal(feed([{ down: true }, {}, { down: true }, { down: true, kick: true }]), 'cleave');
+  assert.equal(feed([{ right: true }, { down: true }, { down: true, right: true }, { down: true, right: true, special: true }]), 'hiten');
 });

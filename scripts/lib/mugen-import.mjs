@@ -204,8 +204,10 @@ class CellPacker {
   // trim: borda transparente cortada antes de medir a celula (ver
   // trimTransparent). Fica desligado por padrao: ligar muda a geometria da
   // folha de quem ja foi importado.
-  constructor(sff, scale = 1, { opaque = false, remap, shade = false, center = false, palfx, trim = false } = {}) {
+  constructor(sff, scale = 1, { opaque = false, remap, shade = false, center = false, palfx, trim = false, shape, rotate = 0 } = {}) {
     this.trim = trim;
+    this.shape = shape;
+    this.rotate = rotate;
     this.palfx = palfx;
     this.center = center;
     this.sff = sff;
@@ -236,6 +238,10 @@ class CellPacker {
       let image = transformed
         ? transformImage(decoded, this.scale * (frame.xscale ?? 1), this.scale * (frame.yscale ?? 1), frame.angle ?? 0)
         : this.scale === 1 ? decoded : scaleDown(decoded, this.scale);
+      if (this.shape) image = shapeImage(image, this.shape);
+      // Girado ja na importacao (graus, anti-horario): o espelhamento por lado
+      // do lutador continua certo, o que a rotacao do efeito em tela nao faz.
+      if (this.rotate) image = transformImage(image, 1, 1, this.rotate);
       if (this.opaque) image = flatten(image);
       if (this.shade) image = toShade(image);
       if (this.palfx) image = applyPalFx(image, this.palfx);
@@ -338,6 +344,49 @@ function applyPalFx(image, { mul = [256, 256, 256], add = [0, 0, 0] }) {
   for (let i = 0; i < rgba.length; i += 4) {
     if (!rgba[i + 3]) continue;
     for (let c = 0; c < 3; c += 1) rgba[i + c] = Math.max(0, Math.min(255, Math.round((rgba[i + c] * mul[c]) / 256 + add[c])));
+  }
+  return { ...image, rgba };
+}
+
+// Ruido de valor deterministico (o mesmo pixel sempre da o mesmo numero, entao
+// reimportar nao muda a folha): bordas esfiapadas sem sorteio.
+function valueNoise(x, y, cell) {
+  const hash = (ix, iy) => {
+    let h = (ix * 374761393 + iy * 668265263) | 0;
+    h = Math.imul(h ^ (h >>> 13), 1274126177);
+    return ((h ^ (h >>> 16)) >>> 0) / 4294967295;
+  };
+  const gx = x / cell, gy = y / cell;
+  const ix = Math.floor(gx), iy = Math.floor(gy);
+  const fx = gx - ix, fy = gy - iy;
+  const sx = fx * fx * (3 - 2 * fx), sy = fy * fy * (3 - 2 * fy);
+  const top = hash(ix, iy) * (1 - sx) + hash(ix + 1, iy) * sx;
+  const bottom = hash(ix, iy + 1) * (1 - sx) + hash(ix + 1, iy + 1) * sx;
+  return top * (1 - sy) + bottom * sy;
+}
+
+// Da forma de chama a uma coluna que o pacote desenha como retangulo: o MUGEN
+// deixa o topo sair da tela, aqui ele aparece cortado reto. Afunila a partir
+// de "from" (fracao da altura, 0 = pe), dissolve o topo em "fadeTop" e
+// esfiapa as bordas com "ragged". So mexe na transparencia; as cores ficam.
+function shapeImage(image, { taper = 0, from = 0.15, fadeTop = 0, soften = 0.2, ragged = 0, grain = 7 }) {
+  const rgba = new Uint8Array(image.rgba);
+  const smooth = (a, b, x) => {
+    const t = Math.max(0, Math.min(1, (x - a) / (b - a)));
+    return t * t * (3 - 2 * t);
+  };
+  for (let y = 0; y < image.height; y += 1) {
+    const height = 1 - (y + 0.5) / image.height;
+    const half = 1 - taper * smooth(from, 1, height);
+    for (let x = 0; x < image.width; x += 1) {
+      const at = (y * image.width + x) * 4 + 3;
+      if (!rgba[at]) continue;
+      const noise = ragged ? valueNoise(x, y, grain) - 0.5 : 0;
+      const side = 1 - Math.abs(((x + 0.5) / image.width) * 2 - 1) / half;
+      let mask = smooth(0, soften, side + noise * ragged);
+      if (fadeTop) mask *= smooth(0, fadeTop, (1 - height) + noise * ragged * 0.35);
+      rgba[at] = Math.round(rgba[at] * mask);
+    }
   }
   return { ...image, rgba };
 }
@@ -775,7 +824,7 @@ export function importMugenCharacter({
     // scale: resolucao guardada (reampliada na tela); size: tamanho na tela
     // (corvos menores que no pacote).
     const scale = spec.scale ?? 1;
-    const packer = new CellPacker(sff, scale * (spec.size ?? 1), { opaque: spec.opaque, remap: spec.remap, shade: spec.shade, palfx: spec.palfx, center: spec.center ?? Boolean(spec.cover) });
+    const packer = new CellPacker(sff, scale * (spec.size ?? 1), { opaque: spec.opaque, remap: spec.remap, shade: spec.shade, palfx: spec.palfx, shape: spec.shape, rotate: spec.rotate, center: spec.center ?? Boolean(spec.cover) });
     const collected = collectFrames(air, spec);
     const cells = collected.frames.map((frame) => packer.cellFor(frame));
     effectSources[effectId] = { ...collected, cells, packer, scale, size: spec.size ?? 1, grid: packer.grid, start: addGroup(packer) };
