@@ -204,10 +204,11 @@ class CellPacker {
   // trim: borda transparente cortada antes de medir a celula (ver
   // trimTransparent). Fica desligado por padrao: ligar muda a geometria da
   // folha de quem ja foi importado.
-  constructor(sff, scale = 1, { opaque = false, remap, shade = false, center = false, palfx, trim = false, shape, rotate = 0 } = {}) {
+  constructor(sff, scale = 1, { opaque = false, remap, shade = false, center = false, palfx, trim = false, shape, rotate = 0, stretch } = {}) {
     this.trim = trim;
     this.shape = shape;
     this.rotate = rotate;
+    this.stretch = stretch;
     this.palfx = palfx;
     this.center = center;
     this.sff = sff;
@@ -241,7 +242,9 @@ class CellPacker {
       if (this.shape) image = shapeImage(image, this.shape);
       // Girado ja na importacao (graus, anti-horario): o espelhamento por lado
       // do lutador continua certo, o que a rotacao do efeito em tela nao faz.
-      if (this.rotate) image = transformImage(image, 1, 1, this.rotate);
+      // stretch [x, y] afina ou alarga o desenho antes de girar (a lamina preta
+      // do corte, que no pacote e grossa demais para o corte fino do video).
+      if (this.rotate || this.stretch) image = transformImage(image, this.stretch?.[0] ?? 1, this.stretch?.[1] ?? 1, this.rotate);
       if (this.opaque) image = flatten(image);
       if (this.shade) image = toShade(image);
       if (this.palfx) image = applyPalFx(image, this.palfx);
@@ -824,7 +827,7 @@ export function importMugenCharacter({
     // scale: resolucao guardada (reampliada na tela); size: tamanho na tela
     // (corvos menores que no pacote).
     const scale = spec.scale ?? 1;
-    const packer = new CellPacker(sff, scale * (spec.size ?? 1), { opaque: spec.opaque, remap: spec.remap, shade: spec.shade, palfx: spec.palfx, shape: spec.shape, rotate: spec.rotate, center: spec.center ?? Boolean(spec.cover) });
+    const packer = new CellPacker(sff, scale * (spec.size ?? 1), { opaque: spec.opaque, remap: spec.remap, shade: spec.shade, palfx: spec.palfx, shape: spec.shape, rotate: spec.rotate, stretch: spec.stretch, center: spec.center ?? Boolean(spec.cover) });
     const collected = collectFrames(air, spec);
     const cells = collected.frames.map((frame) => packer.cellFor(frame));
     effectSources[effectId] = { ...collected, cells, packer, scale, size: spec.size ?? 1, grid: packer.grid, start: addGroup(packer) };

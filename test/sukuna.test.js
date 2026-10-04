@@ -61,7 +61,7 @@ for (const [name, [leftX, rightX], ticks, minimum] of [
   ['eruption', [560, 660], 100, 2],
   ['voidStorm', [560, 680], 140, 2],
   ['elbow', [600, 640], 40, 1],
-  ['summon', [560, 700], 110, 2],
+  ['rush', [560, 600], 90, 6],
   ['portal', [560, 680], 90, 2],
 ]) {
   test(`sukuna: ${name} acerta`, () => {
@@ -130,6 +130,7 @@ test('sukuna: comandos', () => {
   // ganhar da voadora, que e o mesmo botao com ↓ segurado) e o arremesso da
   // lanca em →↓↘S.
   assert.equal(feed([{ down: true, punch: true }]), 'cutBarrage');
+  assert.equal(feed([{ down: true }, {}, { down: true }, { down: true, punch: true }]), 'rush');
   assert.equal(feed([{ down: true, kick: true }]), 'flyKick');
   assert.equal(feed([{ down: true, special: true }]), 'pillar');
   assert.equal(feed([{ down: true }, {}, { down: true }, { down: true, kick: true }]), 'cleave');

@@ -53,6 +53,10 @@ const DOMAIN_CUTS = Array.from({ length: 14 }, (_, index) => fx(60 + index * 10,
   [-20, 10, -5, 20, 0, -15][index % 6], [-45, -25, -60, -35, -20, -50][index % 6],
 ], { target: 'opponent' }));
 
+// Cortes pretos do dominio: um a cada 20 ticks na altura do oponente, em tres
+// angulos que se alternam.
+const DOMAIN_BLACK = Array.from({ length: 6 }, (_, index) => fx(64 + index * 20, ['blackCutA', 'blackCutB', 'blackCutC'][index % 3], [0, -45 + (index % 2) * 18], { target: 'opponent' }));
+
 const ANIMATIONS = {
   idle: { actions: [0], loop: true },
   walkForward: { actions: [20], loop: true },
@@ -110,7 +114,7 @@ const ANIMATIONS = {
       strike(2, 3, [18, -63, 96, -1], { damage: 2, hitstun: 20, push: 2 }),
       strike(4, 6, [19, -57, 91, 1], { damage: 2, hitstun: 22, push: 3 }),
     ],
-    events: [{ at: 3, vx: 8 }, fx(4, 'slashArc', [45, -35], { scale: [0.5, 0.35] })],
+    events: [{ at: 3, vx: 8 }, fx(2, 'ghost', [0, 0], { follow: 'owner', lifetime: 16 }), fx(4, 'slashArc', [45, -35], { scale: [0.5, 0.35] })],
     cancels: [{ on: 'punch', to: 'punch4', after: 10 }, { on: 'special', to: 'lance', after: 10 }],
   },
   // 230: ele mergulha e corta embaixo.
@@ -263,10 +267,13 @@ const ANIMATIONS = {
   flyKickDash: {
     launch: { vx: 5, vy: 6 },
     actions: [{ id: 22000, lengthTicks: 24 }],
+    onHit: { to: 'rush' },
     noPush: true,
     areas: [strike(0, 99, [-10, -57, 64, 1], { damage: 6, hitstun: 36, push: 10, heavy: true })],
     events: [
       { at: 0, vx: 13 }, { at: 6, vx: 13 }, { at: 12, vx: 11 }, { at: 18, vx: 7 },
+      fx(0, 'ghost', [0, 0], { follow: 'owner' }),
+      fx(0, 'ghost2', [0, 0], { follow: 'owner' }),
       fxLoop(0, 'darkStreaks', [-30, 0], 3, 22),
       fx(0, 'ringSlash', [45, -30], { scale: 0.8 }),
       fx(0, 'groundRings', [0, 0], { scale: 0.5 }),
@@ -297,6 +304,8 @@ const ANIMATIONS = {
       fx(14, 'ringBurst', [30, -40], { scale: 0.5 }),
       fx(18, 'clawSweep', [40, -45]),
       fx(18, 'crossCut', [45, -40], { scale: 0.5 }),
+      fx(19, 'blackCutA', [40, -45], { scale: 0.7 }),
+      fx(20, 'bloodSplat', [40, -42]),
     ],
   },
   // 1300 (Y): o arremesso da lanca. O pacote solta o helper 1350 no quadro 6,
@@ -311,6 +320,40 @@ const ANIMATIONS = {
     ],
   },
 
+  // ---- Barragem de socos ----
+  // O print do video mostra o Sukuna martelando socos tao rapido que o braco
+  // aparece em varias posicoes ao mesmo tempo (o AfterImage do pacote). Aqui:
+  // oito socos a dois ticks por quadro, as imagens residuais atras dele
+  // (mirrorOwner, o mesmo recurso do clone do Dante) e o chute 260 que fecha e
+  // lanca. Quem pega o primeiro soco leva a serie inteira.
+  rush: {
+    launch: { vx: 5, vy: 7 },
+    actions: [
+      { id: 210, pick: [1, 2, 3], times: { 0: 2, 1: 2, 2: 2 } },
+      { id: 200, pick: [2, 3, 4], times: { 0: 2, 1: 2, 2: 2 } },
+      { id: 210, pick: [1, 2, 3], times: { 0: 2, 1: 2, 2: 2 } },
+      { id: 200, pick: [2, 3, 4], times: { 0: 2, 1: 2, 2: 2 } },
+      { id: 210, pick: [1, 2, 3], times: { 0: 2, 1: 2, 2: 2 } },
+      { id: 200, pick: [2, 3, 4], times: { 0: 2, 1: 2, 2: 2 } },
+      { id: 210, pick: [1, 2, 3], times: { 0: 2, 1: 2, 2: 2 } },
+      { id: 200, pick: [2, 3, 4], times: { 0: 2, 1: 2, 2: 2 } },
+      { id: 260 },
+    ],
+    cooldown: 300,
+    areas: [
+      strike(0, 23, [8, -58, 62, -20], { damage: 1, hitstun: 12, push: 1, every: 4, count: 8 }),
+      strike(27, 28, [7, -57, 52, -15], { damage: 5, hitstun: 36, push: 10, heavy: true }),
+    ],
+    events: [
+      fx(0, 'ghost', [0, 0], { follow: 'owner' }),
+      fx(0, 'ghost2', [0, 0], { follow: 'owner' }),
+      fx(0, 'ghost3', [0, 0], { follow: 'owner' }),
+      fxLoop(2, 'cutHit', [48, -44], 4, 46, { spread: [16, 18], scale: 0.45 }),
+      fx(58, 'bloodSplat', [0, -42], { target: 'opponent' }),
+      fx(58, 'crossCut', [45, -40], { scale: 0.6 }),
+    ],
+  },
+
   // ---- Golpes que a primeira versao deixou de fora ----
   // 700: a cotovelada curta, caixa baixa (o autor desenhou so [10,-26,30,0]).
   elbow: {
@@ -319,19 +362,6 @@ const ANIMATIONS = {
     areas: [strike(1, 1, [10, -26, 30, 0], { damage: 3, hitstun: 22, push: 5 })],
     events: [fx(10, 'ringBurst', [20, -15], { scale: 0.5 })],
     cancels: [{ on: 'special', to: 'lance', after: 12 }],
-  },
-  // 3803 (estado 319): ele sobe e fica chamando os cortes la de cima, que vem
-  // do helper 396 - o unico golpe dele que acerta de longe por um bom tempo.
-  summon: {
-    actions: [{ id: 3803, times: { 10: 14, 11: 6, 12: 6, 13: 6 } }],
-    cooldown: 300,
-    invulnerable: [14, 60],
-    events: [
-      fx(14, 'shockRing', [17, 38]),
-      fxLoop(20, 'crossCut', [60, -70], 8, 60, { target: 'opponent' }),
-      fxLoop(24, 'slashArc', [0, -40], 8, 60, { target: 'opponent' }),
-      fx(62, 'groundRocks', [0, 0], { target: 'opponent' }),
-    ],
   },
   // ---- Especiais ----
   // A estrutura de cada um saiu do proprio .cns: quais Explod/Helper o estado
@@ -357,6 +387,9 @@ const ANIMATIONS = {
       fx(20, 'cursedSigil', [0, -49]),
       fx(40, 'crescent', [70, -45], { scale: 0.9 }),
       fx(40, 'groundLine', [0, 5]),
+      fx(41, 'blackCutA', [90, -55]),
+      fx(43, 'blackCutB', [90, -40]),
+      fx(45, 'blackCutC', [90, -60]),
       fx(42, 'crossCut', [80, -40], { scale: 0.6 }),
       fx(44, 'darkStreaks', [60, -40], { scale: 0.7 }),
     ],
@@ -393,6 +426,7 @@ const ANIMATIONS = {
       fx(66, 'bigWave', [26, -3]),
       fx(66, 'flashRing', [40, -50]),
       fx(68, 'coreBurst', [40, -50]),
+      fx(94, 'groundScar', [120, 0]),
     ],
   },
   // 1000 (↓→K): os relampagos vermelhos saem da mao e o helper 1040 abre um
@@ -504,6 +538,7 @@ const ANIMATIONS = {
       fx(34, 'redBands', [0, 0], { target: 'stage' }),
       fx(40, 'voidBlast', [0, -40], { target: 'opponent' }),
       ...DOMAIN_CUTS,
+      ...DOMAIN_BLACK,
       fx(190, 'splash', [0, -20], { target: 'opponent' }),
       fx(196, 'groundRocks', [0, 0], { target: 'opponent' }),
       fx(200, 'cursedSkull', [0, -40], { target: 'opponent' }),
@@ -672,8 +707,26 @@ const EFFECTS = {
   },
   spikeWake: { actions: [7022], size: 0.2, harmless: true },
   slashFan: { actions: [1362], size: 0.4, harmless: true },
-  hitenImpact: { actions: [1141], size: 0.2, harmless: true },
+  hitenImpact: {
+    actions: [1141],
+    size: 0.2,
+    harmless: true,
+    spawns: [{ at: 1, effect: { id: 'bloodSplat', pos: [0, 0] } }],
+  },
   clawSweep: { actions: [1212], size: 0.35, harmless: true },
+
+  // Imagem residual: o proprio Sukuna repetido atras (o AfterImage do pacote).
+  ghost: { actions: [0], loop: true, lifetime: 60, harmless: true, layer: 'back', alpha: 0.5, tint: 0xffd0d0, mirrorOwner: { delay: 3, offset: 16 } },
+  ghost2: { actions: [0], loop: true, lifetime: 60, harmless: true, layer: 'back', alpha: 0.32, tint: 0xffb0b0, mirrorOwner: { delay: 6, offset: 32 } },
+  ghost3: { actions: [0], loop: true, lifetime: 60, harmless: true, layer: 'back', alpha: 0.2, tint: 0xff9090, mirrorOwner: { delay: 9, offset: 48 } },
+  // O corte preto do video: a lamina escura 8647 (802x39) girada na importacao.
+  blackCutA: { actions: [8647], size: 1.1, stretch: [1, 0.42], rotate: 22, center: true, blend: 'normal', lifetime: 12, harmless: true },
+  blackCutB: { actions: [8647], size: 1.2, stretch: [1, 0.42], rotate: -26, center: true, blend: 'normal', lifetime: 12, harmless: true },
+  blackCutC: { actions: [8647], size: 0.95, stretch: [1, 0.42], rotate: 6, center: true, blend: 'normal', lifetime: 12, harmless: true },
+  groundScar: { actions: [8647], size: 0.5, center: true, blend: 'normal', lifetime: 150, layer: 'back', harmless: true },
+  // Sangue dos acertos (as faiscas vermelhas do pacote: 7613 e 70031).
+  bloodFlash: { actions: [7613], size: 0.3, harmless: true },
+  bloodSplat: { actions: [70031], size: 0.45, blend: 'normal', harmless: true },
 
   // Onda de corte gigante (1505, a varredura que o pacote desenha a 38%).
   bigWave: {
@@ -761,9 +814,9 @@ const EFFECTS = {
   },
   shrineField: { actions: [{ id: 3010, lengthTicks: 150 }], size: 0.7, layer: 'back', alpha: 0.85, harmless: true },
   // Tintas de tela cheia do pacote: entram como cobertura, nao como sprite.
-  redTint: { actions: [{ id: 4010, lengthTicks: 150 }], scale: 0.2, cover: [1280, 720], alpha: 0.35, layer: 'back', harmless: true },
+  redTint: { actions: [{ id: 4010, lengthTicks: 150 }], scale: 0.2, cover: [1500, 1500], alpha: 0.35, layer: 'back', harmless: true },
   redBands: { actions: [{ id: 4011, lengthTicks: 140 }], scale: 0.2, cover: [1280, 300], alpha: 0.45, layer: 'back', harmless: true },
-  redHaze: { actions: [{ id: 4075, lengthTicks: 120 }], scale: 0.2, cover: [1280, 720], alpha: 0.3, layer: 'back', harmless: true },
+  redHaze: { actions: [{ id: 4075, lengthTicks: 120 }], scale: 0.2, cover: [1500, 1500], alpha: 0.3, layer: 'back', harmless: true },
   cutIn: { actions: [{ id: 7096, lengthTicks: 50 }], scale: 0.6, cover: [520, 430], alpha: 0.9, harmless: true },
   cursedSkull: {
     actions: [{ id: 13003, lengthTicks: 40 }],
@@ -778,8 +831,7 @@ const COMBOS = [
   { id: 'domain', input: '↓→↓→P', animation: 'domain' },
   { id: 'void-storm', input: '↓→↓→K', animation: 'voidStorm' },
   { id: 'dismantle', input: '↓→P', animation: 'dismantle' },
-  { id: 'air-dismantle', input: '↓↓P', animation: 'airDismantle' },
-  { id: 'summon', input: '↓↓S', animation: 'summon' },
+  { id: 'rush', input: '↓↓P', animation: 'rush', airAnimation: 'airDismantle' },
   { id: 'elbow', input: '→P', animation: 'elbow' },
   { id: 'cursed-blast', input: '↓←P', animation: 'cursedBlast' },
   { id: 'vortex', input: '↓→K', animation: 'vortex' },
@@ -812,8 +864,7 @@ const MOVE_LIST = [
   { section: 'Golpes', name: 'Voadora', input: 'K', hold: '↓', note: 'Atravessa a arena de ponta a ponta' },
   { section: 'Golpes', name: 'Pilar', input: 'S', hold: '↓', note: 'Cai em cima do adversário onde ele estiver' },
   { section: 'Especiais', name: 'Dismantle', input: '↓→P', note: 'Para tudo e abre o corte à frente' },
-  { section: 'Especiais', name: 'Dismantle aéreo', input: '↓↓P', note: 'A mesma abertura, de cima' },
-  { section: 'Especiais', name: 'Chamado', input: '↓↓S', note: 'Sobe e manda os cortes de longe' },
+  { section: 'Especiais', name: 'Barragem de socos', input: '↓↓P', note: 'Oito socos em dois ticks cada e o chute que lança; no ar vira o Dismantle' },
   { section: 'Especiais', name: 'Corte instantâneo', input: '↓↓K', note: 'Some e reaparece colado no adversário' },
   { section: 'Especiais', name: 'Arremesso da lança', input: '→↓↘S', note: 'A lança cruza a tela e derruba' },
   { section: 'Especiais', name: 'Explosão amaldiçoada', input: '↓←P', note: 'Carrega demorado e dá o maior dano dele' },
