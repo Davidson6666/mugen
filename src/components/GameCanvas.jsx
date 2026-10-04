@@ -8,6 +8,7 @@ import { GameStateManager } from '../systems/GameStateManager.js';
 import { Hud } from '../systems/Hud.js';
 import { EffectManager } from '../systems/EffectManager.js';
 import { HitFeedback, kindOf } from '../systems/HitFeedback.js';
+import { Camera } from '../systems/Camera.js';
 import { AudioManager } from '../systems/AudioManager.js';
 import { resolveAttack, resolveBodyCollision } from '../systems/CollisionDetector.js';
 import { InputHandler } from '../utils/InputHandler.js';
@@ -32,12 +33,6 @@ const MS_PER_TICK = 1000 / 60;
 // Depois de um engasgo grande (aba em segundo plano, por exemplo) o jogo nao
 // tenta recuperar todo o tempo perdido de uma vez - o excesso e descartado.
 const MAX_CATCHUP_TICKS = 5;
-
-// Camera: zoom na arena para o personagem nao ficar minusculo. Com 1.5x, os
-// 700px da arena mais os pilares ocupam a largura da tela, e o chao fica em
-// CAMERA_GROUND_Y na tela.
-const CAMERA_ZOOM = 1.5;
-const CAMERA_GROUND_Y = 630;
 
 // Variantes da Barlow Condensed que o HUD usa.
 const HUD_FONTS = ['italic 900 40px "Barlow Condensed"', 'italic 800 28px "Barlow Condensed"', 'italic 600 22px "Barlow Condensed"'];
@@ -194,9 +189,10 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       // Cenario e lutadores ficam juntos para tremerem juntos; o HUD, fora.
       const scene = new Container();
       instance.stage.addChild(scene);
-      scene.pivot.set((map.leftBound + map.rightBound) / 2, map.groundLevel);
-      scene.scale.set(CAMERA_ZOOM);
-      scene.position.set(STAGE_WIDTH / 2, CAMERA_GROUND_Y);
+      // A camera acompanha os dois lutadores e afasta quando se separam ou um
+      // sobe alto (src/systems/Camera.js); a posicao da cena fica fixa no
+      // centro da tela, que e de onde o tremor de impacto desloca.
+      const camera = new Camera({ scene, map, view: { width: STAGE_WIDTH, height: STAGE_HEIGHT } });
 
       const background = new Sprite(mapRecord.texture);
       background.width = map.width;
@@ -232,6 +228,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       // Teleportes e golpes que surgem no oponente precisam saber onde ele esta.
       fighters[0].opponent = fighters[1];
       fighters[1].opponent = fighters[0];
+      camera.snap(fighters);
       const detectors = characterRecords.map(
         (record) => new ComboDetector(record.config.combos),
       );
@@ -325,6 +322,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
           fighter.resetForRound(spawns[index], index === 0 ? 1 : -1);
         });
         for (const detector of detectors) detector.reset();
+        camera.snap(fighters);
         audio.stopAll();
         effects.clear();
         feedback.clear();
@@ -520,6 +518,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       // Desenho: acontece uma vez por quadro, com o delta real do monitor.
       // Nada aqui muda o resultado da luta.
       function renderFrame(frameDelta) {
+        camera.update(fighters, frameDelta);
         fighters.forEach((fighter, index) => {
           fighter.syncSprite();
           const lift = Math.min(1, (map.groundLevel - fighter.y) / SHADOW_FADE_HEIGHT);
@@ -586,7 +585,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
           elapsed = 0;
           const cpu = cpuEnabled ? `cpu ${ai.difficulty}` : 'dois jogadores';
           overlay.text = [
-            `fps ${ticker.FPS.toFixed(0)}   ${cpu}   \` caixas   R reiniciar`,
+            `fps ${ticker.FPS.toFixed(0)}   ${cpu}   zoom ${camera.zoom.toFixed(2)}   \` caixas   R reiniciar`,
             fighters.map((fighter, index) => `p${index + 1} ${fighter.state}`).join('   '),
           ].join('\n');
         }
