@@ -94,6 +94,15 @@ const CUT_FAMILY = Object.fromEntries(Object.entries(CUT_SIZES).flatMap(([name, 
   return [[`cut${name}`, { blade, harmless: true }], [`cut${name}h`, { blade, area: CUT_HIT }]];
 }));
 
+// Cinematica de pedras (o 11050 do pacote, 520 ticks): a tela escurece e passam
+// pedras enormes - a anim 11055 (78x84) ampliada umas oito vezes, meio atras e
+// meio na frente dos lutadores - ate o clarao branco do impacto.
+const rockRnd = seeded(31);
+const ROCKFALL_ROCKS = Array.from({ length: 34 }, (_, index) => fx(78 + index * 5, index % 2 ? 'rockBack' : 'rockFront', [rockRnd(-420, 420), rockRnd(-230, 10)], {
+  target: 'stage', scale: index % 2 ? rockRnd(2.5, 7) : rockRnd(1.4, 3.4), velocitySpread: [1.4, 1.2], angle: rockRnd(-40, 40),
+}));
+const ROCKFALL_SHARDS = Array.from({ length: 5 }, (_, index) => fx(90 + index * 30, 'shardSheet', [rockRnd(-160, 160), -170], { target: 'stage', angle: rockRnd(-14, 14) }));
+
 const ANIMATIONS = {
   idle: { actions: [0], loop: true },
   walkForward: { actions: [20], loop: true },
@@ -503,19 +512,35 @@ const ANIMATIONS = {
       fx(44, 'darkStreaks', [60, -40], { scale: 0.7 }),
     ],
   },
-  // 11050 (↓→P no ar): a mesma abertura, de cima.
-  airDismantle: {
-    launch: { vx: 4, vy: 4 },
-    actions: [{ id: 11050, times: { 5: 18, 10: 6 } }],
+  // 11050 (↓↓P no ar): a mesma abertura do Dismantle e, depois dela, a
+  // cinematica de pedras: a tela escurece, pedras gigantes passam, o clarao
+  // branco e o impacto. No pacote sao 520 ticks; aqui ~300. O oponente fica preso
+  // no ar durante ela e leva o golpe grande no fim.
+  rockfall: {
+    launch: { vx: 5, vy: 8 },
+    actions: [{ id: 11050, times: { 0: 8, 1: 8, 2: 8, 3: 8, 4: 8, 5: 18, 6: 8, 7: 8, 8: 8, 9: 8, 10: 200, 11: 6, 12: 6, 13: 6, 14: 6, 15: 6 } }],
     air: true,
-    cooldown: 200,
-    areas: [strike(6, 7, [-20, -90, 120, 60], { damage: 8, hitstun: 38, push: 12, heavy: true })],
+    float: true,
+    cooldown: 1500,
+    invulnerable: [0, 300],
     events: [
-      fxLoop(10, 'plume', [-40, -20], 6, 34),
-      fxLoop(12, 'cutM', [0, -60], 5, 34, { angle: 6, spread: [100, 40] }),
+      // Sem gravidade, mas a velocidade de queda do salto continuaria: zera e sobe um pouco, para a cinematica ser sempre no ar.
+      { at: 0, vx: 0, vy: -5 },
+      { at: 14, vy: 0 },
+      { at: 28, pinOpponent: { dx: 140, lift: 70, ticks: 240, relative: 'self' } },
+      fxLoop(10, 'plume', [-40, -20], 6, 56),
+      fxLoop(12, 'cutM', [0, -60], 5, 60, { angle: 6, spread: [100, 40] }),
       fx(18, 'cursedSigil', [0, -49]),
-      fx(36, 'cutLh', [60, -30], { angle: 10 }),
-      fx(38, 'darkStreaks', [50, -25], { scale: 0.7 }),
+      fx(40, 'cutLh', [0, -45], { target: 'opponent', angle: 10 }),
+      fx(44, 'cutHair', [0, -45], { target: 'opponent', angle: -7 }),
+      fx(60, 'blackout', [0, -200], { target: 'stage' }),
+      ...ROCKFALL_ROCKS,
+      ...ROCKFALL_SHARDS,
+      fx(250, 'whiteFlash', [0, -200], { target: 'stage' }),
+      fx(252, 'rockImpact', [0, -40], { target: 'opponent' }),
+      fx(254, 'starBurst', [0, -40], { target: 'opponent', scale: 4 }),
+      fx(258, 'groundRocks', [0, 0], { target: 'opponent', scale: 2 }),
+      fx(262, 'splash', [0, -20], { target: 'opponent', scale: 2 }),
     ],
   },
   // 3000 (↓←P): a carga longa. No quadro 8 o pacote solta o helper 1505, que
@@ -883,6 +908,36 @@ const EFFECTS = {
     attached: true,
     harmless: true,
   },
+  // Cinematica de pedras: a tela some no preto, o clarao e o impacto.
+  blackout: {
+    solid: { color: [0, 0, 0], steps: [[0.3, 6], [0.7, 8], [0.95, 10], [0.98, 150], [0.9, 20], [0.4, 8]] },
+    cover: [1900, 1900],
+    layer: 'back',
+    harmless: true,
+  },
+  whiteFlash: {
+    solid: { color: [255, 250, 240], steps: [[0.35, 3], [0.95, 8], [0.6, 6], [0.2, 8]] },
+    cover: [1900, 1900],
+    harmless: true,
+  },
+  // A pedra gigante: 78x84 guardada pequena e ampliada no pedido.
+  rockBack: { actions: [11055], size: 1, loop: true, lifetime: 60, layer: 'back', alpha: 0.9, harmless: true },
+  rockFront: { actions: [11055], size: 1, loop: true, lifetime: 60, alpha: 0.95, harmless: true },
+  // Estilhacos de tela cheia (70311, 1920x1080, guardados bem pequenos).
+  shardSheet: {
+    actions: [{ id: 70311, pick: [4, 8, 12, 16, 20, 24, 28], times: { 0: 6, 1: 6, 2: 6, 3: 6, 4: 6, 5: 6, 6: 6 } }],
+    scale: 0.2,
+    cover: [1400, 760],
+    alpha: 0.8,
+    harmless: true,
+  },
+  // O impacto no fim da cinematica.
+  rockImpact: {
+    actions: [{ id: 7506, lengthTicks: 28 }],
+    size: 0.28,
+    launch: { vx: 5, vy: 8 },
+    area: { rect: [-260, -150, 260, 70], until: 4, damage: 14, hitstun: 60, push: 16, heavy: true, unblockable: true },
+  },
   // Imagem residual: o proprio Sukuna repetido atras (o AfterImage do pacote).
   ghost: { actions: [0], loop: true, lifetime: 60, harmless: true, layer: 'back', alpha: 0.5, tint: 0xffd0d0, mirrorOwner: { delay: 3, offset: 16 } },
   ghost2: { actions: [0], loop: true, lifetime: 60, harmless: true, layer: 'back', alpha: 0.32, tint: 0xffb0b0, mirrorOwner: { delay: 6, offset: 32 } },
@@ -992,7 +1047,7 @@ const COMBOS = [
   { id: 'domain', input: '↓→↓→P', animation: 'domain' },
   { id: 'void-storm', input: '↓→↓→K', animation: 'voidStorm' },
   { id: 'dismantle', input: '↓→P', animation: 'dismantle' },
-  { id: 'rush', input: '↓↓P', animation: 'rush', airAnimation: 'airDismantle' },
+  { id: 'rush', input: '↓↓P', animation: 'rush', airAnimation: 'rockfall' },
   { id: 'elbow', input: '→P', animation: 'elbow' },
   { id: 'cursed-blast', input: '↓←P', animation: 'cursedBlast' },
   { id: 'vortex', input: '↓→K', animation: 'vortex' },
@@ -1030,7 +1085,7 @@ const MOVE_LIST = [
   { section: 'Golpes', name: 'Voadora', input: 'K', hold: '↓', note: 'Atravessa a arena de ponta a ponta' },
   { section: 'Golpes', name: 'Pilar', input: 'S', hold: '↓', note: 'Cai em cima do adversário onde ele estiver' },
   { section: 'Especiais', name: 'Dismantle', input: '↓→P', note: 'Para tudo e abre o corte à frente' },
-  { section: 'Especiais', name: 'Barragem de socos', input: '↓↓P', note: 'Oito socos em dois ticks cada e o chute que lança; no ar vira o Dismantle' },
+  { section: 'Especiais', name: 'Barragem de socos', input: '↓↓P', note: 'Oito socos em dois ticks cada e o chute que lança; no ar vira a Queda de pedras' },
   { section: 'Especiais', name: 'Corte instantâneo', input: '↓↓K', note: 'Some e reaparece colado no adversário' },
   { section: 'Especiais', name: 'Arremesso da lança', input: '→↓↘S', note: 'A lança cruza a tela e fica fincada no chão' },
   { section: 'Especiais', name: 'Chamar a lança', input: '↓↓S', note: 'Com a lança no chão: ela volta girando até a mão dele' },
