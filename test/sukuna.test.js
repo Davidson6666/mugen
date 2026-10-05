@@ -138,12 +138,13 @@ test('sukuna: sem a lanca no chao, o recall nao sai', () => {
 
 // A cinematica de pedras (o 11050): no ar, a tela escurece, o oponente fica preso
 // e leva o impacto grande no fim, so depois do clarao.
-test('sukuna: a queda de pedras prende o oponente no ar e fecha com o impacto grande', () => {
+for (const [label, rise, fall] of [['parado no ar', 120, 0], ['caindo do salto', 30, 5]]) {
+test(`sukuna: a queda de pedras prende o oponente no ar e fecha com o impacto grande (${label})`, () => {
   const world = arena(record, 500, 700);
   const attacker = world.fighters[0];
-  attacker.y -= 120;
+  attacker.y -= rise;
   attacker.grounded = false;
-  attacker.vy = 0;
+  attacker.vy = fall;
   step(world, command({ combo: { animation: 'rush', airAnimation: 'rockfall' } }));
   for (let tick = 0; tick < 200; tick += 1) step(world, command());
   assert.equal(attacker.animation.name, 'rockfall', 'o golpe acabou antes da cinematica');
@@ -152,6 +153,7 @@ test('sukuna: a queda de pedras prende o oponente no ar e fecha com o impacto gr
   for (let tick = 0; tick < 100; tick += 1) step(world, command());
   assert.ok(healthBefore - world.fighters[1].health >= 12, `impacto de ${healthBefore - world.fighters[1].health}`);
 });
+}
 
 // Power Charge: carregar liga o buff de dano (config.damageBuff) por 10 s.
 test('sukuna: carregar energia liga o buff e o dano sobe', () => {
