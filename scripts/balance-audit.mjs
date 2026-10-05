@@ -1,7 +1,7 @@
 // Auditoria estatica do elenco: procura ciclos no grafo de golpes (um golpe
 // que leva a si mesmo por cancel, onHit ou next) e mede, por personagem, o
 // maior dano que uma sequencia de cancels consegue somar. Um ciclo sem freio
-// vira ataque infinito (a jab da Yoruichi). Uso: npm run balance:audit
+// vira ataque infinito (a jab da Reze). Uso: npm run balance:audit
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';

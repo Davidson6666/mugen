@@ -480,7 +480,7 @@ const ROSTER = [
   { id: 'escanor', name: 'Escanor', description: 'O Leao do Orgulho', hue: 295, realArt: true },
   { id: 'humberto', name: 'Humberto', description: 'Lenda da UTFPR', hue: 0 },
   { id: 'itachi', name: 'Itachi', description: 'Sombra do cla Uchiha', hue: 150, realArt: true },
-  { id: 'yoruichi', name: 'Yoruichi', description: 'A deusa do Shunpo', hue: 40, realArt: true },
+  { id: 'reze', name: 'Reze', description: 'A garota bomba', hue: 40, realArt: true },
   { id: 'aizen', name: 'Aizen', description: 'O ilusionista do Hogyoku', hue: 270, realArt: true },
   { id: 'gojo', name: 'Gojo', description: 'O mais forte', hue: 210, realArt: true },
   { id: 'sukuna', name: 'Sukuna', description: 'O rei das maldicoes', hue: 350, realArt: true },

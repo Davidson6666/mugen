@@ -263,7 +263,7 @@ export class Effect {
       const { vx, vy, aim } = motion[this.motionIndex];
       if (vx !== undefined) this.vx = vx * this.facing * this.unit;
       if (vy !== undefined) this.vy = vy * this.unit;
-      // Mira: sai em linha reta na direcao do oponente (as kunais da Yoruichi).
+      // Mira: sai em linha reta na direcao do oponente (as kunais, os misseis da Reze).
       if (aim && this.opponent) {
         const dx = this.opponent.x - this.x;
         const dy = this.opponent.y - 40 - this.y;

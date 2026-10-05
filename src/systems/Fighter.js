@@ -769,7 +769,7 @@ export class Fighter {
       }
     }
 
-    // Cancelar num especial depois de conectar (Yoruichi, estilo Bleach DS).
+    // Cancelar num especial depois de conectar (estilo Bleach DS).
     if (move.specialCancel && command.combo && !command.combo.movement && this.moveContact) {
       const name = this.grounded ? command.combo.animation : command.combo.airAnimation;
       if (name && name !== this.animation.name && this.startAttack(name, overrideFrom(command.combo))) return;

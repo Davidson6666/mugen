@@ -32,11 +32,11 @@
     "isBoss": false
   },
   {
-    "id": "yoruichi",
-    "name": "Yoruichi",
-    "dir": "/assets/characters/yoruichi",
-    "config": "yoruichi_config.json",
-    "portrait": "yoruichi_portrait.png",
+    "id": "reze",
+    "name": "Reze",
+    "dir": "/assets/characters/reze",
+    "config": "reze_config.json",
+    "portrait": "reze_portrait.png",
     "isBoss": false
   },
   {

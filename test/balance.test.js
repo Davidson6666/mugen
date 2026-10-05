@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { arena, command, hits, loadRecord, step } from './helpers/world.js';
 import { auditCharacter } from '../scripts/balance-audit.mjs';
 
-// Equilibrio: golpe que se repete sem parar (a jab da Yoruichi) e o
+// Equilibrio: golpe que se repete sem parar (a jab da Reze) e o
 // multiplicador de dano de cada personagem.
 const roster = JSON.parse(readFileSync(new URL('../src/data/characters.json', import.meta.url)));
 const imported = roster
@@ -28,8 +28,8 @@ test('equilibrio: os personagens importados sao 16 e a auditoria roda em todos',
 const WITH_CYCLES = imported.filter((id) => auditCharacter(id).cycles.length > 0);
 
 test('equilibrio: a auditoria acha os ciclos conhecidos (Miku, Pikachu, Goku)', () => {
-  // A Yoruichi trocou de pacote (Yoruichi TYBW): o novo soco/chute nao volta
-  // a um golpe anterior da mesma sequencia, entao nao tem ciclo.
+  // A Reze (e a Yoruichi que ela substituiu) nao tem ciclo: o soco e o chute
+  // nunca voltam a um golpe anterior da mesma sequencia.
   for (const id of ['miku', 'pikachu', 'goku']) assert.ok(WITH_CYCLES.includes(id), id);
 });
 
@@ -58,7 +58,7 @@ for (const id of WITH_CYCLES) {
 }
 
 test('equilibrio: cada golpe entra uma vez so numa sequencia por cancels', () => {
-  const record = loadRecord('yoruichi');
+  const record = loadRecord('reze');
   const world = arena(record, 500, 560);
   const [a] = world.fighters;
   const used = [];

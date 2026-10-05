@@ -6,7 +6,7 @@
 // Uso:
 //   node scripts/balance-sim.mjs                 torneio completo (normal)
 //   node scripts/balance-sim.mjs --rounds 6      partidas por lado e par
-//   node scripts/balance-sim.mjs --only yoruichi,goku
+//   node scripts/balance-sim.mjs --only reze,goku
 //   node scripts/balance-sim.mjs --difficulty hard
 //   node scripts/balance-sim.mjs --json saida.json
 //

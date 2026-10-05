@@ -11,7 +11,7 @@ import { arena, cast, command, loadRecord, run, step } from './helpers/world.js'
 
 const CHARACTERS = [
   'aizen', 'chunli', 'dante', 'escanor', 'gojo', 'goku', 'itachi', 'killua',
-  'miku', 'nezuko', 'pikachu', 'sukuna', 'tanjiro', 'unohana', 'yoruichi', 'zenitsu',
+  'miku', 'nezuko', 'pikachu', 'sukuna', 'reze', 'tanjiro', 'unohana', 'zenitsu',
 ];
 const COMMON = [
   'jumpUp', 'jumpForward', 'jumpBack', 'crouchDown', 'crouchUp',

@@ -27,15 +27,13 @@ O script `scripts/import-escanor.mjs` converte o pacote (golpes do modo normal e
 
 Escanor e Nanatsu no Taizai são propriedade de Nakaba Suzuki / Kodansha.
 
-## Yoruichi
+## Reze
 
-Personagem importada do pacote MUGEN **"Yoruichi TYBW"**, usada sem fins comerciais em projeto acadêmico. Créditos do próprio pacote:
+Personagem importada do pacote MUGEN **"Reze (DrAnimation)"** (arquivo `BombDevil`), usada sem fins comerciais em projeto acadêmico. Créditos do próprio pacote (`BombDevil.def`): **DrAnimation**.
 
-- edição/programação: **Mounir** (template "ADD004 Basic PIEs")
+O script `scripts/import-reze.mjs` converte o pacote (SFF v1). O pacote fica em `assets-src/reze/mugen/`, fora do git. Para regerar: `npm run assets:reze`. Ela substitui a Yoruichi no elenco.
 
-O script `scripts/import-yoruichi.mjs` converte o pacote (SFF v1 com a paleta `1.act`). O pacote fica em `assets-src/yoruichi/mugen/`, fora do git. Para regerar: `npm run assets:yoruichi`.
-
-Yoruichi Shihouin e Bleach são propriedade de Tite Kubo / Shueisha / Studio Pierrot.
+Reze e Chainsaw Man são propriedade de Tatsuki Fujimoto / Shueisha / MAPPA.
 
 ## Aizen
 
