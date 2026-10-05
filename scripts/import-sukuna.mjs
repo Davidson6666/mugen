@@ -103,6 +103,17 @@ const ROCKFALL_ROCKS = Array.from({ length: 34 }, (_, index) => fx(78 + index * 
 }));
 const ROCKFALL_SHARDS = Array.from({ length: 5 }, (_, index) => fx(90 + index * 30, 'shardSheet', [rockRnd(-160, 160), -170], { target: 'stage', angle: rockRnd(-14, 14) }));
 
+// A onda gigante do video (quadro 443): o piso inteiro varrido por faixas
+// brancas com riscos pretos (a anim 1345 que o helper 1505 solta a cada tick) e,
+// por cima, uma grade de linhas pretas finas - verticais cruzadas por
+// inclinadas, todas em leque.
+const waveRnd = seeded(77);
+const WAVE_SWEEP = Array.from({ length: 34 }, (_, index) => fx(66 + index, 'floorStreak', [-460 + index * 28 + waveRnd(-14, 14), -waveRnd(2, 64)], {
+  target: 'stage', scale: [waveRnd(1.6, 3.4), waveRnd(0.7, 1.3)],
+}));
+const WAVE_GRID_V = Array.from({ length: 11 }, (_, index) => fx(66 + index * 2, 'gridLine', [180 + index * 34, -150], { target: 'stage', angle: 90 }));
+const WAVE_GRID_D = Array.from({ length: 10 }, (_, index) => fx(68 + index * 2, 'gridLineLong', [200 + index * 8, -40 - index * 24], { target: 'stage', angle: 12 + index * 1.6 }));
+
 const ANIMATIONS = {
   idle: { actions: [0], loop: true },
   walkForward: { actions: [20], loop: true },
@@ -558,6 +569,9 @@ const ANIMATIONS = {
       fx(30, 'darkOrb', [-1, -46]),
       fx(58, 'starBurst', [40, -52]),
       fx(66, 'bigCut', [0, -45], { target: 'stage', angle: 7 }),
+      ...WAVE_SWEEP,
+      ...WAVE_GRID_V,
+      ...WAVE_GRID_D,
       fx(67, 'cutHair', [0, -45], { target: 'stage', angle: -7 }),
       fx(68, 'cutHairWhite', [0, -45], { target: 'stage', angle: 57 }),
       fx(66, 'flashRing', [40, -50]),
@@ -775,6 +789,17 @@ const EFFECTS = {
     blade: { length: 1000, thickness: 22, hair: 1.2, steps: [[0.2, 1], [1, 2], [1, 8], [0.85, 4], [0.5, 3], [0.2, 2]] },
     launch: { vx: 5, vy: 7 },
     area: { rect: [-500, -100, 500, 100], until: 6, damage: 10, hitstun: 46, push: 14, heavy: true },
+  },
+  // O piso varrido: a 1345 (536x104) esticada no pedido.
+  floorStreak: { actions: [{ id: 1345, lengthTicks: 14 }], size: 0.45, harmless: true },
+  // A grade de linhas pretas finas: uma lamina fina de 1 px de miolo.
+  gridLine: {
+    blade: { length: 700, thickness: 2.4, hair: 1.1, steps: [[1, 3], [1, 8], [0.6, 4]] },
+    harmless: true,
+  },
+  gridLineLong: {
+    blade: { length: 1100, thickness: 2.2, hair: 1.1, steps: [[1, 3], [1, 8], [0.6, 4]] },
+    harmless: true,
   },
   // Corte vertical que cruza a tela (o helper 390 do pacote: caixa de 9x95).
   cutWave: {
