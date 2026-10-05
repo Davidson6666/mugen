@@ -4650,6 +4650,15 @@
           "sound": "s5_2"
         },
         {
+          "at": 30,
+          "effect": {
+            "id": "eruptionDark",
+            "target": "stage",
+            "offsetX": 0,
+            "offsetY": 200
+          }
+        },
+        {
           "at": 34,
           "effect": {
             "id": "burstBig",
@@ -4687,8 +4696,8 @@
             "target": "opponent",
             "follow": "target",
             "scale": [
-              0.8,
-              1.5
+              2.1,
+              3.1
             ],
             "offsetX": 0,
             "offsetY": 0
@@ -4716,6 +4725,20 @@
         {
           "at": 40,
           "effect": {
+            "id": "rockChunkDark",
+            "target": "opponent",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.0776430409401656,
+            "offsetX": -12.57287872955203,
+            "offsetY": 23.587487919721752
+          }
+        },
+        {
+          "at": 40,
+          "effect": {
             "id": "rubble",
             "scale": 0.6,
             "offsetX": 70,
@@ -4734,6 +4757,20 @@
           }
         },
         {
+          "at": 43,
+          "effect": {
+            "id": "rockChunkDark",
+            "target": "opponent",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.0680419070646168,
+            "offsetX": 83.60444413963705,
+            "offsetY": 6.645627412945032
+          }
+        },
+        {
           "at": 44,
           "effect": {
             "id": "bonfireShort",
@@ -4741,6 +4778,48 @@
             "follow": "target",
             "offsetX": 42,
             "offsetY": 0
+          }
+        },
+        {
+          "at": 46,
+          "effect": {
+            "id": "rockChunkDark",
+            "target": "opponent",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.2520394764840603,
+            "offsetX": -35.05250039510429,
+            "offsetY": 18.212012357544154
+          }
+        },
+        {
+          "at": 49,
+          "effect": {
+            "id": "rockChunkDark",
+            "target": "opponent",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.0096215376630426,
+            "offsetX": 89.6510269632563,
+            "offsetY": 4.6913748839870095
+          }
+        },
+        {
+          "at": 52,
+          "effect": {
+            "id": "rockChunkDark",
+            "target": "opponent",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 0.9224843535572291,
+            "offsetX": 17.737414687871933,
+            "offsetY": 0.44592752354219556
           }
         },
         {
@@ -4753,6 +4832,62 @@
           }
         },
         {
+          "at": 55,
+          "effect": {
+            "id": "rockChunkDark",
+            "target": "opponent",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.5349058335646988,
+            "offsetX": -77.0716743869707,
+            "offsetY": 3.9472104515880346
+          }
+        },
+        {
+          "at": 58,
+          "effect": {
+            "id": "rockChunkDark",
+            "target": "opponent",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.2318753495812418,
+            "offsetX": 27.33044813387096,
+            "offsetY": 7.778711111750454
+          }
+        },
+        {
+          "at": 61,
+          "effect": {
+            "id": "rockChunkDark",
+            "target": "opponent",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.533390429802239,
+            "offsetX": -21.348878745920956,
+            "offsetY": 28.34961350541562
+          }
+        },
+        {
+          "at": 64,
+          "effect": {
+            "id": "rockChunkDark",
+            "target": "opponent",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.5973252680152656,
+            "offsetX": 21.15471376106143,
+            "offsetY": 0.40256098145619035
+          }
+        },
+        {
           "at": 64,
           "effect": {
             "id": "rubble",
@@ -4762,12 +4897,250 @@
           }
         },
         {
+          "at": 67,
+          "effect": {
+            "id": "rockChunkDark",
+            "target": "opponent",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.0058473972603679,
+            "offsetX": -83.11556519474834,
+            "offsetY": 2.7227411046624184
+          }
+        },
+        {
+          "at": 70,
+          "effect": {
+            "id": "rockChunkDark",
+            "target": "opponent",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.3963116355240346,
+            "offsetX": 73.75031822361052,
+            "offsetY": 16.822231735568494
+          }
+        },
+        {
+          "at": 73,
+          "effect": {
+            "id": "rockChunkDark",
+            "target": "opponent",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.1435839707031847,
+            "offsetX": 48.14437990542501,
+            "offsetY": 6.0757187800481915
+          }
+        },
+        {
+          "at": 76,
+          "effect": {
+            "id": "rockChunkDark",
+            "target": "opponent",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 0.9785709280520678,
+            "offsetX": -23.01995325833559,
+            "offsetY": 27.465817343909293
+          }
+        },
+        {
           "at": 76,
           "effect": {
             "id": "rubble",
             "scale": 0.6,
             "offsetX": 70,
             "offsetY": 0
+          }
+        },
+        {
+          "at": 79,
+          "effect": {
+            "id": "rockChunkDark",
+            "target": "opponent",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.0499009838327766,
+            "offsetX": 81.64580543059856,
+            "offsetY": 29.462767029181123
+          }
+        },
+        {
+          "at": 82,
+          "effect": {
+            "id": "rockChunkDark",
+            "target": "opponent",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.5969991445541383,
+            "offsetX": -39.607058102265,
+            "offsetY": 29.017427077051252
+          }
+        },
+        {
+          "at": 85,
+          "effect": {
+            "id": "rockChunkDark",
+            "target": "opponent",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.2497471051290632,
+            "offsetX": -2.262745094485581,
+            "offsetY": 9.452306083403528
+          }
+        },
+        {
+          "at": 88,
+          "effect": {
+            "id": "rockChunkDark",
+            "target": "opponent",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 0.9609766971319914,
+            "offsetX": -24.970650281757116,
+            "offsetY": 3.47199889132753
+          }
+        },
+        {
+          "at": 91,
+          "effect": {
+            "id": "rockChunkDark",
+            "target": "opponent",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.1468462182208896,
+            "offsetX": -16.729198596440256,
+            "offsetY": 23.86641589924693
+          }
+        },
+        {
+          "at": 94,
+          "effect": {
+            "id": "rockChunkDark",
+            "target": "opponent",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.2944418363273145,
+            "offsetX": 87.80366350896657,
+            "offsetY": 27.582416280638427
+          }
+        },
+        {
+          "at": 97,
+          "effect": {
+            "id": "rockChunkDark",
+            "target": "opponent",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.4446065405383708,
+            "offsetX": 41.95509777870029,
+            "offsetY": 20.27038770262152
+          }
+        },
+        {
+          "at": 100,
+          "effect": {
+            "id": "rockChunkDark",
+            "target": "opponent",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.0786930803209545,
+            "offsetX": 65.41740216314793,
+            "offsetY": 2.3046414856798947
+          }
+        },
+        {
+          "at": 103,
+          "effect": {
+            "id": "rockChunkDark",
+            "target": "opponent",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.2979013239964843,
+            "offsetX": 42.38451332319528,
+            "offsetY": 19.08858778886497
+          }
+        },
+        {
+          "at": 106,
+          "effect": {
+            "id": "rockChunkDark",
+            "target": "opponent",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.5263073667883873,
+            "offsetX": 42.79041591100395,
+            "offsetY": 4.922749826218933
+          }
+        },
+        {
+          "at": 109,
+          "effect": {
+            "id": "rockChunkDark",
+            "target": "opponent",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.2573422314599156,
+            "offsetX": -54.32449080515653,
+            "offsetY": 16.572463656775653
+          }
+        },
+        {
+          "at": 112,
+          "effect": {
+            "id": "rockChunkDark",
+            "target": "opponent",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 0.917716896161437,
+            "offsetX": -52.498081270605326,
+            "offsetY": 0.6275467970408499
+          }
+        },
+        {
+          "at": 115,
+          "effect": {
+            "id": "rockChunkDark",
+            "target": "opponent",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.3559477327391507,
+            "offsetX": 23.72343620751053,
+            "offsetY": 27.52425692975521
           }
         }
       ],
@@ -8127,7 +8500,7 @@
     "sukuna_atlas_2.png",
     "sukuna_atlas_3.png"
   ],
-  "assetVersion": "03f71ef411",
+  "assetVersion": "211b0ba848",
   "balance": {
     "damage": 0.847
   },
@@ -24178,6 +24551,301 @@
       "velocityY": -6,
       "gravity": 0.34,
       "lifetime": 60
+    },
+    "eruptionDark": {
+      "spriteGridSize": {
+        "frameWidth": 8,
+        "frameHeight": 8,
+        "baseline": 4
+      },
+      "atlas": [
+        [
+          3,
+          1678,
+          438,
+          8,
+          8,
+          0,
+          0
+        ],
+        [
+          3,
+          1828,
+          438,
+          8,
+          8,
+          0,
+          0
+        ],
+        [
+          3,
+          1718,
+          438,
+          8,
+          8,
+          0,
+          0
+        ],
+        [
+          3,
+          1838,
+          438,
+          8,
+          8,
+          0,
+          0
+        ],
+        [
+          3,
+          1848,
+          438,
+          8,
+          8,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "durations": [
+          4,
+          6,
+          70,
+          8,
+          8
+        ],
+        "loop": false
+      },
+      "layer": "back",
+      "cover": [
+        1900,
+        1900
+      ]
+    },
+    "rockChunkDark": {
+      "spriteGridSize": {
+        "frameWidth": 72,
+        "frameHeight": 58,
+        "baseline": 58
+      },
+      "atlas": [
+        [
+          3,
+          1626,
+          312,
+          70,
+          23,
+          2,
+          35
+        ],
+        [
+          3,
+          1661,
+          284,
+          69,
+          26,
+          2,
+          32
+        ],
+        [
+          3,
+          1573,
+          222,
+          67,
+          29,
+          3,
+          29
+        ],
+        [
+          3,
+          1032,
+          186,
+          67,
+          32,
+          3,
+          26
+        ],
+        [
+          3,
+          1717,
+          145,
+          65,
+          35,
+          4,
+          23
+        ],
+        [
+          3,
+          548,
+          145,
+          66,
+          38,
+          4,
+          20
+        ],
+        [
+          3,
+          484,
+          101,
+          67,
+          42,
+          3,
+          16
+        ],
+        [
+          3,
+          0,
+          51,
+          67,
+          48,
+          3,
+          10
+        ],
+        [
+          3,
+          1784,
+          145,
+          62,
+          35,
+          9,
+          20
+        ],
+        [
+          3,
+          1642,
+          222,
+          60,
+          29,
+          9,
+          25
+        ],
+        [
+          3,
+          1704,
+          222,
+          60,
+          29,
+          9,
+          22
+        ],
+        [
+          3,
+          1848,
+          145,
+          60,
+          35,
+          9,
+          14
+        ],
+        [
+          3,
+          271,
+          145,
+          61,
+          39,
+          8,
+          6
+        ],
+        [
+          3,
+          887,
+          51,
+          61,
+          44,
+          8,
+          0
+        ],
+        [
+          3,
+          257,
+          186,
+          27,
+          33,
+          42,
+          10
+        ],
+        [
+          3,
+          1910,
+          145,
+          30,
+          35,
+          41,
+          7
+        ],
+        [
+          3,
+          113,
+          186,
+          30,
+          34,
+          41,
+          6
+        ],
+        [
+          3,
+          286,
+          186,
+          30,
+          33,
+          41,
+          4
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17
+        ],
+        "durations": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "loop": false
+      },
+      "velocityX": 1.5,
+      "velocityY": -7,
+      "gravity": 0.34,
+      "lifetime": 60,
+      "tint": 1314828
     },
     "rockPile": {
       "spriteGridSize": {

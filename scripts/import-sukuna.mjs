@@ -601,7 +601,11 @@ const ANIMATIONS = {
       fx(34, 'burstBig', [37, -57], { scale: 0.6 }),
       fx(34, 'burstSmall', [37, -57]),
       fx(36, 'emberBed', [0, 0], { target: 'opponent', follow: 'target' }),
-      fx(38, 'fireColumn', [0, 0], { target: 'opponent', follow: 'target', scale: [0.8, 1.5] }),
+      // No video a tela vai ao preto e a coluna ocupa a altura toda, com
+      // pedacos escuros voando: antes ela era pequena e laranja.
+      fx(30, 'eruptionDark', [0, -200], { target: 'stage' }),
+      fx(38, 'fireColumn', [0, 0], { target: 'opponent', follow: 'target', scale: [2.1, 3.1] }),
+      ...Array.from({ length: 26 }, (_, index) => fx(40 + index * 3, 'rockChunkDark', [rockRnd(-90, 90), -rockRnd(0, 30)], { target: 'opponent', velocitySpread: [3, 2], scale: rockRnd(0.8, 1.6) })),
       fx(38, 'emberSplash', [0, 0], { target: 'opponent' }),
       fx(38, 'bonfireShort', [-42, 0], { target: 'opponent', follow: 'target' }),
       fx(41, 'bonfireShort', [0, 0], { target: 'opponent', follow: 'target', scale: 1.3 }),
@@ -737,8 +741,7 @@ const EFFECTS = {
   fireColumn: {
     actions: [{ id: 1550, lengthTicks: 46 }],
     size: 0.3,
-    shape: { taper: 0.4, from: 0.25, fadeTop: 0.32, ragged: 0.22, soften: 0.22, grain: 2 },
-    palfx: { mul: [256, 185, 110] },
+    shape: { taper: 0.25, from: 0.3, fadeTop: 0.22, ragged: 0.2, soften: 0.2, grain: 2 },
     area: { rect: [-90, -340, 90, 10], until: 40, damage: 2, hitstun: 30, push: 5, every: 7, count: 6 },
   },
   burstBig: { actions: [1141], size: 0.25, harmless: true },
@@ -1029,6 +1032,14 @@ const EFFECTS = {
   // Pedaco de rocha que sobe e cai (anim 7096, velocidade 2,-5 no pacote).
   rockChunk: { actions: [7096], size: 0.38, velocityX: 1.5, velocityY: -6, gravity: 0.34, lifetime: 60, harmless: true },
   // Fileira de pedras no chao (anim 7048).
+  // O campo preto da erupcao (a tela some e fica so a coluna).
+  eruptionDark: {
+    solid: { color: [0, 0, 0], steps: [[0.3, 4], [0.75, 6], [0.9, 70], [0.5, 8], [0.2, 8]] },
+    cover: [1900, 1900],
+    layer: 'back',
+    harmless: true,
+  },
+  rockChunkDark: { actions: [7096], size: 0.38, velocityX: 1.5, velocityY: -7, gravity: 0.34, lifetime: 60, tint: 0x14100c, harmless: true },
   rockPile: { actions: [7048], size: 0.45, loop: true, lifetime: 310, harmless: true },
   // Tintas de tela cheia do pacote: entram como cobertura, nao como sprite.
   redTint: { actions: [{ id: 4010, lengthTicks: 150 }], scale: 0.2, cover: [1500, 1500], alpha: 0.35, layer: 'back', harmless: true },
