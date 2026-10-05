@@ -47,14 +47,43 @@ const strike = (from, until, rect, data) => ({ from, until, rect, ...data });
 
 const NORMAL = { specialCancel: true };
 
+// Sorteio deterministico (o mesmo a cada importacao): o dominio espalha riscos,
+// pedras e cortes por posicoes e angulos "aleatorios", mas a folha gerada nao
+// pode mudar de uma importacao para outra.
+function seeded(seed) {
+  let state = seed >>> 0;
+  return (low = 0, high = 1) => {
+    state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
+    return low + (state / 4294967296) * (high - low);
+  };
+}
+
 // Todos os cortes do video sao a mesma coisa: uma lamina preta fina e comprida
 // (blade, desenhada por codigo em mugen-import), girada de um jeito a cada
 // golpe pelo "angle" do pedido. cutS/M/L/XL so enfeitam; terminados em "h"
-// tambem acertam o que estiver no meio deles. No dominio vem um a cada 10 ticks
-// em cima do oponente, em angulos e tamanhos que se alternam.
+// tambem acertam o que estiver no meio deles.
 const DOMAIN_ANGLES = [-52, 18, -12, 44, -28, 8, 62, -40, 24, -6, 36, -60, 14, -22];
 const DOMAIN_SIZES = ['cutMh', 'cutLh', 'cutMh', 'cutXLh', 'cutMh', 'cutLh', 'cutMh', 'cutLh', 'cutMh', 'cutXLh', 'cutMh', 'cutLh', 'cutMh', 'cutLh'];
-const DOMAIN_CUTS = Array.from({ length: 14 }, (_, index) => fx(60 + index * 10, DOMAIN_SIZES[index], [0, -45], { target: 'opponent', angle: DOMAIN_ANGLES[index], spread: [55, 28] }));
+// Os que acertam: um a cada 14 ticks em cima do oponente.
+const DOMAIN_CUTS = Array.from({ length: 14 }, (_, index) => fx(64 + index * 14, DOMAIN_SIZES[index], [0, -45], { target: 'opponent', angle: DOMAIN_ANGLES[index], spread: [55, 28] }));
+
+// O resto do dominio e ambiente, tirado do estado 20011 do pacote, que roda em
+// laco: riscos brancos finos (a anim 829 esticada, tres por tick) em qualquer
+// angulo, pedacos de rocha subindo (7096, vel 2,-5), a fileira de pedras no
+// chao (7048) e laminas pretas por toda a tela.
+const rnd = seeded(7);
+const DOMAIN_HAIRLINES = Array.from({ length: 80 }, (_, index) => fx(36 + index * 3, 'hairline', [rnd(-440, 440), rnd(-190, -10)], {
+  target: 'stage', angle: rnd(-80, 80), scale: [rnd(3.5, 6), rnd(0.35, 0.8)],
+}));
+const DOMAIN_ROCKS = Array.from({ length: 56 }, (_, index) => fx(48 + index * 5, 'rockChunk', [rnd(-470, 470), 0], {
+  target: 'stage', velocitySpread: [3, 2], scale: rnd(0.8, 1.5),
+}));
+const DOMAIN_PILES = Array.from({ length: 15 }, (_, index) => fx(46 + index * 3, 'rockPile', [-490 + index * 70 + rnd(-16, 16), 4], {
+  target: 'stage', scale: rnd(0.75, 1.2),
+}));
+const DOMAIN_BLACKS = Array.from({ length: 22 }, (_, index) => fx(70 + index * 11, ['cutL', 'cutXL', 'cutM'][index % 3], [rnd(-340, 340), rnd(-170, -20)], {
+  target: 'stage', angle: rnd(-72, 72),
+}));
 
 // A familia de cortes: os quatro tamanhos, com e sem dano.
 const CUT_STEPS = [[0.3, 1], [1, 3], [1, 3], [0.6, 2], [0.2, 2]];
@@ -550,21 +579,28 @@ const ANIMATIONS = {
   // 13000 (↓→↓→P): Dominio - Santuario Maligno. O pacote tinge a tela de
   // vermelho e abre o portal; aqui ele prende o adversario e corta ate o fim.
   domain: {
-    actions: [{ id: 13000, times: { 3: 70 } }],
+    // 13000 (↓→↓→P): Dominio - Santuario Maligno. No pacote e o laco do estado
+    // 20011 por 700 ticks; aqui sao ~350, e antes eram so 165, o que cortava
+    // os ultimos oito eventos (inclusive a caveira, que nunca disparava).
+    actions: [{ id: 13000, times: { 0: 20, 1: 14, 2: 36, 3: 240, 4: 10, 5: 10, 6: 10, 7: 10 } }],
     cooldown: 1500,
-    invulnerable: [0, 165],
+    invulnerable: [0, 340],
     events: [
-      { at: 24, standAt: -80, pinOpponent: { dx: 0, lift: 0, ticks: 140 } },
+      { at: 24, standAt: -80, pinOpponent: { dx: 0, lift: 0, ticks: 300 } },
+      fx(14, 'domainDark', [0, -200], { target: 'stage' }),
       fx(20, 'redTint', [0, 0], { target: 'stage' }),
-      fx(24, 'cutIn', [0, -60], { target: 'stage' }),
       fx(28, 'cursedSigil', [0, -60]),
       fx(30, 'shrineField', [-60, 0], { target: 'stage' }),
       fx(34, 'redBands', [0, 0], { target: 'stage' }),
       fx(40, 'voidBlast', [0, -40], { target: 'opponent' }),
+      ...DOMAIN_PILES,
+      ...DOMAIN_HAIRLINES,
+      ...DOMAIN_ROCKS,
       ...DOMAIN_CUTS,
-      fx(190, 'splash', [0, -20], { target: 'opponent' }),
-      fx(196, 'groundRocks', [0, 0], { target: 'opponent' }),
-      fx(200, 'cursedSkull', [0, -40], { target: 'opponent' }),
+      ...DOMAIN_BLACKS,
+      fx(280, 'splash', [0, -20], { target: 'opponent' }),
+      fx(284, 'groundRocks', [0, 0], { target: 'opponent' }),
+      fx(288, 'cursedSkull', [0, -40], { target: 'opponent' }),
     ],
   },
 };
@@ -819,12 +855,25 @@ const EFFECTS = {
     size: 0.6,
     area: { rect: [-120, -200, 120, 10], until: 40, damage: 2, hitstun: 30, push: 6, every: 8, count: 5 },
   },
-  shrineField: { actions: [{ id: 3010, lengthTicks: 150 }], size: 0.7, layer: 'back', alpha: 0.85, harmless: true },
+  shrineField: { actions: [{ id: 3010, lengthTicks: 330 }], size: 0.7, layer: 'back', alpha: 0.9, harmless: true },
+  // O campo escuro do dominio: o estagio quase some e fica um vermelho fechado.
+  domainDark: {
+    solid: { color: [26, 0, 6], steps: [[0.2, 6], [0.4, 6], [0.58, 8], [0.66, 300], [0.4, 8], [0.15, 8]] },
+    cover: [1700, 1700],
+    layer: 'back',
+    harmless: true,
+  },
+  // Riscos finos do estado 20011: a anim 829 esticada (aqui guardada pequena e
+  // esticada no pedido).
+  hairline: { actions: [829], size: 0.2, harmless: true },
+  // Pedaco de rocha que sobe e cai (anim 7096, velocidade 2,-5 no pacote).
+  rockChunk: { actions: [7096], size: 0.38, velocityX: 1.5, velocityY: -6, gravity: 0.34, lifetime: 60, harmless: true },
+  // Fileira de pedras no chao (anim 7048).
+  rockPile: { actions: [7048], size: 0.45, loop: true, lifetime: 310, harmless: true },
   // Tintas de tela cheia do pacote: entram como cobertura, nao como sprite.
   redTint: { actions: [{ id: 4010, lengthTicks: 150 }], scale: 0.2, cover: [1500, 1500], alpha: 0.35, layer: 'back', harmless: true },
   redBands: { actions: [{ id: 4011, lengthTicks: 140 }], scale: 0.2, cover: [1280, 300], alpha: 0.45, layer: 'back', harmless: true },
   redHaze: { actions: [{ id: 4075, lengthTicks: 120 }], scale: 0.2, cover: [1500, 1500], alpha: 0.3, layer: 'back', harmless: true },
-  cutIn: { actions: [{ id: 7096, lengthTicks: 50 }], scale: 0.6, cover: [520, 430], alpha: 0.9, harmless: true },
   cursedSkull: {
     actions: [{ id: 13003, lengthTicks: 40 }],
     size: 0.27,

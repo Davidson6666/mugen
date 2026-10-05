@@ -435,6 +435,32 @@ function makeBlade({ length, thickness, angle = 0, color = [0, 0, 0], peak = 0.4
   return { width, height, axisX: Math.round(width / 2), axisY: Math.round(height / 2), rgba };
 }
 
+// Cor lisa (o campo escuro do Dominio): um quadrado de 8x8 que o "cover"
+// estica pela tela. steps = [[opacidade, ticks], ...] - a rampa que entra,
+// segura e sai.
+function solidFrames(spec, effectId) {
+  const frames = [];
+  let clock = 0;
+  spec.steps.forEach(([alpha, ticks]) => {
+    const rgba = new Uint8Array(8 * 8 * 4);
+    for (let at = 0; at < rgba.length; at += 4) {
+      rgba[at] = spec.color[0];
+      rgba[at + 1] = spec.color[1];
+      rgba[at + 2] = spec.color[2];
+      rgba[at + 3] = Math.round(255 * alpha);
+    }
+    frames.push({
+      image: { width: 8, height: 8, axisX: 4, axisY: 4, rgba },
+      id: `${effectId}:${alpha}`,
+      group: -1, item: -1, x: 0, y: 0, flip: '', blend: '', clsn1: [], clsn2: [], duration: ticks,
+    });
+    clock += ticks;
+  });
+  const starts = new Map();
+  starts.total = clock;
+  return { frames, starts };
+}
+
 // Quadros da lamina: steps = [[quanto da espessura, ticks, transparencia], ...]
 // - o risco abre, segura e fecha.
 function bladeFrames(spec, effectId) {
@@ -895,7 +921,7 @@ export function importMugenCharacter({
     // (corvos menores que no pacote).
     const scale = spec.scale ?? 1;
     const packer = new CellPacker(sff, scale * (spec.size ?? 1), { opaque: spec.opaque, remap: spec.remap, shade: spec.shade, palfx: spec.palfx, shape: spec.shape, rotate: spec.rotate, stretch: spec.stretch, center: spec.center ?? Boolean(spec.cover) });
-    const collected = spec.blade ? bladeFrames(spec.blade, effectId) : collectFrames(air, spec);
+    const collected = spec.blade ? bladeFrames(spec.blade, effectId) : spec.solid ? solidFrames(spec.solid, effectId) : collectFrames(air, spec);
     const cells = collected.frames.map((frame) => packer.cellFor(frame));
     effectSources[effectId] = { ...collected, cells, packer, scale, size: spec.size ?? 1, grid: packer.grid, start: addGroup(packer) };
   }

@@ -137,9 +137,29 @@ test('sukuna: sem a lanca no chao, o recall nao sai', () => {
 });
 
 test('sukuna: o dominio prende o oponente sob os cortes', () => {
-  const world = run(arena(record, 400, 700), cast('domain'), 280);
+  const world = run(arena(record, 400, 700), cast('domain'), 360);
   assert.ok(hits(world).length >= 8, `${hits(world).length} acertos`);
   assert.ok(world.fighters[1].health <= config.stats.maxHealth - 20, `vida ${world.fighters[1].health}`);
+});
+
+// O dominio tinha efeitos agendados depois do fim do golpe (165 ticks), que
+// nunca disparavam - a caveira de 10 de dano entre eles. Todo efeito precisa
+// caber na duracao do golpe. (Sons lidos do .cns do pacote podem cair depois: o
+// pacote os toca em cinematicas longas que aqui nao existem, e nao fazem mal.)
+test('sukuna: nenhum golpe agenda efeito depois do proprio fim', () => {
+  for (const [name, move] of Object.entries(config.animations)) {
+    const total = move.durations.reduce((sum, ticks) => sum + ticks, 0);
+    if (move.next || move.onHit || move.loop) continue;
+    const late = (move.events ?? []).filter((event) => event.effect && event.at > total);
+    assert.equal(late.length, 0, `${name}: ${late.length} efeitos depois do fim (${total} ticks): ${late.map((e) => `${e.effect.id}@${e.at}`).join(' ')}`);
+  }
+});
+
+test('sukuna: o dominio chega a caveira no fim', () => {
+  const world = run(arena(record, 400, 700), cast('domain'), 360);
+  const skull = world.effects.effects.some((effect) => effect.spawn.id === 'cursedSkull') || world.results.length > 0;
+  assert.ok(skull);
+  assert.ok(config.animations.domain.events.some((event) => event.effect?.id === 'cursedSkull'));
 });
 
 // Os especiais do pacote nao sao o pose: o ataque vem de helpers encadeados,

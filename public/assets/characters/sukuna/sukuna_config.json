@@ -3909,17 +3909,26 @@
         119
       ],
       "durations": [
+        20,
+        14,
+        36,
+        240,
         10,
         10,
-        50,
-        70,
-        5,
-        5,
-        5,
+        10,
         10
       ],
       "loop": false,
       "events": [
+        {
+          "at": 14,
+          "effect": {
+            "id": "domainDark",
+            "target": "stage",
+            "offsetX": 0,
+            "offsetY": 200
+          }
+        },
         {
           "at": 18,
           "sound": "s0_12"
@@ -3939,16 +3948,7 @@
           "pinOpponent": {
             "dx": 0,
             "lift": 0,
-            "ticks": 140
-          }
-        },
-        {
-          "at": 24,
-          "effect": {
-            "id": "cutIn",
-            "target": "stage",
-            "offsetX": 0,
-            "offsetY": 60
+            "ticks": 300
           }
         },
         {
@@ -3978,6 +3978,34 @@
           }
         },
         {
+          "at": 36,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 17.998666614294052,
+            "scale": [
+              5.817453647847287,
+              0.3722035288577899
+            ],
+            "offsetX": -229.8728609457612,
+            "offsetY": 25.571212354116142
+          }
+        },
+        {
+          "at": 39,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -71.50298539549112,
+            "scale": [
+              3.6719600905198604,
+              0.7927716504898854
+            ],
+            "offsetX": 313.0895300023258,
+            "offsetY": 125.02267189323902
+          }
+        },
+        {
           "at": 40,
           "effect": {
             "id": "voidBlast",
@@ -3987,7 +4015,245 @@
           }
         },
         {
+          "at": 42,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -7.702780142426491,
+            "scale": [
+              4.869598487508483,
+              0.6222661982290447
+            ],
+            "offsetX": 416.06842778623104,
+            "offsetY": 94.37485838774592
+          }
+        },
+        {
+          "at": 45,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -13.107620440423489,
+            "scale": [
+              4.685269996058196,
+              0.7334645660943352
+            ],
+            "offsetX": 244.12723058834672,
+            "offsetY": 49.63377374224365
+          }
+        },
+        {
+          "at": 46,
+          "effect": {
+            "id": "rockPile",
+            "target": "stage",
+            "scale": 0.9956132005085236,
+            "offsetX": -495.72908072173595,
+            "offsetY": -4
+          }
+        },
+        {
+          "at": 48,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -65.28939962387085,
+            "scale": [
+              5.3728430004557595,
+              0.7253906399244443
+            ],
+            "offsetX": -121.0317562147975,
+            "offsetY": 103.32869493868202
+          }
+        },
+        {
+          "at": 48,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.087776775076054,
+            "offsetX": -233.61251135356724,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 49,
+          "effect": {
+            "id": "rockPile",
+            "target": "stage",
+            "scale": 1.1915665492764673,
+            "offsetX": -409.7737217247486,
+            "offsetY": -4
+          }
+        },
+        {
+          "at": 51,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 77.08215963095427,
+            "scale": [
+              3.805165465688333,
+              0.554650064802263
+            ],
+            "offsetX": -124.8606120981276,
+            "offsetY": 157.80716767534614
+          }
+        },
+        {
+          "at": 52,
+          "effect": {
+            "id": "rockPile",
+            "target": "stage",
+            "scale": 1.1148564822622575,
+            "offsetX": -354.14826668798923,
+            "offsetY": -4
+          }
+        },
+        {
+          "at": 53,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.1672265595989302,
+            "offsetX": 69.53455263748765,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 54,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -61.75591133534908,
+            "scale": [
+              5.053990683169104,
+              0.6977729573380202
+            ],
+            "offsetX": -38.435321003198624,
+            "offsetY": 170.5585749493912
+          }
+        },
+        {
+          "at": 55,
+          "effect": {
+            "id": "rockPile",
+            "target": "stage",
+            "scale": 1.0876004905323498,
+            "offsetX": -292.98715221881866,
+            "offsetY": -4
+          }
+        },
+        {
+          "at": 57,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 68.21564394980669,
+            "scale": [
+              4.16431918181479,
+              0.6157304351101629
+            ],
+            "offsetX": -365.6035174243152,
+            "offsetY": 80.99790976382792
+          }
+        },
+        {
+          "at": 58,
+          "effect": {
+            "id": "rockPile",
+            "target": "stage",
+            "scale": 1.0798979114857503,
+            "offsetX": -203.76114152371883,
+            "offsetY": -4
+          }
+        },
+        {
+          "at": 58,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 0.8861169845564292,
+            "offsetX": 140.1459297630936,
+            "offsetY": 0
+          }
+        },
+        {
           "at": 60,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 1.9944645464420319,
+            "scale": [
+              5.279219407471828,
+              0.4893905558390543
+            ],
+            "offsetX": -129.59010679274797,
+            "offsetY": 133.7028282834217
+          }
+        },
+        {
+          "at": 61,
+          "effect": {
+            "id": "rockPile",
+            "target": "stage",
+            "scale": 0.9829749369411729,
+            "offsetX": -146.94425556063652,
+            "offsetY": -4
+          }
+        },
+        {
+          "at": 63,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 20.092184208333492,
+            "scale": [
+              4.448285186896101,
+              0.7983598695253022
+            ],
+            "offsetX": -300.78675808385015,
+            "offsetY": 32.65539411455393
+          }
+        },
+        {
+          "at": 63,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.0641344717005268,
+            "offsetX": -283.38801592588425,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 64,
+          "effect": {
+            "id": "rockPile",
+            "target": "stage",
+            "scale": 0.7819214486167766,
+            "offsetX": -67.2876377850771,
+            "offsetY": -4
+          }
+        },
+        {
+          "at": 64,
           "effect": {
             "id": "cutMh",
             "target": "opponent",
@@ -4001,7 +4267,169 @@
           }
         },
         {
+          "at": 66,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -39.40754897892475,
+            "scale": [
+              5.801667670835741,
+              0.6145942028611899
+            ],
+            "offsetX": -13.586825653910637,
+            "offsetY": 157.93376898858696
+          }
+        },
+        {
+          "at": 67,
+          "effect": {
+            "id": "rockPile",
+            "target": "stage",
+            "scale": 0.796165432955604,
+            "offsetX": 12.834803760051727,
+            "offsetY": -4
+          }
+        },
+        {
+          "at": 68,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 0.915701899654232,
+            "offsetX": 197.07086614333093,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 69,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -10.566527508199215,
+            "scale": [
+              3.9464107868261635,
+              0.3509201153530739
+            ],
+            "offsetX": -6.359251942485571,
+            "offsetY": 158.5204033460468
+          }
+        },
+        {
           "at": 70,
+          "effect": {
+            "id": "rockPile",
+            "target": "stage",
+            "scale": 0.8730670553748496,
+            "offsetX": 73.45038326084614,
+            "offsetY": -4
+          }
+        },
+        {
+          "at": 70,
+          "effect": {
+            "id": "cutL",
+            "target": "stage",
+            "angle": -50.783466182649136,
+            "offsetX": -299.4283141940832,
+            "offsetY": 40.77007753541693
+          }
+        },
+        {
+          "at": 72,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -56.8504473567009,
+            "scale": [
+              4.857569735846482,
+              0.6838513636263088
+            ],
+            "offsetX": 168.64449683576822,
+            "offsetY": 53.19276457186788
+          }
+        },
+        {
+          "at": 73,
+          "effect": {
+            "id": "rockPile",
+            "target": "stage",
+            "scale": 1.1329539271420799,
+            "offsetX": 137.97890910506248,
+            "offsetY": -4
+          }
+        },
+        {
+          "at": 73,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.111235584807582,
+            "offsetX": 429.4048128090799,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 75,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -14.935489483177662,
+            "scale": [
+              5.095920146210119,
+              0.7228772595175542
+            ],
+            "offsetX": 336.88486447557807,
+            "offsetY": 123.15842615440488
+          }
+        },
+        {
+          "at": 76,
+          "effect": {
+            "id": "rockPile",
+            "target": "stage",
+            "scale": 0.7506866762065328,
+            "offsetX": 211.19514726102352,
+            "offsetY": -4
+          }
+        },
+        {
+          "at": 78,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 45.71319468319416,
+            "scale": [
+              5.892983115860261,
+              0.49599750195629894
+            ],
+            "offsetX": 3.1856873631477356,
+            "offsetY": 103.27314462978393
+          }
+        },
+        {
+          "at": 78,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.1539891152409836,
+            "offsetX": -366.53363364748657,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 78,
           "effect": {
             "id": "cutLh",
             "target": "opponent",
@@ -4015,7 +4443,141 @@
           }
         },
         {
-          "at": 80,
+          "at": 79,
+          "effect": {
+            "id": "rockPile",
+            "target": "stage",
+            "scale": 0.7725646364386194,
+            "offsetX": 270.82263231277466,
+            "offsetY": -4
+          }
+        },
+        {
+          "at": 81,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -35.63344847410917,
+            "scale": [
+              5.874211079441011,
+              0.6716917665558868
+            ],
+            "offsetX": 338.65215273573995,
+            "offsetY": 152.71703493781388
+          }
+        },
+        {
+          "at": 81,
+          "effect": {
+            "id": "cutXL",
+            "target": "stage",
+            "angle": 34.47650779411197,
+            "offsetX": -52.19890593551099,
+            "offsetY": 73.68590108118951
+          }
+        },
+        {
+          "at": 82,
+          "effect": {
+            "id": "rockPile",
+            "target": "stage",
+            "scale": 1.1861802978557534,
+            "offsetX": 352.3252324014902,
+            "offsetY": -4
+          }
+        },
+        {
+          "at": 83,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.2926378462696448,
+            "offsetX": -70.7765220478177,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 84,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -32.98468068242073,
+            "scale": [
+              5.5649682701332495,
+              0.6920024262508377
+            ],
+            "offsetX": -256.2618175521493,
+            "offsetY": 180.615694927983
+          }
+        },
+        {
+          "at": 85,
+          "effect": {
+            "id": "rockPile",
+            "target": "stage",
+            "scale": 1.0378331135376357,
+            "offsetX": 433.61912432312965,
+            "offsetY": -4
+          }
+        },
+        {
+          "at": 87,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 41.021546088159084,
+            "scale": [
+              4.543332322733477,
+              0.4984402170521207
+            ],
+            "offsetX": -254.6411736495793,
+            "offsetY": 98.3287101984024
+          }
+        },
+        {
+          "at": 88,
+          "effect": {
+            "id": "rockPile",
+            "target": "stage",
+            "scale": 0.8054433370591141,
+            "offsetX": 503.83408503234386,
+            "offsetY": -4
+          }
+        },
+        {
+          "at": 88,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.1380977099528535,
+            "offsetX": -233.24144599027932,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 90,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 59.33084510266781,
+            "scale": [
+              4.011178027954884,
+              0.6554872763343156
+            ],
+            "offsetX": -130.00676281750202,
+            "offsetY": 153.00570177379996
+          }
+        },
+        {
+          "at": 92,
           "effect": {
             "id": "cutMh",
             "target": "opponent",
@@ -4029,7 +4591,139 @@
           }
         },
         {
-          "at": 90,
+          "at": 92,
+          "effect": {
+            "id": "cutM",
+            "target": "stage",
+            "angle": -68.03499501943588,
+            "offsetX": 90.33508313819766,
+            "offsetY": 58.64996397169307
+          }
+        },
+        {
+          "at": 93,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -37.02612694352865,
+            "scale": [
+              4.809690603520721,
+              0.5015591469011269
+            ],
+            "offsetX": 175.74766362085938,
+            "offsetY": 110.73284219019115
+          }
+        },
+        {
+          "at": 93,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.022505584661849,
+            "offsetX": -126.35365230962634,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 96,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -5.456354022026062,
+            "scale": [
+              5.376443167566322,
+              0.7376593875000254
+            ],
+            "offsetX": -351.55768048018217,
+            "offsetY": 120.5284802755341
+          }
+        },
+        {
+          "at": 98,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.2725658145500347,
+            "offsetX": 165.9191917721182,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 99,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 29.691386930644512,
+            "scale": [
+              4.96252510487102,
+              0.3842639659182168
+            ],
+            "offsetX": 240.9421763382852,
+            "offsetY": 148.31173403188586
+          }
+        },
+        {
+          "at": 102,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 10.04895605146885,
+            "scale": [
+              5.630350731895305,
+              0.37559203370474276
+            ],
+            "offsetX": 213.35229948163033,
+            "offsetY": 41.9020388321951
+          }
+        },
+        {
+          "at": 103,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.3623385625192896,
+            "offsetX": -365.6445873528719,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 103,
+          "effect": {
+            "id": "cutL",
+            "target": "stage",
+            "angle": 21.5590100325644,
+            "offsetX": 18.459457447752357,
+            "offsetY": 115.08799083996564
+          }
+        },
+        {
+          "at": 105,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 79.21406287699938,
+            "scale": [
+              5.777831453830004,
+              0.4383541374350898
+            ],
+            "offsetX": 217.32670621946454,
+            "offsetY": 111.57527425326407
+          }
+        },
+        {
+          "at": 106,
           "effect": {
             "id": "cutXLh",
             "target": "opponent",
@@ -4043,7 +4737,129 @@
           }
         },
         {
-          "at": 100,
+          "at": 108,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 49.902356415987015,
+            "scale": [
+              5.96225306938868,
+              0.778488942491822
+            ],
+            "offsetX": -191.9480823352933,
+            "offsetY": 37.41100094746798
+          }
+        },
+        {
+          "at": 108,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 0.9057605240261183,
+            "offsetX": -388.0521409306675,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 111,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -41.8652293458581,
+            "scale": [
+              5.951468143844977,
+              0.45841462864773347
+            ],
+            "offsetX": -414.1245040483773,
+            "offsetY": 30.937540493905544
+          }
+        },
+        {
+          "at": 113,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 0.8404971228213981,
+            "offsetX": -65.12567700818181,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 114,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 23.65675024688244,
+            "scale": [
+              4.905868244473822,
+              0.5173644898459315
+            ],
+            "offsetX": 373.47289241850376,
+            "offsetY": 39.86512421164662
+          }
+        },
+        {
+          "at": 114,
+          "effect": {
+            "id": "cutXL",
+            "target": "stage",
+            "angle": 35.857611916959286,
+            "offsetX": 118.85003332048655,
+            "offsetY": 92.30021961731836
+          }
+        },
+        {
+          "at": 117,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -78.43704130500555,
+            "scale": [
+              3.8373853326775134,
+              0.6939880946069025
+            ],
+            "offsetX": -276.33684327825904,
+            "offsetY": 185.15593982301652
+          }
+        },
+        {
+          "at": 118,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 0.8858776534674689,
+            "offsetX": -418.1497764121741,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 120,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -1.390017569065094,
+            "scale": [
+              5.98088636843022,
+              0.43506462380755695
+            ],
+            "offsetX": -362.9390999302268,
+            "offsetY": 124.04872504528612
+          }
+        },
+        {
+          "at": 120,
           "effect": {
             "id": "cutMh",
             "target": "opponent",
@@ -4057,7 +4873,115 @@
           }
         },
         {
-          "at": 110,
+          "at": 123,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -14.721720404922962,
+            "scale": [
+              4.8455292384605855,
+              0.37624733686679973
+            ],
+            "offsetX": 47.273329105228186,
+            "offsetY": 98.79958489909768
+          }
+        },
+        {
+          "at": 123,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.4224109292263165,
+            "offsetX": -380.8537307009101,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 125,
+          "effect": {
+            "id": "cutM",
+            "target": "stage",
+            "angle": 51.09360307082534,
+            "offsetX": -276.39230537228286,
+            "offsetY": 152.70005388185382
+          }
+        },
+        {
+          "at": 126,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -9.282990023493767,
+            "scale": [
+              3.9500315577024594,
+              0.6863758313003927
+            ],
+            "offsetX": 155.71853756904602,
+            "offsetY": 147.76403654832393
+          }
+        },
+        {
+          "at": 128,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 0.9824688376626001,
+            "offsetX": 224.5499065052718,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 129,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -61.31256174296141,
+            "scale": [
+              5.780244887806475,
+              0.3881682809325866
+            ],
+            "offsetX": 218.68170918896794,
+            "offsetY": 112.32844893820584
+          }
+        },
+        {
+          "at": 132,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 55.20177945494652,
+            "scale": [
+              4.433095632935874,
+              0.637744853249751
+            ],
+            "offsetX": 76.36425193399191,
+            "offsetY": 162.55199554841965
+          }
+        },
+        {
+          "at": 133,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.4549088000552728,
+            "offsetX": 76.8892071582377,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 134,
           "effect": {
             "id": "cutLh",
             "target": "opponent",
@@ -4071,7 +4995,139 @@
           }
         },
         {
-          "at": 120,
+          "at": 135,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -25.146206058561802,
+            "scale": [
+              5.205175751121715,
+              0.48631504477234555
+            ],
+            "offsetX": -33.07601319625974,
+            "offsetY": 141.54843620955944
+          }
+        },
+        {
+          "at": 136,
+          "effect": {
+            "id": "cutL",
+            "target": "stage",
+            "angle": 9.718101784586906,
+            "offsetX": 328.88036439195275,
+            "offsetY": 132.70608749473467
+          }
+        },
+        {
+          "at": 138,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 9.935217723250389,
+            "scale": [
+              5.000807328266092,
+              0.6934853686951101
+            ],
+            "offsetX": -428.0119041353464,
+            "offsetY": 48.24817369226366
+          }
+        },
+        {
+          "at": 138,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 0.9344334744615481,
+            "offsetX": -287.82855852507055,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 141,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -47.22450252622366,
+            "scale": [
+              5.8859908315353096,
+              0.7062256237841211
+            ],
+            "offsetX": 28.468617741018534,
+            "offsetY": 138.10984852723777
+          }
+        },
+        {
+          "at": 143,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 0.8831071360269562,
+            "offsetX": 126.66592553257942,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 144,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 2.926992177963257,
+            "scale": [
+              3.647279686643742,
+              0.5859045092249289
+            ],
+            "offsetX": -415.2429560944438,
+            "offsetY": 131.44953617360443
+          }
+        },
+        {
+          "at": 147,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 67.24419485777617,
+            "scale": [
+              3.519008055096492,
+              0.7951542957336643
+            ],
+            "offsetX": 360.6987268291414,
+            "offsetY": 113.08782195672393
+          }
+        },
+        {
+          "at": 147,
+          "effect": {
+            "id": "cutXL",
+            "target": "stage",
+            "angle": -65.5449119322002,
+            "offsetX": -182.43466128595173,
+            "offsetY": 89.27590675186366
+          }
+        },
+        {
+          "at": 148,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.460413011885248,
+            "offsetX": -374.8681726399809,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 148,
           "effect": {
             "id": "cutMh",
             "target": "opponent",
@@ -4085,7 +5141,115 @@
           }
         },
         {
-          "at": 130,
+          "at": 150,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 69.80994679033756,
+            "scale": [
+              4.116438473225571,
+              0.41116683068685234
+            ],
+            "offsetX": -224.2305214703083,
+            "offsetY": 112.47943044174463
+          }
+        },
+        {
+          "at": 153,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -26.977421455085278,
+            "scale": [
+              3.5831773411482573,
+              0.5937100523035042
+            ],
+            "offsetX": 391.26681374385953,
+            "offsetY": 165.27315170504153
+          }
+        },
+        {
+          "at": 153,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 0.8132944417418912,
+            "offsetX": 112.6064588688314,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 156,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 67.97737017273903,
+            "scale": [
+              4.59152584511321,
+              0.3765512597514316
+            ],
+            "offsetX": -281.5196694806218,
+            "offsetY": 67.29367598425597
+          }
+        },
+        {
+          "at": 158,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.0425250789849088,
+            "offsetX": 464.47817471809685,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 158,
+          "effect": {
+            "id": "cutM",
+            "target": "stage",
+            "angle": 4.601564057171345,
+            "offsetX": 271.3381454348564,
+            "offsetY": 75.79643178498372
+          }
+        },
+        {
+          "at": 159,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -77.26468238979578,
+            "scale": [
+              4.786187513032928,
+              0.6848541920189746
+            ],
+            "offsetX": 326.3203084282577,
+            "offsetY": 108.36051691323519
+          }
+        },
+        {
+          "at": 162,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 11.06450192630291,
+            "scale": [
+              5.653746171970852,
+              0.788672548532486
+            ],
+            "offsetX": -185.38476698100567,
+            "offsetY": 118.71984502766281
+          }
+        },
+        {
+          "at": 162,
           "effect": {
             "id": "cutLh",
             "target": "opponent",
@@ -4099,7 +5263,115 @@
           }
         },
         {
-          "at": 140,
+          "at": 163,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.370249440916814,
+            "offsetX": 365.72034295648336,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 165,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -78.22585191577673,
+            "scale": [
+              3.9939182405360043,
+              0.7729096624418162
+            ],
+            "offsetX": 107.70539799705148,
+            "offsetY": 170.49846081994474
+          }
+        },
+        {
+          "at": 168,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 30.74693351984024,
+            "scale": [
+              5.3326248083030805,
+              0.42185791109222914
+            ],
+            "offsetX": 72.56392363458872,
+            "offsetY": 44.21479274984449
+          }
+        },
+        {
+          "at": 168,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.2693749604513869,
+            "offsetX": -180.09105396457016,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 169,
+          "effect": {
+            "id": "cutL",
+            "target": "stage",
+            "angle": -5.025400657206774,
+            "offsetX": -243.6380914505571,
+            "offsetY": 36.24533464200795
+          }
+        },
+        {
+          "at": 171,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -71.32584530860186,
+            "scale": [
+              5.767321486724541,
+              0.599814817646984
+            ],
+            "offsetX": 138.24092200025916,
+            "offsetY": 149.4115755148232
+          }
+        },
+        {
+          "at": 173,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.2724302853690461,
+            "offsetX": 95.73621453717351,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 174,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 52.35980994999409,
+            "scale": [
+              4.912935774424113,
+              0.35181678128428756
+            ],
+            "offsetX": -116.20999604463577,
+            "offsetY": 33.71221434790641
+          }
+        },
+        {
+          "at": 176,
           "effect": {
             "id": "cutMh",
             "target": "opponent",
@@ -4113,7 +5385,129 @@
           }
         },
         {
-          "at": 150,
+          "at": 177,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 65.82452524453402,
+            "scale": [
+              5.463336463086307,
+              0.47894996012328195
+            ],
+            "offsetX": -79.98649207875133,
+            "offsetY": 40.27018425054848
+          }
+        },
+        {
+          "at": 178,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.4992819149745629,
+            "offsetX": 316.91628971137106,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 180,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 76.6229884326458,
+            "scale": [
+              4.087370709399693,
+              0.587642022012733
+            ],
+            "offsetX": 417.7160408720374,
+            "offsetY": 189.8624750552699
+          }
+        },
+        {
+          "at": 180,
+          "effect": {
+            "id": "cutXL",
+            "target": "stage",
+            "angle": -70.48038026690483,
+            "offsetX": -259.8882036842406,
+            "offsetY": 115.23043140070513
+          }
+        },
+        {
+          "at": 183,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 23.033308945596218,
+            "scale": [
+              5.3178678781259805,
+              0.7316013643634506
+            ],
+            "offsetX": 328.3794937841594,
+            "offsetY": 115.41640803217888
+          }
+        },
+        {
+          "at": 183,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.3234723577508705,
+            "offsetX": 194.40625466406345,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 186,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -38.21143962442875,
+            "scale": [
+              4.456719115492888,
+              0.5256594316102564
+            ],
+            "offsetX": -15.160130932927132,
+            "offsetY": 142.7911779517308
+          }
+        },
+        {
+          "at": 188,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 0.8796578373527155,
+            "offsetX": -78.5130322072655,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 189,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -14.62804015725851,
+            "scale": [
+              3.800439295824617,
+              0.6756294325343333
+            ],
+            "offsetX": 188.96855974569917,
+            "offsetY": 38.70784695260227
+          }
+        },
+        {
+          "at": 190,
           "effect": {
             "id": "cutXLh",
             "target": "opponent",
@@ -4127,7 +5521,139 @@
           }
         },
         {
-          "at": 160,
+          "at": 191,
+          "effect": {
+            "id": "cutM",
+            "target": "stage",
+            "angle": 53.47717151418328,
+            "offsetX": 222.08619765006006,
+            "offsetY": 141.61698064301163
+          }
+        },
+        {
+          "at": 192,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 48.80839288234711,
+            "scale": [
+              3.9364588198950514,
+              0.7473240336636082
+            ],
+            "offsetX": -73.49017094820738,
+            "offsetY": 71.17090316023678
+          }
+        },
+        {
+          "at": 193,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 0.8934321680339053,
+            "offsetX": -433.78702418878675,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 195,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -13.118303306400776,
+            "scale": [
+              4.3431217016186565,
+              0.3933002107427455
+            ],
+            "offsetX": 231.4683655463159,
+            "offsetY": 106.36120049282908
+          }
+        },
+        {
+          "at": 198,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -43.34940396249294,
+            "scale": [
+              5.236565735773183,
+              0.38087140223942695
+            ],
+            "offsetX": -167.1664498746395,
+            "offsetY": 109.6622707741335
+          }
+        },
+        {
+          "at": 198,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.433475764351897,
+            "offsetX": 395.79937745817006,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 201,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 33.12996048480272,
+            "scale": [
+              3.5819819048047066,
+              0.6236476975376718
+            ],
+            "offsetX": 297.32886569574475,
+            "offsetY": 14.517994755879045
+          }
+        },
+        {
+          "at": 202,
+          "effect": {
+            "id": "cutL",
+            "target": "stage",
+            "angle": 70.70979999750853,
+            "offsetX": -250.71017269045115,
+            "offsetY": 75.07456286577508
+          }
+        },
+        {
+          "at": 203,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.1382148437434807,
+            "offsetX": 217.4158527329564,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 204,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 45.675072222948074,
+            "scale": [
+              4.39629341091495,
+              0.5083951650885865
+            ],
+            "offsetX": 322.61676263064146,
+            "offsetY": 158.3859486086294
+          }
+        },
+        {
+          "at": 204,
           "effect": {
             "id": "cutMh",
             "target": "opponent",
@@ -4141,7 +5667,115 @@
           }
         },
         {
-          "at": 170,
+          "at": 207,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -21.738499142229557,
+            "scale": [
+              3.53884618752636,
+              0.5372832044144161
+            ],
+            "offsetX": -306.2406507320702,
+            "offsetY": 45.06317835301161
+          }
+        },
+        {
+          "at": 208,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.198765724315308,
+            "offsetX": 373.35416625253856,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 210,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 54.00955371558666,
+            "scale": [
+              4.28389550850261,
+              0.6670628430321812
+            ],
+            "offsetX": -83.97450111806393,
+            "offsetY": 101.7864446202293
+          }
+        },
+        {
+          "at": 213,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -3.9051273092627525,
+            "scale": [
+              4.995881641749293,
+              0.4363824812113307
+            ],
+            "offsetX": -371.499373819679,
+            "offsetY": 89.2546924110502
+          }
+        },
+        {
+          "at": 213,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 0.8806227139430121,
+            "offsetX": -90.62470292672515,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 213,
+          "effect": {
+            "id": "cutXL",
+            "target": "stage",
+            "angle": 59.0285351537168,
+            "offsetX": 36.99691568501294,
+            "offsetY": 30.67496668547392
+          }
+        },
+        {
+          "at": 216,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 65.1487848162651,
+            "scale": [
+              5.669018270797096,
+              0.48092632435727867
+            ],
+            "offsetX": -233.1630828604102,
+            "offsetY": 110.79149258788675
+          }
+        },
+        {
+          "at": 218,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 0.8820754305226729,
+            "offsetX": -83.0240589287132,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 218,
           "effect": {
             "id": "cutLh",
             "target": "opponent",
@@ -4155,7 +5789,119 @@
           }
         },
         {
-          "at": 180,
+          "at": 219,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -40.028625912964344,
+            "scale": [
+              5.206610916880891,
+              0.7327863974147477
+            ],
+            "offsetX": -56.160843167454004,
+            "offsetY": 157.21821391955018
+          }
+        },
+        {
+          "at": 222,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 74.53075475990772,
+            "scale": [
+              3.849025172763504,
+              0.6588555386755616
+            ],
+            "offsetX": 311.69085800647736,
+            "offsetY": 52.30755839962512
+          }
+        },
+        {
+          "at": 223,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.3514624869683758,
+            "offsetX": 297.09147572517395,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 224,
+          "effect": {
+            "id": "cutM",
+            "target": "stage",
+            "angle": 54.704973712563515,
+            "offsetX": -26.111392956227064,
+            "offsetY": 100.69872992346063
+          }
+        },
+        {
+          "at": 225,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -47.530292980372906,
+            "scale": [
+              5.325745631940663,
+              0.7708716735127382
+            ],
+            "offsetX": 189.18929697945714,
+            "offsetY": 124.07611538656056
+          }
+        },
+        {
+          "at": 228,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -41.37486234307289,
+            "scale": [
+              4.516082378919236,
+              0.3701492853229865
+            ],
+            "offsetX": -286.3238823786378,
+            "offsetY": 102.57246303837746
+          }
+        },
+        {
+          "at": 228,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.461833318299614,
+            "offsetX": 418.1235708948225,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 230,
+          "sound": "s0_14"
+        },
+        {
+          "at": 231,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 73.75589188188314,
+            "scale": [
+              3.5578994874376804,
+              0.4822094846633263
+            ],
+            "offsetX": -155.6957952864468,
+            "offsetY": 144.16327752172947
+          }
+        },
+        {
+          "at": 232,
           "effect": {
             "id": "cutMh",
             "target": "opponent",
@@ -4169,7 +5915,129 @@
           }
         },
         {
-          "at": 190,
+          "at": 233,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.1641485219122842,
+            "offsetX": 428.8954729400575,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 234,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -17.899654284119606,
+            "scale": [
+              4.995681272936054,
+              0.7029806870035827
+            ],
+            "offsetX": 241.88229702413082,
+            "offsetY": 104.46033711079508
+          }
+        },
+        {
+          "at": 235,
+          "effect": {
+            "id": "cutL",
+            "target": "stage",
+            "angle": -37.98581216856837,
+            "offsetX": 30.046049682423472,
+            "offsetY": 112.34400202985853
+          }
+        },
+        {
+          "at": 237,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 36.244217194616795,
+            "scale": [
+              4.8030741433613,
+              0.3641567120677791
+            ],
+            "offsetX": -275.2146685682237,
+            "offsetY": 77.18473541550338
+          }
+        },
+        {
+          "at": 238,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.1525514258770273,
+            "offsetX": -89.05341672711074,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 240,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 36.91685199737549,
+            "scale": [
+              3.8256532357772812,
+              0.5376413800055161
+            ],
+            "offsetX": -327.7800379320979,
+            "offsetY": 22.252090512774885
+          }
+        },
+        {
+          "at": 243,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 53.40125571936369,
+            "scale": [
+              3.546049210941419,
+              0.4675421955646016
+            ],
+            "offsetX": -196.9552063383162,
+            "offsetY": 38.04123243317008
+          }
+        },
+        {
+          "at": 243,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 0.8712396938586608,
+            "offsetX": 238.2302961871028,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 246,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -38.27431105077267,
+            "scale": [
+              4.283892004401423,
+              0.5171833179425448
+            ],
+            "offsetX": -187.1412767469883,
+            "offsetY": 19.396299575455487
+          }
+        },
+        {
+          "at": 246,
           "effect": {
             "id": "cutLh",
             "target": "opponent",
@@ -4183,7 +6051,271 @@
           }
         },
         {
-          "at": 190,
+          "at": 246,
+          "effect": {
+            "id": "cutXL",
+            "target": "stage",
+            "angle": 25.536808110773563,
+            "offsetX": -283.36213029921055,
+            "offsetY": 145.60516291996464
+          }
+        },
+        {
+          "at": 248,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.0158056190004572,
+            "offsetX": 89.52515455894172,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 249,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 21.93122822791338,
+            "scale": [
+              4.678702237084508,
+              0.7876435440848581
+            ],
+            "offsetX": -403.7657023780048,
+            "offsetY": 79.13859979249537
+          }
+        },
+        {
+          "at": 252,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -9.267721027135849,
+            "scale": [
+              3.5691903493134305,
+              0.7381449565989897
+            ],
+            "offsetX": -94.94528014212847,
+            "offsetY": 154.14088278543204
+          }
+        },
+        {
+          "at": 253,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 0.9263473528670148,
+            "offsetX": 353.45922576263547,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 255,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -30.762753821909428,
+            "scale": [
+              3.8900853416416794,
+              0.7808238887344487
+            ],
+            "offsetX": 322.888663392514,
+            "offsetY": 104.05547354370356
+          }
+        },
+        {
+          "at": 257,
+          "effect": {
+            "id": "cutM",
+            "target": "stage",
+            "angle": -67.68558757379651,
+            "offsetX": 233.8178746495396,
+            "offsetY": 117.42781328968704
+          }
+        },
+        {
+          "at": 258,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -1.782996729016304,
+            "scale": [
+              5.299070465494879,
+              0.5042146030813456
+            ],
+            "offsetX": 321.935867741704,
+            "offsetY": 143.36515492293984
+          }
+        },
+        {
+          "at": 258,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.378930659289472,
+            "offsetX": 191.7311938945204,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 261,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 1.9592145457863808,
+            "scale": [
+              5.9900421989150345,
+              0.45463741639396177
+            ],
+            "offsetX": -12.858629431575537,
+            "offsetY": 88.22120442055166
+          }
+        },
+        {
+          "at": 263,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 0.8498518767068163,
+            "offsetX": -173.36099185049534,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 264,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 68.1851652264595,
+            "scale": [
+              3.967491377494298,
+              0.6515528531046584
+            ],
+            "offsetX": -241.0148948058486,
+            "offsetY": 65.23481821175665
+          }
+        },
+        {
+          "at": 267,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -3.4545739367604256,
+            "scale": [
+              5.579512336058542,
+              0.5050425998517312
+            ],
+            "offsetX": -11.64607772603631,
+            "offsetY": 169.50190978124738
+          }
+        },
+        {
+          "at": 268,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.4973676163470373,
+            "offsetX": 148.14802094362676,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 268,
+          "effect": {
+            "id": "cutL",
+            "target": "stage",
+            "angle": -33.1396279335022,
+            "offsetX": -69.2395150847733,
+            "offsetY": 153.0853516352363
+          }
+        },
+        {
+          "at": 270,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": 38.15025456249714,
+            "scale": [
+              4.910101815708913,
+              0.40669330586679275
+            ],
+            "offsetX": -264.4912537932396,
+            "offsetY": 185.18916782457381
+          }
+        },
+        {
+          "at": 273,
+          "effect": {
+            "id": "hairline",
+            "target": "stage",
+            "angle": -50.77887188643217,
+            "scale": [
+              5.625689252279699,
+              0.528707743610721
+            ],
+            "offsetX": 109.86019941046834,
+            "offsetY": 23.05746060796082
+          }
+        },
+        {
+          "at": 273,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.2718653173418715,
+            "offsetX": 197.19539312645793,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 278,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.0716011236188934,
+            "offsetX": -90.5138626229018,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 279,
+          "effect": {
+            "id": "cutXL",
+            "target": "stage",
+            "angle": 48.85453957691789,
+            "offsetX": -270.0743942055851,
+            "offsetY": 125.99018309731036
+          }
+        },
+        {
+          "at": 280,
           "effect": {
             "id": "splash",
             "target": "opponent",
@@ -4192,7 +6324,21 @@
           }
         },
         {
-          "at": 196,
+          "at": 283,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 0.9008776411646977,
+            "offsetX": 101.43851462751627,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 284,
           "effect": {
             "id": "groundRocks",
             "target": "opponent",
@@ -4201,7 +6347,21 @@
           }
         },
         {
-          "at": 200,
+          "at": 288,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.0046239780029282,
+            "offsetX": -39.067407893016934,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 288,
           "effect": {
             "id": "cursedSkull",
             "target": "opponent",
@@ -4210,8 +6370,122 @@
           }
         },
         {
-          "at": 230,
-          "sound": "s0_14"
+          "at": 290,
+          "effect": {
+            "id": "cutM",
+            "target": "stage",
+            "angle": 67.61511632055044,
+            "offsetX": -205.49667369574308,
+            "offsetY": 75.20379085792229
+          }
+        },
+        {
+          "at": 293,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 0.9415240629808977,
+            "offsetX": -346.1443846486509,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 298,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 0.9608665832085536,
+            "offsetX": -193.12855972908437,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 301,
+          "effect": {
+            "id": "cutL",
+            "target": "stage",
+            "angle": 65.20037614926696,
+            "offsetX": -11.865752963349223,
+            "offsetY": 113.07171264663339
+          }
+        },
+        {
+          "at": 303,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 0.9599109737435356,
+            "offsetX": 221.11861512064934,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 308,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.2625287368660794,
+            "offsetX": -95.5872040335089,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 313,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.1699379620375112,
+            "offsetX": -455.25597700849175,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 318,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.434251261386089,
+            "offsetX": -400.83202126435935,
+            "offsetY": 0
+          }
+        },
+        {
+          "at": 323,
+          "effect": {
+            "id": "rockChunk",
+            "target": "stage",
+            "velocitySpread": [
+              3,
+              2
+            ],
+            "scale": 1.0890534293139353,
+            "offsetX": 263.3426931127906,
+            "offsetY": 0
+          }
         },
         {
           "at": 1500,
@@ -4220,7 +6494,7 @@
       ],
       "invulnerable": [
         0,
-        165
+        340
       ],
       "cooldown": 1500
     },
@@ -4582,7 +6856,7 @@
     "sukuna_atlas_1.png",
     "sukuna_atlas_2.png"
   ],
-  "assetVersion": "1b03c1706c",
+  "assetVersion": "101c5939aa",
   "balance": {
     "damage": 0.847
   },
@@ -4778,8 +7052,8 @@
     ],
     [
       2,
-      1536,
-      1011,
+      1200,
+      1008,
       46,
       58,
       85,
@@ -4832,8 +7106,8 @@
     ],
     [
       2,
-      570,
-      1358,
+      1509,
+      1300,
       84,
       46,
       69,
@@ -4841,8 +7115,8 @@
     ],
     [
       2,
-      1576,
-      1532,
+      1403,
+      1512,
       82,
       27,
       69,
@@ -4869,7 +7143,7 @@
     [
       2,
       919,
-      1771,
+      1765,
       1,
       1,
       0,
@@ -4877,8 +7151,8 @@
     ],
     [
       2,
-      1023,
-      1073,
+      651,
+      1070,
       71,
       57,
       73,
@@ -4886,8 +7160,8 @@
     ],
     [
       2,
-      1023,
-      1073,
+      651,
+      1070,
       71,
       57,
       73,
@@ -4895,8 +7169,8 @@
     ],
     [
       2,
-      1023,
-      1073,
+      651,
+      1070,
       71,
       57,
       73,
@@ -4904,7 +7178,7 @@
     ],
     [
       2,
-      1777,
+      1576,
       592,
       54,
       72,
@@ -4913,8 +7187,8 @@
     ],
     [
       2,
-      906,
-      669,
+      805,
+      668,
       57,
       71,
       89,
@@ -4922,7 +7196,7 @@
     ],
     [
       2,
-      1833,
+      1632,
       592,
       72,
       72,
@@ -4931,7 +7205,7 @@
     ],
     [
       2,
-      1907,
+      1706,
       592,
       54,
       72,
@@ -4941,7 +7215,7 @@
     [
       2,
       919,
-      1771,
+      1765,
       1,
       1,
       0,
@@ -4958,8 +7232,8 @@
     ],
     [
       2,
-      893,
-      743,
+      669,
+      742,
       60,
       68,
       88,
@@ -4968,7 +7242,7 @@
     [
       2,
       919,
-      1771,
+      1765,
       1,
       1,
       0,
@@ -4976,8 +7250,8 @@
     ],
     [
       2,
-      649,
-      1011,
+      420,
+      1008,
       65,
       59,
       62,
@@ -4985,8 +7259,8 @@
     ],
     [
       2,
-      1830,
-      815,
+      1510,
+      813,
       55,
       63,
       71,
@@ -4994,8 +7268,8 @@
     ],
     [
       2,
-      1887,
-      815,
+      1567,
+      813,
       77,
       63,
       72,
@@ -5004,7 +7278,7 @@
     [
       2,
       919,
-      1771,
+      1765,
       1,
       1,
       0,
@@ -5012,8 +7286,8 @@
     ],
     [
       2,
-      1830,
-      815,
+      1510,
+      813,
       55,
       63,
       74,
@@ -5021,8 +7295,8 @@
     ],
     [
       2,
-      649,
-      1011,
+      420,
+      1008,
       65,
       59,
       65,
@@ -5030,8 +7304,8 @@
     ],
     [
       2,
-      1313,
-      883,
+      1119,
+      880,
       73,
       61,
       67,
@@ -5039,7 +7313,7 @@
     ],
     [
       2,
-      1963,
+      1762,
       592,
       62,
       72,
@@ -5147,8 +7421,8 @@
     ],
     [
       2,
-      0,
-      669,
+      1826,
+      592,
       99,
       72,
       72,
@@ -5156,8 +7430,8 @@
     ],
     [
       2,
-      101,
-      669,
+      0,
+      668,
       130,
       72,
       86,
@@ -5183,8 +7457,8 @@
     ],
     [
       2,
-      233,
-      669,
+      132,
+      668,
       103,
       72,
       86,
@@ -5192,8 +7466,8 @@
     ],
     [
       2,
-      338,
-      669,
+      237,
+      668,
       102,
       72,
       86,
@@ -5201,8 +7475,8 @@
     ],
     [
       2,
-      442,
-      669,
+      341,
+      668,
       96,
       72,
       86,
@@ -5210,8 +7484,8 @@
     ],
     [
       2,
-      540,
-      669,
+      439,
+      668,
       83,
       72,
       85,
@@ -5228,8 +7502,8 @@
     ],
     [
       2,
-      1830,
-      815,
+      1510,
+      813,
       55,
       63,
       81,
@@ -5237,8 +7511,8 @@
     ],
     [
       2,
-      1887,
-      815,
+      1567,
+      813,
       77,
       63,
       82,
@@ -5246,8 +7520,8 @@
     ],
     [
       2,
-      1887,
-      815,
+      1567,
+      813,
       77,
       63,
       81,
@@ -5309,7 +7583,7 @@
     ],
     [
       2,
-      1833,
+      1632,
       592,
       72,
       72,
@@ -5318,7 +7592,7 @@
     ],
     [
       2,
-      201,
+      0,
       592,
       71,
       74,
@@ -5345,8 +7619,8 @@
     ],
     [
       2,
-      625,
-      669,
+      524,
+      668,
       68,
       72,
       84,
@@ -5516,8 +7790,8 @@
     ],
     [
       2,
-      1445,
-      1133,
+      1112,
+      1130,
       83,
       55,
       25,
@@ -5525,8 +7799,8 @@
     ],
     [
       2,
-      1057,
-      1358,
+      1888,
+      1300,
       92,
       44,
       18,
@@ -5534,8 +7808,8 @@
     ],
     [
       2,
-      1435,
-      815,
+      1115,
+      813,
       78,
       64,
       33,
@@ -5561,8 +7835,8 @@
     ],
     [
       2,
-      762,
-      1453,
+      1531,
+      1398,
       91,
       38,
       104,
@@ -5588,8 +7862,8 @@
     ],
     [
       2,
-      716,
-      1011,
+      487,
+      1008,
       69,
       59,
       99,
@@ -5597,8 +7871,8 @@
     ],
     [
       2,
-      695,
-      669,
+      594,
+      668,
       66,
       72,
       103,
@@ -5696,8 +7970,8 @@
       "atlas": [
         [
           2,
-          762,
-          1688,
+          1368,
+          1670,
           12,
           14,
           6,
@@ -5705,8 +7979,8 @@
         ],
         [
           2,
-          1936,
-          1592,
+          569,
+          1600,
           20,
           22,
           2,
@@ -5714,8 +7988,8 @@
         ],
         [
           2,
-          468,
-          1563,
+          436,
+          1543,
           22,
           26,
           1,
@@ -5723,8 +7997,8 @@
         ],
         [
           2,
-          840,
-          1532,
+          667,
+          1512,
           23,
           28,
           1,
@@ -5732,8 +8006,8 @@
         ],
         [
           2,
-          865,
-          1532,
+          692,
+          1512,
           17,
           28,
           4,
@@ -5741,8 +8015,8 @@
         ],
         [
           2,
-          1958,
-          1592,
+          591,
+          1600,
           15,
           22,
           5,
@@ -5750,8 +8024,8 @@
         ],
         [
           2,
-          160,
-          1719,
+          1162,
+          1702,
           14,
           10,
           5,
@@ -5789,8 +8063,8 @@
       "atlas": [
         [
           2,
-          1953,
-          1453,
+          635,
+          1441,
           36,
           35,
           1,
@@ -5798,8 +8072,8 @@
         ],
         [
           2,
-          855,
-          1453,
+          1624,
+          1398,
           38,
           38,
           0,
@@ -5807,8 +8081,8 @@
         ],
         [
           2,
-          72,
-          1495,
+          970,
+          1441,
           32,
           34,
           3,
@@ -5816,8 +8090,8 @@
         ],
         [
           2,
-          1660,
-          1532,
+          1487,
+          1512,
           29,
           27,
           5,
@@ -5825,8 +8099,8 @@
         ],
         [
           2,
-          492,
-          1563,
+          460,
+          1543,
           28,
           26,
           5,
@@ -5861,8 +8135,8 @@
       "atlas": [
         [
           2,
-          0,
-          1358,
+          967,
+          1300,
           112,
           48,
           32,
@@ -5870,7 +8144,7 @@
         ],
         [
           2,
-          1065,
+          864,
           592,
           162,
           73,
@@ -5988,8 +8262,8 @@
       "atlas": [
         [
           2,
-          1584,
-          1011,
+          1248,
+          1008,
           93,
           58,
           40,
@@ -5997,7 +8271,7 @@
         ],
         [
           2,
-          274,
+          73,
           592,
           91,
           74,
@@ -6015,7 +8289,7 @@
         ],
         [
           2,
-          1229,
+          1028,
           592,
           89,
           73,
@@ -6024,7 +8298,7 @@
         ],
         [
           2,
-          1320,
+          1119,
           592,
           93,
           73,
@@ -6033,8 +8307,8 @@
         ],
         [
           2,
-          965,
-          669,
+          864,
+          668,
           96,
           71,
           49,
@@ -6042,8 +8316,8 @@
         ],
         [
           2,
-          1335,
-          669,
+          1234,
+          668,
           88,
           70,
           60,
@@ -6051,8 +8325,8 @@
         ],
         [
           2,
-          562,
-          1192,
+          1924,
+          1130,
           85,
           54,
           67,
@@ -6105,8 +8379,8 @@
       "atlas": [
         [
           2,
-          944,
-          1688,
+          1550,
+          1670,
           48,
           12,
           39,
@@ -6114,8 +8388,8 @@
         ],
         [
           2,
-          883,
-          1688,
+          1489,
+          1670,
           59,
           13,
           27,
@@ -6123,8 +8397,8 @@
         ],
         [
           2,
-          638,
-          1666,
+          1677,
+          1648,
           71,
           16,
           14,
@@ -6132,8 +8406,8 @@
         ],
         [
           2,
-          84,
-          1666,
+          1123,
+          1648,
           83,
           19,
           2,
@@ -6141,8 +8415,8 @@
         ],
         [
           2,
-          169,
-          1666,
+          1208,
+          1648,
           84,
           19,
           0,
@@ -6150,8 +8424,8 @@
         ],
         [
           2,
-          1671,
-          1620,
+          288,
+          1625,
           84,
           20,
           0,
@@ -6159,8 +8433,8 @@
         ],
         [
           2,
-          1297,
-          1620,
+          1945,
+          1600,
           84,
           21,
           0,
@@ -6168,8 +8442,8 @@
         ],
         [
           2,
-          1975,
-          1592,
+          608,
+          1600,
           38,
           22,
           21,
@@ -6177,8 +8451,8 @@
         ],
         [
           2,
-          0,
-          1620,
+          648,
+          1600,
           38,
           22,
           21,
@@ -6186,8 +8460,8 @@
         ],
         [
           2,
-          40,
-          1620,
+          688,
+          1600,
           38,
           22,
           20,
@@ -6195,8 +8469,8 @@
         ],
         [
           2,
-          80,
-          1620,
+          728,
+          1600,
           38,
           22,
           20,
@@ -6204,8 +8478,8 @@
         ],
         [
           2,
-          120,
-          1620,
+          768,
+          1600,
           37,
           22,
           21,
@@ -6213,8 +8487,8 @@
         ],
         [
           2,
-          159,
-          1620,
+          807,
+          1600,
           34,
           22,
           24,
@@ -6222,8 +8496,8 @@
         ],
         [
           2,
-          533,
-          1666,
+          1572,
+          1648,
           34,
           17,
           23,
@@ -6276,8 +8550,8 @@
       "atlas": [
         [
           2,
-          522,
-          1563,
+          490,
+          1543,
           57,
           26,
           63,
@@ -6285,8 +8559,8 @@
         ],
         [
           2,
-          1523,
-          1495,
+          974,
+          1479,
           180,
           29,
           1,
@@ -6294,8 +8568,8 @@
         ],
         [
           2,
-          1705,
-          1495,
+          1156,
+          1479,
           181,
           29,
           0,
@@ -6303,8 +8577,8 @@
         ],
         [
           2,
-          581,
-          1563,
+          549,
+          1543,
           177,
           26,
           3,
@@ -6312,8 +8586,8 @@
         ],
         [
           2,
-          780,
-          1592,
+          1002,
+          1572,
           176,
           24,
           3,
@@ -6321,8 +8595,8 @@
         ],
         [
           2,
-          499,
-          1666,
+          1538,
+          1648,
           32,
           18,
           75,
@@ -6359,8 +8633,8 @@
       "atlas": [
         [
           2,
-          809,
-          883,
+          615,
+          880,
           67,
           62,
           139,
@@ -6576,8 +8850,8 @@
       "atlas": [
         [
           2,
-          994,
-          1688,
+          1600,
+          1670,
           60,
           12,
           78,
@@ -6585,8 +8859,8 @@
         ],
         [
           2,
-          1276,
-          1592,
+          1498,
+          1572,
           123,
           23,
           46,
@@ -6594,8 +8868,8 @@
         ],
         [
           2,
-          760,
-          1563,
+          728,
+          1543,
           161,
           26,
           27,
@@ -6603,8 +8877,8 @@
         ],
         [
           2,
-          884,
-          1532,
+          711,
+          1512,
           175,
           28,
           20,
@@ -6612,8 +8886,8 @@
         ],
         [
           2,
-          1061,
-          1532,
+          888,
+          1512,
           188,
           28,
           14,
@@ -6621,8 +8895,8 @@
         ],
         [
           2,
-          0,
-          1532,
+          1339,
+          1479,
           202,
           29,
           6,
@@ -6630,8 +8904,8 @@
         ],
         [
           2,
-          923,
-          1563,
+          891,
+          1543,
           209,
           26,
           3,
@@ -6639,8 +8913,8 @@
         ],
         [
           2,
-          1691,
-          1532,
+          1518,
+          1512,
           219,
           27,
           0,
@@ -6681,8 +8955,8 @@
       "atlas": [
         [
           2,
-          1383,
-          1620,
+          0,
+          1625,
           139,
           21,
           1,
@@ -6708,8 +8982,8 @@
       "atlas": [
         [
           2,
-          230,
-          1453,
+          936,
+          1398,
           47,
           39,
           17,
@@ -6717,8 +8991,8 @@
         ],
         [
           2,
-          1227,
-          1305,
+          230,
+          1300,
           58,
           49,
           11,
@@ -6726,8 +9000,8 @@
         ],
         [
           2,
-          1530,
-          1133,
+          1197,
+          1130,
           62,
           55,
           9,
@@ -6735,8 +9009,8 @@
         ],
         [
           2,
-          1679,
-          1011,
+          1343,
+          1008,
           65,
           58,
           8,
@@ -6744,8 +9018,8 @@
         ],
         [
           2,
-          1388,
-          883,
+          1194,
+          880,
           66,
           61,
           7,
@@ -6753,8 +9027,8 @@
         ],
         [
           2,
-          423,
-          948,
+          142,
+          945,
           67,
           60,
           6,
@@ -6762,8 +9036,8 @@
         ],
         [
           2,
-          878,
-          883,
+          684,
+          880,
           68,
           62,
           6,
@@ -6771,8 +9045,8 @@
         ],
         [
           2,
-          948,
-          883,
+          754,
+          880,
           70,
           62,
           5,
@@ -6780,8 +9054,8 @@
         ],
         [
           2,
-          1456,
-          883,
+          1262,
+          880,
           70,
           61,
           5,
@@ -6789,8 +9063,8 @@
         ],
         [
           2,
-          1746,
-          1011,
+          1410,
+          1008,
           74,
           58,
           0,
@@ -6798,8 +9072,8 @@
         ],
         [
           2,
-          787,
-          1011,
+          558,
+          1008,
           70,
           59,
           5,
@@ -6807,8 +9081,8 @@
         ],
         [
           2,
-          1594,
-          1133,
+          1261,
+          1130,
           34,
           55,
           30,
@@ -6816,8 +9090,8 @@
         ],
         [
           2,
-          656,
-          1358,
+          1595,
+          1300,
           33,
           46,
           31,
@@ -6825,8 +9099,8 @@
         ],
         [
           2,
-          284,
-          1495,
+          1275,
+          1441,
           25,
           32,
           38,
@@ -6834,8 +9108,8 @@
         ],
         [
           2,
-          166,
-          1592,
+          388,
+          1572,
           18,
           25,
           39,
@@ -6893,7 +9167,7 @@
         [
           2,
           919,
-          1771,
+          1765,
           1,
           1,
           0,
@@ -6901,8 +9175,8 @@
         ],
         [
           2,
-          818,
-          1495,
+          269,
+          1479,
           70,
           30,
           29,
@@ -6910,8 +9184,8 @@
         ],
         [
           2,
-          1113,
-          1453,
+          1950,
+          1398,
           90,
           36,
           18,
@@ -6919,8 +9193,8 @@
         ],
         [
           2,
-          1585,
-          1408,
+          264,
+          1398,
           93,
           40,
           16,
@@ -6928,8 +9202,8 @@
         ],
         [
           2,
-          691,
-          1358,
+          1630,
+          1300,
           100,
           46,
           10,
@@ -6937,8 +9211,8 @@
         ],
         [
           2,
-          114,
-          1358,
+          1081,
+          1300,
           100,
           48,
           9,
@@ -6946,8 +9220,8 @@
         ],
         [
           2,
-          1287,
-          1305,
+          290,
+          1300,
           100,
           49,
           8,
@@ -6955,8 +9229,8 @@
         ],
         [
           2,
-          1817,
-          1249,
+          1007,
+          1245,
           99,
           51,
           8,
@@ -6964,8 +9238,8 @@
         ],
         [
           2,
-          839,
-          1249,
+          123,
+          1245,
           100,
           52,
           7,
@@ -6973,8 +9247,8 @@
         ],
         [
           2,
-          100,
-          1249,
+          1388,
+          1189,
           89,
           53,
           6,
@@ -6982,8 +9256,8 @@
         ],
         [
           2,
-          191,
-          1249,
+          1479,
+          1189,
           88,
           53,
           5,
@@ -6991,8 +9265,8 @@
         ],
         [
           2,
-          281,
-          1249,
+          1569,
+          1189,
           100,
           53,
           5,
@@ -7000,8 +9274,8 @@
         ],
         [
           2,
-          941,
-          1249,
+          225,
+          1245,
           87,
           52,
           4,
@@ -7009,8 +9283,8 @@
         ],
         [
           2,
-          383,
-          1249,
+          1671,
+          1189,
           87,
           53,
           2,
@@ -7018,8 +9292,8 @@
         ],
         [
           2,
-          649,
-          1192,
+          0,
+          1189,
           87,
           54,
           2,
@@ -7027,8 +9301,8 @@
         ],
         [
           2,
-          738,
-          1192,
+          89,
+          1189,
           87,
           54,
           1,
@@ -7036,8 +9310,8 @@
         ],
         [
           2,
-          827,
-          1192,
+          178,
+          1189,
           64,
           54,
           1,
@@ -7045,8 +9319,8 @@
         ],
         [
           2,
-          893,
-          1192,
+          244,
+          1189,
           64,
           54,
           0,
@@ -7054,8 +9328,8 @@
         ],
         [
           2,
-          507,
-          1305,
+          1628,
+          1245,
           64,
           50,
           0,
@@ -7063,8 +9337,8 @@
         ],
         [
           2,
-          1918,
-          1249,
+          1108,
+          1245,
           60,
           51,
           0,
@@ -7072,8 +9346,8 @@
         ],
         [
           2,
-          996,
-          1408,
+          1788,
+          1352,
           60,
           41,
           0,
@@ -7291,7 +9565,7 @@
         [
           2,
           702,
-          1760,
+          1754,
           12,
           3,
           79,
@@ -7300,7 +9574,7 @@
         [
           2,
           702,
-          1760,
+          1754,
           12,
           3,
           79,
@@ -7309,7 +9583,7 @@
         [
           2,
           716,
-          1760,
+          1754,
           13,
           3,
           79,
@@ -7318,7 +9592,7 @@
         [
           2,
           1004,
-          1741,
+          1735,
           17,
           4,
           77,
@@ -7327,7 +9601,7 @@
         [
           2,
           1023,
-          1741,
+          1735,
           17,
           4,
           77,
@@ -7335,8 +9609,8 @@
         ],
         [
           2,
-          1096,
-          1719,
+          762,
+          1716,
           28,
           8,
           73,
@@ -7344,8 +9618,8 @@
         ],
         [
           2,
-          1126,
-          1719,
+          792,
+          1716,
           28,
           8,
           73,
@@ -7353,8 +9627,8 @@
         ],
         [
           2,
-          1126,
-          1719,
+          792,
+          1716,
           28,
           8,
           73,
@@ -7362,8 +9636,8 @@
         ],
         [
           2,
-          1056,
-          1688,
+          1662,
+          1670,
           36,
           12,
           67,
@@ -7371,8 +9645,8 @@
         ],
         [
           2,
-          1094,
-          1688,
+          1700,
+          1670,
           36,
           12,
           67,
@@ -7380,8 +9654,8 @@
         ],
         [
           2,
-          255,
-          1666,
+          1294,
+          1648,
           60,
           19,
           57,
@@ -7389,8 +9663,8 @@
         ],
         [
           2,
-          317,
-          1666,
+          1356,
+          1648,
           60,
           19,
           57,
@@ -7398,8 +9672,8 @@
         ],
         [
           2,
-          1134,
-          1563,
+          1102,
+          1543,
           80,
           26,
           46,
@@ -7407,8 +9681,8 @@
         ],
         [
           2,
-          1216,
-          1563,
+          1184,
+          1543,
           80,
           26,
           46,
@@ -7416,8 +9690,8 @@
         ],
         [
           2,
-          1216,
-          1563,
+          1184,
+          1543,
           80,
           26,
           46,
@@ -7425,8 +9699,8 @@
         ],
         [
           2,
-          1680,
-          1408,
+          359,
+          1398,
           123,
           40,
           25,
@@ -7434,8 +9708,8 @@
         ],
         [
           2,
-          1805,
-          1408,
+          484,
+          1398,
           123,
           40,
           25,
@@ -7443,8 +9717,8 @@
         ],
         [
           2,
-          1436,
-          1358,
+          210,
+          1352,
           169,
           43,
           3,
@@ -7452,8 +9726,8 @@
         ],
         [
           2,
-          1607,
-          1358,
+          381,
+          1352,
           169,
           43,
           3,
@@ -7461,8 +9735,8 @@
         ],
         [
           2,
-          1778,
-          1358,
+          552,
+          1352,
           169,
           43,
           3,
@@ -7470,8 +9744,8 @@
         ],
         [
           2,
-          1528,
-          883,
+          1334,
+          880,
           171,
           61,
           1,
@@ -7479,8 +9753,8 @@
         ],
         [
           2,
-          1701,
-          883,
+          1507,
+          880,
           171,
           61,
           1,
@@ -7747,8 +10021,8 @@
       "atlas": [
         [
           2,
-          1298,
-          1563,
+          1266,
+          1543,
           43,
           26,
           65,
@@ -7756,8 +10030,8 @@
         ],
         [
           2,
-          219,
-          1495,
+          1149,
+          1441,
           63,
           33,
           45,
@@ -7765,8 +10039,8 @@
         ],
         [
           2,
-          106,
-          1495,
+          1004,
+          1441,
           79,
           34,
           29,
@@ -7774,8 +10048,8 @@
         ],
         [
           2,
-          1930,
-          1408,
+          609,
+          1398,
           95,
           40,
           15,
@@ -7783,8 +10057,8 @@
         ],
         [
           2,
-          0,
-          1453,
+          706,
+          1398,
           108,
           40,
           0,
@@ -7792,8 +10066,8 @@
         ],
         [
           2,
-          402,
-          1408,
+          1125,
+          1352,
           108,
           42,
           0,
@@ -7801,8 +10075,8 @@
         ],
         [
           2,
-          0,
-          1408,
+          723,
+          1352,
           108,
           43,
           0,
@@ -7810,8 +10084,8 @@
         ],
         [
           2,
-          110,
-          1408,
+          833,
+          1352,
           106,
           43,
           1,
@@ -7819,8 +10093,8 @@
         ],
         [
           2,
-          279,
-          1453,
+          985,
+          1398,
           106,
           39,
           1,
@@ -7828,8 +10102,8 @@
         ],
         [
           2,
-          387,
-          1453,
+          1093,
+          1398,
           102,
           39,
           4,
@@ -7837,8 +10111,8 @@
         ],
         [
           2,
-          491,
-          1453,
+          1197,
+          1398,
           101,
           39,
           4,
@@ -7846,8 +10120,8 @@
         ],
         [
           2,
-          594,
-          1453,
+          1300,
+          1398,
           92,
           39,
           3,
@@ -7896,8 +10170,8 @@
       "atlas": [
         [
           2,
-          472,
-          1249,
+          1760,
+          1189,
           52,
           53,
           34,
@@ -7951,7 +10225,7 @@
         [
           2,
           919,
-          1771,
+          1765,
           1,
           1,
           0,
@@ -7992,8 +10266,8 @@
       "atlas": [
         [
           2,
-          936,
-          1453,
+          1773,
+          1398,
           101,
           37,
           0,
@@ -8001,8 +10275,8 @@
         ],
         [
           2,
-          311,
-          1495,
+          1302,
+          1441,
           132,
           32,
           1,
@@ -8010,8 +10284,8 @@
         ],
         [
           2,
-          1343,
-          1563,
+          1311,
+          1543,
           165,
           26,
           1,
@@ -8019,8 +10293,8 @@
         ],
         [
           2,
-          1510,
-          1563,
+          1478,
+          1543,
           166,
           26,
           1,
@@ -8028,8 +10302,8 @@
         ],
         [
           2,
-          1678,
-          1563,
+          1646,
+          1543,
           166,
           26,
           1,
@@ -8037,8 +10311,8 @@
         ],
         [
           2,
-          1846,
-          1563,
+          1814,
+          1543,
           166,
           26,
           2,
@@ -8046,8 +10320,8 @@
         ],
         [
           2,
-          186,
-          1592,
+          408,
+          1572,
           166,
           25,
           1,
@@ -8055,8 +10329,8 @@
         ],
         [
           2,
-          354,
-          1592,
+          576,
+          1572,
           165,
           25,
           2,
@@ -8064,8 +10338,8 @@
         ],
         [
           2,
-          521,
-          1592,
+          743,
+          1572,
           163,
           25,
           5,
@@ -8073,8 +10347,8 @@
         ],
         [
           2,
-          958,
-          1592,
+          1180,
+          1572,
           160,
           24,
           7,
@@ -8082,8 +10356,8 @@
         ],
         [
           2,
-          1757,
-          1620,
+          374,
+          1625,
           157,
           20,
           10,
@@ -8091,8 +10365,8 @@
         ],
         [
           2,
-          176,
-          1719,
+          1178,
+          1702,
           156,
           10,
           11,
@@ -8101,7 +10375,7 @@
         [
           2,
           1042,
-          1741,
+          1735,
           144,
           4,
           17,
@@ -8110,7 +10384,7 @@
         [
           2,
           731,
-          1760,
+          1754,
           156,
           3,
           14,
@@ -8119,7 +10393,7 @@
         [
           2,
           522,
-          1771,
+          1765,
           129,
           2,
           14,
@@ -8128,7 +10402,7 @@
         [
           2,
           653,
-          1771,
+          1765,
           122,
           2,
           20,
@@ -8137,7 +10411,7 @@
         [
           2,
           777,
-          1771,
+          1765,
           140,
           2,
           24,
@@ -8146,7 +10420,7 @@
         [
           2,
           922,
-          1771,
+          1765,
           98,
           1,
           35,
@@ -8334,7 +10608,7 @@
         [
           2,
           919,
-          1771,
+          1765,
           1,
           1,
           0,
@@ -8754,8 +11028,8 @@
       "atlas": [
         [
           2,
-          1120,
-          1592,
+          1342,
+          1572,
           40,
           24,
           6,
@@ -8763,8 +11037,8 @@
         ],
         [
           2,
-          1524,
-          1620,
+          141,
+          1625,
           34,
           21,
           9,
@@ -8772,8 +11046,8 @@
         ],
         [
           2,
-          1401,
-          1592,
+          1623,
+          1572,
           36,
           23,
           8,
@@ -8781,8 +11055,8 @@
         ],
         [
           2,
-          1162,
-          1592,
+          1384,
+          1572,
           40,
           24,
           6,
@@ -8790,8 +11064,8 @@
         ],
         [
           2,
-          0,
-          1592,
+          1982,
+          1543,
           42,
           26,
           5,
@@ -8799,8 +11073,8 @@
         ],
         [
           2,
-          1912,
-          1532,
+          1739,
+          1512,
           44,
           27,
           4,
@@ -8808,8 +11082,8 @@
         ],
         [
           2,
-          204,
-          1532,
+          1543,
+          1479,
           46,
           29,
           3,
@@ -8817,8 +11091,8 @@
         ],
         [
           2,
-          890,
-          1495,
+          341,
+          1479,
           48,
           30,
           2,
@@ -8826,8 +11100,8 @@
         ],
         [
           2,
-          549,
-          1495,
+          0,
+          1479,
           48,
           31,
           2,
@@ -8835,8 +11109,8 @@
         ],
         [
           2,
-          445,
-          1495,
+          1436,
+          1441,
           50,
           32,
           1,
@@ -8844,8 +11118,8 @@
         ],
         [
           2,
-          497,
-          1495,
+          1488,
+          1441,
           50,
           32,
           1,
@@ -8853,8 +11127,8 @@
         ],
         [
           2,
-          599,
-          1495,
+          50,
+          1479,
           52,
           31,
           0,
@@ -8903,8 +11177,8 @@
       "atlas": [
         [
           2,
-          1096,
-          1073,
+          724,
+          1070,
           108,
           57,
           15,
@@ -8912,8 +11186,8 @@
         ],
         [
           2,
-          1874,
-          883,
+          1680,
+          880,
           115,
           61,
           11,
@@ -8921,8 +11195,8 @@
         ],
         [
           2,
-          0,
-          948,
+          1797,
+          880,
           117,
           61,
           11,
@@ -8930,8 +11204,8 @@
         ],
         [
           2,
-          492,
-          948,
+          211,
+          945,
           116,
           60,
           11,
@@ -8980,8 +11254,8 @@
       "atlas": [
         [
           2,
-          526,
-          1249,
+          1814,
+          1189,
           86,
           53,
           18,
@@ -8989,8 +11263,8 @@
         ],
         [
           2,
-          573,
-          1305,
+          1694,
+          1245,
           85,
           50,
           22,
@@ -8998,8 +11272,8 @@
         ],
         [
           2,
-          447,
-          1133,
+          114,
+          1130,
           82,
           56,
           20,
@@ -9007,8 +11281,8 @@
         ],
         [
           2,
-          1630,
-          1133,
+          1297,
+          1130,
           89,
           55,
           16,
@@ -9016,8 +11290,8 @@
         ],
         [
           2,
-          1206,
-          1073,
+          834,
+          1070,
           95,
           57,
           12,
@@ -9025,8 +11299,8 @@
         ],
         [
           2,
-          614,
-          1249,
+          1902,
+          1189,
           100,
           53,
           9,
@@ -9034,8 +11308,8 @@
         ],
         [
           2,
-          1822,
-          1011,
+          1486,
+          1008,
           106,
           58,
           7,
@@ -9043,8 +11317,8 @@
         ],
         [
           2,
-          1721,
-          1133,
+          1388,
+          1130,
           110,
           55,
           5,
@@ -9052,8 +11326,8 @@
         ],
         [
           2,
-          959,
-          1192,
+          310,
+          1189,
           113,
           54,
           3,
@@ -9061,8 +11335,8 @@
         ],
         [
           2,
-          1303,
-          1073,
+          931,
+          1070,
           115,
           57,
           2,
@@ -9070,8 +11344,8 @@
         ],
         [
           2,
-          531,
-          1133,
+          198,
+          1130,
           117,
           56,
           1,
@@ -9079,8 +11353,8 @@
         ],
         [
           2,
-          0,
-          1073,
+          1594,
+          1008,
           118,
           58,
           1,
@@ -9088,8 +11362,8 @@
         ],
         [
           2,
-          1420,
-          1073,
+          1048,
+          1070,
           118,
           57,
           0,
@@ -9097,8 +11371,8 @@
         ],
         [
           2,
-          610,
-          948,
+          329,
+          945,
           115,
           60,
           3,
@@ -9106,8 +11380,8 @@
         ],
         [
           2,
-          650,
-          1133,
+          317,
+          1130,
           113,
           56,
           2,
@@ -9115,8 +11389,8 @@
         ],
         [
           2,
-          1833,
-          1133,
+          1500,
+          1130,
           112,
           55,
           2,
@@ -9124,8 +11398,8 @@
         ],
         [
           2,
-          1030,
-          1249,
+          314,
+          1245,
           111,
           52,
           4,
@@ -9133,8 +11407,8 @@
         ],
         [
           2,
-          0,
-          1305,
+          1170,
+          1245,
           106,
           51,
           9,
@@ -9142,8 +11416,8 @@
         ],
         [
           2,
-          1143,
-          1249,
+          427,
+          1245,
           105,
           52,
           9,
@@ -9151,8 +11425,8 @@
         ],
         [
           2,
-          1205,
-          1453,
+          0,
+          1441,
           88,
           36,
           17,
@@ -10208,7 +12482,7 @@
         [
           2,
           919,
-          1771,
+          1765,
           1,
           1,
           0,
@@ -10263,8 +12537,8 @@
       "atlas": [
         [
           2,
-          1515,
-          815,
+          1195,
+          813,
           64,
           64,
           60,
@@ -10318,7 +12592,7 @@
         [
           2,
           919,
-          1771,
+          1765,
           1,
           1,
           0,
@@ -10411,8 +12685,8 @@
         ],
         [
           2,
-          763,
-          669,
+          662,
+          668,
           68,
           72,
           57,
@@ -10420,7 +12694,7 @@
         ],
         [
           2,
-          1617,
+          1508,
           513,
           77,
           75,
@@ -10474,7 +12748,7 @@
         ],
         [
           2,
-          367,
+          166,
           592,
           74,
           74,
@@ -10483,8 +12757,8 @@
         ],
         [
           2,
-          1063,
-          669,
+          962,
+          668,
           72,
           71,
           55,
@@ -10492,8 +12766,8 @@
         ],
         [
           2,
-          152,
-          743,
+          1953,
+          668,
           70,
           69,
           56,
@@ -10501,8 +12775,8 @@
         ],
         [
           2,
-          1654,
-          743,
+          1430,
+          742,
           69,
           67,
           57,
@@ -10510,8 +12784,8 @@
         ],
         [
           2,
-          320,
-          815,
+          0,
+          813,
           67,
           65,
           58,
@@ -10519,8 +12793,8 @@
         ],
         [
           2,
-          1966,
-          815,
+          1646,
+          813,
           63,
           63,
           60,
@@ -10528,8 +12802,8 @@
         ],
         [
           2,
-          119,
-          948,
+          1916,
+          880,
           61,
           61,
           61,
@@ -10537,8 +12811,8 @@
         ],
         [
           2,
-          727,
-          948,
+          446,
+          945,
           60,
           60,
           61,
@@ -10546,8 +12820,8 @@
         ],
         [
           2,
-          120,
-          1073,
+          1714,
+          1008,
           58,
           58,
           62,
@@ -10555,8 +12829,8 @@
         ],
         [
           2,
-          765,
-          1133,
+          432,
+          1130,
           53,
           56,
           65,
@@ -10564,8 +12838,8 @@
         ],
         [
           2,
-          216,
-          1358,
+          1183,
+          1300,
           47,
           48,
           68,
@@ -10573,8 +12847,8 @@
         ],
         [
           2,
-          895,
-          1453,
+          1664,
+          1398,
           39,
           38,
           72,
@@ -10649,8 +12923,8 @@
       "atlas": [
         [
           2,
-          522,
-          1563,
+          490,
+          1543,
           57,
           26,
           63,
@@ -10658,8 +12932,8 @@
         ],
         [
           2,
-          940,
-          1495,
+          391,
+          1479,
           182,
           30,
           0,
@@ -10870,8 +13144,8 @@
       "atlas": [
         [
           2,
-          1204,
-          1592,
+          1426,
+          1572,
           20,
           24,
           31,
@@ -10880,7 +13154,7 @@
         [
           2,
           919,
-          1771,
+          1765,
           1,
           1,
           0,
@@ -10888,8 +13162,8 @@
         ],
         [
           2,
-          1039,
-          1453,
+          1876,
+          1398,
           34,
           37,
           24,
@@ -10897,8 +13171,8 @@
         ],
         [
           2,
-          265,
-          1358,
+          1232,
+          1300,
           44,
           48,
           19,
@@ -10906,8 +13180,8 @@
         ],
         [
           2,
-          1250,
-          1249,
+          534,
+          1245,
           45,
           52,
           19,
@@ -10915,8 +13189,8 @@
         ],
         [
           2,
-          859,
-          1011,
+          630,
+          1008,
           51,
           59,
           16,
@@ -10924,8 +13198,8 @@
         ],
         [
           2,
-          180,
-          1073,
+          1774,
+          1008,
           45,
           58,
           19,
@@ -10933,8 +13207,8 @@
         ],
         [
           2,
-          0,
-          883,
+          1711,
+          813,
           35,
           63,
           24,
@@ -10942,8 +13216,8 @@
         ],
         [
           2,
-          224,
-          743,
+          0,
+          742,
           37,
           69,
           23,
@@ -10951,8 +13225,8 @@
         ],
         [
           2,
-          263,
-          743,
+          39,
+          742,
           35,
           69,
           24,
@@ -10960,8 +13234,8 @@
         ],
         [
           2,
-          955,
-          743,
+          731,
+          742,
           30,
           68,
           27,
@@ -10969,8 +13243,8 @@
         ],
         [
           2,
-          912,
-          1011,
+          683,
+          1008,
           25,
           59,
           31,
@@ -10978,8 +13252,8 @@
         ],
         [
           2,
-          1075,
-          1453,
+          1912,
+          1398,
           36,
           37,
           24,
@@ -11052,8 +13326,8 @@
       "atlas": [
         [
           2,
-          1540,
-          1073,
+          1168,
+          1070,
           40,
           57,
           4,
@@ -11061,8 +13335,8 @@
         ],
         [
           2,
-          1582,
-          1073,
+          1210,
+          1070,
           34,
           57,
           7,
@@ -11070,8 +13344,8 @@
         ],
         [
           2,
-          939,
-          1011,
+          710,
+          1008,
           37,
           59,
           6,
@@ -11079,8 +13353,8 @@
         ],
         [
           2,
-          227,
-          1073,
+          1821,
+          1008,
           38,
           58,
           6,
@@ -11088,8 +13362,8 @@
         ],
         [
           2,
-          379,
-          1666,
+          1418,
+          1648,
           33,
           19,
           7,
@@ -11097,8 +13371,8 @@
         ],
         [
           2,
-          1618,
-          1073,
+          1246,
+          1070,
           36,
           57,
           7,
@@ -11106,8 +13380,8 @@
         ],
         [
           2,
-          978,
-          1011,
+          749,
+          1008,
           38,
           59,
           6,
@@ -11115,8 +13389,8 @@
         ],
         [
           2,
-          1656,
-          1073,
+          1284,
+          1070,
           36,
           57,
           7,
@@ -11124,8 +13398,8 @@
         ],
         [
           2,
-          1074,
-          1192,
+          425,
+          1189,
           33,
           54,
           7,
@@ -11133,8 +13407,8 @@
         ],
         [
           2,
-          660,
-          1305,
+          1781,
+          1245,
           33,
           50,
           7,
@@ -11142,8 +13416,8 @@
         ],
         [
           2,
-          1389,
-          1305,
+          392,
+          1300,
           33,
           49,
           7,
@@ -11151,8 +13425,8 @@
         ],
         [
           2,
-          311,
-          1358,
+          1278,
+          1300,
           33,
           48,
           7,
@@ -11160,8 +13434,8 @@
         ],
         [
           2,
-          793,
-          1358,
+          1732,
+          1300,
           33,
           46,
           7,
@@ -11170,7 +13444,7 @@
         [
           2,
           919,
-          1771,
+          1765,
           1,
           1,
           0,
@@ -11224,8 +13498,8 @@
       "atlas": [
         [
           2,
-          1020,
-          883,
+          826,
+          880,
           62,
           62,
           54,
@@ -11263,7 +13537,7 @@
       "atlas": [
         [
           2,
-          1415,
+          1214,
           592,
           112,
           73,
@@ -11290,8 +13564,8 @@
         ],
         [
           2,
-          789,
-          948,
+          508,
+          945,
           144,
           60,
           12,
@@ -11299,8 +13573,8 @@
         ],
         [
           2,
-          300,
-          743,
+          76,
+          742,
           151,
           69,
           8,
@@ -11412,8 +13686,8 @@
       "atlas": [
         [
           2,
-          711,
-          1666,
+          1750,
+          1648,
           27,
           16,
           40,
@@ -11421,8 +13695,8 @@
         ],
         [
           2,
-          740,
-          1666,
+          1779,
+          1648,
           32,
           16,
           35,
@@ -11430,8 +13704,8 @@
         ],
         [
           2,
-          774,
-          1666,
+          1813,
+          1648,
           35,
           16,
           31,
@@ -11439,8 +13713,8 @@
         ],
         [
           2,
-          811,
-          1666,
+          1850,
+          1648,
           39,
           16,
           27,
@@ -11448,8 +13722,8 @@
         ],
         [
           2,
-          852,
-          1666,
+          1891,
+          1648,
           45,
           16,
           22,
@@ -11457,8 +13731,8 @@
         ],
         [
           2,
-          899,
-          1666,
+          1938,
+          1648,
           43,
           16,
           23,
@@ -11466,8 +13740,8 @@
         ],
         [
           2,
-          944,
-          1666,
+          1983,
+          1648,
           49,
           16,
           18,
@@ -11475,8 +13749,8 @@
         ],
         [
           2,
-          995,
-          1666,
+          0,
+          1670,
           53,
           16,
           13,
@@ -11484,8 +13758,8 @@
         ],
         [
           2,
-          1050,
-          1666,
+          55,
+          1670,
           49,
           16,
           16,
@@ -11493,8 +13767,8 @@
         ],
         [
           2,
-          1101,
-          1666,
+          106,
+          1670,
           43,
           16,
           24,
@@ -11502,8 +13776,8 @@
         ],
         [
           2,
-          1146,
-          1666,
+          151,
+          1670,
           49,
           16,
           18,
@@ -11511,8 +13785,8 @@
         ],
         [
           2,
-          1197,
-          1666,
+          202,
+          1670,
           50,
           16,
           16,
@@ -11520,8 +13794,8 @@
         ],
         [
           2,
-          1249,
-          1666,
+          254,
+          1670,
           51,
           16,
           14,
@@ -11529,8 +13803,8 @@
         ],
         [
           2,
-          1302,
-          1666,
+          307,
+          1670,
           56,
           16,
           11,
@@ -11538,8 +13812,8 @@
         ],
         [
           2,
-          1360,
-          1666,
+          365,
+          1670,
           51,
           16,
           15,
@@ -11547,8 +13821,8 @@
         ],
         [
           2,
-          1413,
-          1666,
+          418,
+          1670,
           54,
           16,
           13,
@@ -11556,8 +13830,8 @@
         ],
         [
           2,
-          1469,
-          1666,
+          474,
+          1670,
           56,
           16,
           10,
@@ -11679,8 +13953,8 @@
       "atlas": [
         [
           2,
-          688,
-          1453,
+          1394,
+          1398,
           38,
           39,
           45,
@@ -11688,8 +13962,8 @@
         ],
         [
           2,
-          386,
-          1358,
+          1422,
+          1300,
           46,
           47,
           42,
@@ -11697,8 +13971,8 @@
         ],
         [
           2,
-          182,
-          948,
+          0,
+          945,
           73,
           61,
           29,
@@ -11706,8 +13980,8 @@
         ],
         [
           2,
-          987,
-          743,
+          763,
+          742,
           90,
           68,
           20,
@@ -11715,8 +13989,8 @@
         ],
         [
           2,
-          1425,
-          669,
+          1324,
+          668,
           102,
           70,
           16,
@@ -11724,8 +13998,8 @@
         ],
         [
           2,
-          267,
-          1073,
+          1861,
+          1008,
           103,
           58,
           15,
@@ -11733,8 +14007,8 @@
         ],
         [
           2,
-          935,
-          948,
+          654,
+          945,
           108,
           60,
           15,
@@ -11742,8 +14016,8 @@
         ],
         [
           2,
-          1581,
-          815,
+          1261,
+          813,
           91,
           64,
           27,
@@ -11752,7 +14026,7 @@
         [
           2,
           919,
-          1771,
+          1765,
           1,
           1,
           0,
@@ -11795,8 +14069,8 @@
       "atlas": [
         [
           2,
-          1958,
-          1532,
+          1785,
+          1512,
           40,
           27,
           51,
@@ -11804,8 +14078,8 @@
         ],
         [
           2,
-          1295,
-          1453,
+          90,
+          1441,
           43,
           36,
           51,
@@ -11813,8 +14087,8 @@
         ],
         [
           2,
-          1151,
-          1358,
+          1982,
+          1300,
           39,
           44,
           55,
@@ -11822,8 +14096,8 @@
         ],
         [
           2,
-          1694,
-          1073,
+          1322,
+          1070,
           60,
           57,
           39,
@@ -11912,7 +14186,7 @@
         [
           2,
           889,
-          1760,
+          1754,
           240,
           3,
           3,
@@ -11920,8 +14194,8 @@
         ],
         [
           2,
-          1678,
-          1719,
+          1394,
+          1716,
           240,
           7,
           3,
@@ -11930,7 +14204,7 @@
         [
           2,
           0,
-          1741,
+          1735,
           240,
           5,
           3,
@@ -11939,7 +14213,7 @@
         [
           2,
           1131,
-          1760,
+          1754,
           240,
           3,
           3,
@@ -11974,7 +14248,7 @@
         [
           2,
           889,
-          1760,
+          1754,
           240,
           3,
           3,
@@ -11982,8 +14256,8 @@
         ],
         [
           2,
-          1678,
-          1719,
+          1394,
+          1716,
           240,
           7,
           3,
@@ -11992,7 +14266,7 @@
         [
           2,
           0,
-          1741,
+          1735,
           240,
           5,
           3,
@@ -12001,7 +14275,7 @@
         [
           2,
           1131,
-          1760,
+          1754,
           240,
           3,
           3,
@@ -12051,7 +14325,7 @@
         [
           2,
           1188,
-          1741,
+          1735,
           520,
           4,
           3,
@@ -12059,7 +14333,7 @@
         ],
         [
           2,
-          1132,
+          0,
           1688,
           520,
           12,
@@ -12068,8 +14342,8 @@
         ],
         [
           2,
-          1156,
-          1719,
+          822,
+          1716,
           520,
           8,
           3,
@@ -12078,7 +14352,7 @@
         [
           2,
           0,
-          1748,
+          1742,
           520,
           4,
           3,
@@ -12113,7 +14387,7 @@
         [
           2,
           1188,
-          1741,
+          1735,
           520,
           4,
           3,
@@ -12121,7 +14395,7 @@
         ],
         [
           2,
-          1132,
+          0,
           1688,
           520,
           12,
@@ -12130,8 +14404,8 @@
         ],
         [
           2,
-          1156,
-          1719,
+          822,
+          1716,
           520,
           8,
           3,
@@ -12140,7 +14414,7 @@
         [
           2,
           0,
-          1748,
+          1742,
           520,
           4,
           3,
@@ -12190,7 +14464,7 @@
         [
           2,
           242,
-          1741,
+          1735,
           760,
           5,
           3,
@@ -12198,8 +14472,8 @@
         ],
         [
           2,
-          0,
-          1688,
+          606,
+          1670,
           760,
           15,
           3,
@@ -12207,8 +14481,8 @@
         ],
         [
           2,
-          334,
-          1719,
+          0,
+          1716,
           760,
           9,
           3,
@@ -12217,7 +14491,7 @@
         [
           2,
           0,
-          1766,
+          1760,
           760,
           3,
           3,
@@ -12252,7 +14526,7 @@
         [
           2,
           242,
-          1741,
+          1735,
           760,
           5,
           3,
@@ -12260,8 +14534,8 @@
         ],
         [
           2,
-          0,
-          1688,
+          606,
+          1670,
           760,
           15,
           3,
@@ -12269,8 +14543,8 @@
         ],
         [
           2,
-          334,
-          1719,
+          0,
+          1716,
           760,
           9,
           3,
@@ -12279,7 +14553,7 @@
         [
           2,
           0,
-          1766,
+          1760,
           760,
           3,
           3,
@@ -12329,7 +14603,7 @@
         [
           2,
           0,
-          1733,
+          1727,
           1000,
           6,
           3,
@@ -12337,8 +14611,8 @@
         ],
         [
           2,
-          0,
-          1644,
+          533,
+          1625,
           1000,
           20,
           3,
@@ -12346,8 +14620,8 @@
         ],
         [
           2,
-          0,
-          1705,
+          522,
+          1688,
           1000,
           12,
           3,
@@ -12356,7 +14630,7 @@
         [
           2,
           522,
-          1748,
+          1742,
           1000,
           4,
           3,
@@ -12391,7 +14665,7 @@
         [
           2,
           0,
-          1733,
+          1727,
           1000,
           6,
           3,
@@ -12399,8 +14673,8 @@
         ],
         [
           2,
-          0,
-          1644,
+          533,
+          1625,
           1000,
           20,
           3,
@@ -12408,8 +14682,8 @@
         ],
         [
           2,
-          0,
-          1705,
+          522,
+          1688,
           1000,
           12,
           3,
@@ -12418,7 +14692,7 @@
         [
           2,
           522,
-          1748,
+          1742,
           1000,
           4,
           3,
@@ -12468,7 +14742,7 @@
         [
           2,
           0,
-          1754,
+          1748,
           700,
           4,
           3,
@@ -12477,7 +14751,7 @@
         [
           2,
           702,
-          1754,
+          1748,
           700,
           4,
           3,
@@ -12486,7 +14760,7 @@
         [
           2,
           0,
-          1760,
+          1754,
           700,
           4,
           3,
@@ -12517,7 +14791,7 @@
         [
           2,
           762,
-          1766,
+          1760,
           520,
           3,
           3,
@@ -12526,7 +14800,7 @@
         [
           2,
           1284,
-          1766,
+          1760,
           520,
           3,
           3,
@@ -12535,7 +14809,7 @@
         [
           2,
           0,
-          1771,
+          1765,
           520,
           3,
           3,
@@ -12566,7 +14840,7 @@
         [
           2,
           1002,
-          1733,
+          1727,
           1000,
           6,
           3,
@@ -12574,8 +14848,8 @@
         ],
         [
           2,
-          195,
-          1620,
+          843,
+          1600,
           1000,
           22,
           3,
@@ -12583,8 +14857,8 @@
         ],
         [
           2,
-          1002,
-          1644,
+          0,
+          1648,
           1000,
           20,
           3,
@@ -12592,8 +14866,8 @@
         ],
         [
           2,
-          1002,
-          1705,
+          0,
+          1702,
           1000,
           12,
           3,
@@ -12707,8 +14981,8 @@
       "atlas": [
         [
           2,
-          0,
-          1192,
+          1614,
+          1130,
           117,
           55,
           20,
@@ -12716,8 +14990,8 @@
         ],
         [
           2,
-          37,
-          883,
+          1748,
+          813,
           155,
           63,
           1,
@@ -12725,8 +14999,8 @@
         ],
         [
           2,
-          194,
-          883,
+          0,
+          880,
           154,
           63,
           1,
@@ -12734,8 +15008,8 @@
         ],
         [
           2,
-          1045,
-          948,
+          764,
+          945,
           155,
           60,
           1,
@@ -12743,8 +15017,8 @@
         ],
         [
           2,
-          1424,
-          1305,
+          427,
+          1300,
           156,
           49,
           0,
@@ -12779,8 +15053,8 @@
       "atlas": [
         [
           2,
-          569,
-          1666,
+          1608,
+          1648,
           67,
           17,
           55,
@@ -12788,8 +15062,8 @@
         ],
         [
           2,
-          414,
-          1666,
+          1453,
+          1648,
           83,
           19,
           38,
@@ -12797,8 +15071,8 @@
         ],
         [
           2,
-          1197,
-          1620,
+          1845,
+          1600,
           98,
           22,
           20,
@@ -12806,8 +15080,8 @@
         ],
         [
           2,
-          0,
-          1563,
+          1827,
+          1512,
           115,
           27,
           3,
@@ -12815,8 +15089,8 @@
         ],
         [
           2,
-          117,
-          1563,
+          0,
+          1543,
           118,
           27,
           0,
@@ -12824,8 +15098,8 @@
         ],
         [
           2,
-          1251,
-          1532,
+          1078,
+          1512,
           118,
           28,
           0,
@@ -12833,8 +15107,8 @@
         ],
         [
           2,
-          252,
-          1532,
+          1591,
+          1479,
           117,
           29,
           0,
@@ -12842,8 +15116,8 @@
         ],
         [
           2,
-          1124,
-          1495,
+          575,
+          1479,
           53,
           30,
           29,
@@ -12851,8 +15125,8 @@
         ],
         [
           2,
-          1179,
-          1495,
+          630,
+          1479,
           53,
           30,
           29,
@@ -12860,8 +15134,8 @@
         ],
         [
           2,
-          653,
-          1495,
+          104,
+          1479,
           54,
           31,
           29,
@@ -12869,8 +15143,8 @@
         ],
         [
           2,
-          709,
-          1495,
+          160,
+          1479,
           53,
           31,
           29,
@@ -12878,8 +15152,8 @@
         ],
         [
           2,
-          764,
-          1495,
+          215,
+          1479,
           52,
           31,
           30,
@@ -12887,8 +15161,8 @@
         ],
         [
           2,
-          1234,
-          1495,
+          685,
+          1479,
           48,
           30,
           34,
@@ -12896,8 +15170,8 @@
         ],
         [
           2,
-          1226,
-          1592,
+          1448,
+          1572,
           48,
           24,
           33,
@@ -12986,8 +15260,8 @@
         ],
         [
           2,
-          1340,
-          1453,
+          135,
+          1441,
           65,
           36,
           15,
@@ -13068,7 +15342,7 @@
         [
           2,
           919,
-          1771,
+          1765,
           1,
           1,
           0,
@@ -13410,8 +15684,8 @@
         ],
         [
           2,
-          218,
-          1408,
+          941,
+          1352,
           80,
           43,
           18,
@@ -13492,7 +15766,7 @@
         [
           2,
           919,
-          1771,
+          1765,
           1,
           1,
           0,
@@ -13601,8 +15875,8 @@
         ],
         [
           2,
-          371,
-          1532,
+          1710,
+          1479,
           50,
           29,
           13,
@@ -13673,7 +15947,7 @@
         ],
         [
           2,
-          1529,
+          1328,
           592,
           51,
           73,
@@ -13683,7 +15957,7 @@
         [
           2,
           919,
-          1771,
+          1765,
           1,
           1,
           0,
@@ -13755,8 +16029,8 @@
       "atlas": [
         [
           2,
-          1407,
-          1453,
+          202,
+          1441,
           106,
           36,
           54,
@@ -13764,7 +16038,7 @@
         ],
         [
           2,
-          1582,
+          1381,
           592,
           193,
           73,
@@ -13773,8 +16047,8 @@
         ],
         [
           2,
-          1079,
-          743,
+          855,
+          742,
           205,
           68,
           1,
@@ -13782,8 +16056,8 @@
         ],
         [
           2,
-          1725,
-          743,
+          1501,
+          742,
           207,
           66,
           0,
@@ -13791,8 +16065,8 @@
         ],
         [
           2,
-          350,
-          883,
+          156,
+          880,
           207,
           63,
           0,
@@ -13800,8 +16074,8 @@
         ],
         [
           2,
-          1202,
-          948,
+          921,
+          945,
           207,
           60,
           0,
@@ -13809,8 +16083,8 @@
         ],
         [
           2,
-          1411,
-          948,
+          1130,
+          945,
           206,
           60,
           1,
@@ -13818,8 +16092,8 @@
         ],
         [
           2,
-          1756,
-          1073,
+          1384,
+          1070,
           205,
           57,
           1,
@@ -13827,8 +16101,8 @@
         ],
         [
           2,
-          1109,
-          1192,
+          460,
+          1189,
           200,
           54,
           4,
@@ -13836,8 +16110,8 @@
         ],
         [
           2,
-          820,
-          1133,
+          487,
+          1130,
           194,
           56,
           6,
@@ -13845,8 +16119,8 @@
         ],
         [
           2,
-          372,
-          1073,
+          0,
+          1070,
           189,
           58,
           9,
@@ -13854,8 +16128,8 @@
         ],
         [
           2,
-          1018,
-          1011,
+          789,
+          1008,
           180,
           59,
           14,
@@ -13863,8 +16137,8 @@
         ],
         [
           2,
-          1297,
-          1249,
+          581,
+          1245,
           146,
           52,
           33,
@@ -13872,8 +16146,8 @@
         ],
         [
           2,
-          1582,
-          1305,
+          585,
+          1300,
           149,
           49,
           32,
@@ -13926,8 +16200,8 @@
       "atlas": [
         [
           2,
-          389,
-          815,
+          69,
+          813,
           65,
           65,
           1,
@@ -13935,8 +16209,8 @@
         ],
         [
           2,
-          389,
-          815,
+          69,
+          813,
           65,
           65,
           1,
@@ -13944,8 +16218,8 @@
         ],
         [
           2,
-          456,
-          815,
+          136,
+          813,
           65,
           65,
           1,
@@ -13953,8 +16227,8 @@
         ],
         [
           2,
-          523,
-          815,
+          203,
+          813,
           65,
           65,
           1,
@@ -13962,8 +16236,8 @@
         ],
         [
           2,
-          590,
-          815,
+          270,
+          813,
           65,
           65,
           1,
@@ -13971,8 +16245,8 @@
         ],
         [
           2,
-          657,
-          815,
+          337,
+          813,
           65,
           65,
           1,
@@ -13980,8 +16254,8 @@
         ],
         [
           2,
-          724,
-          815,
+          404,
+          813,
           65,
           65,
           1,
@@ -13989,8 +16263,8 @@
         ],
         [
           2,
-          791,
-          815,
+          471,
+          813,
           65,
           65,
           1,
@@ -13998,8 +16272,8 @@
         ],
         [
           2,
-          858,
-          815,
+          538,
+          813,
           65,
           65,
           1,
@@ -14007,8 +16281,8 @@
         ],
         [
           2,
-          925,
-          815,
+          605,
+          813,
           65,
           65,
           1,
@@ -14016,8 +16290,8 @@
         ],
         [
           2,
-          559,
-          883,
+          365,
+          880,
           65,
           63,
           1,
@@ -14025,8 +16299,8 @@
         ],
         [
           2,
-          626,
-          883,
+          432,
+          880,
           65,
           63,
           1,
@@ -14034,8 +16308,8 @@
         ],
         [
           2,
-          693,
-          883,
+          499,
+          880,
           65,
           63,
           1,
@@ -14043,8 +16317,8 @@
         ],
         [
           2,
-          257,
-          948,
+          75,
+          945,
           65,
           61,
           1,
@@ -14052,8 +16326,8 @@
         ],
         [
           2,
-          1619,
-          948,
+          1338,
+          945,
           64,
           60,
           2,
@@ -14061,8 +16335,8 @@
         ],
         [
           2,
-          1963,
-          1073,
+          1591,
+          1070,
           63,
           57,
           2,
@@ -14070,8 +16344,8 @@
         ],
         [
           2,
-          119,
-          1192,
+          1733,
+          1130,
           61,
           55,
           3,
@@ -14079,8 +16353,8 @@
         ],
         [
           2,
-          695,
-          1305,
+          1816,
+          1245,
           54,
           50,
           7,
@@ -14141,8 +16415,8 @@
       "atlas": [
         [
           2,
-          1560,
-          1620,
+          177,
+          1625,
           109,
           21,
           71,
@@ -14276,8 +16550,8 @@
       "atlas": [
         [
           2,
-          1733,
-          1305,
+          736,
+          1300,
           50,
           49,
           72,
@@ -14285,8 +16559,8 @@
         ],
         [
           2,
-          1286,
-          743,
+          1062,
+          742,
           76,
           68,
           46,
@@ -14294,8 +16568,8 @@
         ],
         [
           2,
-          1137,
-          669,
+          1036,
+          668,
           96,
           71,
           25,
@@ -14330,8 +16604,8 @@
         ],
         [
           2,
-          776,
-          1688,
+          1382,
+          1670,
           105,
           14,
           0,
@@ -14339,8 +16613,8 @@
         ],
         [
           2,
-          56,
-          1719,
+          1058,
+          1702,
           102,
           11,
           1,
@@ -14399,8 +16673,8 @@
         ],
         [
           2,
-          1934,
-          743,
+          1710,
+          742,
           72,
           66,
           9,
@@ -14408,8 +16682,8 @@
         ],
         [
           2,
-          1529,
-          669,
+          1428,
+          668,
           74,
           70,
           8,
@@ -14417,8 +16691,8 @@
         ],
         [
           2,
-          833,
-          669,
+          732,
+          668,
           71,
           72,
           13,
@@ -14487,8 +16761,8 @@
       "atlas": [
         [
           2,
-          1058,
-          1408,
+          1850,
+          1352,
           108,
           41,
           1,
@@ -14496,8 +16770,8 @@
         ],
         [
           2,
-          1192,
-          1358,
+          0,
+          1352,
           108,
           44,
           1,
@@ -14505,8 +16779,8 @@
         ],
         [
           2,
-          512,
-          1408,
+          1235,
+          1352,
           109,
           42,
           1,
@@ -14514,8 +16788,8 @@
         ],
         [
           2,
-          623,
-          1408,
+          1346,
+          1352,
           109,
           42,
           1,
@@ -14842,8 +17116,8 @@
       "atlas": [
         [
           2,
-          1439,
-          1592,
+          0,
+          1600,
           405,
           23,
           5,
@@ -14872,8 +17146,8 @@
       "atlas": [
         [
           2,
-          734,
-          1408,
+          1457,
+          1352,
           59,
           42,
           43,
@@ -14881,8 +17155,8 @@
         ],
         [
           2,
-          1364,
-          743,
+          1140,
+          742,
           82,
           68,
           32,
@@ -14890,8 +17164,8 @@
         ],
         [
           2,
-          0,
-          1133,
+          1656,
+          1070,
           119,
           57,
           12,
@@ -14899,8 +17173,8 @@
         ],
         [
           2,
-          110,
-          1453,
+          816,
+          1398,
           118,
           40,
           12,
@@ -14908,8 +17182,8 @@
         ],
         [
           2,
-          828,
-          1358,
+          1767,
+          1300,
           119,
           45,
           11,
@@ -14917,8 +17191,8 @@
         ],
         [
           2,
-          795,
-          1408,
+          1518,
+          1352,
           115,
           42,
           13,
@@ -14926,8 +17200,8 @@
         ],
         [
           2,
-          300,
-          1408,
+          1023,
+          1352,
           100,
           43,
           18,
@@ -14935,8 +17209,8 @@
         ],
         [
           2,
-          912,
-          1408,
+          1635,
+          1352,
           82,
           42,
           32,
@@ -14944,8 +17218,8 @@
         ],
         [
           2,
-          1515,
-          1453,
+          310,
+          1441,
           64,
           36,
           43,
@@ -14953,8 +17227,8 @@
         ],
         [
           2,
-          0,
-          1495,
+          673,
+          1441,
           70,
           35,
           43,
@@ -14962,8 +17236,8 @@
         ],
         [
           2,
-          1581,
-          1453,
+          376,
+          1441,
           64,
           36,
           43,
@@ -15010,8 +17284,8 @@
       "atlas": [
         [
           2,
-          1235,
-          669,
+          1134,
+          668,
           98,
           71,
           17,
@@ -15115,8 +17389,8 @@
       "atlas": [
         [
           2,
-          751,
-          1305,
+          1872,
+          1245,
           137,
           50,
           8,
@@ -15124,8 +17398,8 @@
         ],
         [
           2,
-          1311,
-          1192,
+          662,
+          1189,
           139,
           54,
           6,
@@ -15133,8 +17407,8 @@
         ],
         [
           2,
-          1785,
-          1305,
+          788,
+          1300,
           138,
           49,
           7,
@@ -15165,8 +17439,8 @@
       "atlas": [
         [
           2,
-          237,
-          1563,
+          120,
+          1543,
           29,
           27,
           61,
@@ -15174,8 +17448,8 @@
         ],
         [
           2,
-          1168,
-          1408,
+          1960,
+          1352,
           41,
           41,
           61,
@@ -15183,8 +17457,8 @@
         ],
         [
           2,
-          890,
-          1305,
+          0,
+          1300,
           52,
           50,
           61,
@@ -15192,8 +17466,8 @@
         ],
         [
           2,
-          108,
-          1305,
+          1278,
+          1245,
           59,
           51,
           61,
@@ -15201,8 +17475,8 @@
         ],
         [
           2,
-          1445,
-          1249,
+          729,
+          1245,
           67,
           52,
           61,
@@ -15210,8 +17484,8 @@
         ],
         [
           2,
-          716,
-          1249,
+          0,
+          1245,
           68,
           53,
           61,
@@ -15219,8 +17493,8 @@
         ],
         [
           2,
-          1452,
-          1192,
+          803,
+          1189,
           69,
           54,
           61,
@@ -15228,8 +17502,8 @@
         ],
         [
           2,
-          182,
-          1192,
+          1796,
+          1130,
           68,
           55,
           61,
@@ -15237,8 +17511,8 @@
         ],
         [
           2,
-          1016,
-          1133,
+          683,
+          1130,
           68,
           56,
           61,
@@ -15246,8 +17520,8 @@
         ],
         [
           2,
-          121,
-          1133,
+          1777,
+          1070,
           68,
           57,
           61,
@@ -15255,8 +17529,8 @@
         ],
         [
           2,
-          191,
-          1133,
+          1847,
+          1070,
           69,
           57,
           61,
@@ -15264,8 +17538,8 @@
         ],
         [
           2,
-          262,
-          1133,
+          1918,
+          1070,
           69,
           57,
           61,
@@ -15273,8 +17547,8 @@
         ],
         [
           2,
-          262,
-          1133,
+          1918,
+          1070,
           69,
           57,
           61,
@@ -15282,8 +17556,8 @@
         ],
         [
           2,
-          333,
-          1133,
+          0,
+          1130,
           66,
           57,
           61,
@@ -15291,8 +17565,8 @@
         ],
         [
           2,
-          1086,
-          1133,
+          753,
+          1130,
           66,
           56,
           61,
@@ -15300,8 +17574,8 @@
         ],
         [
           2,
-          1154,
-          1133,
+          821,
+          1130,
           59,
           56,
           61,
@@ -15309,8 +17583,8 @@
         ],
         [
           2,
-          252,
-          1192,
+          1866,
+          1130,
           56,
           55,
           61,
@@ -15318,8 +17592,8 @@
         ],
         [
           2,
-          1523,
-          1192,
+          874,
+          1189,
           54,
           54,
           61,
@@ -15327,8 +17601,8 @@
         ],
         [
           2,
-          786,
-          1249,
+          70,
+          1245,
           51,
           53,
           61,
@@ -15336,8 +17610,8 @@
         ],
         [
           2,
-          169,
-          1305,
+          1339,
+          1245,
           50,
           51,
           61,
@@ -15345,8 +17619,8 @@
         ],
         [
           2,
-          1925,
-          1305,
+          928,
+          1300,
           37,
           49,
           61,
@@ -15354,8 +17628,8 @@
         ],
         [
           2,
-          434,
-          1358,
+          1470,
+          1300,
           37,
           47,
           61,
@@ -15363,8 +17637,8 @@
         ],
         [
           2,
-          44,
-          1592,
+          0,
+          1572,
           25,
           26,
           61,
@@ -15435,8 +17709,8 @@
       "atlas": [
         [
           2,
-          1605,
-          669,
+          1504,
+          668,
           195,
           70,
           11,
@@ -15453,8 +17727,8 @@
         ],
         [
           2,
-          1802,
-          669,
+          1701,
+          668,
           196,
           70,
           10,
@@ -15942,8 +18216,8 @@
       "atlas": [
         [
           2,
-          1514,
-          1249,
+          798,
+          1245,
           207,
           52,
           4,
@@ -16173,8 +18447,8 @@
       "atlas": [
         [
           2,
-          1579,
-          1192,
+          930,
+          1189,
           228,
           54,
           11,
@@ -16182,8 +18456,8 @@
         ],
         [
           2,
-          1685,
-          948,
+          1404,
+          945,
           229,
           60,
           10,
@@ -16191,8 +18465,17 @@
         ],
         [
           2,
+          1635,
+          945,
+          227,
+          60,
+          12,
+          1
+        ],
+        [
+          2,
           0,
-          1011,
+          1008,
           227,
           60,
           12,
@@ -16200,17 +18483,8 @@
         ],
         [
           2,
-          229,
-          1011,
-          227,
-          60,
-          12,
-          1
-        ],
-        [
-          2,
-          1084,
-          883,
+          890,
+          880,
           227,
           62,
           12,
@@ -16218,8 +18492,8 @@
         ],
         [
           2,
-          1215,
-          1133,
+          882,
+          1130,
           228,
           56,
           11,
@@ -16227,8 +18501,8 @@
         ],
         [
           2,
-          563,
-          1073,
+          191,
+          1070,
           228,
           58,
           11,
@@ -16236,8 +18510,8 @@
         ],
         [
           2,
-          793,
-          1073,
+          421,
+          1070,
           228,
           58,
           11,
@@ -16857,8 +19131,8 @@
       "atlas": [
         [
           2,
-          1284,
-          1495,
+          735,
+          1479,
           26,
           30,
           59,
@@ -16866,8 +19140,8 @@
         ],
         [
           2,
-          187,
-          1495,
+          1085,
+          1441,
           30,
           34,
           57,
@@ -16875,8 +19149,8 @@
         ],
         [
           2,
-          728,
-          1453,
+          1434,
+          1398,
           32,
           39,
           56,
@@ -16884,8 +19158,8 @@
         ],
         [
           2,
-          1302,
-          1358,
+          110,
+          1352,
           35,
           44,
           55,
@@ -16893,8 +19167,8 @@
         ],
         [
           2,
-          346,
-          1358,
+          1313,
+          1300,
           38,
           48,
           54,
@@ -16902,8 +19176,8 @@
         ],
         [
           2,
-          221,
-          1305,
+          1391,
+          1245,
           39,
           51,
           54,
@@ -16911,8 +19185,8 @@
         ],
         [
           2,
-          1809,
-          1192,
+          1160,
+          1189,
           41,
           54,
           53,
@@ -16920,8 +19194,8 @@
         ],
         [
           2,
-          401,
-          1133,
+          68,
+          1130,
           44,
           57,
           52,
@@ -16929,8 +19203,8 @@
         ],
         [
           2,
-          1200,
-          1011,
+          971,
+          1008,
           45,
           59,
           52,
@@ -16938,8 +19212,8 @@
         ],
         [
           2,
-          760,
-          883,
+          566,
+          880,
           47,
           63,
           51,
@@ -16947,8 +19221,8 @@
         ],
         [
           2,
-          1674,
-          815,
+          1354,
+          813,
           48,
           64,
           50,
@@ -16956,8 +19230,8 @@
         ],
         [
           2,
-          0,
-          815,
+          1784,
+          742,
           49,
           66,
           50,
@@ -16965,8 +19239,8 @@
         ],
         [
           2,
-          453,
-          743,
+          229,
+          742,
           51,
           69,
           49,
@@ -16974,8 +19248,8 @@
         ],
         [
           2,
-          0,
-          743,
+          1899,
+          668,
           52,
           70,
           49,
@@ -16983,7 +19257,7 @@
         ],
         [
           2,
-          443,
+          242,
           592,
           53,
           74,
@@ -16992,7 +19266,7 @@
         ],
         [
           2,
-          1696,
+          1587,
           513,
           54,
           75,
@@ -17264,8 +19538,8 @@
       "atlas": [
         [
           2,
-          1211,
-          1408,
+          0,
+          1398,
           64,
           41,
           70,
@@ -17273,8 +19547,8 @@
         ],
         [
           2,
-          1724,
-          815,
+          1404,
+          813,
           104,
           64,
           52,
@@ -17282,8 +19556,8 @@
         ],
         [
           2,
-          51,
-          815,
+          1835,
+          742,
           160,
           66,
           12,
@@ -17291,8 +19565,8 @@
         ],
         [
           2,
-          992,
-          815,
+          672,
+          813,
           194,
           65,
           2,
@@ -17300,7 +19574,7 @@
         ],
         [
           2,
-          1752,
+          1643,
           513,
           196,
           75,
@@ -17318,8 +19592,8 @@
         ],
         [
           2,
-          0,
-          592,
+          1841,
+          513,
           199,
           75,
           7,
@@ -17354,8 +19628,8 @@
         ],
         [
           2,
-          1448,
-          743,
+          1224,
+          742,
           204,
           68,
           0,
@@ -17363,8 +19637,8 @@
         ],
         [
           2,
-          1188,
-          815,
+          868,
+          813,
           179,
           65,
           20,
@@ -17372,7 +19646,7 @@
         ],
         [
           2,
-          498,
+          297,
           592,
           190,
           74,
@@ -17390,7 +19664,7 @@
         ],
         [
           2,
-          690,
+          489,
           592,
           190,
           74,
@@ -17399,7 +19673,7 @@
         ],
         [
           2,
-          882,
+          681,
           592,
           181,
           74,
@@ -17408,8 +19682,8 @@
         ],
         [
           2,
-          506,
-          743,
+          282,
+          742,
           192,
           69,
           16,
@@ -17417,8 +19691,8 @@
         ],
         [
           2,
-          458,
-          1011,
+          229,
+          1008,
           189,
           60,
           15,
@@ -17426,8 +19700,8 @@
         ],
         [
           2,
-          1852,
-          1192,
+          1203,
+          1189,
           183,
           54,
           16,
@@ -17435,8 +19709,8 @@
         ],
         [
           2,
-          944,
-          1305,
+          54,
+          1300,
           174,
           50,
           26,
@@ -17444,8 +19718,8 @@
         ],
         [
           2,
-          1247,
-          1011,
+          1018,
+          1008,
           180,
           59,
           24,
@@ -17453,8 +19727,8 @@
         ],
         [
           2,
-          262,
-          1305,
+          1432,
+          1245,
           194,
           51,
           9,
@@ -17462,8 +19736,8 @@
         ],
         [
           2,
-          1277,
-          1408,
+          66,
+          1398,
           196,
           41,
           10,
@@ -17471,8 +19745,8 @@
         ],
         [
           2,
-          1647,
-          1453,
+          442,
+          1441,
           191,
           36,
           14,
@@ -17561,8 +19835,8 @@
       "atlas": [
         [
           2,
-          1369,
-          815,
+          1049,
+          813,
           64,
           65,
           58,
@@ -17758,8 +20032,8 @@
       "atlas": [
         [
           2,
-          0,
-          1719,
+          1002,
+          1702,
           54,
           12,
           25,
@@ -17767,8 +20041,8 @@
         ],
         [
           2,
-          1527,
-          1666,
+          532,
+          1670,
           72,
           16,
           16,
@@ -17776,8 +20050,8 @@
         ],
         [
           2,
-          0,
-          1666,
+          1002,
+          1648,
           82,
           20,
           10,
@@ -17785,8 +20059,8 @@
         ],
         [
           2,
-          1846,
-          1592,
+          407,
+          1600,
           88,
           23,
           6,
@@ -17794,8 +20068,8 @@
         ],
         [
           2,
-          686,
-          1592,
+          908,
+          1572,
           92,
           25,
           5,
@@ -17803,8 +20077,8 @@
         ],
         [
           2,
-          71,
-          1592,
+          27,
+          1572,
           93,
           26,
           4,
@@ -17812,8 +20086,8 @@
         ],
         [
           2,
-          268,
-          1563,
+          151,
+          1543,
           94,
           27,
           5,
@@ -17821,8 +20095,8 @@
         ],
         [
           2,
-          1371,
-          1532,
+          1198,
+          1512,
           98,
           28,
           3,
@@ -17830,8 +20104,8 @@
         ],
         [
           2,
-          423,
-          1532,
+          1762,
+          1479,
           100,
           29,
           2,
@@ -17839,8 +20113,8 @@
         ],
         [
           2,
-          525,
-          1532,
+          1864,
+          1479,
           102,
           29,
           1,
@@ -17848,8 +20122,8 @@
         ],
         [
           2,
-          629,
-          1532,
+          0,
+          1512,
           104,
           29,
           0,
@@ -17857,8 +20131,8 @@
         ],
         [
           2,
-          1312,
-          1495,
+          763,
+          1479,
           104,
           30,
           0,
@@ -17866,8 +20140,8 @@
         ],
         [
           2,
-          1418,
-          1495,
+          869,
+          1479,
           103,
           30,
           1,
@@ -17875,8 +20149,8 @@
         ],
         [
           2,
-          735,
-          1532,
+          106,
+          1512,
           103,
           29,
           1,
@@ -17884,8 +20158,8 @@
         ],
         [
           2,
-          1471,
-          1532,
+          1298,
+          1512,
           103,
           28,
           0,
@@ -17893,8 +20167,8 @@
         ],
         [
           2,
-          364,
-          1563,
+          247,
+          1543,
           102,
           27,
           1,
@@ -17951,8 +20225,8 @@
       "atlas": [
         [
           2,
-          751,
-          1305,
+          1872,
+          1245,
           137,
           50,
           8,
@@ -17960,8 +20234,8 @@
         ],
         [
           2,
-          1311,
-          1192,
+          662,
+          1189,
           139,
           54,
           6,
@@ -17969,8 +20243,8 @@
         ],
         [
           2,
-          1785,
-          1305,
+          788,
+          1300,
           138,
           49,
           7,
@@ -18034,8 +20308,8 @@
       "atlas": [
         [
           2,
-          700,
-          743,
+          476,
+          742,
           191,
           69,
           158,
@@ -18224,6 +20498,42 @@
           17,
           17,
           17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
           17
         ],
         "durations": [
@@ -18254,12 +20564,462 @@
           5,
           5,
           5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
           5
         ],
         "loop": false
       },
       "layer": "back",
-      "alpha": 0.85
+      "alpha": 0.9
+    },
+    "domainDark": {
+      "spriteGridSize": {
+        "frameWidth": 8,
+        "frameHeight": 8,
+        "baseline": 4
+      },
+      "atlas": [
+        [
+          2,
+          1344,
+          1716,
+          8,
+          8,
+          0,
+          0
+        ],
+        [
+          2,
+          1354,
+          1716,
+          8,
+          8,
+          0,
+          0
+        ],
+        [
+          2,
+          1364,
+          1716,
+          8,
+          8,
+          0,
+          0
+        ],
+        [
+          2,
+          1374,
+          1716,
+          8,
+          8,
+          0,
+          0
+        ],
+        [
+          2,
+          1384,
+          1716,
+          8,
+          8,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3,
+          1,
+          4
+        ],
+        "durations": [
+          6,
+          6,
+          8,
+          300,
+          8,
+          8
+        ],
+        "loop": false
+      },
+      "layer": "back",
+      "cover": [
+        1700,
+        1700
+      ]
+    },
+    "hairline": {
+      "spriteGridSize": {
+        "frameWidth": 202,
+        "frameHeight": 32,
+        "baseline": 16
+      },
+      "atlas": [
+        [
+          2,
+          211,
+          1512,
+          63,
+          29,
+          69,
+          1
+        ],
+        [
+          2,
+          1540,
+          1441,
+          199,
+          32,
+          1,
+          0
+        ],
+        [
+          2,
+          1741,
+          1441,
+          200,
+          32,
+          0,
+          0
+        ],
+        [
+          2,
+          276,
+          1512,
+          196,
+          29,
+          3,
+          2
+        ],
+        [
+          2,
+          122,
+          1572,
+          193,
+          26,
+          3,
+          3
+        ],
+        [
+          2,
+          1086,
+          1648,
+          35,
+          20,
+          83,
+          6
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "durations": [
+          2,
+          2,
+          2,
+          2,
+          15,
+          2
+        ],
+        "loop": false
+      },
+      "blend": "add"
+    },
+    "rockChunk": {
+      "spriteGridSize": {
+        "frameWidth": 72,
+        "frameHeight": 58,
+        "baseline": 58
+      },
+      "atlas": [
+        [
+          2,
+          497,
+          1600,
+          70,
+          23,
+          2,
+          35
+        ],
+        [
+          2,
+          317,
+          1572,
+          69,
+          26,
+          2,
+          32
+        ],
+        [
+          2,
+          474,
+          1512,
+          67,
+          29,
+          3,
+          29
+        ],
+        [
+          2,
+          1943,
+          1441,
+          67,
+          32,
+          3,
+          26
+        ],
+        [
+          2,
+          745,
+          1441,
+          65,
+          35,
+          4,
+          23
+        ],
+        [
+          2,
+          1705,
+          1398,
+          66,
+          38,
+          4,
+          20
+        ],
+        [
+          2,
+          1719,
+          1352,
+          67,
+          42,
+          3,
+          16
+        ],
+        [
+          2,
+          1353,
+          1300,
+          67,
+          48,
+          3,
+          10
+        ],
+        [
+          2,
+          812,
+          1441,
+          62,
+          35,
+          9,
+          20
+        ],
+        [
+          2,
+          543,
+          1512,
+          60,
+          29,
+          9,
+          25
+        ],
+        [
+          2,
+          605,
+          1512,
+          60,
+          29,
+          9,
+          22
+        ],
+        [
+          2,
+          876,
+          1441,
+          60,
+          35,
+          9,
+          14
+        ],
+        [
+          2,
+          1468,
+          1398,
+          61,
+          39,
+          8,
+          6
+        ],
+        [
+          2,
+          147,
+          1352,
+          61,
+          44,
+          8,
+          0
+        ],
+        [
+          2,
+          1214,
+          1441,
+          27,
+          33,
+          42,
+          10
+        ],
+        [
+          2,
+          938,
+          1441,
+          30,
+          35,
+          41,
+          7
+        ],
+        [
+          2,
+          1117,
+          1441,
+          30,
+          34,
+          41,
+          6
+        ],
+        [
+          2,
+          1243,
+          1441,
+          30,
+          33,
+          41,
+          4
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17
+        ],
+        "durations": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "loop": false
+      },
+      "velocityX": 1.5,
+      "velocityY": -6,
+      "gravity": 0.34,
+      "lifetime": 60
+    },
+    "rockPile": {
+      "spriteGridSize": {
+        "frameWidth": 84,
+        "frameHeight": 69,
+        "baseline": 69
+      },
+      "atlas": [
+        [
+          2,
+          351,
+          1543,
+          83,
+          27,
+          1,
+          42
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "durations": [
+          400,
+          10,
+          10,
+          10
+        ],
+        "loop": true
+      },
+      "lifetime": 310,
+      "blend": "add"
     },
     "redTint": {
       "spriteGridSize": {
@@ -19189,290 +21949,6 @@
       "cover": [
         1500,
         1500
-      ]
-    },
-    "cutIn": {
-      "spriteGridSize": {
-        "frameWidth": 112,
-        "frameHeight": 92,
-        "baseline": 46
-      },
-      "atlas": [
-        [
-          2,
-          1840,
-          1453,
-          111,
-          36,
-          1,
-          56
-        ],
-        [
-          2,
-          1475,
-          1408,
-          108,
-          41,
-          3,
-          51
-        ],
-        [
-          2,
-          949,
-          1358,
-          106,
-          45,
-          3,
-          47
-        ],
-        [
-          2,
-          1120,
-          1305,
-          105,
-          50,
-          4,
-          42
-        ],
-        [
-          2,
-          310,
-          1192,
-          104,
-          55,
-          4,
-          37
-        ],
-        [
-          2,
-          1429,
-          1011,
-          105,
-          59,
-          4,
-          33
-        ],
-        [
-          2,
-          213,
-          815,
-          105,
-          66,
-          4,
-          26
-        ],
-        [
-          2,
-          1508,
-          513,
-          107,
-          76,
-          3,
-          16
-        ],
-        [
-          2,
-          0,
-          1249,
-          98,
-          54,
-          13,
-          33
-        ],
-        [
-          2,
-          473,
-          1358,
-          95,
-          47,
-          13,
-          39
-        ],
-        [
-          2,
-          1339,
-          1358,
-          95,
-          44,
-          13,
-          36
-        ],
-        [
-          2,
-          416,
-          1192,
-          95,
-          55,
-          13,
-          22
-        ],
-        [
-          2,
-          324,
-          948,
-          97,
-          61,
-          11,
-          10
-        ],
-        [
-          2,
-          54,
-          743,
-          96,
-          70,
-          12,
-          0
-        ],
-        [
-          2,
-          1723,
-          1249,
-          43,
-          52,
-          65,
-          16
-        ],
-        [
-          2,
-          513,
-          1192,
-          47,
-          55,
-          64,
-          12
-        ],
-        [
-          2,
-          1768,
-          1249,
-          47,
-          52,
-          64,
-          10
-        ],
-        [
-          2,
-          458,
-          1305,
-          47,
-          51,
-          64,
-          7
-        ]
-      ],
-      "renderScale": 1.667,
-      "animation": {
-        "frames": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9,
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          16,
-          17,
-          17,
-          17,
-          17,
-          17,
-          17,
-          17,
-          17,
-          17,
-          17,
-          17,
-          17,
-          17,
-          17,
-          17,
-          17,
-          17,
-          17,
-          17,
-          17,
-          17,
-          17,
-          17,
-          17,
-          17,
-          17,
-          17,
-          17,
-          17,
-          17,
-          17,
-          17,
-          17
-        ],
-        "durations": [
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1
-        ],
-        "loop": false
-      },
-      "alpha": 0.9,
-      "cover": [
-        520,
-        430
       ]
     },
     "cursedSkull": {
