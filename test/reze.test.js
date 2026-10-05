@@ -112,3 +112,50 @@ test('reze: pular e atacar no ar', () => {
   step(world, command({ punch: true }));
   assert.equal(world.fighters[0].animation.name, 'airPunch');
 });
+
+// Forma Bomb Devil: transforma, troca os sprites e os golpes, aumenta o dano e
+// o mesmo comando volta.
+test('reze: a forma Bomb Devil troca os golpes, sobe o dano e volta', () => {
+  const lost = (transformed) => {
+    const world = arena(record, 600, 640);
+    if (transformed) run(world, cast('toBombDevil'), 80);
+    const before = world.fighters[1].health;
+    run(world, cast(transformed ? 'bdPunch' : 'punch'), 25);
+    return { world, dano: before - world.fighters[1].health };
+  };
+  const base = lost(false), boosted = lost(true);
+  assert.ok(base.dano > 0, 'o soco normal nao acertou');
+  assert.equal(boosted.world.fighters[0].mode, 'bombDevil');
+  assert.ok(boosted.dano > base.dano, `transformada ${boosted.dano}, normal ${base.dano}`);
+
+  const world = arena(record, 600, 900);
+  run(world, cast('toBombDevil'), 80);
+  assert.equal(world.fighters[0].base('idle'), 'bdIdle');
+  run(world, cast('fromBombDevil'), 40);
+  assert.equal(world.fighters[0].mode, null);
+});
+
+test('reze: os comandos da forma Bomb Devil so valem nela', () => {
+  const feed = (entries, mode) => {
+    const detector = new ComboDetector(config.combos);
+    let match = null;
+    entries.forEach((entry, index) => { match = detector.feed(command(entry), 1, index * 16, mode) ?? match; });
+    return match?.animation ?? null;
+  };
+  const left = [{ left: true }, { down: true }, { special: true }];
+  assert.equal(feed(left, null), 'toBombDevil');
+  assert.equal(feed(left, 'bombDevil'), 'fromBombDevil');
+  const bombs = [{ down: true }, { down: true, right: true }, { right: true, punch: true }];
+  assert.equal(feed(bombs, null), 'bomb');
+  assert.equal(feed(bombs, 'bombDevil'), 'bdBombs');
+});
+
+test('reze: os especiais da forma acertam', () => {
+  for (const [name, left, right, ticks] of [['bdBombs', 500, 700, 140], ['bdBeam', 500, 640, 120], ['bdKickBomb', 500, 640, 140], ['bdDash', 500, 600, 80], ['bdMissiles', 500, 780, 200]]) {
+    const world = arena(record, left, right);
+    run(world, cast('toBombDevil'), 80);
+    const before = hits(world).length;
+    run(world, cast(name), ticks);
+    assert.ok(hits(world).length > before, `${name} nao acertou`);
+  }
+});

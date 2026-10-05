@@ -282,6 +282,151 @@ const ANIMATIONS = {
     ],
   },
 
+  // ---- Troca de forma: Bomb Devil ----
+  // No pacote (estados 192-199, var(11) = 10000) ela se transforma - a mascara
+  // vira a cabeca da bomba - e todos os golpes ganham os sprites 10000+ e mais
+  // dano. So a IA do pacote chega nela; aqui e ←↓S, e o mesmo comando volta.
+  toBombDevil: {
+    actions: [{ id: 196, times: { 0: 14, 1: 5, 2: 14, 3: 2, 4: 14, 5: 8 } }],
+    cooldown: 400,
+    invulnerable: [0, 56],
+    events: [
+      fx(0, 'sparkBurst', [0, -40], { follow: 'owner' }),
+      fx(20, 'bigBlast', [0, -36], { follow: 'owner' }),
+      fx(20, 'blastRing', [0, -36], { scale: 1.3 }),
+      { at: 22, setMode: 'bombDevil' },
+      { at: 22, buff: { kind: 'bombDevil', ticks: 36000 } },
+    ],
+  },
+  fromBombDevil: {
+    actions: [{ id: 196, durationScale: 0.4 }],
+    invulnerable: [0, 30],
+    events: [fx(0, 'bigBlast', [0, -36], { follow: 'owner' }), { at: 10, setMode: '' }],
+  },
+
+  bdIdle: { actions: [10000], loop: true },
+  bdWalkForward: { actions: [10020], loop: true },
+  bdWalkBackward: { actions: [10021], loop: true },
+  bdJump: { actions: [10040, 10041] },
+  bdPunch: {
+    actions: [10200],
+    ...NORMAL,
+    hit: { damage: 4, hitstun: 18, push: 4 },
+    events: [{ at: 6, vx: 3 }],
+    cancels: [{ on: 'punch', to: 'bdPunch2', after: 7 }, { on: 'kick', to: 'bdKick', after: 7 }, { on: 'special', to: 'missile', after: 7 }],
+  },
+  bdPunch2: {
+    actions: [10210],
+    ...NORMAL,
+    hit: { damage: 4, hitstun: 18, push: 4 },
+    cancels: [{ on: 'punch', to: 'bdPunch3', after: 6 }, { on: 'kick', to: 'bdKick2', after: 6 }, { on: 'special', to: 'missile', after: 6 }],
+  },
+  bdPunch3: {
+    actions: [10220],
+    ...NORMAL,
+    hit: { damage: 4, hitstun: 20, push: 5 },
+    cancels: [{ on: 'punch', to: 'bdPunch4', after: 10 }, { on: 'kick', to: 'bdKick4', after: 10 }],
+  },
+  bdPunch4: {
+    launch: { vx: 4, vy: 5 },
+    actions: [10230],
+    hit: { damage: 5, hitstun: 30, push: 8, heavy: true },
+    events: [fx(2, 'smallBlast', [40, -20])],
+  },
+  bdKick: {
+    actions: [10300],
+    ...NORMAL,
+    hit: { damage: 4, hitstun: 18, push: 4 },
+    cancels: [{ on: 'punch', to: 'bdPunch2', after: 7 }, { on: 'kick', to: 'bdKick2', after: 7 }, { on: 'special', to: 'missile', after: 7 }],
+  },
+  bdKick2: {
+    actions: [10310],
+    ...NORMAL,
+    hit: { damage: 4, hitstun: 18, push: 4 },
+    cancels: [{ on: 'punch', to: 'bdPunch3', after: 9 }, { on: 'kick', to: 'bdKick3', after: 9 }],
+  },
+  bdKick3: {
+    actions: [10320],
+    ...NORMAL,
+    hit: { damage: 4, hitstun: 22, push: 3 },
+    cancels: [{ on: 'punch', to: 'bdPunch4', after: 8 }, { on: 'kick', to: 'bdKick4', after: 8 }],
+  },
+  bdKick4: {
+    launch: { vx: 4, vy: 5 },
+    actions: [10330],
+    hit: { damage: 5, hitstun: 30, push: 8, heavy: true },
+    events: [fx(19, 'smallBlast', [45, -22])],
+  },
+  bdAirPunch: {
+    actions: [10600],
+    air: true,
+    hit: { damage: 4, hitstun: 20, push: 4 },
+  },
+  bdAirKick: {
+    actions: [10610],
+    air: true,
+    hit: { damage: 4, hitstun: 22, push: 5 },
+  },
+  bdAirSpecial: {
+    actions: [10620],
+    air: true,
+    hit: { damage: 5, hitstun: 30, push: 8, heavy: true },
+    launch: { vx: 3, vy: 6 },
+    events: [{ at: 0, vx: 5, vy: 4 }, fx(8, 'smallBlast', [30, -30])],
+  },
+
+  // ---- Especiais da forma Bomb Devil (11000-11400) ----
+  // 11000: ela abre os bracos e solta vinte bombas pequenas em leque (helper
+  // 11001). 11100: o canhao do braco, que dispara uma lanca de fogo fina (11110).
+  // 11200: o chute-bomba maior. 11300: a investida que acaba em explosao.
+  // 11400: doze misseis (helper 11410).
+  bdBombs: {
+    actions: [{ id: 11000, times: { 0: 14 } }],
+    cooldown: 220,
+    events: [
+      fx(14, 'sparkBurst', [30, -40], { follow: 'owner' }),
+      ...[0, 1, 2, 3, 4, 5].map((index) => fx(18 + index * 3, 'miniBomb', [24, -28 + index * 3], { velocityX: 6 + index * 1.4, velocityY: -4 + index * 0.4, scale: 1.4 })),
+    ],
+  },
+  bdBeam: {
+    actions: [{ id: 11100, times: { 0: 14 } }],
+    cooldown: 260,
+    events: [
+      fx(10, 'sparkBurst', [34, -36], { follow: 'owner' }),
+      fx(16, 'fireLance', [34, -36]),
+      fx(16, 'bigBlast', [34, -36], { scale: 0.5 }),
+    ],
+  },
+  bdKickBomb: {
+    launch: { vx: 4, vy: 7 },
+    actions: [{ id: 11200, times: { 3: 40 } }],
+    air: true,
+    cooldown: 240,
+    onLand: 'bombKickLand',
+    areas: [strike(2, 3, [-20, -50, 42, 8], { damage: 8, hitstun: 38, push: 10, heavy: true })],
+    events: [
+      fx(0, 'dust', [-20, 4]),
+      { at: 8, vx: 3, vy: -9 },
+      fx(8, 'groundBurst', [0, 4]),
+      { at: 22, teleport: 62, vx: 4, vy: 8 },
+    ],
+  },
+  bdDash: {
+    launch: { vx: 5, vy: 6 },
+    actions: [{ id: 11300, times: { 0: 14 } }],
+    cooldown: 200,
+    areas: [strike(1, 4, [-10, -55, 66, -1], { damage: 9, hitstun: 36, push: 10, heavy: true })],
+    events: [fx(0, 'dust', [-24, 4]), { at: 14, vx: 13 }, fx(14, 'dashRing', [0, -30], { follow: 'owner' }), fx(24, 'bigBlast', [48, -30])],
+  },
+  bdMissiles: {
+    actions: [{ id: 11400, times: { 3: 20, 7: 50 } }],
+    cooldown: 340,
+    events: [
+      ...[0, 1, 2, 3, 4, 5].map((index) => fx(30 + index * 12, 'missileHoming', [20, -28 + (index % 3) * 4])),
+      fx(34, 'sparkBurst', [10, -30], { follow: 'owner' }),
+    ],
+  },
+
   // ---- No ar (600/601, 610/611, 620/621) ----
   airPunch: {
     actions: [600],
@@ -466,6 +611,16 @@ const EFFECTS = {
   },
   hugeFire: { actions: [7033], size: 1.1, harmless: true },
 
+  // Lanca de fogo do canhao (helper 11110): 212x6, uma linha longa que acerta
+  // varias vezes. A esticamos para atravessar boa parte da arena.
+  fireLance: {
+    actions: [{ id: 11110, lengthTicks: 40 }],
+    size: 1,
+    velocityX: 10,
+    lifetime: 40,
+    endAtWall: true,
+    area: { widthRatio: 1, heightRatio: 9, until: 99, damage: 2, hitstun: 22, push: 4, every: 6, count: 5 },
+  },
   // Granada (helper 410): arco, gravidade e uma explosao pequena onde cai
   miniBomb: {
     actions: [1006],
@@ -495,6 +650,17 @@ const COMBOS = [
   { id: 'dash-punch', input: '↓←K', animation: 'dashPunch' },
   { id: 'missile-barrage', input: '↓→S', animation: 'missileBarrage' },
   { id: 'super', input: '↓→↓→P', animation: 'super' },
+  { id: 'to-bomb-devil', input: '←↓S', animation: 'toBombDevil' },
+  { id: 'from-bomb-devil', input: '←↓S', animation: 'fromBombDevil', mode: 'bombDevil' },
+  { id: 'bd-bombs', input: '↓→P', animation: 'bdBombs', mode: 'bombDevil' },
+  { id: 'bd-beam', input: '↓←P', animation: 'bdBeam', mode: 'bombDevil' },
+  { id: 'bd-kick', input: '↓→K', animation: 'bdKickBomb', mode: 'bombDevil' },
+  { id: 'bd-dash', input: '↓←K', animation: 'bdDash', mode: 'bombDevil' },
+  { id: 'bd-missiles', input: '↓→S', animation: 'bdMissiles', mode: 'bombDevil' },
+  { id: 'bd-super', input: '↓→↓→P', animation: 'super', mode: 'bombDevil' },
+  { id: 'bd-uppercut', input: 'P', hold: '↓', animation: 'uppercut', mode: 'bombDevil' },
+  { id: 'bd-ground-bomb', input: 'K', hold: '↓', animation: 'groundBomb', mode: 'bombDevil' },
+  { id: 'bd-grenades', input: 'S', hold: '↓', animation: 'grenades', mode: 'bombDevil' },
   { id: 'uppercut', input: 'P', hold: '↓', animation: 'uppercut' },
   { id: 'ground-bomb', input: 'K', hold: '↓', animation: 'groundBomb' },
   { id: 'grenades', input: 'S', hold: '↓', animation: 'grenades' },
@@ -521,6 +687,12 @@ const MOVE_LIST = [
   { section: 'Especiais', name: 'Soco em investida', input: '↓←K', note: 'Avança e lança' },
   { section: 'Especiais', name: 'Rajada de mísseis', input: '↓→S', note: 'Três mísseis teleguiados e um grande' },
   { section: 'Super', name: 'Detonação', input: '↓→↓→P', note: 'Agarra e explode o oponente em cadeia' },
+  { section: 'Bomb Devil', name: 'Transformar', input: '←↓S', note: 'A cabeça vira a bomba; +30% de dano. O mesmo comando volta' },
+  { section: 'Bomb Devil', name: 'Bombas', input: '↓→P', note: 'Seis granadas em leque' },
+  { section: 'Bomb Devil', name: 'Canhão', input: '↓←P', note: 'Lança de fogo que acerta várias vezes' },
+  { section: 'Bomb Devil', name: 'Chute-bomba', input: '↓→K', note: 'Mais forte que o normal' },
+  { section: 'Bomb Devil', name: 'Investida', input: '↓←K', note: 'Termina numa explosão' },
+  { section: 'Bomb Devil', name: 'Mísseis', input: '↓→S', note: 'Seis, teleguiados' },
 ];
 
 importMugenCharacter({
@@ -540,5 +712,20 @@ importMugenCharacter({
   combos: COMBOS,
   buttons: BUTTONS,
   moveList: MOVE_LIST,
+  damageBuff: { kind: 'bombDevil', scale: 1.3 },
+  modes: {
+    bombDevil: {
+      buttons: {
+        ground: { punch: 'bdPunch', kick: 'bdKick', special: 'missile' },
+        air: { punch: 'bdAirPunch', kick: 'bdAirKick', special: 'bdAirSpecial' },
+      },
+      animations: {
+        idle: 'bdIdle',
+        walkForward: 'bdWalkForward',
+        walkBackward: 'bdWalkBackward',
+        jump: 'bdJump',
+      },
+    },
+  },
   portrait: { sprite: [192, 2], crop: [2, 0, 30, 28], width: 54, height: 50, background: '#1A1418' },
 });
