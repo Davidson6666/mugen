@@ -595,7 +595,7 @@ const ANIMATIONS = {
   // de cima da tela; aqui ela afunila e dissolve, e a base vira fogueira e
   // brasa (7064, 7063), que sao as chamas de verdade do pacote.
   eruption: {
-    actions: [{ id: 3900, times: { 5: 26, 6: 34 } }],
+    actions: [{ id: 3900, times: { 5: 26, 6: 58 } }],
     cooldown: 260,
     events: [
       fx(34, 'burstBig', [37, -57], { scale: 0.6 }),
