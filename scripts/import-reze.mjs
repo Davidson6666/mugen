@@ -222,16 +222,42 @@ const ANIMATIONS = {
   // 1300 (↓←B): o soco em investida. Ela cresce no chao, avanca (velset x) e
   // acerta com a caixa do quadro 3; o pacote ainda estala uma onda escura.
   dashPunch: {
-    launch: { vx: 5, vy: 5 },
+    launch: false,
     actions: [{ id: 1300, times: { 0: 10 } }],
     cooldown: 180,
-    areas: [strike(3, 4, [-10, -55, 62, -1], { damage: 7, hitstun: 34, push: 10, heavy: true })],
+    areas: [strike(3, 4, [-10, -55, 62, -1], { damage: 4, hitstun: 60, push: 0 })],
+    onHit: { to: 'dashPunch2' },
     events: [
       fx(0, 'dust', [-24, 4]),
       { at: 10, vx: 12 },
       fx(10, 'dashRing', [0, -30], { follow: 'owner' }),
       fx(16, 'dashSwirl', [28, -32]),
     ],
+  },
+  // 1301 e 1302: o pacote encadeia mais seis golpes (tres e tres, 20 de dano
+  // cada) se o primeiro acertar: ela gruda no oponente e martela. Eu tinha
+  // cortado a serie na primeira parte.
+  dashPunch2: {
+    actions: [1301],
+    noPush: true,
+    hit: [
+      { damage: 3, hitstun: 44, push: 0 },
+      { damage: 3, hitstun: 44, push: 0 },
+      { damage: 3, hitstun: 44, push: 0 },
+    ],
+    events: [{ at: 0, vx: 0 }, fx(6, 'smallBlast', [32, -40]), fx(14, 'smallBlast', [38, -28])],
+    next: 'dashPunch3',
+  },
+  dashPunch3: {
+    launch: { vx: 5, vy: 8 },
+    actions: [1302],
+    noPush: true,
+    hit: [
+      { damage: 3, hitstun: 44, push: 0 },
+      { damage: 3, hitstun: 44, push: 0 },
+      { damage: 5, hitstun: 36, push: 8, heavy: true },
+    ],
+    events: [{ at: 0, vx: 0 }, fx(16, 'smallBlast', [34, -34]), fx(50, 'bigBlast', [40, -30])],
   },
   // 1400 (↓→S): a rajada de misseis. Tres saem nos quadros 7, 10 e 14, e o
   // grande no 20.
@@ -302,6 +328,50 @@ const ANIMATIONS = {
     actions: [{ id: 196, durationScale: 0.4 }],
     invulnerable: [0, 30],
     events: [fx(0, 'bigBlast', [0, -36], { follow: 'owner' }), { at: 10, setMode: '' }],
+  },
+
+  // 11201/11202 (rajada): ela vai ate o oponente e, por ~100 ticks, sete
+  // explosoes saem de um lado e do outro dele (o helper 11210, uma a cada 15
+  // ticks), fechando com um missil gigante e a explosao grande.
+  bdBarrage: {
+    launch: { vx: 5, vy: 8 },
+    actions: [{ id: 11201, times: { 0: 6 } }, { id: 11202, times: { 6: 80 } }],
+    cooldown: 900,
+    invulnerable: [0, 150],
+    noPush: true,
+    events: [
+      { at: 0, teleport: 56 },
+      { at: 4, pinOpponent: { dx: 56, lift: 36, ticks: 130, relative: 'self' } },
+      fx(2, 'sparkBurst', [0, -40], { follow: 'owner' }),
+      ...[0, 1, 2, 3, 4, 5, 6].map((index) => fx(30 + index * 15, 'barrageBlast', [index % 2 ? -26 : 26, -34 + (index % 3) * 8], { target: 'opponent' })),
+      fx(132, 'missileBig', [30, -34]),
+      fx(136, 'hugeBlast', [0, -30], { target: 'opponent', scale: 0.6 }),
+    ],
+  },
+  // 11300 -> 11301 -> 11302 (escalada): a investida agarra; se pegar, o oponente
+  // fica preso, as explosoes sobem de ritmo e uma enorme fecha a cena.
+  bdGrab: {
+    actions: [11300],
+    cooldown: 1200,
+    invulnerable: [0, 44],
+    areas: [strike(1, 4, [-5, -57, 58, -2], { damage: 1, hitstun: 100, push: 0, unblockable: true })],
+    onHit: { to: 'bdEscalate' },
+    events: [{ at: 30, vx: 14 }, fx(0, 'sparkBurst', [20, -40], { follow: 'owner' }), fx(30, 'dust', [-20, 4])],
+  },
+  bdEscalate: {
+    launch: { vx: 5, vy: 9 },
+    actions: [{ id: 11301 }, { id: 11302, times: { 0: 10, 1: 15, 2: 5, 3: 130 } }],
+    noPush: true,
+    invulnerable: [0, 190],
+    events: [
+      { at: 0, pinOpponent: { dx: 46, lift: 0, ticks: 190, relative: 'self' } },
+      fx(0, 'superDark', [0, -200], { target: 'stage' }),
+      ...Array.from({ length: 14 }, (_, index) => fx(30 + index * 9, 'superBlast', [rnd(-26, 30), -rnd(8, 62)], { target: 'opponent' })),
+      ...[135, 140, 145, 150].map((at) => fx(at, 'superBlast', [rnd(-20, 20), -rnd(5, 40)], { target: 'opponent', scale: 1.3 })),
+      fx(166, 'whiteFlash', [0, -200], { target: 'stage' }),
+      fx(170, 'hugeBlast', [0, -30], { target: 'opponent' }),
+      fx(170, 'hugeFire', [0, 0], { target: 'opponent' }),
+    ],
   },
 
   bdIdle: { actions: [10000], loop: true },
@@ -589,6 +659,17 @@ const EFFECTS = {
     cover: [1900, 1900],
     harmless: true,
   },
+  // As sete explosoes da rajada (helper 11210): cada uma acerta uma vez.
+  barrageBlast: {
+    actions: [7084],
+    size: 0.22,
+    area: { widthRatio: 0.9, heightRatio: 0.9, until: 3, damage: 3, hitstun: 26, push: 2 },
+    spawns: [
+      { at: 0, effect: { id: 'blastBlue', pos: [0, 0], scale: 0.7 } },
+      { at: 0, effect: { id: 'blastRing', pos: [0, 0], scale: 0.5 } },
+      { at: 1, effect: { id: 'groundBurst', pos: [0, -18], scale: 0.7 } },
+    ],
+  },
   superBlast: {
     actions: [7084],
     size: 0.2,
@@ -657,7 +738,8 @@ const COMBOS = [
   { id: 'bd-kick', input: '↓→K', animation: 'bdKickBomb', mode: 'bombDevil' },
   { id: 'bd-dash', input: '↓←K', animation: 'bdDash', mode: 'bombDevil' },
   { id: 'bd-missiles', input: '↓→S', animation: 'bdMissiles', mode: 'bombDevil' },
-  { id: 'bd-super', input: '↓→↓→P', animation: 'super', mode: 'bombDevil' },
+  { id: 'bd-super', input: '↓→↓→P', animation: 'bdGrab', mode: 'bombDevil' },
+  { id: 'bd-barrage', input: '↓→↓→K', animation: 'bdBarrage', mode: 'bombDevil' },
   { id: 'bd-uppercut', input: 'P', hold: '↓', animation: 'uppercut', mode: 'bombDevil' },
   { id: 'bd-ground-bomb', input: 'K', hold: '↓', animation: 'groundBomb', mode: 'bombDevil' },
   { id: 'bd-grenades', input: 'S', hold: '↓', animation: 'grenades', mode: 'bombDevil' },
@@ -684,7 +766,7 @@ const MOVE_LIST = [
   { section: 'Especiais', name: 'Bomba', input: '↓→P', note: 'Acelera e explode no que encontrar' },
   { section: 'Especiais', name: 'Coluna de explosões', input: '↓←P', note: 'Quatro estouros empilhados à frente' },
   { section: 'Especiais', name: 'Chute-bomba', input: '↓→K', note: 'Salta e mergulha explodindo dos dois lados' },
-  { section: 'Especiais', name: 'Soco em investida', input: '↓←K', note: 'Avança e lança' },
+  { section: 'Especiais', name: 'Soco em investida', input: '↓←K', note: 'Se acerta, emenda mais seis golpes' },
   { section: 'Especiais', name: 'Rajada de mísseis', input: '↓→S', note: 'Três mísseis teleguiados e um grande' },
   { section: 'Super', name: 'Detonação', input: '↓→↓→P', note: 'Agarra e explode o oponente em cadeia' },
   { section: 'Bomb Devil', name: 'Transformar', input: '←↓S', note: 'A cabeça vira a bomba; +30% de dano. O mesmo comando volta' },
@@ -693,6 +775,8 @@ const MOVE_LIST = [
   { section: 'Bomb Devil', name: 'Chute-bomba', input: '↓→K', note: 'Mais forte que o normal' },
   { section: 'Bomb Devil', name: 'Investida', input: '↓←K', note: 'Termina numa explosão' },
   { section: 'Bomb Devil', name: 'Mísseis', input: '↓→S', note: 'Seis, teleguiados' },
+  { section: 'Bomb Devil', name: 'Escalada', input: '↓→↓→P', note: 'Agarra; se pegar, a tela escurece e uma explosão enorme fecha' },
+  { section: 'Bomb Devil', name: 'Rajada', input: '↓→↓→K', note: 'Sete explosões em volta dele e um míssil gigante' },
 ];
 
 importMugenCharacter({
