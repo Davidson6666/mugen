@@ -159,3 +159,22 @@ test('reze: os especiais da forma acertam', () => {
     assert.ok(hits(world).length > before, `${name} nao acertou`);
   }
 });
+
+// A serie do soco em investida (1300 -> 1301 -> 1302): se o primeiro acerta,
+// emenda mais seis golpes.
+test('reze: o soco em investida emenda a serie de sete golpes', () => {
+  const world = run(arena(record, 500, 590), cast('dashPunch'), 160);
+  for (const name of ['dashPunch', 'dashPunch2', 'dashPunch3']) assert.ok(world.visited.has(name), name);
+  assert.ok(hits(world).length >= 6, `${hits(world).length} acertos`);
+});
+
+test('reze: na forma Bomb Devil, a escalada e a rajada fecham com a explosao grande', () => {
+  for (const [name, left, right, ticks, move] of [['bdGrab', 500, 600, 340, 'bdEscalate'], ['bdBarrage', 500, 640, 260, null]]) {
+    const world = arena(record, left, right);
+    run(world, cast('toBombDevil'), 80);
+    const before = world.fighters[1].health;
+    run(world, cast(name), ticks);
+    if (move) assert.ok(world.visited.has(move), `${name} nao virou ${move}`);
+    assert.ok(before - world.fighters[1].health >= 20, `${name}: ${before - world.fighters[1].health} de dano`);
+  }
+});
