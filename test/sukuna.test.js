@@ -91,10 +91,29 @@ test('sukuna: o pilar acerta o adversario no outro lado da arena', () => {
 });
 
 // Golpe de projetil e o que da o alcance: precisa soltar um efeito que anda.
-test('sukuna: a onda gigante, a flecha, a lanca e os cortes sao projeteis que andam', () => {
-  for (const id of ['bigWave', 'fugaArrow', 'hitenSpear', 'cutWave']) {
+test('sukuna: a flecha, a lanca e os cortes sao projeteis que andam', () => {
+  for (const id of ['fugaArrow', 'hitenSpear', 'cutWave']) {
     assert.ok(config.effects[id].velocityX > 0, `${id} nao anda`);
     assert.ok(config.effects[id].hits?.length > 0, `${id} nao acerta`);
+  }
+});
+
+// O corte da onda gigante (↓←P) cruza a arena inteira de uma vez: a caixa e
+// mais larga que o campo.
+test('sukuna: o corte do ↓←P e mais largo que a arena', () => {
+  const box = config.effects.bigCut.hits[0].box;
+  assert.ok(box.width * (config.spriteScale ?? 1) >= 700, `caixa de ${box.width}`);
+});
+
+// Todo corte do video e a mesma lamina preta; nenhum golpe usa mais os cortes
+// brancos do pacote (varreduras, garras, riscos de luz).
+test('sukuna: os cortes sao as laminas pretas do video', () => {
+  const white = ['crossCut', 'crescent', 'clawSlash', 'slashArc', 'clawSweep', 'bigWave', 'ringSlash'];
+  for (const id of white) assert.equal(config.effects[id], undefined, `${id} ainda existe`);
+  for (const [name, move] of Object.entries(config.animations)) {
+    for (const event of move.events ?? []) {
+      assert.ok(!white.includes(event.effect?.id), `${name} usa ${event.effect?.id}`);
+    }
   }
 });
 

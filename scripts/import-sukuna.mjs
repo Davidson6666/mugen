@@ -47,15 +47,23 @@ const strike = (from, until, rect, data) => ({ from, until, rect, ...data });
 
 const NORMAL = { specialCancel: true };
 
-// Cortes do dominio: um a cada 10 ticks em cima do oponente, alternando o
-// desenho pra nao virar a mesma imagem piscando.
-const DOMAIN_CUTS = Array.from({ length: 14 }, (_, index) => fx(60 + index * 10, index % 2 ? 'crossCut' : 'crescent', [
-  [-20, 10, -5, 20, 0, -15][index % 6], [-45, -25, -60, -35, -20, -50][index % 6],
-], { target: 'opponent' }));
+// Todos os cortes do video sao a mesma coisa: uma lamina preta fina e comprida
+// (blade, desenhada por codigo em mugen-import), girada de um jeito a cada
+// golpe pelo "angle" do pedido. cutS/M/L/XL so enfeitam; terminados em "h"
+// tambem acertam o que estiver no meio deles. No dominio vem um a cada 10 ticks
+// em cima do oponente, em angulos e tamanhos que se alternam.
+const DOMAIN_ANGLES = [-52, 18, -12, 44, -28, 8, 62, -40, 24, -6, 36, -60, 14, -22];
+const DOMAIN_SIZES = ['cutMh', 'cutLh', 'cutMh', 'cutXLh', 'cutMh', 'cutLh', 'cutMh', 'cutLh', 'cutMh', 'cutXLh', 'cutMh', 'cutLh', 'cutMh', 'cutLh'];
+const DOMAIN_CUTS = Array.from({ length: 14 }, (_, index) => fx(60 + index * 10, DOMAIN_SIZES[index], [0, -45], { target: 'opponent', angle: DOMAIN_ANGLES[index], spread: [55, 28] }));
 
-// Cortes pretos do dominio: um a cada 20 ticks na altura do oponente, em tres
-// angulos que se alternam.
-const DOMAIN_BLACK = Array.from({ length: 6 }, (_, index) => fx(64 + index * 20, ['blackCutA', 'blackCutB', 'whiteCut'][index % 3], [0, -45 + (index % 2) * 18], { target: 'opponent' }));
+// A familia de cortes: os quatro tamanhos, com e sem dano.
+const CUT_STEPS = [[0.3, 1], [1, 3], [1, 3], [0.6, 2], [0.2, 2]];
+const CUT_SIZES = { S: [240, 7], M: [520, 12], L: [760, 15], XL: [1000, 20] };
+const CUT_HIT = { rect: [-70, -65, 70, 65], until: 3, damage: 2, hitstun: 24, push: 3 };
+const CUT_FAMILY = Object.fromEntries(Object.entries(CUT_SIZES).flatMap(([name, [length, thickness]]) => {
+  const blade = { length, thickness, hair: 1.1, steps: CUT_STEPS };
+  return [[`cut${name}`, { blade, harmless: true }], [`cut${name}h`, { blade, area: CUT_HIT }]];
+}));
 
 const ANIMATIONS = {
   idle: { actions: [0], loop: true },
@@ -114,7 +122,7 @@ const ANIMATIONS = {
       strike(2, 3, [18, -63, 96, -1], { damage: 2, hitstun: 20, push: 2 }),
       strike(4, 6, [19, -57, 91, 1], { damage: 2, hitstun: 22, push: 3 }),
     ],
-    events: [{ at: 3, vx: 8 }, fx(2, 'ghost', [0, 0], { follow: 'owner', lifetime: 16 }), fx(4, 'slashArc', [45, -35], { scale: [0.5, 0.35] })],
+    events: [{ at: 3, vx: 8 }, fx(2, 'ghost', [0, 0], { follow: 'owner', lifetime: 16 }), fx(4, 'cutS', [45, -38], { angle: 25 })],
     cancels: [{ on: 'punch', to: 'punch4', after: 10 }, { on: 'special', to: 'lance', after: 10 }],
   },
   // 230: ele mergulha e corta embaixo.
@@ -137,7 +145,7 @@ const ANIMATIONS = {
     actions: [250],
     ...NORMAL,
     areas: [strike(2, 4, [10, -50, 53, -8], { damage: 3, hitstun: 24, push: 5 })],
-    events: [fx(6, 'slashArc', [25, -30], { scale: [0.35, 0.25] })],
+    events: [fx(6, 'cutS', [28, -32], { angle: -30 })],
     cancels: [{ on: 'punch', to: 'punch7', after: 8 }],
   },
   // 260: o chute girando que fecha a corrente e lanca.
@@ -145,7 +153,7 @@ const ANIMATIONS = {
     launch: { vx: 4, vy: 6 },
     actions: [260],
     areas: [strike(3, 4, [7, -57, 45, -15], { damage: 4, hitstun: 34, push: 10, heavy: true })],
-    events: [{ at: 10, vx: 4 }, fx(12, 'clawSlash', [30, -35], { scale: 0.5 })],
+    events: [{ at: 10, vx: 4 }, fx(12, 'cutM', [34, -38], { angle: 35 })],
   },
 
   // ---- Corrente do chute ----
@@ -168,7 +176,7 @@ const ANIMATIONS = {
     actions: [{ id: 320, times: { 2: 12 } }],
     ...NORMAL,
     areas: [strike(2, 2, [21, -49, 54, -9], { damage: 3, hitstun: 24, push: 6 })],
-    events: [{ at: 6, vx: 5 }, fx(6, 'slashArc', [30, -30], { scale: [0.4, 0.3] })],
+    events: [{ at: 6, vx: 5 }, fx(6, 'cutS', [32, -32], { angle: 40 })],
     cancels: [{ on: 'kick', to: 'kick4', after: 10 }],
   },
   // 330: o braco estendido, o mais longo da corrente.
@@ -176,7 +184,7 @@ const ANIMATIONS = {
     actions: [{ id: 330, times: { 2: 8 } }],
     ...NORMAL,
     areas: [strike(1, 2, [0, -72, 77, -9], { damage: 3, hitstun: 26, push: 6 })],
-    events: [fx(3, 'crossCut', [55, -35], { scale: 0.3 })],
+    events: [fx(3, 'cutS', [55, -38], { angle: -14 })],
     cancels: [{ on: 'kick', to: 'kick5', after: 8 }],
   },
   // 340: ele aponta e o corte sai sozinho a frente.
@@ -184,7 +192,7 @@ const ANIMATIONS = {
     launch: { vx: 3, vy: 5 },
     actions: [{ id: 340, times: { 0: 6, 1: 8, 2: 8, 3: 8, 4: 8, 5: 10 } }],
     areas: [strike(2, 4, [40, -80, 130, 2], { damage: 4, hitstun: 32, push: 8, heavy: true })],
-    events: [fx(14, 'crescent', [85, -40], { scale: 0.5 }), fx(20, 'crossCut', [95, -35], { scale: 0.4 })],
+    events: [fx(14, 'cutM', [85, -42], { angle: 12 }), fx(20, 'cutM', [95, -36], { angle: -18 })],
   },
 
   // ---- Corrente da lanca (botao especial) ----
@@ -197,7 +205,7 @@ const ANIMATIONS = {
       strike(3, 3, [17, -42, 113, -24], { damage: 4, hitstun: 24, push: 6 }),
       strike(4, 4, [-70, -57, 88, -2], { damage: 2, hitstun: 20, push: 3 }),
     ],
-    events: [fx(15, 'clawSlash', [70, -32], { scale: [0.8, 0.4] })],
+    events: [fx(15, 'cutM', [75, -33], { angle: 8 })],
     cancels: [{ on: 'special', to: 'lance2', after: 22 }],
   },
   // 410: ele roda a lanca; os quatro quadros tem a mesma caixa.
@@ -205,7 +213,7 @@ const ANIMATIONS = {
     actions: [410],
     ...NORMAL,
     areas: [strike(0, 3, [15, -54, 72, 3], { damage: 2, hitstun: 18, push: 2, every: 4, count: 3 })],
-    events: [fx(0, 'slashArc', [45, -30], { scale: [0.6, 0.5] })],
+    events: [fx(0, 'cutM', [45, -32], { angle: -25 })],
     cancels: [{ on: 'special', to: 'lance3', after: 8 }],
   },
   // 430: o giro largo que fecha, com a caixa de cima e a de baixo do autor.
@@ -213,7 +221,7 @@ const ANIMATIONS = {
     launch: { vx: 5, vy: 7 },
     actions: [430],
     areas: [strike(2, 3, [-63, -93, 55, 6], { damage: 5, hitstun: 36, push: 12, heavy: true })],
-    events: [fx(15, 'clawSlash', [0, -50], { scale: 0.9 }), fx(16, 'dust', [-20, 2], { scale: 0.2 }), { at: 0, sound: 's0_38' }],
+    events: [fx(15, 'cutL', [10, -50], { angle: 30 }), fx(16, 'dust', [-20, 2], { scale: 0.2 }), { at: 0, sound: 's0_38' }],
   },
 
   // ---- No ar ----
@@ -230,7 +238,7 @@ const ANIMATIONS = {
     air: true,
     ...NORMAL,
     areas: [strike(3, 4, [4, -71, 38, -11], { damage: 3, hitstun: 22, push: 5 })],
-    events: [fx(12, 'slashArc', [20, -40], { scale: [0.35, 0.3] }), { at: 10, sound: 's10_42' }],
+    events: [fx(12, 'cutS', [22, -42], { angle: -35 }), { at: 10, sound: 's10_42' }],
   },
   // 3599: ele desce de lanca em riste. No pacote nao tem gravidade (physics
   // = N) e a caixa cobre o corpo todo; aqui vira um mergulho normal.
@@ -275,7 +283,7 @@ const ANIMATIONS = {
       fx(0, 'ghost', [0, 0], { follow: 'owner' }),
       fx(0, 'ghost2', [0, 0], { follow: 'owner' }),
       fxLoop(0, 'darkStreaks', [-30, 0], 3, 22),
-      fx(0, 'ringSlash', [45, -30], { scale: 0.8 }),
+      fx(2, 'cutM', [60, -30], { angle: 6 }),
       fx(0, 'groundRings', [0, 0], { scale: 0.5 }),
     ],
   },
@@ -297,14 +305,15 @@ const ANIMATIONS = {
     actions: [{ id: 1200, times: { 0: 3, 1: 3, 2: 6, 3: 4, 4: 2, 5: 5, 6: 12, 7: 4, 8: 8 } }],
     cooldown: 220,
     invulnerable: [6, 22],
+    areas: [strike(4, 6, [0, -75, 95, -8], { damage: 8, hitstun: 40, push: 12, heavy: true })],
     events: [
       fx(10, 'ringBurst', [0, -40], { scale: 0.5 }),
       fx(10, 'darkStreaks', [0, 0], { scale: 0.8 }),
-      { at: 12, teleport: 62 },
+      { at: 12, teleport: 48 },
       fx(14, 'ringBurst', [30, -40], { scale: 0.5 }),
-      fx(18, 'clawSweep', [40, -45]),
-      fx(18, 'crossCut', [45, -40], { scale: 0.5 }),
-      fx(19, 'blackCutB', [-20, -45], { target: 'opponent' }),
+      fx(18, 'cutL', [0, -48], { target: 'opponent', angle: 14 }),
+      fx(19, 'cutM', [0, -40], { target: 'opponent', angle: -20 }),
+      fx(19, 'cutHair', [0, -45], { target: 'opponent', angle: -7 }),
       fx(20, 'bloodSplat', [40, -42]),
     ],
   },
@@ -350,7 +359,7 @@ const ANIMATIONS = {
       fx(0, 'ghost3', [0, 0], { follow: 'owner' }),
       fxLoop(2, 'cutHit', [48, -44], 4, 46, { spread: [16, 18], scale: 0.45 }),
       fx(58, 'bloodSplat', [0, -42], { target: 'opponent' }),
-      fx(58, 'crossCut', [45, -40], { scale: 0.6 }),
+      fx(58, 'cutM', [45, -40], { angle: 15 }),
     ],
   },
 
@@ -382,15 +391,14 @@ const ANIMATIONS = {
       fxLoop(0, 'debrisRing', [0, 0], 14, 38),
       fxLoop(10, 'plume', [-50, -25], 6, 38),
       fxLoop(13, 'plume', [45, -20], 6, 38),
-      fxLoop(12, 'crossCut', [-60, -70], 4, 38),
-      fxLoop(14, 'crossCut', [70, -95], 4, 38),
+      fxLoop(12, 'cutM', [0, -75], 4, 38, { angle: 3, spread: [110, 40] }),
+      fxLoop(14, 'cutM', [0, -35], 4, 38, { angle: -4, spread: [110, 30] }),
+      fxLoop(16, 'cutS', [0, -60], 4, 38, { angle: 9, spread: [120, 45] }),
       fx(20, 'cursedSigil', [0, -49]),
-      fx(40, 'crescent', [70, -45], { scale: 0.9 }),
+      fx(40, 'cutLh', [0, -45], { target: 'opponent', angle: 7 }),
       fx(40, 'groundLine', [0, 5]),
-      fx(41, 'blackCutA', [-30, -45], { target: 'opponent' }),
-      fx(41, 'blackCutC', [-30, -45], { target: 'opponent' }),
-      fx(42, 'whiteCut', [-10, -45], { target: 'opponent' }),
-      fx(42, 'crossCut', [80, -40], { scale: 0.6 }),
+      fx(41, 'cutHair', [0, -45], { target: 'opponent', angle: -7 }),
+      fx(42, 'cutHairWhite', [0, -45], { target: 'opponent', angle: 57 }),
       fx(44, 'darkStreaks', [60, -40], { scale: 0.7 }),
     ],
   },
@@ -403,15 +411,15 @@ const ANIMATIONS = {
     areas: [strike(6, 7, [-20, -90, 120, 60], { damage: 8, hitstun: 38, push: 12, heavy: true })],
     events: [
       fxLoop(10, 'plume', [-40, -20], 6, 34),
-      fxLoop(12, 'crossCut', [60, -60], 5, 34),
+      fxLoop(12, 'cutM', [0, -60], 5, 34, { angle: 6, spread: [100, 40] }),
       fx(18, 'cursedSigil', [0, -49]),
-      fx(36, 'crescent', [60, -30], { scale: 0.9 }),
+      fx(36, 'cutLh', [60, -30], { angle: 10 }),
       fx(38, 'darkStreaks', [50, -25], { scale: 0.7 }),
     ],
   },
-  // 3000 (↓←P): a carga longa. No quadro 8 o pacote solta o helper 1505: uma
-  // onda de corte gigante que cruza a tela a velocidade 25 e tira um terco da
-  // vida. Era isso o golpe - eu tinha deixado so um clarao parado na frente.
+  // 3000 (↓←P): a carga longa. No quadro 8 o pacote solta o helper 1505, que
+  // cruza a tela e tira um terco da vida. Aqui vira o corte preto do video,
+  // grande o bastante para atravessar a arena inteira de uma vez.
   cursedBlast: {
     actions: [{ id: 3000, durationScale: 0.4 }],
     cooldown: 300,
@@ -423,10 +431,12 @@ const ANIMATIONS = {
       fx(28, 'coreBurst', [-1, -46]),
       fx(30, 'darkOrb', [-1, -46]),
       fx(58, 'starBurst', [40, -52]),
-      fx(66, 'bigWave', [26, -3]),
+      fx(66, 'bigCut', [0, -45], { target: 'stage', angle: 7 }),
+      fx(67, 'cutHair', [0, -45], { target: 'stage', angle: -7 }),
+      fx(68, 'cutHairWhite', [0, -45], { target: 'stage', angle: 57 }),
       fx(66, 'flashRing', [40, -50]),
       fx(68, 'coreBurst', [40, -50]),
-      fx(94, 'groundScar', [120, 0]),
+      fx(72, 'groundScar', [0, 0], { target: 'stage' }),
     ],
   },
   // 1000 (↓→K): os relampagos vermelhos saem da mao e o helper 1040 abre um
@@ -516,10 +526,10 @@ const ANIMATIONS = {
       fx(26, 'voidSpiral', [75, -45], { scale: 1.4 }),
       fx(40, 'cursedCloud', [110, -60]),
       fx(60, 'cursedCloud', [50, -30]),
-      fx(70, 'clawSlash', [80, -45], { scale: 0.9 }),
-      fx(90, 'crossCut', [80, -40], { scale: 0.7 }),
+      fx(70, 'cutLh', [0, -45], { target: 'opponent', angle: -14 }),
+      fx(90, 'cutXLh', [0, -42], { target: 'opponent', angle: 9 }),
       fx(104, 'voidBlast', [80, -45]),
-      fx(112, 'crescent', [80, -45], { scale: 1.1 }),
+      fx(112, 'cutLh', [0, -45], { target: 'opponent', angle: -30 }),
       fx(118, 'splash', [80, -20]),
     ],
   },
@@ -538,7 +548,6 @@ const ANIMATIONS = {
       fx(34, 'redBands', [0, 0], { target: 'stage' }),
       fx(40, 'voidBlast', [0, -40], { target: 'opponent' }),
       ...DOMAIN_CUTS,
-      ...DOMAIN_BLACK,
       fx(190, 'splash', [0, -20], { target: 'opponent' }),
       fx(196, 'groundRocks', [0, 0], { target: 'opponent' }),
       fx(200, 'cursedSkull', [0, -40], { target: 'opponent' }),
@@ -565,28 +574,7 @@ const EFFECTS = {
   groundRocks: { actions: [3021], size: 0.35, harmless: true },
   splash: { actions: [{ id: 7046, lengthTicks: 40 }], size: 0.2, harmless: true },
 
-  // Cortes
-  slashArc: { actions: [332], size: 0.4, harmless: true },
-  // O 3051 que eu usava aqui e um anel escuro quase invisivel; o corte branco
-  // de verdade e a varredura 1505, comprimida para durar o que o golpe pede.
-  crescent: {
-    actions: [1505],
-    durationScale: 0.35,
-    size: 0.22,
-    area: { fromFrame: 3, widthRatio: 0.7, heightRatio: 0.9, until: 4, damage: 2, hitstun: 26, push: 4 },
-  },
-  crossCut: {
-    actions: [7027],
-    size: 0.35,
-    area: { rect: [-130, -55, 130, 55], until: 3, damage: 2, hitstun: 26, push: 4 },
-  },
-  clawSlash: {
-    actions: [30029],
-    size: 0.7,
-    area: { rect: [-60, -40, 60, 40], until: 3, damage: 2, hitstun: 24, push: 4 },
-  },
   darkStreaks: { actions: [1345], size: 0.4, harmless: true },
-  ringSlash: { actions: [7037], size: 0.16, harmless: true },
   ringBurst: { actions: [9014], size: 0.3, harmless: true },
   streak: { actions: [30024], size: 0.3, harmless: true },
   cursedSigil: { actions: [524], size: 0.35, harmless: true },
@@ -636,18 +624,31 @@ const EFFECTS = {
   coneRing: { actions: [4102], size: 0.4, harmless: true },
   wideBlast: { actions: [{ id: 7038, lengthTicks: 34 }], size: 0.25, harmless: true },
 
+  // Cortes: a lamina preta do video (ver CUT_FAMILY) e seus fios.
+  ...CUT_FAMILY,
+  cutHair: {
+    blade: { length: 700, thickness: 3.5, hair: 1.2, steps: [[1, 5, 1], [1, 5, 0.8], [1, 4, 0.5]] },
+    harmless: true,
+  },
+  cutHairWhite: {
+    blade: { length: 520, thickness: 2.6, hair: 1.1, color: [235, 245, 255], steps: [[1, 4, 1], [1, 4, 0.8], [1, 4, 0.5]] },
+    harmless: true,
+  },
+  // O corte da onda gigante (↓←P): atravessa a arena inteira, a 7 graus.
+  bigCut: {
+    blade: { length: 1000, thickness: 22, hair: 1.2, steps: [[0.2, 1], [1, 2], [1, 8], [0.85, 4], [0.5, 3], [0.2, 2]] },
+    launch: { vx: 5, vy: 7 },
+    area: { rect: [-500, -100, 500, 100], until: 6, damage: 10, hitstun: 46, push: 14, heavy: true },
+  },
   // Corte vertical que cruza a tela (o helper 390 do pacote: caixa de 9x95).
   cutWave: {
-    actions: [30029],
-    pick: [0, 1, 2],
-    times: { 0: 3, 1: 3, 2: 3 },
+    blade: { length: 150, thickness: 6, angle: 90, hair: 1.1, steps: [[1, 3], [0.8, 3]] },
     loop: true,
-    size: 0.8,
-    velocityX: 14,
+    velocityX: 15,
     lifetime: 46,
     destroyOnHit: true,
     endAtWall: true,
-    area: { widthRatio: 0.9, heightRatio: 0.9, damage: 3, hitstun: 22, push: 5 },
+    area: { rect: [-10, -80, 10, 80], until: 99, damage: 3, hitstun: 22, push: 5 },
     onHitSpawn: { id: 'cutHit', pos: [0, 0] },
   },
   cutHit: { actions: [7027], size: 0.4, harmless: true },
@@ -713,52 +714,15 @@ const EFFECTS = {
     harmless: true,
     spawns: [{ at: 1, effect: { id: 'bloodSplat', pos: [0, 0] } }],
   },
-  clawSweep: { actions: [1212], size: 0.35, harmless: true },
 
   // Imagem residual: o proprio Sukuna repetido atras (o AfterImage do pacote).
   ghost: { actions: [0], loop: true, lifetime: 60, harmless: true, layer: 'back', alpha: 0.5, tint: 0xffd0d0, mirrorOwner: { delay: 3, offset: 16 } },
   ghost2: { actions: [0], loop: true, lifetime: 60, harmless: true, layer: 'back', alpha: 0.32, tint: 0xffb0b0, mirrorOwner: { delay: 6, offset: 32 } },
   ghost3: { actions: [0], loop: true, lifetime: 60, harmless: true, layer: 'back', alpha: 0.2, tint: 0xff9090, mirrorOwner: { delay: 9, offset: 48 } },
-  // O corte preto do video: uma lamina so, limpa, que atravessa a tela subindo
-  // uns 7 graus, mais grossa perto de 45% do comprimento e virando fio nas duas
-  // pontas, cruzada por um fio escuro que desce e outro claro bem inclinado.
-  // E desenhada por codigo (blade): o sprite 8647 do pacote e esfiapado e grosso.
-  blackCutA: {
-    blade: { length: 700, thickness: 16, angle: 7, hair: 1.2, steps: [[0.25, 1], [1, 2], [1, 6], [0.85, 3], [0.5, 2], [0.2, 2]] },
-    harmless: true,
-  },
-  blackCutB: {
-    blade: { length: 700, thickness: 16, angle: -7, hair: 1.2, steps: [[0.25, 1], [1, 2], [1, 6], [0.85, 3], [0.5, 2], [0.2, 2]] },
-    harmless: true,
-  },
-  blackCutC: {
-    blade: { length: 700, thickness: 3.5, angle: -7, hair: 1.2, steps: [[1, 5, 1], [1, 5, 0.8], [1, 4, 0.5]] },
-    harmless: true,
-  },
-  whiteCut: {
-    blade: { length: 520, thickness: 2.6, angle: 57, hair: 1.1, color: [235, 245, 255], steps: [[1, 4, 1], [1, 4, 0.8], [1, 4, 0.5]] },
-    harmless: true,
-  },
   groundScar: { actions: [8647], size: 0.5, center: true, blend: 'normal', lifetime: 150, layer: 'back', harmless: true },
   // Sangue dos acertos (as faiscas vermelhas do pacote: 7613 e 70031).
   bloodFlash: { actions: [7613], size: 0.3, harmless: true },
   bloodSplat: { actions: [70031], size: 0.45, blend: 'normal', harmless: true },
-
-  // Onda de corte gigante (1505, a varredura que o pacote desenha a 38%).
-  bigWave: {
-    actions: [1505],
-    size: 0.32,
-    velocityX: 15,
-    lifetime: 46,
-    maxHits: 1,
-    endAtWall: true,
-    launch: { vx: 5, vy: 7 },
-    area: { fromFrame: 3, widthRatio: 0.55, heightRatio: 0.9, damage: 10, hitstun: 46, push: 14, heavy: true },
-    spawns: [
-      { at: 0, repeat: { every: 3, until: 44 }, effect: { id: 'darkStreaks', pos: [-50, 0] } },
-      { at: 2, repeat: { every: 4, until: 44 }, effect: { id: 'rubble', pos: [60, 0], scale: 0.7 } },
-    ],
-  },
 
   // Fuga: a flecha, o rastro, a explosao e as chamas que ficam no chao.
   arrowGlow: { actions: [8060], size: 0.6, loop: true, harmless: true },

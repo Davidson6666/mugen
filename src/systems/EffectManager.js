@@ -84,8 +84,11 @@ export class Effect {
     if (this.definition.blend) this.sprite.blendMode = this.definition.blend;
     if (this.definition.alpha !== undefined) this.sprite.alpha = this.definition.alpha;
     if (this.definition.tint !== undefined) this.sprite.tint = this.definition.tint;
-    // AngleDraw: o MUGEN gira no sentido anti-horario.
-    if (this.definition.angle) this.sprite.rotation = -(this.definition.angle * Math.PI) / 180;
+    // AngleDraw: o MUGEN gira no sentido anti-horario. O pedido pode trazer o
+    // proprio angulo (o mesmo risco de corte, girado de um jeito a cada golpe,
+    // sem guardar uma folha por angulo).
+    const angle = this.spawn.angle ?? this.definition.angle;
+    if (angle) this.sprite.rotation = -(angle * Math.PI) / 180;
     // Fundo que cobre a tela: ancorado pelo meio, nao pelo pe.
     if (this.definition.cover) this.sprite.anchor.set(0.5, 0.5);
     this.sync();

@@ -440,16 +440,18 @@ function makeBlade({ length, thickness, angle = 0, color = [0, 0, 0], peak = 0.4
 function bladeFrames(spec, effectId) {
   const frames = [];
   let clock = 0;
-  spec.steps.forEach(([grow, ticks, alpha = 1], index) => {
+  spec.steps.forEach(([grow, ticks, alpha = 1]) => {
     frames.push({
       image: makeBlade({ ...spec, grow, alpha }),
-      id: `${effectId}:${index}`,
+      id: `${effectId}:${grow}:${alpha}`,
       group: -1,
       item: -1,
       x: 0,
       y: 0,
       flip: '',
       blend: '',
+      clsn1: [],
+      clsn2: [],
       duration: ticks,
     });
     clock += ticks;
