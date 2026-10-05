@@ -317,15 +317,29 @@ const ANIMATIONS = {
       fx(20, 'bloodSplat', [40, -42]),
     ],
   },
-  // 1300 (Y): o arremesso da lanca. O pacote solta o helper 1350 no quadro 6,
-  // que voa a velocidade 20 e tira 100 de dano.
+  // 1300 (Y): o arremesso da lanca. O pacote solta o helper 1350 no quadro 6:
+  // a haste fina de ponta dourada que voa a velocidade 20 com o rastro de laminas
+  // brancas (1362). Acertando ou nao, ela cai e FICA FINCADA no chao (o helper
+  // 1415) ate ser chamada de volta.
   hiten: {
     actions: [{ id: 1300, times: { 0: 5, 1: 5, 2: 5, 3: 10, 4: 3, 5: 12 } }],
-    cooldown: 240,
+    cooldown: 200,
     events: [
       fx(8, 'redSpark', [30, -60]),
       fx(28, 'hitenSpear', [44, -60]),
       fx(28, 'ringBurst', [46, -60], { scale: 0.6 }),
+    ],
+  },
+  // 1303 (Y de novo, com a lanca no chao): ele aponta o braco (a pose 1301) e a
+  // lanca volta girando como um disco de vento (1351) - acertando quem estiver
+  // no caminho - ate a mao dele (1302). So sai com a lanca fincada em campo.
+  recall: {
+    actions: [{ id: 1301 }, { id: 1302, times: { 0: 12, 1: 14, 2: 12 } }],
+    requires: 'plantedSpear',
+    cooldown: 60,
+    events: [
+      { at: 10, consume: 'plantedSpear' },
+      fx(10, 'redSpark', [30, -56], { scale: 0.5 }),
     ],
   },
 
@@ -688,33 +702,46 @@ const EFFECTS = {
   },
   emberSplash: { actions: [331], size: 0.3, harmless: true },
   smokeBurst: { actions: [1014], size: 0.28, blend: 'normal', harmless: true },
-  // Arremesso da lanca (Hiten, helper 1350).
+  // Arremesso da lanca (Hiten, helper 1350): a haste (99x19) com o rastro de
+  // laminas; onde ela acaba, fica fincada.
   hitenSpear: {
-    actions: [1415],
-    rotate: 90,
-    size: 1.7,
+    actions: [1350],
     loop: true,
-    velocityX: 18,
-    lifetime: 48,
+    size: 1.1,
+    velocityX: 17,
+    lifetime: 46,
     destroyOnHit: true,
     endAtWall: true,
-    launch: { vx: 5, vy: 7 },
-    area: { widthRatio: 1, heightRatio: 1.6, damage: 9, hitstun: 50, push: 14, heavy: true },
-    onHitSpawn: { id: 'hitenImpact', pos: [0, 0] },
-    spawns: [
-      { at: 0, repeat: { every: 3, until: 46 }, effect: { id: 'spikeWake', pos: [-30, 0] } },
-      { at: 1, repeat: { every: 4, until: 46 }, effect: { id: 'slashFan', pos: [-40, 0] } },
-    ],
+    area: { rect: [-70, -26, 70, 26], damage: 8, hitstun: 40, push: 5, heavy: true },
+    onHitSpawn: { id: 'spearImpact', pos: [0, 0] },
+    onDeathSpawn: { id: 'plantedSpear', pos: [100, 8] },
+    spawns: [{ at: 0, repeat: { every: 4, until: 44 }, effect: { id: 'slashFan', pos: [-60, 0] } }],
   },
-  spikeWake: { actions: [7022], size: 0.2, harmless: true },
-  slashFan: { actions: [1362], size: 0.4, harmless: true },
-  hitenImpact: {
-    actions: [1141],
-    size: 0.2,
+  slashFan: { actions: [1362], size: 0.35, harmless: true },
+  spearImpact: { actions: [1360], size: 0.55, harmless: true },
+  // A lanca fincada no chao (helper 1415): fica ate ser chamada de volta ou o
+  // round acabar. Ao sumir, ela mesma solta o disco de volta no lugar em que
+  // estava - so que quem a faz sumir e o golpe "recall", nao o tempo.
+  plantedSpear: {
+    actions: [1415],
+    loop: true,
+    size: 1.15,
+    tag: 'plantedSpear',
+    blend: 'normal',
     harmless: true,
-    spawns: [{ at: 1, effect: { id: 'bloodSplat', pos: [0, 0] } }],
+    onDeathSpawn: { id: 'spearReturn', pos: [0, 0] },
   },
-
+  // A lanca voltando: o disco de vento 1351 vai ate quem a chamou.
+  spearReturn: {
+    actions: [1351],
+    loop: true,
+    size: 1.0,
+    velocityX: -10,
+    lifetime: 56,
+    launch: { vx: 4, vy: 6 },
+    area: { rect: [-62, -40, 62, 40], until: 99, damage: 4, hitstun: 26, push: 4, every: 7, count: 2 },
+    spawns: [{ at: 0, repeat: { every: 5, until: 54 }, effect: { id: 'slashFan', pos: [40, 0] } }],
+  },
   // Imagem residual: o proprio Sukuna repetido atras (o AfterImage do pacote).
   ghost: { actions: [0], loop: true, lifetime: 60, harmless: true, layer: 'back', alpha: 0.5, tint: 0xffd0d0, mirrorOwner: { delay: 3, offset: 16 } },
   ghost2: { actions: [0], loop: true, lifetime: 60, harmless: true, layer: 'back', alpha: 0.32, tint: 0xffb0b0, mirrorOwner: { delay: 6, offset: 32 } },
@@ -823,6 +850,7 @@ const COMBOS = [
   { id: 'pillar', input: 'S', hold: '↓', animation: 'pillar' },
   { id: 'cleave', input: '↓↓K', animation: 'cleave' },
   { id: 'hiten', input: '→↓↘S', animation: 'hiten' },
+  { id: 'recall', input: '↓↓S', animation: 'recall' },
 ];
 
 const BUTTONS = {
@@ -846,7 +874,8 @@ const MOVE_LIST = [
   { section: 'Especiais', name: 'Dismantle', input: '↓→P', note: 'Para tudo e abre o corte à frente' },
   { section: 'Especiais', name: 'Barragem de socos', input: '↓↓P', note: 'Oito socos em dois ticks cada e o chute que lança; no ar vira o Dismantle' },
   { section: 'Especiais', name: 'Corte instantâneo', input: '↓↓K', note: 'Some e reaparece colado no adversário' },
-  { section: 'Especiais', name: 'Arremesso da lança', input: '→↓↘S', note: 'A lança cruza a tela e derruba' },
+  { section: 'Especiais', name: 'Arremesso da lança', input: '→↓↘S', note: 'A lança cruza a tela e fica fincada no chão' },
+  { section: 'Especiais', name: 'Chamar a lança', input: '↓↓S', note: 'Com a lança no chão: ela volta girando até a mão dele' },
   { section: 'Especiais', name: 'Explosão amaldiçoada', input: '↓←P', note: 'Carrega demorado e dá o maior dano dele' },
   { section: 'Especiais', name: 'Redemoinho', input: '↓→K', note: 'Vários acertos à frente' },
   { section: 'Especiais', name: 'Erupção', input: '↓←K', note: 'O chão sobe e o raio desce em cima' },

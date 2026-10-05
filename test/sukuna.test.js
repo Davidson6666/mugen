@@ -117,6 +117,25 @@ test('sukuna: os cortes sao as laminas pretas do video', () => {
   }
 });
 
+// A lanca: arremessa, fica fincada no chao e so entao pode ser chamada de volta.
+test('sukuna: a lanca arremessada fica fincada e o recall traz ela de volta acertando', () => {
+  const world = arena(record, 400, 800);
+  run(world, cast('hiten'), 110);
+  const tags = () => [...world.fighters[0].effectTags];
+  assert.ok(tags().includes('plantedSpear'), `sem lanca fincada: ${tags()}`);
+  const before = hits(world).length;
+  assert.ok(before >= 1, 'o arremesso nao acertou');
+  run(world, cast('recall'), 140);
+  assert.ok(world.visited.has('recall'), 'o recall nao saiu');
+  assert.ok(!tags().includes('plantedSpear'), 'a lanca continua fincada');
+  assert.ok(hits(world).length > before, `o disco nao acertou: ${hits(world).length} acertos`);
+});
+
+test('sukuna: sem a lanca no chao, o recall nao sai', () => {
+  const world = run(arena(record, 500, 700), cast('recall'), 60);
+  assert.ok(!world.visited.has('recall'));
+});
+
 test('sukuna: o dominio prende o oponente sob os cortes', () => {
   const world = run(arena(record, 400, 700), cast('domain'), 280);
   assert.ok(hits(world).length >= 8, `${hits(world).length} acertos`);
@@ -153,5 +172,6 @@ test('sukuna: comandos', () => {
   assert.equal(feed([{ down: true, kick: true }]), 'flyKick');
   assert.equal(feed([{ down: true, special: true }]), 'pillar');
   assert.equal(feed([{ down: true }, {}, { down: true }, { down: true, kick: true }]), 'cleave');
+  assert.equal(feed([{ down: true }, {}, { down: true }, { down: true, special: true }]), 'recall');
   assert.equal(feed([{ right: true }, { down: true }, { down: true, right: true }, { down: true, right: true, special: true }]), 'hiten');
 });
