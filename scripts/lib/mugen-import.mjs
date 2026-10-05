@@ -871,7 +871,7 @@ export function exportFightFx({ root, sffPath, airPath, outDir, effects }) {
 
 export function importMugenCharacter({
   root, sffPath, airPath, outDir, id, name, description, template,
-  animations, effects = {}, combos, buttons, moveList, airJumpEffect, modes, awakening, echo, sndPath, sounds, soundsFromDef, sffOptions, spriteScale, bodyScale = 1, trimFrames = false, portrait, hurtboxFrom = 'idle',
+  animations, effects = {}, combos, buttons, moveList, airJumpEffect, modes, awakening, echo, sndPath, sounds, soundsFromDef, sffOptions, spriteScale, bodyScale = 1, trimFrames = false, portrait, hurtboxFrom = 'idle', damageBuff,
 }) {
   console.log('Lendo o pacote MUGEN...');
   // SFF v1 (MUGEN antigo): as cores do personagem vem da paleta .act.
@@ -1070,6 +1070,7 @@ export function importMugenCharacter({
     ...(airJumpEffect ? { airJumpEffect: toOffset(airJumpEffect) } : {}),
     ...(modes ? { modes } : {}),
     ...(awakening ? { awakening } : {}),
+    ...(damageBuff ? { damageBuff } : {}),
     ...(echo ? { echo } : {}),
     ...(soundFiles ? { sounds: soundFiles } : {}),
     ...(spriteScale ? { spriteScale } : {}),

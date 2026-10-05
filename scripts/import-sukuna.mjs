@@ -406,6 +406,64 @@ const ANIMATIONS = {
     ],
   },
 
+  // ---- Carga, cura, contra-ataque e barreira ----
+  // 500 (o "s" do pacote): o Power Charge. Ele para e solta energia (30 de poder
+  // por tick, no pacote); a aura vermelha do video e ele carregando. Aqui nao ha
+  // medidor de poder, entao carregar segurando o especial liga o buff de dano
+  // (config.damageBuff) por 10 segundos, e a aura fica enquanto durar.
+  powerCharge: {
+    actions: [{ id: 500, lengthTicks: 150 }],
+    charge: { button: 'special', to: 'chargeEnd', min: 30, max: 150 },
+    cooldown: 120,
+    events: [
+      fx(2, 'chargeOrb', [0, -42], { follow: 'owner' }),
+      fxLoop(4, 'chargeRing', [0, -40], 22, 140, { follow: 'owner' }),
+      fxLoop(2, 'groundRings', [0, 0], 18, 140, { follow: 'owner', scale: 0.5 }),
+      fx(2, 'auraFlame', [0, 0], { follow: 'owner' }),
+    ],
+  },
+  // 501: ele solta o ar e a aura fica. O buff dura 10 s.
+  chargeEnd: {
+    actions: [{ id: 501 }],
+    events: [
+      { at: 0, buff: { kind: 'cursedPower', ticks: 600 } },
+      fx(0, 'cursedAura', [0, 0], { follow: 'owner' }),
+      fx(0, 'chargeBurst', [0, -40], { follow: 'owner' }),
+    ],
+  },
+  // 490: curar. No pacote gasta poder (500) e cura em ondas de brilho; aqui
+  // cura uns pontos de vida e so pode ser usado uma vez a cada 25 s.
+  heal: {
+    actions: [{ id: 490, lengthTicks: 80 }],
+    cooldown: 1500,
+    perRound: 2,
+    events: [
+      fxLoop(4, 'healWave', [0, 30], 20, 76, { follow: 'owner' }),
+      fxLoop(6, 'chargeRing', [0, -40], 28, 70, { follow: 'owner' }),
+      ...Array.from({ length: 8 }, (_, index) => ({ at: 8 + index * 9, heal: 3 })),
+    ],
+  },
+  // 397: contra-ataque. Ele fica em guarda e, se for atingido, some e reaparece
+  // cortando (o 319 do pacote faz um mortal completo, que aqui deixava o
+  // personagem de cabeca para baixo, entao usa o corte instantaneo).
+  counter: {
+    actions: [{ id: 398, lengthTicks: 70 }],
+    counter: { from: 6, until: 70, to: 'cleave' },
+    cooldown: 200,
+    events: [fx(4, 'cutHair', [0, -45], { follow: 'owner', angle: 7, scale: 0.4 })],
+  },
+  // 2880: a barreira de grade (anim 2135) em volta dele. Nao acerta ninguem:
+  // protege. Aqui ele fica invulneravel enquanto ela dura.
+  barrier: {
+    actions: [{ id: 189, lengthTicks: 110 }],
+    invulnerable: [14, 100],
+    cooldown: 600,
+    events: [
+      fx(10, 'barrierSphere', [0, -42], { follow: 'owner' }),
+      fx(10, 'chargeRing', [0, -40], { follow: 'owner' }),
+    ],
+  },
+
   // ---- Golpes que a primeira versao deixou de fora ----
   // 700: a cotovelada curta, caixa baixa (o autor desenhou so [10,-26,30,0]).
   elbow: {
@@ -778,6 +836,53 @@ const EFFECTS = {
     area: { rect: [-62, -40, 62, 40], until: 99, damage: 4, hitstun: 26, push: 4, every: 7, count: 2 },
     spawns: [{ at: 0, repeat: { every: 5, until: 54 }, effect: { id: 'slashFan', pos: [40, 0] } }],
   },
+  // A carga e a aura: os desenhos do pacote sao em tons de cinza (ele os tinge
+  // com a paleta), entao o vermelho vem do palfx.
+  chargeOrb: {
+    actions: [{ id: 513, lengthTicks: 150 }],
+    size: 0.2,
+    palfx: { mul: [256, 50, 60] },
+    attached: true,
+    harmless: true,
+  },
+  chargeRing: { actions: [553], size: 0.18, palfx: { mul: [256, 40, 50] }, harmless: true },
+  chargeBurst: { actions: [552], size: 0.3, palfx: { mul: [256, 60, 70] }, harmless: true },
+  // Chamas subindo em volta dele enquanto carrega (a coluna 1550, tingida).
+  auraFlame: {
+    actions: [{ id: 1550, pick: [6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50], times: { 0: 4, 1: 4, 2: 4, 3: 4, 4: 4, 5: 4, 6: 4, 7: 4, 8: 4, 9: 4, 10: 4, 11: 4 } }],
+    size: 0.2,
+    shape: { taper: 0.5, from: 0.2, fadeTop: 0.35, ragged: 0.25, soften: 0.3, grain: 2 },
+    palfx: { mul: [256, 36, 40] },
+    layer: 'back',
+    loop: true,
+    lifetime: 150,
+    alpha: 0.65,
+    attached: true,
+    harmless: true,
+  },
+  // A aura que fica depois de carregar: a mesma chama, por 10 s.
+  cursedAura: {
+    actions: [{ id: 1550, pick: [6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50], times: { 0: 4, 1: 4, 2: 4, 3: 4, 4: 4, 5: 4, 6: 4, 7: 4, 8: 4, 9: 4, 10: 4, 11: 4 } }],
+    size: 0.2,
+    shape: { taper: 0.5, from: 0.2, fadeTop: 0.35, ragged: 0.25, soften: 0.3, grain: 2 },
+    palfx: { mul: [256, 36, 40] },
+    layer: 'back',
+    loop: true,
+    lifetime: 600,
+    alpha: 0.5,
+    tag: 'cursedPower',
+    harmless: true,
+  },
+  healWave: { actions: [1250], size: 0.25, palfx: { mul: [120, 256, 150] }, harmless: true },
+  // A barreira de grade (2135): no video aparece roxa em volta do alvo.
+  barrierSphere: {
+    actions: [{ id: 2135, lengthTicks: 90 }],
+    size: 0.5,
+    palfx: { mul: [200, 90, 256] },
+    alpha: 0.9,
+    attached: true,
+    harmless: true,
+  },
   // Imagem residual: o proprio Sukuna repetido atras (o AfterImage do pacote).
   ghost: { actions: [0], loop: true, lifetime: 60, harmless: true, layer: 'back', alpha: 0.5, tint: 0xffd0d0, mirrorOwner: { delay: 3, offset: 16 } },
   ghost2: { actions: [0], loop: true, lifetime: 60, harmless: true, layer: 'back', alpha: 0.32, tint: 0xffb0b0, mirrorOwner: { delay: 6, offset: 32 } },
@@ -900,6 +1005,10 @@ const COMBOS = [
   { id: 'cleave', input: '↓↓K', animation: 'cleave' },
   { id: 'hiten', input: '→↓↘S', animation: 'hiten' },
   { id: 'recall', input: '↓↓S', animation: 'recall' },
+  { id: 'power-charge', input: '←↓S', animation: 'powerCharge' },
+  { id: 'heal', input: '←↓K', animation: 'heal' },
+  { id: 'counter', input: '←↓P', animation: 'counter' },
+  { id: 'barrier', input: '←↓→S', animation: 'barrier' },
 ];
 
 const BUTTONS = {
@@ -925,6 +1034,10 @@ const MOVE_LIST = [
   { section: 'Especiais', name: 'Corte instantâneo', input: '↓↓K', note: 'Some e reaparece colado no adversário' },
   { section: 'Especiais', name: 'Arremesso da lança', input: '→↓↘S', note: 'A lança cruza a tela e fica fincada no chão' },
   { section: 'Especiais', name: 'Chamar a lança', input: '↓↓S', note: 'Com a lança no chão: ela volta girando até a mão dele' },
+  { section: 'Poder', name: 'Carregar energia', input: '←↓S', note: 'Segure o botão: aura vermelha e mais dano por 10 s' },
+  { section: 'Poder', name: 'Curar', input: '←↓K', note: 'Recupera vida; uma vez a cada 25 s' },
+  { section: 'Poder', name: 'Contra-ataque', input: '←↓P', note: 'Se for atingido, some e reaparece cortando' },
+  { section: 'Poder', name: 'Barreira', input: '←↓→S', note: 'Esfera de grade que o protege por um instante' },
   { section: 'Especiais', name: 'Explosão amaldiçoada', input: '↓←P', note: 'Carrega demorado e dá o maior dano dele' },
   { section: 'Especiais', name: 'Redemoinho', input: '↓→K', note: 'Vários acertos à frente' },
   { section: 'Especiais', name: 'Erupção', input: '↓←K', note: 'O chão sobe e o raio desce em cima' },
@@ -956,6 +1069,8 @@ importMugenCharacter({
   buttons: BUTTONS,
   moveList: MOVE_LIST,
   spriteScale: 1.3,
+  // Power Charge: a aura vermelha liga este buff (ver chargeEnd).
+  damageBuff: { kind: 'cursedPower', scale: 1.25 },
   // Varias poses do pacote vem dentro de sprites gigantes quase vazios (a
   // estocada da lanca e um 349x372 com o desenho em 98x71): sem cortar, a
   // celula do atlas vai a 394x408 e as paginas passam de 6 MB.

@@ -203,7 +203,11 @@ export class Fighter {
   // personagem (config.balance.damage, calibrado por scripts/balance-tune.mjs)
   // vezes o do modo despertado.
   get damageScale() {
-    return (this.config.balance?.damage ?? 1) * (this.awakened ? (this.awakening.damageScale ?? 1) : 1);
+    // config.damageBuff = { kind, scale }: enquanto o buff "kind" esta ligado
+    // (um golpe liga com event.buff), o dano sobe (o Power Charge do Sukuna).
+    const buff = this.config.damageBuff;
+    const boosted = buff && this.buffs[buff.kind] > 0 ? buff.scale : 1;
+    return (this.config.balance?.damage ?? 1) * (this.awakened ? (this.awakening.damageScale ?? 1) : 1) * boosted;
   }
 
   fillAwakening(amount) {

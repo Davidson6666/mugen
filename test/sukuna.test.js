@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { ComboDetector } from '../src/systems/ComboDetector.js';
-import { arena, assertConfigIntegrity, cast, command, hits, loadRecord, mash, run } from './helpers/world.js';
+import { arena, assertConfigIntegrity, cast, command, hits, loadRecord, mash, run, step } from './helpers/world.js';
 
 // Sukuna (pacote "Sukuna Heian"): as caixas de acerto sao as que o autor
 // desenhou no .air (clsn1), quadro a quadro; nos especiais, que no MUGEN
@@ -136,6 +136,55 @@ test('sukuna: sem a lanca no chao, o recall nao sai', () => {
   assert.ok(!world.visited.has('recall'));
 });
 
+// Power Charge: carregar liga o buff de dano (config.damageBuff) por 10 s.
+test('sukuna: carregar energia liga o buff e o dano sobe', () => {
+  const lost = (charged) => {
+    const world = arena(record, 600, 640);
+    if (charged) run(world, cast('chargeEnd'), 20);
+    else run(world, command(), 20);
+    const before = world.fighters[1].health;
+    run(world, cast('punch'), 25);
+    return before - world.fighters[1].health;
+  };
+  const base = lost(false), boosted = lost(true);
+  assert.ok(base > 0, 'o soco nao acertou');
+  assert.ok(boosted > base, `com buff ${boosted}, sem ${base}`);
+  const world = arena(record, 600, 640);
+  run(world, cast('chargeEnd'), 5);
+  assert.ok(world.fighters[0].buffs.cursedPower > 0);
+  assert.ok(world.fighters[0].effectTags.has('cursedPower'), 'a aura nao ficou');
+});
+
+test('sukuna: segurar o especial carrega e soltar termina com o buff', () => {
+  const world = arena(record, 600, 900);
+  step(world, command({ combo: { animation: 'powerCharge' }, special: true, holding: { special: true } }));
+  for (let tick = 0; tick < 50; tick += 1) step(world, command({ holding: { special: true } }));
+  assert.equal(world.fighters[0].animation.name, 'powerCharge');
+  for (let tick = 0; tick < 40; tick += 1) step(world, command());
+  assert.ok(world.fighters[0].buffs.cursedPower > 0, 'nao ligou o buff');
+});
+
+test('sukuna: curar recupera vida, mas nao passa do maximo', () => {
+  const world = arena(record, 600, 900);
+  const f = world.fighters[0];
+  f.health = config.stats.maxHealth - 20;
+  run(world, cast('heal'), 120);
+  assert.ok(f.health > config.stats.maxHealth - 20, `vida ${f.health}`);
+  assert.ok(f.health <= config.stats.maxHealth);
+});
+
+test('sukuna: a barreira deixa ele invulneravel por um instante', () => {
+  const world = arena(record, 600, 640);
+  step(world, cast('barrier'));
+  for (let tick = 0; tick < 30; tick += 1) step(world, command());
+  assert.ok(world.fighters[0].invulnerable, 'nao ficou invulneravel');
+});
+
+test('sukuna: o contra-ataque guarda e responde com o corte instantaneo', () => {
+  assert.equal(config.animations.counter.counter.to, 'cleave');
+  assert.ok(config.animations.cleave);
+});
+
 test('sukuna: o dominio prende o oponente sob os cortes', () => {
   const world = run(arena(record, 400, 700), cast('domain'), 360);
   assert.ok(hits(world).length >= 8, `${hits(world).length} acertos`);
@@ -193,5 +242,9 @@ test('sukuna: comandos', () => {
   assert.equal(feed([{ down: true, special: true }]), 'pillar');
   assert.equal(feed([{ down: true }, {}, { down: true }, { down: true, kick: true }]), 'cleave');
   assert.equal(feed([{ down: true }, {}, { down: true }, { down: true, special: true }]), 'recall');
+  assert.equal(feed([{ left: true }, { down: true }, { special: true }]), 'powerCharge');
+  assert.equal(feed([{ left: true }, { down: true }, { kick: true }]), 'heal');
+  assert.equal(feed([{ left: true }, { down: true }, { punch: true }]), 'counter');
+  assert.equal(feed([{ left: true }, { down: true }, { right: true }, { special: true }]), 'barrier');
   assert.equal(feed([{ right: true }, { down: true }, { down: true, right: true }, { down: true, right: true, special: true }]), 'hiten');
 });
