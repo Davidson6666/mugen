@@ -8,7 +8,7 @@ import { resolveAttack, resolveBodyCollision } from '../../src/systems/Collision
 import { EffectManager } from '../../src/systems/EffectManager.js';
 
 export const map = JSON.parse(
-  readFileSync(new URL('../../public/assets/maps/dummy/dummy_map_config.json', import.meta.url)),
+  readFileSync(new URL('../fixtures/arena.json', import.meta.url)),
 );
 
 const blank = (count) => Array.from({ length: count }, () => Texture.EMPTY);

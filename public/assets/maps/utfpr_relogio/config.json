@@ -1,0 +1,18 @@
+{
+  "id": "utfpr_relogio",
+  "name": "Relógio Solar",
+  "backgroundImage": "background.png",
+  "width": 1024,
+  "height": 576,
+  "groundLevel": 464,
+  "leftBound": 162,
+  "rightBound": 862,
+  "camera": {
+    "zoomMin": 1.25,
+    "zoomMax": 1.8,
+    "marginX": 150,
+    "marginTop": 130,
+    "groundScreenY": 630
+  },
+  "parallaxLayers": []
+}

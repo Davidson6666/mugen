@@ -4,4 +4,4 @@
 // apanha (pra dar pra ver o quanto o combo tirou) e volta a encher sozinha
 // pouco depois. Trocar de boneco aqui e so mudar o id, nada mais.
 export const TRAINING_DUMMY = 'ensina_god';
-export const TRAINING_MAP = 'map_01';
+export const TRAINING_MAP = 'utfpr_convivencia';

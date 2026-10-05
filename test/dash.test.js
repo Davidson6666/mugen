@@ -10,7 +10,7 @@ const config = JSON.parse(
   readFileSync(new URL('../public/assets/characters/itachi/itachi_config.json', import.meta.url)),
 );
 const map = JSON.parse(
-  readFileSync(new URL('../public/assets/maps/dummy/dummy_map_config.json', import.meta.url)),
+  readFileSync(new URL('./fixtures/arena.json', import.meta.url)),
 );
 const emptyFrames = (atlas) => Array.from({ length: atlas.length }, () => Texture.EMPTY);
 const record = {

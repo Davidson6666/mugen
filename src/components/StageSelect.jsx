@@ -171,9 +171,9 @@ export default function StageSelect() {
         <image
           href={`${previewed.dir}/${previewed.background}`}
           x={40} y={138} width={660} height={350} preserveAspectRatio="xMidYMid slice"
-          clipPath="url(#stage-preview)"
+          clipPath="url(#stage-preview)" style={{ imageRendering: 'pixelated' }}
         />
-        <Capsule x={48} y={512} width={520} size={38}>{previewed.name.toUpperCase()}</Capsule>
+        <Capsule x={48} y={512} width={520} size={previewed.name.length > 22 ? 30 : 38}>{previewed.name.toUpperCase()}</Capsule>
 
         {maps.map((stage, index) => {
           const [x, y] = optionPosition(index);
@@ -184,6 +184,7 @@ export default function StageSelect() {
             <g key={stage.id}>
               <MenuOption
                 x={x} y={y} width={340}
+                fontSize={stage.name.length > 22 ? 24 : stage.name.length > 16 ? 28 : 34}
                 label={picked ? `${stage.name.toUpperCase()} ✓` : stage.name.toUpperCase()}
                 active={picked || (step === 'map' && cursors[0] === index)}
                 marker={!picked}
