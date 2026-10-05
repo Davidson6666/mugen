@@ -221,9 +221,12 @@ class CellPacker {
   }
 
   cellFor(frame) {
-    const key = `${frame.group},${frame.item},${frame.x},${frame.y},${frame.flip},${frame.xscale ?? 1},${frame.yscale ?? 1},${frame.angle ?? 0}`;
+    const key = frame.image
+      ? `image:${frame.id}`
+      : `${frame.group},${frame.item},${frame.x},${frame.y},${frame.flip},${frame.xscale ?? 1},${frame.yscale ?? 1},${frame.angle ?? 0}`;
     if (!this.byKey.has(key)) {
-      let decoded = this.sff.decode(frame.group, frame.item, this.remap ? { remap: this.remap } : {});
+      // Quadro desenhado por codigo (a lamina do corte): nao vem do .sff.
+      let decoded = frame.image ?? this.sff.decode(frame.group, frame.item, this.remap ? { remap: this.remap } : {});
       if (!decoded) {
         const sprite = this.sff.sprites.find((entry) => entry.group === frame.group && entry.item === frame.item);
         if (sprite && sprite.width > 1 && sprite.height > 1) {
@@ -392,6 +395,68 @@ function shapeImage(image, { taper = 0, from = 0.15, fadeTop = 0, soften = 0.2, 
     }
   }
   return { ...image, rgba };
+}
+
+// Lamina de corte desenhada por codigo: um risco limpo, grosso no miolo e
+// afinando ate virar fio nas duas pontas, como o corte preto do video do pacote
+// (o sprite 8647 do .sff e esfiapado e grosso demais para isso).
+//   length: comprimento; thickness: espessura maxima; angle: graus, positivo
+//   sobe para a direita; peak: onde fica o ponto mais grosso (0 a 1, o do
+//   video fica perto de 45%); hair: espessura minima, o fio das pontas.
+// Devolve a imagem com o eixo no centro.
+function makeBlade({ length, thickness, angle = 0, color = [0, 0, 0], peak = 0.45, hair = 1, grow = 1, alpha = 1, canvasThickness = thickness }) {
+  const rad = (angle * Math.PI) / 180;
+  const cos = Math.cos(rad), sin = Math.sin(rad);
+  const width = Math.ceil(Math.abs(length * cos) + Math.abs(canvasThickness * sin)) + 6;
+  const height = Math.ceil(Math.abs(length * sin) + Math.abs(canvasThickness * cos)) + 6;
+  const rgba = new Uint8Array(width * height * 4);
+  // Perfil u^a (1-u)^b, com o maximo em "peak", normalizado para 1.
+  const a = 1.1, b = (a * (1 - peak)) / peak;
+  const norm = peak ** a * (1 - peak) ** b;
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < width; x += 1) {
+      const dx = x + 0.5 - width / 2, dy = y + 0.5 - height / 2;
+      const along = dx * cos - dy * sin;
+      const across = dx * sin + dy * cos;
+      const u = along / length + 0.5;
+      if (u <= 0 || u >= 1) continue;
+      const half = Math.max(hair / 2, ((thickness * grow) / 2) * ((u ** a) * ((1 - u) ** b)) / norm);
+      const cover = Math.min(1, Math.max(0, half - Math.abs(across) + 0.5));
+      if (cover <= 0) continue;
+      // As pontas somem aos poucos, nao cortam reto.
+      const tip = Math.min(1, Math.min(u, 1 - u) / 0.05);
+      const at = (y * width + x) * 4;
+      rgba[at] = color[0];
+      rgba[at + 1] = color[1];
+      rgba[at + 2] = color[2];
+      rgba[at + 3] = Math.round(255 * cover * tip * alpha);
+    }
+  }
+  return { width, height, axisX: Math.round(width / 2), axisY: Math.round(height / 2), rgba };
+}
+
+// Quadros da lamina: steps = [[quanto da espessura, ticks, transparencia], ...]
+// - o risco abre, segura e fecha.
+function bladeFrames(spec, effectId) {
+  const frames = [];
+  let clock = 0;
+  spec.steps.forEach(([grow, ticks, alpha = 1], index) => {
+    frames.push({
+      image: makeBlade({ ...spec, grow, alpha }),
+      id: `${effectId}:${index}`,
+      group: -1,
+      item: -1,
+      x: 0,
+      y: 0,
+      flip: '',
+      blend: '',
+      duration: ticks,
+    });
+    clock += ticks;
+  });
+  const starts = new Map();
+  starts.total = clock;
+  return { frames, starts };
 }
 
 // Escala (x, y) e gira (graus, anti-horario como no MUGEN) o desenho em volta
@@ -828,7 +893,7 @@ export function importMugenCharacter({
     // (corvos menores que no pacote).
     const scale = spec.scale ?? 1;
     const packer = new CellPacker(sff, scale * (spec.size ?? 1), { opaque: spec.opaque, remap: spec.remap, shade: spec.shade, palfx: spec.palfx, shape: spec.shape, rotate: spec.rotate, stretch: spec.stretch, center: spec.center ?? Boolean(spec.cover) });
-    const collected = collectFrames(air, spec);
+    const collected = spec.blade ? bladeFrames(spec.blade, effectId) : collectFrames(air, spec);
     const cells = collected.frames.map((frame) => packer.cellFor(frame));
     effectSources[effectId] = { ...collected, cells, packer, scale, size: spec.size ?? 1, grid: packer.grid, start: addGroup(packer) };
   }

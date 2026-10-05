@@ -55,7 +55,7 @@ const DOMAIN_CUTS = Array.from({ length: 14 }, (_, index) => fx(60 + index * 10,
 
 // Cortes pretos do dominio: um a cada 20 ticks na altura do oponente, em tres
 // angulos que se alternam.
-const DOMAIN_BLACK = Array.from({ length: 6 }, (_, index) => fx(64 + index * 20, ['blackCutA', 'blackCutB', 'blackCutC'][index % 3], [0, -45 + (index % 2) * 18], { target: 'opponent' }));
+const DOMAIN_BLACK = Array.from({ length: 6 }, (_, index) => fx(64 + index * 20, ['blackCutA', 'blackCutB', 'whiteCut'][index % 3], [0, -45 + (index % 2) * 18], { target: 'opponent' }));
 
 const ANIMATIONS = {
   idle: { actions: [0], loop: true },
@@ -304,7 +304,7 @@ const ANIMATIONS = {
       fx(14, 'ringBurst', [30, -40], { scale: 0.5 }),
       fx(18, 'clawSweep', [40, -45]),
       fx(18, 'crossCut', [45, -40], { scale: 0.5 }),
-      fx(19, 'blackCutA', [40, -45], { scale: 0.7 }),
+      fx(19, 'blackCutB', [-20, -45], { target: 'opponent' }),
       fx(20, 'bloodSplat', [40, -42]),
     ],
   },
@@ -387,9 +387,9 @@ const ANIMATIONS = {
       fx(20, 'cursedSigil', [0, -49]),
       fx(40, 'crescent', [70, -45], { scale: 0.9 }),
       fx(40, 'groundLine', [0, 5]),
-      fx(41, 'blackCutA', [90, -55]),
-      fx(43, 'blackCutB', [90, -40]),
-      fx(45, 'blackCutC', [90, -60]),
+      fx(41, 'blackCutA', [-30, -45], { target: 'opponent' }),
+      fx(41, 'blackCutC', [-30, -45], { target: 'opponent' }),
+      fx(42, 'whiteCut', [-10, -45], { target: 'opponent' }),
       fx(42, 'crossCut', [80, -40], { scale: 0.6 }),
       fx(44, 'darkStreaks', [60, -40], { scale: 0.7 }),
     ],
@@ -719,10 +719,26 @@ const EFFECTS = {
   ghost: { actions: [0], loop: true, lifetime: 60, harmless: true, layer: 'back', alpha: 0.5, tint: 0xffd0d0, mirrorOwner: { delay: 3, offset: 16 } },
   ghost2: { actions: [0], loop: true, lifetime: 60, harmless: true, layer: 'back', alpha: 0.32, tint: 0xffb0b0, mirrorOwner: { delay: 6, offset: 32 } },
   ghost3: { actions: [0], loop: true, lifetime: 60, harmless: true, layer: 'back', alpha: 0.2, tint: 0xff9090, mirrorOwner: { delay: 9, offset: 48 } },
-  // O corte preto do video: a lamina escura 8647 (802x39) girada na importacao.
-  blackCutA: { actions: [8647], size: 1.1, stretch: [1, 0.42], rotate: 22, center: true, blend: 'normal', lifetime: 12, harmless: true },
-  blackCutB: { actions: [8647], size: 1.2, stretch: [1, 0.42], rotate: -26, center: true, blend: 'normal', lifetime: 12, harmless: true },
-  blackCutC: { actions: [8647], size: 0.95, stretch: [1, 0.42], rotate: 6, center: true, blend: 'normal', lifetime: 12, harmless: true },
+  // O corte preto do video: uma lamina so, limpa, que atravessa a tela subindo
+  // uns 7 graus, mais grossa perto de 45% do comprimento e virando fio nas duas
+  // pontas, cruzada por um fio escuro que desce e outro claro bem inclinado.
+  // E desenhada por codigo (blade): o sprite 8647 do pacote e esfiapado e grosso.
+  blackCutA: {
+    blade: { length: 700, thickness: 16, angle: 7, hair: 1.2, steps: [[0.25, 1], [1, 2], [1, 6], [0.85, 3], [0.5, 2], [0.2, 2]] },
+    harmless: true,
+  },
+  blackCutB: {
+    blade: { length: 700, thickness: 16, angle: -7, hair: 1.2, steps: [[0.25, 1], [1, 2], [1, 6], [0.85, 3], [0.5, 2], [0.2, 2]] },
+    harmless: true,
+  },
+  blackCutC: {
+    blade: { length: 700, thickness: 3.5, angle: -7, hair: 1.2, steps: [[1, 5, 1], [1, 5, 0.8], [1, 4, 0.5]] },
+    harmless: true,
+  },
+  whiteCut: {
+    blade: { length: 520, thickness: 2.6, angle: 57, hair: 1.1, color: [235, 245, 255], steps: [[1, 4, 1], [1, 4, 0.8], [1, 4, 0.5]] },
+    harmless: true,
+  },
   groundScar: { actions: [8647], size: 0.5, center: true, blend: 'normal', lifetime: 150, layer: 'back', harmless: true },
   // Sangue dos acertos (as faiscas vermelhas do pacote: 7613 e 70031).
   bloodFlash: { actions: [7613], size: 0.3, harmless: true },
