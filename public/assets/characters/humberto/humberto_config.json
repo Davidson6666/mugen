@@ -1,236 +1,596 @@
 {
   "id": "humberto",
   "name": "Humberto",
-  "description": "Professor de química — mestre da aura e do Hólmio 67",
-  "assetVersion": "humberto-likeness-sword-v2",
+  "description": "Professor de química — Six Seven, petrificação e fúria lendária",
+  "assetVersion": "humberto-legendary-v6",
   "sheets": [
-    "humberto_atlas.png",
-    "humberto_fx.png",
-    "holmio.svg",
-    "sword67.png"
+    "humberto_body.png",
+    "humberto_legendary.png",
+    "chemistry_fx.png",
+    "legendary_fx.png"
   ],
   "atlas": [
     [
       0,
-      45,
-      14,
-      183,
-      256,
-      68,
-      24
+      60,
+      90,
+      200,
+      240,
+      60,
+      90
     ],
     [
       0,
-      310,
-      14,
-      177,
-      253,
-      71,
-      27
+      376,
+      90,
+      208,
+      240,
+      56,
+      90
     ],
     [
       0,
-      559,
-      14,
-      184,
-      253,
-      68,
-      27
-    ],
-    [
-      0,
-      804,
-      14,
-      186,
-      254,
-      67,
-      26
-    ],
-    [
-      0,
-      1081,
-      91,
-      145,
-      176,
-      87,
-      104
-    ],
-    [
-      0,
-      1310,
-      14,
-      204,
-      259,
-      58,
-      21
-    ],
-    [
-      0,
-      34,
-      281,
-      197,
-      234,
-      61,
-      46
-    ],
-    [
-      0,
-      282,
-      281,
-      230,
-      234,
-      45,
-      46
-    ],
-    [
-      0,
-      512,
-      282,
-      238,
-      233,
-      41,
-      47
-    ],
-    [
-      0,
-      823,
-      273,
-      152,
-      242,
-      84,
-      38
+      704,
+      90,
+      192,
+      240,
+      64,
+      90
     ],
     [
       0,
       1024,
-      283,
-      256,
-      232,
-      32,
-      48
-    ],
-    [
-      0,
-      1280,
-      273,
-      202,
-      242,
-      59,
-      38
-    ],
-    [
-      0,
-      63,
-      524,
-      140,
-      184,
       90,
-      96
+      192,
+      240,
+      64,
+      90
     ],
     [
       0,
-      296,
-      522,
-      214,
-      228,
-      53,
-      52
+      78,
+      520,
+      164,
+      160,
+      78,
+      170
     ],
     [
       0,
-      561,
-      540,
-      207,
-      231,
+      382,
+      440,
+      196,
+      240,
+      62,
+      90
+    ],
+    [
+      0,
+      696,
+      456,
+      208,
+      224,
       56,
-      49
+      106
     ],
     [
       0,
-      768,
-      701,
-      298,
-      73,
-      11,
-      207
+      1000,
+      456,
+      240,
+      224,
+      40,
+      106
     ],
     [
       0,
-      1081,
-      515,
-      168,
-      259,
-      76,
-      21
+      66,
+      806,
+      188,
+      224,
+      66,
+      106
     ],
     [
       0,
-      1359,
-      515,
-      121,
-      259,
-      99,
-      21
+      418,
+      806,
+      124,
+      224,
+      98,
+      106
     ],
     [
       0,
+      688,
+      806,
+      224,
+      224,
+      48,
+      106
+    ],
+    [
+      0,
+      1052,
+      810,
+      136,
+      220,
+      92,
+      110
+    ],
+    [
+      0,
+      90,
+      1184,
+      140,
+      196,
+      90,
+      134
+    ],
+    [
+      0,
+      386,
+      1204,
+      188,
+      176,
+      66,
+      154
+    ],
+    [
+      0,
+      672,
+      1168,
+      256,
+      212,
       32,
-      784,
-      215,
-      227,
-      52,
-      53
+      118
     ],
     [
       0,
-      283,
-      785,
-      226,
-      226,
-      47,
+      1002,
+      1312,
+      236,
+      68,
+      42,
+      262
+    ],
+    [
+      0,
+      72,
+      1470,
+      176,
+      260,
+      72,
+      70
+    ],
+    [
+      0,
+      378,
+      1470,
+      204,
+      260,
+      58,
+      70
+    ],
+    [
+      0,
+      698,
+      1502,
+      204,
+      228,
+      58,
+      102
+    ],
+    [
+      0,
+      988,
+      1494,
+      264,
+      236,
+      28,
+      94
+    ],
+    [
+      0,
+      40,
+      1852,
+      240,
+      228,
+      40,
+      102
+    ],
+    [
+      0,
+      374,
+      1852,
+      212,
+      228,
+      54,
+      102
+    ],
+    [
+      0,
+      686,
+      1900,
+      228,
+      180,
+      46,
+      150
+    ],
+    [
+      0,
+      1026,
+      1944,
+      188,
+      136,
+      66,
+      194
+    ],
+    [
+      0,
+      68,
+      2202,
+      184,
+      228,
+      68,
+      102
+    ],
+    [
+      0,
+      348,
+      2190,
+      264,
+      240,
+      28,
+      90
+    ],
+    [
+      0,
+      668,
+      2202,
+      264,
+      228,
+      28,
+      102
+    ],
+    [
+      0,
+      1030,
+      2210,
+      180,
+      220,
+      70,
+      110
+    ],
+    [
+      0,
+      64,
+      2620,
+      192,
+      160,
+      64,
+      170
+    ],
+    [
+      0,
+      358,
+      2564,
+      244,
+      216,
+      38,
+      114
+    ],
+    [
+      0,
+      686,
+      2540,
+      228,
+      240,
+      46,
+      90
+    ],
+    [
+      0,
+      1010,
+      2540,
+      220,
+      240,
+      50,
+      90
+    ],
+    [
+      1,
+      50,
+      26,
+      220,
+      304,
+      50,
+      26
+    ],
+    [
+      1,
+      372,
+      26,
+      216,
+      304,
+      52,
+      26
+    ],
+    [
+      1,
+      690,
+      26,
+      220,
+      304,
+      50,
+      26
+    ],
+    [
+      1,
+      1008,
+      26,
+      224,
+      304,
+      48,
+      26
+    ],
+    [
+      1,
+      58,
+      456,
+      204,
+      224,
+      58,
+      106
+    ],
+    [
+      1,
+      372,
+      376,
+      216,
+      304,
+      52,
+      26
+    ],
+    [
+      1,
+      692,
+      392,
+      216,
+      288,
+      52,
+      42
+    ],
+    [
+      1,
+      992,
+      392,
+      256,
+      288,
+      32,
+      42
+    ],
+    [
+      1,
+      60,
+      742,
+      200,
+      288,
+      60,
+      42
+    ],
+    [
+      1,
+      404,
+      742,
+      152,
+      288,
+      84,
+      42
+    ],
+    [
+      1,
+      676,
+      742,
+      248,
+      288,
+      36,
+      42
+    ],
+    [
+      1,
+      1036,
+      746,
+      168,
+      284,
+      76,
+      46
+    ],
+    [
+      1,
+      80,
+      1120,
+      160,
+      260,
+      80,
+      70
+    ],
+    [
+      1,
+      358,
+      1140,
+      244,
+      240,
+      38,
+      90
+    ],
+    [
+      1,
+      650,
+      1104,
+      300,
+      276,
+      10,
       54
     ],
     [
-      0,
-      527,
-      790,
+      1,
+      991,
+      1260,
+      258,
+      120,
+      31,
+      210
+    ],
+    [
+      1,
+      44,
+      1406,
+      232,
+      324,
+      44,
+      6
+    ],
+    [
+      1,
+      348,
+      1406,
+      264,
+      324,
+      28,
+      6
+    ],
+    [
+      1,
+      686,
+      1438,
       228,
-      221,
+      292,
       46,
-      59
+      38
     ],
     [
-      0,
-      798,
-      774,
-      209,
-      239,
-      55,
-      41
+      1,
+      966,
+      1430,
+      308,
+      300,
+      6,
+      30
     ],
     [
-      0,
-      1034,
-      774,
-      235,
-      237,
-      42,
-      43
+      1,
+      22,
+      1788,
+      276,
+      292,
+      22,
+      38
     ],
     [
-      0,
-      1289,
-      774,
-      236,
-      238,
-      42,
-      42
+      1,
+      354,
+      1788,
+      252,
+      292,
+      34,
+      38
+    ],
+    [
+      1,
+      664,
+      1836,
+      272,
+      244,
+      24,
+      86
+    ],
+    [
+      1,
+      1004,
+      1880,
+      232,
+      200,
+      44,
+      130
+    ],
+    [
+      1,
+      54,
+      2138,
+      212,
+      292,
+      54,
+      38
+    ],
+    [
+      1,
+      326,
+      2126,
+      308,
+      304,
+      6,
+      26
+    ],
+    [
+      1,
+      648,
+      2138,
+      304,
+      292,
+      8,
+      38
+    ],
+    [
+      1,
+      1016,
+      2146,
+      208,
+      284,
+      56,
+      46
+    ],
+    [
+      1,
+      50,
+      2556,
+      220,
+      224,
+      50,
+      106
+    ],
+    [
+      1,
+      344,
+      2500,
+      272,
+      280,
+      24,
+      50
+    ],
+    [
+      1,
+      660,
+      2476,
+      280,
+      304,
+      20,
+      26
+    ],
+    [
+      1,
+      998,
+      2476,
+      244,
+      304,
+      38,
+      26
     ]
   ],
   "spriteGridSize": {
     "frameWidth": 320,
-    "frameHeight": 300,
-    "baseline": 280
+    "frameHeight": 350,
+    "baseline": 330
   },
   "spriteScale": 0.39183673469387753,
   "stats": {
@@ -241,13 +601,13 @@
   },
   "hurtbox": {
     "offsetX": 110,
-    "offsetY": 35,
+    "offsetY": 85,
     "width": 100,
     "height": 245
   },
   "hitbox": {
     "offsetX": 185,
-    "offsetY": 105,
+    "offsetY": 155,
     "width": 120,
     "height": 95
   },
@@ -489,7 +849,7 @@
           "hitstun": 15,
           "box": {
             "offsetX": 185,
-            "offsetY": 105,
+            "offsetY": 155,
             "width": 120,
             "height": 95
           }
@@ -529,7 +889,7 @@
           "hitstun": 15,
           "box": {
             "offsetX": 185,
-            "offsetY": 105,
+            "offsetY": 155,
             "width": 120,
             "height": 95
           },
@@ -563,7 +923,7 @@
           "hitstun": 15,
           "box": {
             "offsetX": 180,
-            "offsetY": 130,
+            "offsetY": 180,
             "width": 145,
             "height": 85
           },
@@ -597,7 +957,7 @@
           "hitstun": 15,
           "box": {
             "offsetX": 170,
-            "offsetY": 210,
+            "offsetY": 260,
             "width": 155,
             "height": 65
           },
@@ -631,7 +991,7 @@
           "hitstun": 15,
           "box": {
             "offsetX": 175,
-            "offsetY": 35,
+            "offsetY": 85,
             "width": 115,
             "height": 190
           },
@@ -646,155 +1006,6 @@
         {
           "at": 6,
           "sound": "reaction"
-        }
-      ]
-    },
-    "special1": {
-      "frames": [
-        18,
-        19,
-        8,
-        0
-      ],
-      "durations": [
-        10,
-        9,
-        9,
-        8
-      ],
-      "loop": false,
-      "cooldown": 45,
-      "events": [
-        {
-          "at": 10,
-          "sound": "flask",
-          "effect": {
-            "id": "reagent",
-            "offsetX": 150,
-            "offsetY": 125
-          }
-        }
-      ]
-    },
-    "special2": {
-      "frames": [
-        18,
-        21,
-        19,
-        0
-      ],
-      "durations": [
-        12,
-        12,
-        32,
-        16
-      ],
-      "loop": false,
-      "cooldown": 160,
-      "events": [
-        {
-          "at": 0,
-          "sound": "bubble",
-          "effect": {
-            "id": "charge",
-            "offsetY": 125,
-            "lifetime": 24
-          }
-        },
-        {
-          "at": 24,
-          "sound": "reaction",
-          "effect": {
-            "id": "reaction",
-            "target": "opponent",
-            "offsetY": 110
-          }
-        }
-      ]
-    },
-    "auraFarm": {
-      "frames": [
-        18,
-        21,
-        16,
-        0
-      ],
-      "durations": [
-        12,
-        24,
-        12,
-        10
-      ],
-      "loop": false,
-      "cooldown": 420,
-      "events": [
-        {
-          "at": 0,
-          "sound": "aura",
-          "effect": {
-            "id": "charge",
-            "offsetY": 125,
-            "lifetime": 30
-          }
-        },
-        {
-          "at": 30,
-          "buff": {
-            "kind": "chemicalAura",
-            "ticks": 240
-          },
-          "effect": {
-            "id": "aura",
-            "offsetY": 125,
-            "lifetime": 240
-          }
-        }
-      ]
-    },
-    "holmium67": {
-      "frames": [
-        18,
-        21,
-        20,
-        20,
-        0
-      ],
-      "durations": [
-        16,
-        20,
-        25,
-        30,
-        20
-      ],
-      "loop": false,
-      "cooldown": 480,
-      "perRound": 2,
-      "events": [
-        {
-          "at": 0,
-          "sound": "aura",
-          "effect": {
-            "id": "charge",
-            "offsetY": 125,
-            "lifetime": 36
-          }
-        },
-        {
-          "at": 4,
-          "effect": {
-            "id": "holmium",
-            "offsetY": 410,
-            "lifetime": 86
-          }
-        },
-        {
-          "at": 36,
-          "sound": "super67",
-          "effect": {
-            "id": "beam",
-            "offsetX": 650,
-            "offsetY": 130
-          }
         }
       ]
     },
@@ -838,795 +1049,2846 @@
         "invulnerableUntil": 0
       }
     },
-    "sword67": {
+    "neutralize": {
       "frames": [
-        6,
-        17,
-        7,
-        8
+        24,
+        28,
+        27
       ],
       "durations": [
-        7,
-        7,
-        7,
-        12
+        5,
+        20,
+        15
       ],
       "loop": false,
-      "cooldown": 100,
+      "cooldown": 160,
+      "counter": {
+        "from": 5,
+        "until": 24,
+        "to": "neutralizeHit"
+      },
+      "events": [
+        {
+          "at": 5,
+          "sound": "bubble"
+        },
+        {
+          "at": 5,
+          "effect": {
+            "id": "spark",
+            "offsetX": 80,
+            "offsetY": 150
+          }
+        }
+      ]
+    },
+    "neutralizeHit": {
+      "frames": [
+        28,
+        29,
+        27
+      ],
+      "durations": [
+        4,
+        8,
+        14
+      ],
+      "loop": false,
+      "invulnerable": [
+        0,
+        10
+      ],
+      "events": [
+        {
+          "at": 4,
+          "sound": "reaction"
+        },
+        {
+          "at": 4,
+          "effect": {
+            "id": "neutralBurst",
+            "offsetX": 180,
+            "offsetY": 145
+          }
+        }
+      ]
+    },
+    "sixSeven": {
+      "frames": [
+        28,
+        30,
+        31,
+        30,
+        31,
+        27
+      ],
+      "durations": [
+        12,
+        8,
+        8,
+        8,
+        8,
+        20
+      ],
+      "loop": false,
+      "cooldown": 300,
+      "perRound": 2,
+      "events": [
+        {
+          "at": 0,
+          "sound": "bubble"
+        },
+        {
+          "at": 12,
+          "sound": "six"
+        },
+        {
+          "at": 12,
+          "effect": {
+            "id": "six",
+            "offsetX": 160,
+            "offsetY": 160
+          }
+        },
+        {
+          "at": 28,
+          "sound": "seven"
+        },
+        {
+          "at": 28,
+          "effect": {
+            "id": "seven",
+            "offsetX": 160,
+            "offsetY": 140
+          }
+        }
+      ]
+    },
+    "ionicPalm": {
+      "frames": [
+        28,
+        29,
+        27
+      ],
+      "durations": [
+        8,
+        6,
+        16
+      ],
+      "loop": false,
+      "cooldown": 48,
       "hits": [
         {
           "from": 1,
           "until": 1,
+          "damage": 12,
+          "hitstun": 20,
+          "push": 4,
           "box": {
             "offsetX": 185,
-            "offsetY": 15,
-            "width": 190,
-            "height": 190
-          },
-          "damage": 10,
-          "hitstun": 16,
-          "push": 0
+            "offsetY": 135,
+            "width": 155,
+            "height": 110
+          }
+        }
+      ],
+      "events": [
+        {
+          "at": 8,
+          "sound": "swing"
         },
         {
-          "from": 2,
-          "until": 2,
+          "at": 8,
+          "effect": {
+            "id": "splash",
+            "offsetX": 235,
+            "offsetY": 145
+          }
+        }
+      ]
+    },
+    "special1": {
+      "frames": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "durations": [
+        6,
+        6,
+        5,
+        14
+      ],
+      "loop": false,
+      "cooldown": 48,
+      "events": [
+        {
+          "at": 12,
+          "sound": "flask"
+        },
+        {
+          "at": 12,
+          "effect": {
+            "id": "flask",
+            "offsetX": 150,
+            "offsetY": 145
+          }
+        }
+      ]
+    },
+    "special2": {
+      "frames": [
+        28,
+        29,
+        29,
+        27
+      ],
+      "durations": [
+        14,
+        4,
+        8,
+        20
+      ],
+      "loop": false,
+      "cooldown": 110,
+      "events": [
+        {
+          "at": 0,
+          "sound": "bubble"
+        },
+        {
+          "at": 6,
+          "effect": {
+            "id": "spark",
+            "offsetX": 120,
+            "offsetY": 130
+          }
+        },
+        {
+          "at": 14,
+          "sound": "reaction"
+        },
+        {
+          "at": 14,
+          "effect": {
+            "id": "combustion",
+            "offsetX": 210,
+            "offsetY": 125
+          }
+        }
+      ]
+    },
+    "kiBlast": {
+      "frames": [
+        18,
+        20,
+        27
+      ],
+      "durations": [
+        9,
+        7,
+        14
+      ],
+      "loop": false,
+      "cooldown": 58,
+      "events": [
+        {
+          "at": 9,
+          "sound": "ki"
+        },
+        {
+          "at": 9,
+          "effect": {
+            "id": "kiOrb",
+            "offsetX": 150,
+            "offsetY": 150
+          }
+        }
+      ]
+    },
+    "medusa": {
+      "frames": [
+        24,
+        19,
+        26,
+        27
+      ],
+      "durations": [
+        10,
+        6,
+        6,
+        22
+      ],
+      "loop": false,
+      "cooldown": 300,
+      "events": [
+        {
+          "at": 10,
+          "sound": "medusa"
+        },
+        {
+          "at": 10,
+          "effect": {
+            "id": "medusaOrb",
+            "offsetX": 150,
+            "offsetY": 150
+          }
+        }
+      ]
+    },
+    "legendaryTransform": {
+      "frames": [
+        28,
+        21,
+        16
+      ],
+      "durations": [
+        12,
+        18,
+        12
+      ],
+      "loop": false,
+      "cooldown": 1000,
+      "perRound": 1,
+      "events": [
+        {
+          "at": 0,
+          "sound": "transform"
+        },
+        {
+          "at": 0,
+          "effect": {
+            "id": "powerCharge",
+            "offsetX": 0,
+            "offsetY": 145
+          }
+        },
+        {
+          "at": 40,
+          "awaken": true
+        }
+      ]
+    },
+    "legend_idle": {
+      "frames": [
+        32,
+        33
+      ],
+      "durations": [
+        12,
+        12
+      ],
+      "loop": true
+    },
+    "legend_walkForward": {
+      "frames": [
+        34,
+        35
+      ],
+      "durations": [
+        7,
+        7
+      ],
+      "loop": true
+    },
+    "legend_walkBackward": {
+      "frames": [
+        35,
+        34
+      ],
+      "durations": [
+        8,
+        8
+      ],
+      "loop": true
+    },
+    "legend_jump": {
+      "frames": [
+        44,
+        45
+      ],
+      "durations": [
+        12,
+        12
+      ],
+      "loop": false
+    },
+    "legend_jumpStart": {
+      "frames": [
+        36,
+        44
+      ],
+      "durations": [
+        3,
+        4
+      ],
+      "loop": false
+    },
+    "legend_jumpUp": {
+      "frames": [
+        44
+      ],
+      "durations": [
+        8
+      ],
+      "loop": true
+    },
+    "legend_falling": {
+      "frames": [
+        45
+      ],
+      "durations": [
+        8
+      ],
+      "loop": true
+    },
+    "legend_land": {
+      "frames": [
+        36,
+        32
+      ],
+      "durations": [
+        4,
+        3
+      ],
+      "loop": false
+    },
+    "legend_turn": {
+      "frames": [
+        33,
+        32
+      ],
+      "durations": [
+        3,
+        3
+      ],
+      "loop": false
+    },
+    "legend_crouch": {
+      "frames": [
+        36
+      ],
+      "durations": [
+        10
+      ],
+      "loop": true
+    },
+    "legend_blockStanding": {
+      "frames": [
+        37
+      ],
+      "durations": [
+        10
+      ],
+      "loop": true
+    },
+    "legend_blockCrouching": {
+      "frames": [
+        36
+      ],
+      "durations": [
+        10
+      ],
+      "loop": true
+    },
+    "legend_hitReaction": {
+      "frames": [
+        46
+      ],
+      "durations": [
+        14
+      ],
+      "loop": false
+    },
+    "legend_hitCrouching": {
+      "frames": [
+        36,
+        46
+      ],
+      "durations": [
+        5,
+        9
+      ],
+      "loop": false
+    },
+    "legend_hitAir": {
+      "frames": [
+        46,
+        45
+      ],
+      "durations": [
+        6,
+        10
+      ],
+      "loop": false
+    },
+    "legend_launched": {
+      "frames": [
+        46,
+        45
+      ],
+      "durations": [
+        6,
+        12
+      ],
+      "loop": false
+    },
+    "legend_knockdown": {
+      "frames": [
+        47
+      ],
+      "durations": [
+        28
+      ],
+      "loop": false
+    },
+    "legend_getUp": {
+      "frames": [
+        36,
+        32
+      ],
+      "durations": [
+        8,
+        8
+      ],
+      "loop": false
+    },
+    "legend_ko": {
+      "frames": [
+        46,
+        47
+      ],
+      "durations": [
+        10,
+        60
+      ],
+      "loop": false
+    },
+    "legend_victoryPose": {
+      "frames": [
+        48,
+        53,
+        48
+      ],
+      "durations": [
+        20,
+        20,
+        30
+      ],
+      "loop": true
+    },
+    "legend_defeatPose": {
+      "frames": [
+        47
+      ],
+      "durations": [
+        60
+      ],
+      "loop": true
+    },
+    "legend_punch": {
+      "frames": [
+        38,
+        39,
+        40
+      ],
+      "durations": [
+        5,
+        4,
+        9
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 1,
+          "until": 1,
+          "damage": 6.826,
+          "hitstun": 15,
           "box": {
             "offsetX": 185,
-            "offsetY": 100,
-            "width": 240,
-            "height": 115
+            "offsetY": 155,
+            "width": 120,
+            "height": 95
+          }
+        }
+      ],
+      "cancels": [
+        {
+          "on": "punch",
+          "to": "legend_punch2",
+          "after": 8
+        }
+      ],
+      "events": [
+        {
+          "at": 5,
+          "sound": "swing"
+        }
+      ]
+    },
+    "legend_punch2": {
+      "frames": [
+        38,
+        39,
+        40
+      ],
+      "durations": [
+        4,
+        4,
+        10
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 1,
+          "until": 1,
+          "damage": 7.801,
+          "hitstun": 15,
+          "box": {
+            "offsetX": 185,
+            "offsetY": 155,
+            "width": 120,
+            "height": 95
           },
-          "damage": 14,
-          "hitstun": 22,
-          "push": 6,
+          "push": 4
+        }
+      ],
+      "events": [
+        {
+          "at": 4,
+          "sound": "swing"
+        }
+      ]
+    },
+    "legend_kick": {
+      "frames": [
+        41,
+        42,
+        43
+      ],
+      "durations": [
+        7,
+        5,
+        12
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 1,
+          "until": 1,
+          "damage": 10.726,
+          "hitstun": 15,
+          "box": {
+            "offsetX": 180,
+            "offsetY": 180,
+            "width": 145,
+            "height": 85
+          },
+          "push": 5
+        }
+      ],
+      "events": [
+        {
+          "at": 7,
+          "sound": "swing"
+        }
+      ]
+    },
+    "legend_sweep": {
+      "frames": [
+        36,
+        55,
+        32
+      ],
+      "durations": [
+        6,
+        6,
+        16
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 1,
+          "until": 1,
+          "damage": 10,
+          "hitstun": 15,
+          "box": {
+            "offsetX": 170,
+            "offsetY": 260,
+            "width": 155,
+            "height": 65
+          },
+          "launch": {
+            "x": 3,
+            "y": -3
+          }
+        }
+      ]
+    },
+    "legend_uppercut": {
+      "frames": [
+        38,
+        49,
+        45,
+        32
+      ],
+      "durations": [
+        6,
+        8,
+        12,
+        12
+      ],
+      "loop": false,
+      "cooldown": 55,
+      "hits": [
+        {
+          "from": 1,
+          "until": 1,
+          "damage": 13,
+          "hitstun": 15,
+          "box": {
+            "offsetX": 175,
+            "offsetY": 85,
+            "width": 115,
+            "height": 190
+          },
+          "launch": {
+            "x": 3,
+            "y": -8
+          },
           "heavy": true
         }
       ],
       "events": [
         {
-          "at": 0,
-          "sound": "swing",
+          "at": 6,
+          "sound": "reaction"
+        }
+      ]
+    },
+    "legend_dashForward": {
+      "frames": [
+        54,
+        54,
+        32
+      ],
+      "durations": [
+        3,
+        8,
+        4
+      ],
+      "loop": false,
+      "dash": {
+        "speed": 26,
+        "moveFrom": 0,
+        "moveUntil": 1,
+        "invulnerableFrom": 0,
+        "invulnerableUntil": 0
+      }
+    },
+    "legend_dashBackward": {
+      "frames": [
+        54,
+        54,
+        32
+      ],
+      "durations": [
+        3,
+        8,
+        4
+      ],
+      "loop": false,
+      "dash": {
+        "speed": 20,
+        "moveFrom": 0,
+        "moveUntil": 1,
+        "invulnerableFrom": 0,
+        "invulnerableUntil": 0
+      }
+    },
+    "legend_neutralize": {
+      "frames": [
+        56,
+        60,
+        59
+      ],
+      "durations": [
+        5,
+        20,
+        15
+      ],
+      "loop": false,
+      "cooldown": 160,
+      "counter": {
+        "from": 5,
+        "until": 24,
+        "to": "legend_neutralizeHit"
+      },
+      "events": [
+        {
+          "at": 5,
+          "sound": "bubble"
+        },
+        {
+          "at": 5,
           "effect": {
-            "id": "sword67_0",
-            "offsetX": -65,
-            "offsetY": 120
+            "id": "spark",
+            "offsetX": 80,
+            "offsetY": 150
+          }
+        }
+      ]
+    },
+    "legend_neutralizeHit": {
+      "frames": [
+        60,
+        61,
+        59
+      ],
+      "durations": [
+        4,
+        8,
+        14
+      ],
+      "loop": false,
+      "invulnerable": [
+        0,
+        10
+      ],
+      "events": [
+        {
+          "at": 4,
+          "sound": "reaction"
+        },
+        {
+          "at": 4,
+          "effect": {
+            "id": "neutralBurst",
+            "offsetX": 180,
+            "offsetY": 145
+          }
+        }
+      ]
+    },
+    "legend_sixSeven": {
+      "frames": [
+        60,
+        62,
+        63,
+        62,
+        63,
+        59
+      ],
+      "durations": [
+        12,
+        8,
+        8,
+        8,
+        8,
+        20
+      ],
+      "loop": false,
+      "cooldown": 300,
+      "perRound": 2,
+      "events": [
+        {
+          "at": 0,
+          "sound": "bubble"
+        },
+        {
+          "at": 12,
+          "sound": "six"
+        },
+        {
+          "at": 12,
+          "effect": {
+            "id": "six",
+            "offsetX": 160,
+            "offsetY": 160
           }
         },
         {
-          "at": 7,
-          "sound": "reaction",
+          "at": 28,
+          "sound": "seven"
+        },
+        {
+          "at": 28,
           "effect": {
-            "id": "sword67_1",
-            "offsetX": 70,
-            "offsetY": 240
+            "id": "seven",
+            "offsetX": 160,
+            "offsetY": 140
+          }
+        }
+      ]
+    },
+    "legend_ionicPalm": {
+      "frames": [
+        60,
+        61,
+        59
+      ],
+      "durations": [
+        8,
+        6,
+        16
+      ],
+      "loop": false,
+      "cooldown": 48,
+      "hits": [
+        {
+          "from": 1,
+          "until": 1,
+          "damage": 12,
+          "hitstun": 20,
+          "push": 4,
+          "box": {
+            "offsetX": 185,
+            "offsetY": 135,
+            "width": 155,
+            "height": 110
+          }
+        }
+      ],
+      "events": [
+        {
+          "at": 8,
+          "sound": "swing"
+        },
+        {
+          "at": 8,
+          "effect": {
+            "id": "splash",
+            "offsetX": 235,
+            "offsetY": 145
+          }
+        }
+      ]
+    },
+    "legend_special1": {
+      "frames": [
+        56,
+        57,
+        58,
+        59
+      ],
+      "durations": [
+        6,
+        6,
+        5,
+        14
+      ],
+      "loop": false,
+      "cooldown": 48,
+      "events": [
+        {
+          "at": 12,
+          "sound": "flask"
+        },
+        {
+          "at": 12,
+          "effect": {
+            "id": "flask",
+            "offsetX": 150,
+            "offsetY": 145
+          }
+        }
+      ]
+    },
+    "legend_special2": {
+      "frames": [
+        60,
+        61,
+        61,
+        59
+      ],
+      "durations": [
+        14,
+        4,
+        8,
+        20
+      ],
+      "loop": false,
+      "cooldown": 110,
+      "events": [
+        {
+          "at": 0,
+          "sound": "bubble"
+        },
+        {
+          "at": 6,
+          "effect": {
+            "id": "spark",
+            "offsetX": 120,
+            "offsetY": 130
           }
         },
         {
           "at": 14,
+          "sound": "reaction"
+        },
+        {
+          "at": 14,
           "effect": {
-            "id": "sword67_2",
-            "offsetX": 130,
-            "offsetY": 165
+            "id": "combustion",
+            "offsetX": 210,
+            "offsetY": 125
+          }
+        }
+      ]
+    },
+    "legend_kiBlast": {
+      "frames": [
+        50,
+        52,
+        59
+      ],
+      "durations": [
+        9,
+        7,
+        14
+      ],
+      "loop": false,
+      "cooldown": 58,
+      "events": [
+        {
+          "at": 9,
+          "sound": "ki"
+        },
+        {
+          "at": 9,
+          "effect": {
+            "id": "legendaryOrb",
+            "offsetX": 150,
+            "offsetY": 150
+          }
+        }
+      ]
+    },
+    "legend_medusa": {
+      "frames": [
+        56,
+        51,
+        58,
+        59
+      ],
+      "durations": [
+        10,
+        6,
+        6,
+        22
+      ],
+      "loop": false,
+      "cooldown": 300,
+      "events": [
+        {
+          "at": 10,
+          "sound": "medusa"
+        },
+        {
+          "at": 10,
+          "effect": {
+            "id": "medusaOrb",
+            "offsetX": 150,
+            "offsetY": 150
+          }
+        }
+      ]
+    },
+    "legend_cannon": {
+      "frames": [
+        50,
+        52,
+        52,
+        59
+      ],
+      "durations": [
+        20,
+        8,
+        10,
+        22
+      ],
+      "loop": false,
+      "cooldown": 200,
+      "events": [
+        {
+          "at": 0,
+          "sound": "transform"
+        },
+        {
+          "at": 0,
+          "effect": {
+            "id": "powerCharge",
+            "offsetX": 0,
+            "offsetY": 145
           }
         },
         {
-          "at": 21,
+          "at": 20,
+          "sound": "ki"
+        },
+        {
+          "at": 20,
           "effect": {
-            "id": "sword67_3",
-            "offsetX": 55,
-            "offsetY": 145
+            "id": "legendaryCannon",
+            "offsetX": 180,
+            "offsetY": 160
           }
         }
       ]
     }
   },
   "effects": {
-    "reagent": {
+    "flask": {
       "spriteGridSize": {
-        "frameWidth": 340,
-        "frameHeight": 350,
-        "baseline": 175
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "baseline": 32
       },
       "atlas": [
         [
-          1,
-          0,
-          0,
-          320,
-          270,
-          10,
-          40
+          2,
+          20,
+          23,
+          24,
+          18,
+          20,
+          23
         ],
         [
-          1,
-          320,
-          0,
-          319,
-          270,
-          10,
-          40
+          2,
+          84,
+          20,
+          23,
+          24,
+          20,
+          20
         ],
         [
-          1,
-          639,
-          0,
-          320,
-          270,
+          2,
+          132,
           10,
-          40
+          56,
+          43,
+          4,
+          10
         ],
         [
-          1,
-          959,
-          0,
-          319,
-          270,
-          10,
-          40
+          2,
+          196,
+          7,
+          56,
+          49,
+          4,
+          7
+        ],
+        [
+          2,
+          4,
+          80,
+          56,
+          32,
+          4,
+          16
+        ],
+        [
+          2,
+          68,
+          74,
+          56,
+          44,
+          4,
+          10
+        ],
+        [
+          2,
+          132,
+          71,
+          56,
+          50,
+          4,
+          7
+        ],
+        [
+          2,
+          196,
+          70,
+          56,
+          51,
+          4,
+          6
         ]
       ],
+      "renderScale": 2.55,
       "animation": {
         "frames": [
           0,
-          1,
-          2,
-          3
+          1
         ],
         "durations": [
-          5,
-          5,
           5,
           5
         ],
         "loop": true
       },
-      "lifetime": 110,
-      "renderScale": 0.65,
-      "velocityX": 21,
+      "velocityX": 17,
+      "lifetime": 100,
       "destroyOnHit": true,
       "hits": [
         {
           "from": 0,
-          "until": 3,
+          "until": 10,
+          "damage": 11,
+          "hitstun": 24,
+          "push": 3,
           "box": {
-            "offsetX": 160,
-            "offsetY": 85,
-            "width": 170,
-            "height": 180
-          },
-          "damage": 12,
-          "hitstun": 18,
-          "push": 3
+            "offsetX": 21,
+            "offsetY": 20,
+            "width": 22,
+            "height": 24
+          }
         }
       ],
       "onHitSpawn": {
-        "id": "splash",
-        "scale": 0.8
+        "id": "splash"
       }
     },
     "splash": {
       "spriteGridSize": {
-        "frameWidth": 340,
-        "frameHeight": 350,
-        "baseline": 175
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "baseline": 32
       },
       "atlas": [
         [
-          1,
-          0,
-          276,
-          320,
-          329,
+          2,
+          20,
+          23,
+          24,
+          18,
+          20,
+          23
+        ],
+        [
+          2,
+          84,
+          20,
+          23,
+          24,
+          20,
+          20
+        ],
+        [
+          2,
+          132,
           10,
+          56,
+          43,
+          4,
           10
         ],
         [
-          1,
-          320,
-          276,
-          319,
-          329,
-          10,
+          2,
+          196,
+          7,
+          56,
+          49,
+          4,
+          7
+        ],
+        [
+          2,
+          4,
+          80,
+          56,
+          32,
+          4,
+          16
+        ],
+        [
+          2,
+          68,
+          74,
+          56,
+          44,
+          4,
           10
         ],
         [
-          1,
-          639,
-          276,
-          320,
-          329,
-          10,
-          10
+          2,
+          132,
+          71,
+          56,
+          50,
+          4,
+          7
         ],
         [
-          1,
-          959,
-          276,
-          319,
-          329,
-          10,
-          10
+          2,
+          196,
+          70,
+          56,
+          51,
+          4,
+          6
         ]
       ],
+      "renderScale": 2.55,
       "animation": {
         "frames": [
-          0,
-          1,
           2,
-          3
+          3,
+          2
         ],
         "durations": [
           3,
           5,
-          6,
-          7
+          3
         ],
         "loop": false
       },
-      "lifetime": 21
+      "lifetime": 11
     },
-    "reaction": {
+    "spark": {
       "spriteGridSize": {
-        "frameWidth": 340,
-        "frameHeight": 350,
-        "baseline": 175
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "baseline": 32
       },
       "atlas": [
         [
-          1,
-          0,
-          276,
-          320,
-          329,
+          2,
+          20,
+          23,
+          24,
+          18,
+          20,
+          23
+        ],
+        [
+          2,
+          84,
+          20,
+          23,
+          24,
+          20,
+          20
+        ],
+        [
+          2,
+          132,
           10,
+          56,
+          43,
+          4,
           10
         ],
         [
-          1,
-          320,
-          276,
-          319,
-          329,
-          10,
+          2,
+          196,
+          7,
+          56,
+          49,
+          4,
+          7
+        ],
+        [
+          2,
+          4,
+          80,
+          56,
+          32,
+          4,
+          16
+        ],
+        [
+          2,
+          68,
+          74,
+          56,
+          44,
+          4,
           10
         ],
         [
-          1,
-          639,
-          276,
-          320,
-          329,
-          10,
-          10
+          2,
+          132,
+          71,
+          56,
+          50,
+          4,
+          7
         ],
         [
-          1,
-          959,
-          276,
-          319,
-          329,
-          10,
-          10
+          2,
+          196,
+          70,
+          56,
+          51,
+          4,
+          6
         ]
       ],
+      "renderScale": 2.55,
       "animation": {
         "frames": [
-          0,
-          1,
-          2,
-          3
+          4
         ],
         "durations": [
-          5,
-          5,
-          5,
-          5
+          9
         ],
-        "loop": true
+        "loop": false
       },
-      "lifetime": 48,
-      "endOnOwnerHit": true,
+      "lifetime": 9
+    },
+    "combustion": {
+      "spriteGridSize": {
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "baseline": 32
+      },
+      "atlas": [
+        [
+          2,
+          20,
+          23,
+          24,
+          18,
+          20,
+          23
+        ],
+        [
+          2,
+          84,
+          20,
+          23,
+          24,
+          20,
+          20
+        ],
+        [
+          2,
+          132,
+          10,
+          56,
+          43,
+          4,
+          10
+        ],
+        [
+          2,
+          196,
+          7,
+          56,
+          49,
+          4,
+          7
+        ],
+        [
+          2,
+          4,
+          80,
+          56,
+          32,
+          4,
+          16
+        ],
+        [
+          2,
+          68,
+          74,
+          56,
+          44,
+          4,
+          10
+        ],
+        [
+          2,
+          132,
+          71,
+          56,
+          50,
+          4,
+          7
+        ],
+        [
+          2,
+          196,
+          70,
+          56,
+          51,
+          4,
+          6
+        ]
+      ],
+      "renderScale": 3.4,
+      "animation": {
+        "frames": [
+          4,
+          5,
+          5,
+          4
+        ],
+        "durations": [
+          3,
+          5,
+          5,
+          4
+        ],
+        "loop": false
+      },
+      "lifetime": 17,
+      "hitDelay": 3,
       "hits": [
         {
           "from": 0,
-          "until": 3,
-          "every": 11,
-          "count": 4,
+          "until": 10,
+          "damage": 18,
+          "hitstun": 24,
+          "push": 5,
           "box": {
-            "offsetX": 50,
-            "offsetY": 20,
-            "width": 240,
-            "height": 320
-          },
-          "damage": 5,
-          "hitstun": 14,
-          "push": 0
+            "offsetX": 10,
+            "offsetY": 12,
+            "width": 44,
+            "height": 40
+          }
         }
       ]
     },
-    "charge": {
+    "neutralBurst": {
       "spriteGridSize": {
-        "frameWidth": 340,
-        "frameHeight": 350,
-        "baseline": 175
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "baseline": 32
       },
       "atlas": [
         [
-          1,
-          0,
-          607,
-          320,
-          338,
-          10,
-          6
+          2,
+          20,
+          23,
+          24,
+          18,
+          20,
+          23
         ],
         [
-          1,
-          320,
-          607,
-          319,
-          338,
-          10,
-          6
+          2,
+          84,
+          20,
+          23,
+          24,
+          20,
+          20
         ],
         [
-          1,
-          639,
-          607,
-          320,
-          338,
+          2,
+          132,
           10,
-          6
+          56,
+          43,
+          4,
+          10
         ],
         [
-          1,
-          959,
-          607,
-          319,
-          338,
-          10,
+          2,
+          196,
+          7,
+          56,
+          49,
+          4,
+          7
+        ],
+        [
+          2,
+          4,
+          80,
+          56,
+          32,
+          4,
+          16
+        ],
+        [
+          2,
+          68,
+          74,
+          56,
+          44,
+          4,
+          10
+        ],
+        [
+          2,
+          132,
+          71,
+          56,
+          50,
+          4,
+          7
+        ],
+        [
+          2,
+          196,
+          70,
+          56,
+          51,
+          4,
           6
         ]
       ],
+      "renderScale": 3.2,
       "animation": {
         "frames": [
-          0,
-          1,
           2,
-          3
+          3,
+          2
         ],
         "durations": [
-          5,
-          5,
-          5,
-          5
+          3,
+          6,
+          4
         ],
-        "loop": true
+        "loop": false
       },
-      "lifetime": 60,
-      "renderScale": 1.05,
-      "follow": "owner",
-      "layer": "back",
-      "endWithMove": true
+      "lifetime": 13,
+      "hits": [
+        {
+          "from": 0,
+          "until": 10,
+          "damage": 14,
+          "hitstun": 24,
+          "push": 6,
+          "box": {
+            "offsetX": 10,
+            "offsetY": 12,
+            "width": 44,
+            "height": 40
+          }
+        }
+      ]
     },
-    "aura": {
+    "six": {
       "spriteGridSize": {
-        "frameWidth": 340,
-        "frameHeight": 350,
-        "baseline": 175
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "baseline": 32
       },
       "atlas": [
         [
-          1,
-          0,
-          607,
-          320,
-          338,
-          10,
-          6
+          2,
+          20,
+          23,
+          24,
+          18,
+          20,
+          23
         ],
         [
-          1,
-          320,
-          607,
-          319,
-          338,
-          10,
-          6
+          2,
+          84,
+          20,
+          23,
+          24,
+          20,
+          20
         ],
         [
-          1,
-          639,
-          607,
-          320,
-          338,
+          2,
+          132,
           10,
-          6
+          56,
+          43,
+          4,
+          10
         ],
         [
-          1,
-          959,
-          607,
-          319,
-          338,
-          10,
+          2,
+          196,
+          7,
+          56,
+          49,
+          4,
+          7
+        ],
+        [
+          2,
+          4,
+          80,
+          56,
+          32,
+          4,
+          16
+        ],
+        [
+          2,
+          68,
+          74,
+          56,
+          44,
+          4,
+          10
+        ],
+        [
+          2,
+          132,
+          71,
+          56,
+          50,
+          4,
+          7
+        ],
+        [
+          2,
+          196,
+          70,
+          56,
+          51,
+          4,
           6
         ]
       ],
+      "renderScale": 2.55,
       "animation": {
         "frames": [
-          0,
-          1,
-          2,
-          3
+          6
         ],
         "durations": [
-          5,
-          5,
-          5,
-          5
+          12
         ],
         "loop": true
       },
-      "lifetime": 240,
-      "renderScale": 1.05,
-      "follow": "owner",
-      "layer": "back"
-    },
-    "ionEcho": {
-      "spriteGridSize": {
-        "frameWidth": 340,
-        "frameHeight": 350,
-        "baseline": 175
-      },
-      "atlas": [
-        [
-          1,
-          0,
-          276,
-          320,
-          329,
-          10,
-          10
-        ],
-        [
-          1,
-          320,
-          276,
-          319,
-          329,
-          10,
-          10
-        ],
-        [
-          1,
-          639,
-          276,
-          320,
-          329,
-          10,
-          10
-        ],
-        [
-          1,
-          959,
-          276,
-          319,
-          329,
-          10,
-          10
-        ]
-      ],
-      "animation": {
-        "frames": [
-          0,
-          1,
-          2,
-          3
-        ],
-        "durations": [
-          5,
-          5,
-          5,
-          5
-        ],
-        "loop": true
-      },
-      "lifetime": 18,
-      "renderScale": 0.55,
-      "noEcho": true,
+      "velocityX": 21,
+      "lifetime": 90,
       "destroyOnHit": true,
       "hits": [
         {
           "from": 0,
-          "until": 3,
+          "until": 10,
+          "damage": 12,
+          "hitstun": 24,
+          "push": 0,
           "box": {
-            "offsetX": 0,
-            "offsetY": 0,
-            "width": 340,
-            "height": 350
-          },
-          "damage": 2,
-          "hitstun": 10,
-          "push": 0
+            "offsetX": 10,
+            "offsetY": 12,
+            "width": 44,
+            "height": 40
+          }
         }
-      ]
+      ],
+      "onHitSpawn": {
+        "id": "splash"
+      }
     },
-    "beam": {
+    "seven": {
       "spriteGridSize": {
-        "frameWidth": 340,
-        "frameHeight": 350,
-        "baseline": 175
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "baseline": 32
       },
       "atlas": [
         [
-          1,
-          0,
-          947,
-          320,
-          283,
-          10,
-          33
+          2,
+          20,
+          23,
+          24,
+          18,
+          20,
+          23
         ],
         [
-          1,
-          320,
-          947,
-          319,
-          283,
-          10,
-          33
+          2,
+          84,
+          20,
+          23,
+          24,
+          20,
+          20
         ],
         [
-          1,
-          639,
-          947,
-          320,
-          283,
+          2,
+          132,
           10,
-          33
+          56,
+          43,
+          4,
+          10
         ],
         [
-          1,
-          959,
-          947,
-          319,
-          283,
-          10,
-          33
+          2,
+          196,
+          7,
+          56,
+          49,
+          4,
+          7
+        ],
+        [
+          2,
+          4,
+          80,
+          56,
+          32,
+          4,
+          16
+        ],
+        [
+          2,
+          68,
+          74,
+          56,
+          44,
+          4,
+          10
+        ],
+        [
+          2,
+          132,
+          71,
+          56,
+          50,
+          4,
+          7
+        ],
+        [
+          2,
+          196,
+          70,
+          56,
+          51,
+          4,
+          6
         ]
       ],
+      "renderScale": 2.55,
       "animation": {
         "frames": [
-          0,
-          1,
-          2,
-          3
+          7
         ],
         "durations": [
-          5,
-          5,
-          5,
-          5
+          12
         ],
         "loop": true
       },
-      "lifetime": 54,
-      "renderScale": 3.3,
-      "endWithMove": true,
+      "velocityX": 21,
+      "lifetime": 90,
+      "destroyOnHit": true,
       "hits": [
         {
           "from": 0,
-          "until": 3,
-          "every": 8,
-          "count": 7,
+          "until": 10,
+          "damage": 16,
+          "hitstun": 24,
+          "push": 6,
           "box": {
-            "offsetX": 0,
-            "offsetY": 105,
-            "width": 340,
-            "height": 140
-          },
-          "damage": 6,
-          "hitstun": 12,
-          "push": 0,
-          "heavy": true
+            "offsetX": 10,
+            "offsetY": 12,
+            "width": 44,
+            "height": 40
+          }
         }
-      ]
+      ],
+      "onHitSpawn": {
+        "id": "finishFlash"
+      }
     },
-    "holmium": {
+    "finishFlash": {
       "spriteGridSize": {
-        "frameWidth": 256,
-        "frameHeight": 256,
-        "baseline": 128
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "baseline": 32
       },
       "atlas": [
         [
           2,
-          0,
-          0,
-          256,
-          256,
-          0,
-          0
+          20,
+          23,
+          24,
+          18,
+          20,
+          23
+        ],
+        [
+          2,
+          84,
+          20,
+          23,
+          24,
+          20,
+          20
+        ],
+        [
+          2,
+          132,
+          10,
+          56,
+          43,
+          4,
+          10
+        ],
+        [
+          2,
+          196,
+          7,
+          56,
+          49,
+          4,
+          7
+        ],
+        [
+          2,
+          4,
+          80,
+          56,
+          32,
+          4,
+          16
+        ],
+        [
+          2,
+          68,
+          74,
+          56,
+          44,
+          4,
+          10
+        ],
+        [
+          2,
+          132,
+          71,
+          56,
+          50,
+          4,
+          7
+        ],
+        [
+          2,
+          196,
+          70,
+          56,
+          51,
+          4,
+          6
         ]
       ],
+      "renderScale": 2.55,
       "animation": {
         "frames": [
-          0
+          4,
+          5,
+          4
         ],
         "durations": [
-          10
+          2,
+          5,
+          3
+        ],
+        "loop": false
+      },
+      "lifetime": 10
+    },
+    "kiOrb": {
+      "spriteGridSize": {
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "baseline": 32
+      },
+      "atlas": [
+        [
+          3,
+          18,
+          20,
+          28,
+          24,
+          18,
+          20
+        ],
+        [
+          3,
+          82,
+          20,
+          28,
+          24,
+          18,
+          20
+        ],
+        [
+          3,
+          140,
+          12,
+          40,
+          40,
+          12,
+          12
+        ],
+        [
+          3,
+          204,
+          12,
+          40,
+          40,
+          12,
+          12
+        ],
+        [
+          3,
+          9,
+          66,
+          46,
+          60,
+          9,
+          2
+        ],
+        [
+          3,
+          73,
+          66,
+          45,
+          60,
+          9,
+          2
+        ],
+        [
+          3,
+          146,
+          82,
+          28,
+          28,
+          18,
+          18
+        ],
+        [
+          3,
+          194,
+          67,
+          60,
+          58,
+          2,
+          3
+        ]
+      ],
+      "renderScale": 2.55,
+      "animation": {
+        "frames": [
+          0,
+          1
+        ],
+        "durations": [
+          4,
+          4
         ],
         "loop": true
       },
-      "lifetime": 86,
-      "renderScale": 0.8,
-      "follow": "owner"
+      "velocityX": 22,
+      "lifetime": 85,
+      "destroyOnHit": true,
+      "hits": [
+        {
+          "from": 0,
+          "until": 20,
+          "damage": 14,
+          "hitstun": 24,
+          "push": 4,
+          "box": {
+            "offsetX": 10,
+            "offsetY": 15,
+            "width": 44,
+            "height": 34
+          }
+        }
+      ],
+      "onHitSpawn": {
+        "id": "kiBurst"
+      }
     },
-    "sword67_0": {
+    "kiBurst": {
       "spriteGridSize": {
-        "frameWidth": 1600,
-        "frameHeight": 1200,
-        "baseline": 800
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "baseline": 32
       },
       "atlas": [
         [
           3,
-          0,
-          0,
-          525,
-          724,
-          685,
-          225
-        ]
-      ],
-      "renderScale": 0.52,
-      "animation": {
-        "frames": [
-          0
+          18,
+          20,
+          28,
+          24,
+          18,
+          20
         ],
-        "durations": [
-          40
-        ],
-        "loop": false
-      },
-      "follow": "owner",
-      "endWithMove": true,
-      "lifetime": 7
-    },
-    "sword67_1": {
-      "spriteGridSize": {
-        "frameWidth": 1600,
-        "frameHeight": 1200,
-        "baseline": 800
-      },
-      "atlas": [
         [
           3,
-          535,
-          0,
-          520,
-          724,
-          741,
-          226
-        ]
-      ],
-      "renderScale": 0.52,
-      "animation": {
-        "frames": [
-          0
+          82,
+          20,
+          28,
+          24,
+          18,
+          20
         ],
-        "durations": [
-          40
-        ],
-        "loop": false
-      },
-      "follow": "owner",
-      "endWithMove": true,
-      "lifetime": 7
-    },
-    "sword67_2": {
-      "spriteGridSize": {
-        "frameWidth": 1600,
-        "frameHeight": 1200,
-        "baseline": 800
-      },
-      "atlas": [
         [
           3,
-          1080,
-          0,
-          660,
-          724,
-          740,
-          260
-        ]
-      ],
-      "renderScale": 0.52,
-      "animation": {
-        "frames": [
-          0
+          140,
+          12,
+          40,
+          40,
+          12,
+          12
         ],
-        "durations": [
-          40
-        ],
-        "loop": false
-      },
-      "follow": "owner",
-      "endWithMove": true,
-      "lifetime": 7
-    },
-    "sword67_3": {
-      "spriteGridSize": {
-        "frameWidth": 1600,
-        "frameHeight": 1200,
-        "baseline": 800
-      },
-      "atlas": [
         [
           3,
-          1750,
-          0,
-          422,
-          724,
-          750,
-          210
+          204,
+          12,
+          40,
+          40,
+          12,
+          12
+        ],
+        [
+          3,
+          9,
+          66,
+          46,
+          60,
+          9,
+          2
+        ],
+        [
+          3,
+          73,
+          66,
+          45,
+          60,
+          9,
+          2
+        ],
+        [
+          3,
+          146,
+          82,
+          28,
+          28,
+          18,
+          18
+        ],
+        [
+          3,
+          194,
+          67,
+          60,
+          58,
+          2,
+          3
         ]
       ],
-      "renderScale": 0.52,
+      "renderScale": 2.55,
       "animation": {
         "frames": [
-          0
+          2,
+          3,
+          2
         ],
         "durations": [
-          40
+          3,
+          5,
+          4
         ],
         "loop": false
       },
-      "follow": "owner",
-      "endWithMove": true,
       "lifetime": 12
+    },
+    "legendaryOrb": {
+      "spriteGridSize": {
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "baseline": 32
+      },
+      "atlas": [
+        [
+          3,
+          18,
+          20,
+          28,
+          24,
+          18,
+          20
+        ],
+        [
+          3,
+          82,
+          20,
+          28,
+          24,
+          18,
+          20
+        ],
+        [
+          3,
+          140,
+          12,
+          40,
+          40,
+          12,
+          12
+        ],
+        [
+          3,
+          204,
+          12,
+          40,
+          40,
+          12,
+          12
+        ],
+        [
+          3,
+          9,
+          66,
+          46,
+          60,
+          9,
+          2
+        ],
+        [
+          3,
+          73,
+          66,
+          45,
+          60,
+          9,
+          2
+        ],
+        [
+          3,
+          146,
+          82,
+          28,
+          28,
+          18,
+          18
+        ],
+        [
+          3,
+          194,
+          67,
+          60,
+          58,
+          2,
+          3
+        ]
+      ],
+      "renderScale": 3.2,
+      "animation": {
+        "frames": [
+          0,
+          1
+        ],
+        "durations": [
+          4,
+          4
+        ],
+        "loop": true
+      },
+      "velocityX": 25,
+      "lifetime": 85,
+      "destroyOnHit": true,
+      "hits": [
+        {
+          "from": 0,
+          "until": 20,
+          "damage": 20,
+          "hitstun": 24,
+          "push": 4,
+          "box": {
+            "offsetX": 10,
+            "offsetY": 15,
+            "width": 44,
+            "height": 34
+          }
+        }
+      ],
+      "onHitSpawn": {
+        "id": "kiBurst"
+      }
+    },
+    "legendaryCannon": {
+      "spriteGridSize": {
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "baseline": 32
+      },
+      "atlas": [
+        [
+          3,
+          18,
+          20,
+          28,
+          24,
+          18,
+          20
+        ],
+        [
+          3,
+          82,
+          20,
+          28,
+          24,
+          18,
+          20
+        ],
+        [
+          3,
+          140,
+          12,
+          40,
+          40,
+          12,
+          12
+        ],
+        [
+          3,
+          204,
+          12,
+          40,
+          40,
+          12,
+          12
+        ],
+        [
+          3,
+          9,
+          66,
+          46,
+          60,
+          9,
+          2
+        ],
+        [
+          3,
+          73,
+          66,
+          45,
+          60,
+          9,
+          2
+        ],
+        [
+          3,
+          146,
+          82,
+          28,
+          28,
+          18,
+          18
+        ],
+        [
+          3,
+          194,
+          67,
+          60,
+          58,
+          2,
+          3
+        ]
+      ],
+      "renderScale": 4.3,
+      "animation": {
+        "frames": [
+          0,
+          1
+        ],
+        "durations": [
+          4,
+          4
+        ],
+        "loop": true
+      },
+      "velocityX": 18,
+      "lifetime": 85,
+      "destroyOnHit": true,
+      "hits": [
+        {
+          "from": 0,
+          "until": 20,
+          "damage": 30,
+          "hitstun": 24,
+          "push": 4,
+          "box": {
+            "offsetX": 10,
+            "offsetY": 15,
+            "width": 44,
+            "height": 34
+          }
+        }
+      ],
+      "onHitSpawn": {
+        "id": "kiBurst",
+        "scale": 1.6
+      }
+    },
+    "legendaryAura": {
+      "spriteGridSize": {
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "baseline": 32
+      },
+      "atlas": [
+        [
+          3,
+          18,
+          20,
+          28,
+          24,
+          18,
+          20
+        ],
+        [
+          3,
+          82,
+          20,
+          28,
+          24,
+          18,
+          20
+        ],
+        [
+          3,
+          140,
+          12,
+          40,
+          40,
+          12,
+          12
+        ],
+        [
+          3,
+          204,
+          12,
+          40,
+          40,
+          12,
+          12
+        ],
+        [
+          3,
+          9,
+          66,
+          46,
+          60,
+          9,
+          2
+        ],
+        [
+          3,
+          73,
+          66,
+          45,
+          60,
+          9,
+          2
+        ],
+        [
+          3,
+          146,
+          82,
+          28,
+          28,
+          18,
+          18
+        ],
+        [
+          3,
+          194,
+          67,
+          60,
+          58,
+          2,
+          3
+        ]
+      ],
+      "renderScale": 6,
+      "animation": {
+        "frames": [
+          4,
+          5
+        ],
+        "durations": [
+          7,
+          7
+        ],
+        "loop": true
+      },
+      "tag": "legendaryAura",
+      "follow": "owner",
+      "layer": "back",
+      "alpha": 0.8,
+      "lifetime": 725
+    },
+    "powerCharge": {
+      "spriteGridSize": {
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "baseline": 32
+      },
+      "atlas": [
+        [
+          3,
+          18,
+          20,
+          28,
+          24,
+          18,
+          20
+        ],
+        [
+          3,
+          82,
+          20,
+          28,
+          24,
+          18,
+          20
+        ],
+        [
+          3,
+          140,
+          12,
+          40,
+          40,
+          12,
+          12
+        ],
+        [
+          3,
+          204,
+          12,
+          40,
+          40,
+          12,
+          12
+        ],
+        [
+          3,
+          9,
+          66,
+          46,
+          60,
+          9,
+          2
+        ],
+        [
+          3,
+          73,
+          66,
+          45,
+          60,
+          9,
+          2
+        ],
+        [
+          3,
+          146,
+          82,
+          28,
+          28,
+          18,
+          18
+        ],
+        [
+          3,
+          194,
+          67,
+          60,
+          58,
+          2,
+          3
+        ]
+      ],
+      "renderScale": 4.6,
+      "animation": {
+        "frames": [
+          4,
+          5
+        ],
+        "durations": [
+          6,
+          6
+        ],
+        "loop": true
+      },
+      "follow": "owner",
+      "layer": "back",
+      "endWithMove": true,
+      "lifetime": 40
+    },
+    "medusaOrb": {
+      "spriteGridSize": {
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "baseline": 32
+      },
+      "atlas": [
+        [
+          3,
+          18,
+          20,
+          28,
+          24,
+          18,
+          20
+        ],
+        [
+          3,
+          82,
+          20,
+          28,
+          24,
+          18,
+          20
+        ],
+        [
+          3,
+          140,
+          12,
+          40,
+          40,
+          12,
+          12
+        ],
+        [
+          3,
+          204,
+          12,
+          40,
+          40,
+          12,
+          12
+        ],
+        [
+          3,
+          9,
+          66,
+          46,
+          60,
+          9,
+          2
+        ],
+        [
+          3,
+          73,
+          66,
+          45,
+          60,
+          9,
+          2
+        ],
+        [
+          3,
+          146,
+          82,
+          28,
+          28,
+          18,
+          18
+        ],
+        [
+          3,
+          194,
+          67,
+          60,
+          58,
+          2,
+          3
+        ]
+      ],
+      "renderScale": 2.55,
+      "animation": {
+        "frames": [
+          6
+        ],
+        "durations": [
+          8
+        ],
+        "loop": true
+      },
+      "velocityX": 12,
+      "lifetime": 100,
+      "destroyOnHit": true,
+      "hits": [
+        {
+          "from": 0,
+          "until": 20,
+          "damage": 3,
+          "hitstun": 24,
+          "push": 4,
+          "box": {
+            "offsetX": 21,
+            "offsetY": 21,
+            "width": 22,
+            "height": 22
+          }
+        }
+      ],
+      "seal": {
+        "kinds": [
+          {
+            "kind": "petrify"
+          }
+        ],
+        "ticks": 90
+      },
+      "onHitSpawn": {
+        "id": "stonePulse"
+      }
+    },
+    "stonePulse": {
+      "spriteGridSize": {
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "baseline": 32
+      },
+      "atlas": [
+        [
+          3,
+          18,
+          20,
+          28,
+          24,
+          18,
+          20
+        ],
+        [
+          3,
+          82,
+          20,
+          28,
+          24,
+          18,
+          20
+        ],
+        [
+          3,
+          140,
+          12,
+          40,
+          40,
+          12,
+          12
+        ],
+        [
+          3,
+          204,
+          12,
+          40,
+          40,
+          12,
+          12
+        ],
+        [
+          3,
+          9,
+          66,
+          46,
+          60,
+          9,
+          2
+        ],
+        [
+          3,
+          73,
+          66,
+          45,
+          60,
+          9,
+          2
+        ],
+        [
+          3,
+          146,
+          82,
+          28,
+          28,
+          18,
+          18
+        ],
+        [
+          3,
+          194,
+          67,
+          60,
+          58,
+          2,
+          3
+        ]
+      ],
+      "renderScale": 4,
+      "animation": {
+        "frames": [
+          7
+        ],
+        "durations": [
+          16
+        ],
+        "loop": false
+      },
+      "lifetime": 16
     }
   },
   "combos": [
     {
-      "id": "sword67",
+      "id": "kiBlast",
+      "input": "P",
+      "hold": "→",
+      "animation": "kiBlast"
+    },
+    {
+      "id": "medusa",
+      "input": "K",
+      "hold": "←",
+      "animation": "medusa"
+    },
+    {
+      "id": "legendaryTransform",
+      "input": "↓↓S",
+      "animation": "legendaryTransform"
+    },
+    {
+      "id": "ionicPalm",
       "input": "K",
       "hold": "→",
-      "animation": "sword67"
+      "animation": "ionicPalm"
     },
     {
-      "id": "aura",
+      "id": "neutralize",
       "input": "S",
-      "animation": "auraFarm",
-      "hold": "←"
+      "hold": "←",
+      "animation": "neutralize"
     },
     {
-      "id": "super",
+      "id": "sixSeven",
       "input": "S",
-      "animation": "holmium67",
-      "hold": "→"
+      "hold": "→",
+      "animation": "sixSeven"
     },
     {
-      "id": "reaction",
+      "id": "special2",
       "input": "S",
-      "animation": "special2",
-      "hold": "↓"
+      "hold": "↓",
+      "animation": "special2"
     },
     {
       "id": "sweep",
       "input": "K",
-      "animation": "sweep",
-      "hold": "↓"
+      "hold": "↓",
+      "animation": "sweep"
     },
     {
-      "id": "upper",
+      "id": "uppercut",
       "input": "P",
-      "animation": "uppercut",
-      "hold": "↓"
+      "hold": "↓",
+      "animation": "uppercut"
     },
     {
-      "id": "flask",
+      "id": "special1",
       "input": "S",
       "animation": "special1"
     },
@@ -1639,59 +3901,162 @@
       "id": "kick",
       "input": "K",
       "animation": "kick"
+    },
+    {
+      "id": "legend_kiBlast",
+      "input": "P",
+      "hold": "→",
+      "animation": "legend_kiBlast",
+      "mode": "legendary"
+    },
+    {
+      "id": "legend_medusa",
+      "input": "K",
+      "hold": "←",
+      "animation": "legend_medusa",
+      "mode": "legendary"
+    },
+    {
+      "id": "legend_ionicPalm",
+      "input": "K",
+      "hold": "→",
+      "animation": "legend_ionicPalm",
+      "mode": "legendary"
+    },
+    {
+      "id": "legend_neutralize",
+      "input": "S",
+      "hold": "←",
+      "animation": "legend_neutralize",
+      "mode": "legendary"
+    },
+    {
+      "id": "legend_sixSeven",
+      "input": "S",
+      "hold": "→",
+      "animation": "legend_sixSeven",
+      "mode": "legendary"
+    },
+    {
+      "id": "legend_special2",
+      "input": "S",
+      "hold": "↓",
+      "animation": "legend_special2",
+      "mode": "legendary"
+    },
+    {
+      "id": "legend_sweep",
+      "input": "K",
+      "hold": "↓",
+      "animation": "legend_sweep",
+      "mode": "legendary"
+    },
+    {
+      "id": "legend_uppercut",
+      "input": "P",
+      "hold": "↓",
+      "animation": "legend_uppercut",
+      "mode": "legendary"
+    },
+    {
+      "id": "legend_special1",
+      "input": "S",
+      "animation": "legend_special1",
+      "mode": "legendary"
+    },
+    {
+      "id": "legend_punch",
+      "input": "P",
+      "animation": "legend_punch",
+      "mode": "legendary"
+    },
+    {
+      "id": "legend_kick",
+      "input": "K",
+      "animation": "legend_kick",
+      "mode": "legendary"
+    },
+    {
+      "id": "legend_cannon",
+      "input": "↓→S",
+      "mode": "legendary",
+      "animation": "legend_cannon"
     }
   ],
   "moveList": [
     {
-      "section": "Química & aura",
-      "name": "Farmar aura — reações extras por 4 s",
+      "section": "Laboratório de combate",
+      "name": "Palma iônica",
+      "input": "K",
+      "hold": "→"
+    },
+    {
+      "section": "Laboratório de combate",
+      "name": "Neutralização — contra-ataque",
       "input": "S",
       "hold": "←"
     },
     {
-      "section": "Química & aura",
-      "name": "Hólmio 67 — 7 impactos / 2 por round",
+      "section": "Laboratório de combate",
+      "name": "Six Seven — 2 por round",
       "input": "S",
       "hold": "→"
     },
     {
-      "section": "Química & aura",
-      "name": "Reação em cadeia",
+      "section": "Laboratório de combate",
+      "name": "Combustão",
       "input": "S",
       "hold": "↓"
     },
     {
-      "section": "Química & aura",
+      "section": "Laboratório de combate",
       "name": "Rasteira",
       "input": "K",
       "hold": "↓"
     },
     {
-      "section": "Química & aura",
+      "section": "Laboratório de combate",
       "name": "Ascensão iônica",
       "input": "P",
       "hold": "↓"
     },
     {
-      "section": "Básicos",
+      "section": "Laboratório de combate",
       "name": "Frasco reagente",
       "input": "S"
     },
     {
-      "section": "Básicos",
-      "name": "Soco — aperte novamente para combo",
+      "section": "Laboratório de combate",
+      "name": "Soco — combo",
       "input": "P"
     },
     {
-      "section": "Básicos",
+      "section": "Laboratório de combate",
       "name": "Chute",
       "input": "K"
     },
     {
-      "section": "Química & aura",
-      "name": "Espada 67 — corte duplo",
-      "input": "K",
+      "section": "Lendário",
+      "name": "Transformação — 12 s / 1 por round",
+      "input": "↓↓S"
+    },
+    {
+      "section": "Lendário",
+      "name": "Ki verde — reforçado na transformação",
+      "input": "P",
       "hold": "→"
+    },
+    {
+      "section": "Lendário",
+      "name": "Esfera de petrificação — 1,5 s ao acertar",
+      "input": "K",
+      "hold": "←"
+    },
+    {
+      "section": "Lendário",
+      "name": "Canhão lendário — apenas transformado",
+      "input": "↓→S",
+      "mode": "legendary"
     }
   ],
   "sounds": {
@@ -1699,18 +4064,78 @@
     "flask": "flask.wav",
     "bubble": "bubble.wav",
     "reaction": "reaction.wav",
-    "aura": "aura.wav",
-    "super67": "super67.wav"
-  },
-  "echo": {
-    "buff": "chemicalAura",
-    "effect": "ionEcho",
-    "ratio": 0.2,
-    "delay": 12,
-    "gap": 14,
-    "height": 125
+    "six": "six.wav",
+    "seven": "seven.wav",
+    "ki": "ki.wav",
+    "medusa": "medusa.wav",
+    "transform": "transform.wav"
   },
   "balance": {
     "damage": 0.586
+  },
+  "textureScaleMode": "nearest",
+  "awakening": {
+    "mode": "legendary",
+    "gauge": 720,
+    "onHit": 0,
+    "onAttackHit": 0,
+    "drain": 1,
+    "damageScale": 1.2,
+    "aura": "legendaryAura",
+    "auraOffsetY": 190
+  },
+  "modes": {
+    "legendary": {
+      "animations": {
+        "idle": "legend_idle",
+        "walkForward": "legend_walkForward",
+        "walkBackward": "legend_walkBackward",
+        "jump": "legend_jump",
+        "jumpStart": "legend_jumpStart",
+        "jumpUp": "legend_jumpUp",
+        "falling": "legend_falling",
+        "land": "legend_land",
+        "turn": "legend_turn",
+        "crouch": "legend_crouch",
+        "blockStanding": "legend_blockStanding",
+        "blockCrouching": "legend_blockCrouching",
+        "hitReaction": "legend_hitReaction",
+        "hitCrouching": "legend_hitCrouching",
+        "hitAir": "legend_hitAir",
+        "launched": "legend_launched",
+        "knockdown": "legend_knockdown",
+        "getUp": "legend_getUp",
+        "ko": "legend_ko",
+        "victoryPose": "legend_victoryPose",
+        "defeatPose": "legend_defeatPose",
+        "punch": "legend_punch",
+        "punch2": "legend_punch2",
+        "kick": "legend_kick",
+        "sweep": "legend_sweep",
+        "uppercut": "legend_uppercut",
+        "dashForward": "legend_dashForward",
+        "dashBackward": "legend_dashBackward",
+        "neutralize": "legend_neutralize",
+        "neutralizeHit": "legend_neutralizeHit",
+        "sixSeven": "legend_sixSeven",
+        "ionicPalm": "legend_ionicPalm",
+        "special1": "legend_special1",
+        "special2": "legend_special2",
+        "kiBlast": "legend_kiBlast",
+        "medusa": "legend_medusa"
+      },
+      "buttons": {
+        "ground": {
+          "punch": "legend_punch",
+          "kick": "legend_kick",
+          "special": "legend_special1"
+        },
+        "air": {
+          "punch": "legend_punch",
+          "kick": "legend_kick",
+          "special": "legend_special1"
+        }
+      }
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { Sprite } from 'pixi.js';
+import { Sprite, ColorMatrixFilter } from 'pixi.js';
 import { AnimationStateMachine } from './AnimationStateMachine.js';
 import { hitsOf, launchOf, pickActiveHit, recordHit } from './hits.js';
 
@@ -225,7 +225,7 @@ export class Fighter {
         this.awakened = true;
         this.mode = def.mode;
         this.health = Math.min(this.config.stats.maxHealth, this.health + this.config.stats.maxHealth * (def.heal ?? 0));
-        if (def.aura) this.pendingEffects.push({ owner: this, spawn: { id: def.aura, follow: 'owner' }, attack: null, serial: this.attackSerial });
+        if (def.aura) this.pendingEffects.push({ owner: this, spawn: { id: def.aura, follow: 'owner', offsetY: def.auraOffsetY ?? 0 }, attack: null, serial: this.attackSerial });
       }
       return;
     }
@@ -572,6 +572,14 @@ export class Fighter {
   }
 
   update(command, delta) {
+    // Petrificacao: pausa movimento e animacao, mas expira no tempo real.
+    if (this.seals.petrify > 0 && !this.isKnockedOut) {
+      this.seals.petrify = Math.max(0, this.seals.petrify - delta);
+      this.vx = 0; this.vy = 0; this.blocking = false;
+      this.tickAwakening(delta);
+      this.syncSprite();
+      return;
+    }
     // Selo "slow" (Quicksilver do Dante): o tempo deste lutador anda pela
     // metade, inclusive o do proprio selo.
     if (this.seals.slow) delta *= SLOW_FACTOR;
@@ -883,6 +891,7 @@ export class Fighter {
     if (event.sound) this.pendingSounds.push({ key: event.sound, run: this.moveRun, stopWithMove: Boolean(event.stopWithMove) });
     // Cura (o Minazuki da Unohana): nunca passa da vida maxima.
     if (event.heal) this.health = Math.min(this.config.stats.maxHealth, this.health + event.heal);
+    if (event.awaken && this.awakening) this.fillAwakening(this.awakening.gauge);
     if (event.setMode !== undefined) this.mode = event.setMode || null;
     // Estado a favor ligado pelo proprio golpe (Doppelganger do Dante).
     if (event.buff) this.buffs[event.buff.kind] = event.buff.ticks;
@@ -1192,6 +1201,8 @@ export class Fighter {
     this.echoes.length = 0;
     this.pinned = null;
     this.mode = null;
+    this.awakened = false;
+    this.awakeGauge = 0;
     this.roundClock = 0;
     this.airDashesLeft = 1;
     this.effectTags.clear();
@@ -1266,6 +1277,13 @@ export class Fighter {
   }
 
   syncSprite() {
+    const petrified = this.seals.petrify > 0 && !this.isKnockedOut;
+    if (petrified && !this.stoneFilter && typeof document !== 'undefined') {
+      this.stoneFilter = new ColorMatrixFilter();
+      this.stoneFilter.desaturate();
+    }
+    this.sprite.tint = petrified ? 0xb6b1a5 : 0xffffff;
+    this.sprite.filters = petrified && this.stoneFilter ? [this.stoneFilter] : null;
     this.sprite.texture = this.frames[this.animation.sheetFrame];
     this.sprite.x = Math.round(this.x);
     this.sprite.y = Math.round(this.y);

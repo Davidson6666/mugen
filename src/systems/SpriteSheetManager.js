@@ -67,9 +67,9 @@ export class SpriteSheetManager {
     let effectFrames;
     if (config.atlas) {
       const pages = await Promise.all(config.sheets.map((file) => Assets.load(sheetUrl(entry, config, file))));
-      // A camera da luta amplia 1.5x: com "nearest" cada pixel sairia com 1 ou
-      // 2 px de largura e o contorno serrilharia. Suavizado fica liso.
-      for (const page of pages) page.source.scaleMode = 'linear';
+      // Pacotes de pixel art podem optar por nearest; demais pacotes mantêm
+      // o filtro linear usado originalmente pelo elenco.
+      for (const page of pages) page.source.scaleMode = config.textureScaleMode ?? 'linear';
       frames = sliceAtlas(pages, config.atlas, config.spriteGridSize);
       effectFrames = {};
       for (const [id, effect] of Object.entries(config.effects ?? {})) {
