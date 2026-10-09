@@ -22,6 +22,18 @@ const ROUND_MARKER_STEP = 26;
 
 const flat = (points) => points.flat();
 
+const easeOutCubic = (t) => 1 - (1 - t) ** 3;
+const easeOutBack = (t) => 1 + 2.70158 * (t - 1) ** 3 + 1.70158 * (t - 1) ** 2;
+
+// Nome do efeito ativo (buff de dano) na barra; o que nao esta aqui aparece com
+// o proprio identificador.
+const BUFF_LABELS = { cursedPower: 'CURSED POWER', bombDevil: 'BOMB DEVIL' };
+// So buff curto ganha a barrinha de tempo restante: os de ~10 minutos nao
+// mostram nada que ajude.
+const BUFF_BAR_MAX_TICKS = 1500;
+const LOW_LIFE = 0.25;
+const HIT_FLASH_FRAMES = 7;
+
 function label(text, size, { fill = PALETTE.textPrimary, weight = '900', stroke = Math.round(size / 5) } = {}) {
   return new Text({
     text,
@@ -73,7 +85,7 @@ export class Hud {
 
   buildSide(index, name, tag, portrait) {
     const mirror = index === 1 ? mirrorX : (points) => points;
-    const side = { mirror, trail: 1, shown: 1, hold: 0 };
+    const side = { mirror, trail: 1, shown: 1, hold: 0, flash: 0, flashFrom: 1, pulse: 0 };
 
     const frame = new Graphics();
     outlined(frame, mirror(LIFE_BAR), PALETTE_HEX.ink);
@@ -134,7 +146,40 @@ export class Hud {
     this.view.addChild(side.combo);
 
     this.buildAwakening(side, index, mirror);
+    this.buildStatus(side, index);
     this.sides.push(side);
+  }
+
+  // Chip do efeito ativo (Power Charge do Sukuna, Bomb Devil da Reze): um nome
+  // em capsula e, se for curto, uma barra com o tempo que falta.
+  buildStatus(side, index) {
+    side.status = new Container();
+    const capsule = new Graphics().roundRect(0, 0, 200, 30, 15).fill({ color: PALETTE_HEX.ink }).stroke({ color: PALETTE_HEX.fieldYellow, width: 3 });
+    side.statusText = label('', 20, { fill: PALETTE.fieldYellow, stroke: 0 });
+    side.statusText.anchor.set(0, 0.5);
+    side.statusText.position.set(14, 15);
+    side.statusBar = new Graphics();
+    side.status.addChild(capsule, side.statusBar, side.statusText);
+    const [x] = side.mirror([AWAKENING_POSITION])[0];
+    side.status.position.set(index === 1 ? x - 200 : x, 176);
+    side.status.visible = false;
+    this.view.addChild(side.status);
+  }
+
+  drawStatus(side, fighter) {
+    const buff = fighter.config.damageBuff;
+    const ticks = buff ? (fighter.buffs?.[buff.kind] ?? 0) : 0;
+    side.status.visible = ticks > 0;
+    if (ticks <= 0) return;
+    side.statusText.text = BUFF_LABELS[buff.kind] ?? buff.kind.toUpperCase();
+    side.statusBar.clear();
+    if (ticks <= BUFF_BAR_MAX_TICKS) {
+      // Piscar rapido quando falta pouco (menos de 3 s).
+      side.status.alpha = ticks < 180 && Math.floor(ticks / 6) % 2 === 0 ? 0.45 : 1;
+      side.statusBar.roundRect(8, 24, 184 * Math.min(1, ticks / BUFF_BAR_MAX_TICKS), 4, 2).fill({ color: PALETTE_HEX.fieldYellow });
+    } else {
+      side.status.alpha = 1;
+    }
   }
 
   // Medidor de despertar (Origin Mode do Gojo), embaixo do nome: percentual
@@ -170,10 +215,17 @@ export class Hud {
     this.announcement = new Container();
     this.announcement.visible = false;
     this.announcementBand = new Graphics();
+    this.announcementBand.pivot.set(this.width / 2, 300);
+    this.announcementBand.position.set(this.width / 2, 300);
     this.announcementText = label('', 96, { stroke: 14 });
     this.announcementText.anchor.set(0.5);
     this.announcementText.position.set(this.width / 2, 300);
-    this.announcement.addChild(this.announcementBand, this.announcementText);
+    // Clarao branco que cobre a tela no instante do impacto (K.O., FIGHT!).
+    this.announcementFlash = new Graphics().rect(0, 0, this.width, 720).fill({ color: 0xffffff });
+    this.announcementFlash.alpha = 0;
+    this.announcement.addChild(this.announcementFlash, this.announcementBand, this.announcementText);
+    this.announcementAge = 0;
+    this.announcementImpact = false;
     this.view.addChild(this.announcement);
   }
 
@@ -199,7 +251,28 @@ export class Hud {
     }
 
     this.announcement.visible = true;
+    this.announcement.alpha = 1;
     this.announcementTimer = durationFrames;
+    this.announcementAge = 0;
+    this.announcementImpact = text.length <= 4 || text === 'PERFECT!' || text === 'FIGHT!';
+  }
+
+  // A faixa abre de dentro para fora, o texto bate de cima para baixo (grande
+  // e encolhendo) e, no K.O./FIGHT!, a tela pisca; no fim tudo some de leve.
+  animateAnnouncement(delta) {
+    this.announcementAge += delta;
+    this.announcementTimer -= delta;
+    const age = this.announcementAge;
+    this.announcementBand.scale.y = Math.max(0.001, easeOutCubic(Math.min(1, age / 9)));
+    const slam = easeOutBack(Math.min(1, age / 13));
+    this.announcementText.scale.set(1 + (1 - slam) * 1.5);
+    this.announcementText.alpha = Math.min(1, age / 4);
+    this.announcementFlash.alpha = this.announcementImpact ? Math.max(0, 0.75 - age * 0.055) : 0;
+    this.announcement.alpha = this.announcementTimer < 10 ? Math.max(0, this.announcementTimer / 10) : 1;
+    if (this.announcementTimer <= 0) {
+      this.announcement.visible = false;
+      this.announcementFlash.alpha = 0;
+    }
   }
 
   update({ fighters, timeRemaining, roundNumber, wins, suddenDeath, roundsToWin }, delta) {
@@ -207,9 +280,10 @@ export class Hud {
       const side = this.sides[index];
       const ratio = Math.max(0, fighter.health / fighter.config.stats.maxHealth);
       this.updateTrail(side, ratio, delta);
-      this.drawLife(side, index, ratio);
+      this.drawLife(side, index, ratio, delta);
       this.drawMarkers(side, index, wins[index], roundsToWin);
       this.drawAwakening(side, fighter, delta);
+      this.drawStatus(side, fighter);
 
       const showCombo = fighter.comboCount > 1;
       side.combo.visible = showCombo;
@@ -222,10 +296,7 @@ export class Hud {
       : String(Math.ceil(timeRemaining)).padStart(2, '0');
     this.roundLabel.text = suddenDeath ? 'FINAL ROUND' : `ROUND ${roundNumber}`;
 
-    if (this.announcementTimer > 0) {
-      this.announcementTimer -= delta;
-      if (this.announcementTimer <= 0) this.announcement.visible = false;
-    }
+    if (this.announcementTimer > 0) this.animateAnnouncement(delta);
   }
 
   updateTrail(side, ratio, delta) {
@@ -235,7 +306,11 @@ export class Hud {
       side.hold = 0;
     } else if (ratio < side.shown) {
       side.hold = TRAIL_HOLD_FRAMES;
+      // O pedaco perdido pisca em branco por um instante.
+      side.flashFrom = side.flash > 0 ? Math.max(side.flashFrom, side.shown) : side.shown;
+      side.flash = HIT_FLASH_FRAMES;
     }
+    if (side.flash > 0) side.flash -= delta;
     side.shown = ratio;
     if (side.hold > 0) {
       side.hold -= delta;
@@ -245,19 +320,32 @@ export class Hud {
   }
 
   // A vida fica ancorada perto do timer; o dano come a faixa pela ponta de fora.
-  drawLife(side, index, ratio) {
+  drawLife(side, index, ratio, delta = 1) {
     const span = LIFE_INNER_X - LIFE_OUTER_X;
     const rect = (amount) => {
       const from = LIFE_INNER_X - span * amount;
       const x = index === 1 ? this.width - LIFE_INNER_X : from;
       return [x, LIFE_TOP, span * amount, LIFE_HEIGHT];
     };
+    // Vida baixa: a faixa alterna entre amarelo e laranja, cada vez mais rapido.
+    side.pulse = (side.pulse + delta * (ratio < LOW_LIFE / 2 ? 2 : 1)) % 24;
+    const low = ratio > 0 && ratio < LOW_LIFE;
+    const lifeColor = low && side.pulse < 12 ? 0xff8a00 : PALETTE_HEX.lifeFill;
     side.fill
       .clear()
       .rect(...rect(side.trail))
       .fill({ color: PALETTE_HEX.lifeTrail })
       .rect(...rect(ratio))
-      .fill({ color: PALETTE_HEX.lifeFill });
+      .fill({ color: lifeColor });
+    if (side.flash > 0 && side.flashFrom > ratio) {
+      // O pedaco entre a vida de antes e a de agora (nunca a barra inteira).
+      const lost = span * (side.flashFrom - ratio);
+      const left = index === 1 ? this.width - LIFE_INNER_X + span * ratio : LIFE_INNER_X - span * side.flashFrom;
+      side.fill.rect(left, LIFE_TOP, lost, LIFE_HEIGHT).fill({ color: 0xffffff });
+    }
+    // Brilho fino no alto da barra: da volume sem mudar a cor.
+    const [gx, gy, gw] = rect(ratio);
+    side.fill.rect(gx, gy + 2, gw, 5).fill({ color: 0xffffff, alpha: 0.28 });
   }
 
   drawMarkers(side, index, won, roundsToWin) {
