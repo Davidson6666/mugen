@@ -1,4 +1,4 @@
-import { Container, Graphics, Sprite, Text } from 'pixi.js';
+import { Container, Graphics, Sprite, Text, Texture } from 'pixi.js';
 import { PALETTE, PALETTE_HEX } from '../utils/palette.js';
 import {
   AWAKENING_POSITION, EMBLEM, EMBLEM_TITLE_BAND, EMBLEM_TITLE_Y, LIFE_BAR, LIFE_HEIGHT, LIFE_INNER_X, LIFE_OUTER_X,
@@ -56,12 +56,49 @@ function outlined(graphics, points, fill) {
   return graphics.poly(flat(points)).fill({ color: fill });
 }
 
+// Textura de gradiente desenhada num canvas: sombra no topo (a barra de vida
+// continua legivel em cenario claro) e vinheta nos cantos (cinema, sem tapar a
+// luta). Criadas uma vez por luta.
+function paintedTexture(width, height, paint) {
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  paint(canvas.getContext('2d'), width, height);
+  return Texture.from(canvas);
+}
+
+function buildScrim(width) {
+  const container = new Container();
+  const top = new Sprite(paintedTexture(4, 180, (context, w, h) => {
+    const gradient = context.createLinearGradient(0, 0, 0, h);
+    gradient.addColorStop(0, 'rgba(10, 10, 12, 0.62)');
+    gradient.addColorStop(1, 'rgba(10, 10, 12, 0)');
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, w, h);
+  }));
+  top.width = width;
+  top.height = 180;
+  const vignette = new Sprite(paintedTexture(256, 144, (context, w, h) => {
+    const gradient = context.createRadialGradient(w / 2, h / 2, h * 0.45, w / 2, h / 2, w * 0.62);
+    gradient.addColorStop(0, 'rgba(10, 10, 12, 0)');
+    gradient.addColorStop(1, 'rgba(10, 10, 12, 0.42)');
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, w, h);
+  }));
+  vignette.width = width;
+  vignette.height = 720;
+  container.addChild(vignette, top);
+  return container;
+}
+
 export class Hud {
   constructor({ width, names = ['P1', 'P2'], labels = ['1P', '2P'], portraits = [] }) {
     this.width = width;
     this.view = new Container();
     this.announcementTimer = 0;
     this.sides = [];
+
+    this.view.addChild(buildScrim(width));
 
     names.forEach((name, index) => this.buildSide(index, name, labels[index], portraits[index]));
 

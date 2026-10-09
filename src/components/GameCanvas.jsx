@@ -314,6 +314,8 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
 
       const overlay = debugText();
       overlay.position.set(16, STAGE_HEIGHT - 60);
+      // Texto de desenvolvimento (fps, estados): so aparece com a tecla ` das caixas.
+      overlay.visible = false;
       instance.stage.addChild(overlay);
 
       function startRound(round) {
@@ -365,7 +367,10 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       // Atalhos de desenvolvimento, fora do input map do jogo. A selecao de
       // modo e dificuldade sai daqui quando os menus existirem.
       onDebugKey = (event) => {
-        if (event.code === 'Backquote') debugLayer.visible = !debugLayer.visible;
+        if (event.code === 'Backquote') {
+          debugLayer.visible = !debugLayer.visible;
+          overlay.visible = debugLayer.visible;
+        }
         if (event.code === 'KeyR') restartMatch();
       };
       window.addEventListener('keydown', onDebugKey);
