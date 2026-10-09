@@ -174,7 +174,7 @@ export default function StageSelect() {
             key={previewed.id} className="stage-preview-in"
             href={`${previewed.dir}/${previewed.background}`}
             x={40} y={138} width={660} height={350} preserveAspectRatio="xMidYMid slice"
-            style={{ transformOrigin: '370px 313px' }}
+            style={{ transformOrigin: '370px 313px', imageRendering: 'pixelated' }}
           />
           <polygon points={toPoints(PREVIEW)} fill="url(#stage-shade)" />
         </g>
@@ -186,7 +186,7 @@ export default function StageSelect() {
         </defs>
         <Label x={680} y={470} size={26} weight={800} anchor="end" stroke={5}>{`${cursors[0] + 1} / ${maps.length}`}</Label>
         <g key={`name-${previewed.id}`} className="stage-name-in">
-          <Capsule x={48} y={512} width={520} size={38}>{previewed.name.toUpperCase()}</Capsule>
+          <Capsule x={48} y={512} width={520} size={previewed.name.length > 22 ? 30 : 38}>{previewed.name.toUpperCase()}</Capsule>
         </g>
 
         {maps.map((stage, index) => {
@@ -198,6 +198,7 @@ export default function StageSelect() {
             <g key={stage.id}>
               <MenuOption
                 x={x} y={y} width={340}
+                fontSize={stage.name.length > 22 ? 24 : stage.name.length > 16 ? 28 : 34}
                 label={picked ? `${stage.name.toUpperCase()} ✓` : stage.name.toUpperCase()}
                 active={picked || (step === 'map' && cursors[0] === index)}
                 marker={!picked}

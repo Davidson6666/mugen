@@ -5,7 +5,7 @@ import { Texture } from 'pixi.js';
 import { Fighter } from '../src/systems/Fighter.js';
 
 const load = (path) => JSON.parse(readFileSync(new URL(path, import.meta.url)));
-const map = load('../public/assets/maps/dummy/dummy_map_config.json');
+const map = load('./fixtures/arena.json');
 const dummy = load('../public/assets/characters/dummy/dummy_config.json');
 const itachi = load('../public/assets/characters/itachi/itachi_config.json');
 const blank = (count) => Array.from({ length: count }, () => Texture.EMPTY);

@@ -11,7 +11,7 @@ const base = JSON.parse(
   readFileSync(new URL('../public/assets/characters/dummy/dummy_config.json', import.meta.url)),
 );
 const map = JSON.parse(
-  readFileSync(new URL('../public/assets/maps/dummy/dummy_map_config.json', import.meta.url)),
+  readFileSync(new URL('./fixtures/arena.json', import.meta.url)),
 );
 
 const box = { width: 20, height: 20, offsetX: 0, offsetY: 0 };

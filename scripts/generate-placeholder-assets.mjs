@@ -1,5 +1,4 @@
-// Gera os assets placeholder da Fase 1 (sprite sheet do personagem dummy e fundo
-// do mapa dummy). Encoder PNG proprio via zlib para nao depender de Pillow/canvas.
+// Gera sprites placeholder da Fase 1. Os cenários UTFPR são artes próprias. Encoder PNG proprio via zlib para nao depender de Pillow/canvas.
 import { deflateSync } from 'node:zlib';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
@@ -321,150 +320,6 @@ function buildPortrait(hue) {
   return canvas;
 }
 
-/* ----------------------------------------------------------- mapa dummy --- */
-
-const MAP_W = 1280;
-const MAP_H = 720;
-const GROUND_LEVEL = 580;
-// Arena de 700px no meio da tela: com o sprite no tamanho nativo (~90px), a
-// tela inteira como arena deixava o boneco perdido. Os pilares nas bordas sao
-// as paredes; fora delas o cenario escurece para o olho ficar na luta.
-const LEFT_BOUND = 290;
-const RIGHT_BOUND = 990;
-const PILLAR_WIDTH = 44;
-
-// Gerador deterministico: o mesmo cenario sai igual toda vez que o script roda.
-function mulberry32(seed) {
-  let state = seed;
-  return () => {
-    state |= 0;
-    state = (state + 0x6d2b79f5) | 0;
-    let t = Math.imul(state ^ (state >>> 15), 1 | state);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-// Tudo desenhado na escala do personagem (~90px de altura): portas de 70px,
-// mureta de 26px, janelas de 4px na skyline distante.
-function buildMapBackground(hue = 0, seed = 1) {
-  const canvas = new Canvas(MAP_W, MAP_H);
-  const random = mulberry32(seed);
-  const tint = (hex, factor = 1) => shade(rotateHue(hexToRgb(hex), hue), factor);
-  const top = hexToRgb('#0D0B1A');
-  const bottom = tint('#241C38');
-
-  for (let y = 0; y < GROUND_LEVEL; y += 1) {
-    const t = y / GROUND_LEVEL;
-    canvas.rect(0, y, MAP_W, 1, top.map((value, c) => Math.round(value + (bottom[c] - value) * t)));
-  }
-
-  for (let star = 0; star < 140; star += 1) {
-    const x = Math.round(random() * MAP_W);
-    const y = Math.round(random() * (GROUND_LEVEL - 200));
-    canvas.rect(x, y, 1 + Math.round(random()), 1, hexToRgb('#FFFFFF'), 70 + Math.round(random() * 140));
-  }
-  const moonX = 360 + Math.round(random() * 560);
-  canvas.circle(moonX, 120, 30, tint('#8B7BD0', 1.15));
-  canvas.circle(moonX - 9, 113, 25, tint('#4A3C7A', 0.9));
-
-  // Skyline distante: predios pequenos, janelas de 3x4.
-  const far = tint('#2A2046', 0.8);
-  const farWindow = tint('#FFB800');
-  let x = -10;
-  while (x < MAP_W) {
-    const width = 26 + Math.round(random() * 44);
-    const height = 70 + Math.round(random() * 110);
-    const originY = GROUND_LEVEL - 40 - height;
-    canvas.rect(x, originY, width, height + 40, far);
-    for (let wy = originY + 6; wy < GROUND_LEVEL - 44; wy += 9) {
-      for (let wx = x + 4; wx < x + width - 5; wx += 7) {
-        if (random() < 0.7) continue;
-        canvas.rect(wx, wy, 3, 4, farWindow, 60 + Math.round(random() * 90));
-      }
-    }
-    x += width + 3;
-  }
-
-  // Nevoa baixa separando a skyline do telhado.
-  for (let y = GROUND_LEVEL - 110; y < GROUND_LEVEL - 20; y += 1) {
-    const t = (y - (GROUND_LEVEL - 110)) / 90;
-    canvas.rect(0, y, MAP_W, 1, tint('#3A2E5A'), Math.round(t * 120));
-  }
-
-  // Objetos do telhado, na escala do boneco.
-  const wall = tint('#3A2E52');
-  const wallLight = shade(wall, 1.35);
-  const wallDark = shade(wall, 0.65);
-  const metal = tint('#5A5470');
-  const glow = tint('#FF3D7A', 1);
-
-  // Casinha da escada, com porta de 70px e lampada.
-  const hutX = 420 + Math.round(random() * 60);
-  canvas.rect(hutX, GROUND_LEVEL - 96, 84, 96, wall);
-  canvas.rect(hutX, GROUND_LEVEL - 96, 84, 5, wallLight);
-  canvas.rect(hutX + 30, GROUND_LEVEL - 70, 26, 70, wallDark);
-  canvas.rect(hutX + 50, GROUND_LEVEL - 38, 3, 3, metal);
-  canvas.circle(hutX + 43, GROUND_LEVEL - 80, 3, hexToRgb('#FFE9A8'));
-  canvas.circle(hutX + 43, GROUND_LEVEL - 80, 9, hexToRgb('#FFE9A8'), 40);
-
-  // Caixa-d'agua sobre pernas.
-  const tankX = 800 + Math.round(random() * 60);
-  canvas.rect(tankX + 6, GROUND_LEVEL - 44, 4, 44, metal);
-  canvas.rect(tankX + 42, GROUND_LEVEL - 44, 4, 44, metal);
-  canvas.rect(tankX, GROUND_LEVEL - 100, 52, 58, tint('#4A3C66'));
-  canvas.rect(tankX, GROUND_LEVEL - 100, 52, 4, wallLight);
-  for (let band = GROUND_LEVEL - 88; band < GROUND_LEVEL - 44; band += 14) canvas.rect(tankX, band, 52, 2, wallDark);
-
-  // Placa de neon entre os dois.
-  const signX = 610 + Math.round(random() * 40);
-  canvas.rect(signX + 8, GROUND_LEVEL - 60, 3, 60, metal);
-  canvas.rect(signX + 60, GROUND_LEVEL - 60, 3, 60, metal);
-  canvas.rect(signX, GROUND_LEVEL - 92, 72, 32, hexToRgb('#120E1E'));
-  canvas.outline(signX, GROUND_LEVEL - 92, 72, 32, glow);
-  for (let bar = 0; bar < 4; bar += 1) canvas.rect(signX + 10 + bar * 15, GROUND_LEVEL - 82, 9, 12, glow, 200);
-  canvas.rect(signX - 6, GROUND_LEVEL - 98, 84, 44, glow, 28);
-
-  // Aparelhos de ar-condicionado.
-  for (const acX of [360, 900]) {
-    canvas.rect(acX, GROUND_LEVEL - 26, 36, 26, metal);
-    canvas.rect(acX, GROUND_LEVEL - 26, 36, 3, shade(metal, 1.3));
-    canvas.circle(acX + 18, GROUND_LEVEL - 12, 8, shade(metal, 0.6));
-  }
-
-  // Mureta do fundo do telhado.
-  canvas.rect(0, GROUND_LEVEL - 26, MAP_W, 26, wallDark, 160);
-  canvas.rect(0, GROUND_LEVEL - 26, MAP_W, 3, wallLight, 160);
-
-  // Chao em lajotas do tamanho do pe do personagem.
-  const floor = tint('#241C33');
-  canvas.rect(0, GROUND_LEVEL, MAP_W, MAP_H - GROUND_LEVEL, floor);
-  canvas.rect(0, GROUND_LEVEL, MAP_W, 2, tint('#FFB800'), 180);
-  for (let row = 0; GROUND_LEVEL + 10 + row * 18 < MAP_H; row += 1) {
-    const y = GROUND_LEVEL + 10 + row * 18;
-    canvas.rect(0, y, MAP_W, 1, tint('#3A2E52'), 150);
-    const offset = row % 2 ? 24 : 0;
-    for (let tile = offset; tile < MAP_W; tile += 48) canvas.rect(tile, y - 17, 1, 17, tint('#3A2E52'), 110);
-  }
-
-  // Fora da arena o cenario escurece.
-  canvas.rect(0, 0, LEFT_BOUND - PILLAR_WIDTH, MAP_H, hexToRgb('#05040C'), 150);
-  canvas.rect(RIGHT_BOUND + PILLAR_WIDTH, 0, MAP_W - RIGHT_BOUND - PILLAR_WIDTH, MAP_H, hexToRgb('#05040C'), 150);
-
-  // Pilares: as paredes da arena.
-  for (const pillarX of [LEFT_BOUND - PILLAR_WIDTH, RIGHT_BOUND]) {
-    canvas.rect(pillarX, GROUND_LEVEL - 170, PILLAR_WIDTH, 170, wall);
-    canvas.rect(pillarX, GROUND_LEVEL - 170, 6, 170, wallLight);
-    canvas.rect(pillarX + PILLAR_WIDTH - 6, GROUND_LEVEL - 170, 6, 170, wallDark);
-    canvas.rect(pillarX - 4, GROUND_LEVEL - 180, PILLAR_WIDTH + 8, 12, wallLight);
-    for (let brick = GROUND_LEVEL - 150; brick < GROUND_LEVEL; brick += 20) canvas.rect(pillarX + 6, brick, PILLAR_WIDTH - 12, 2, wallDark);
-    canvas.circle(pillarX + PILLAR_WIDTH / 2, GROUND_LEVEL - 186, 4, glow);
-    canvas.circle(pillarX + PILLAR_WIDTH / 2, GROUND_LEVEL - 186, 12, glow, 40);
-  }
-
-  return canvas.toPng();
-}
-
 /* --------------------------------------------------------------- elenco --- */
 
 // Os diretorios ja usam os ids definitivos do elenco: quando a arte real
@@ -496,15 +351,6 @@ const ROSTER = [
   { id: 'ensina_god', name: 'Ensina GOD', description: 'Professor supremo', hue: 200 },
 ];
 
-const STAGES = [
-  { id: 'map_01', name: 'Dojo Neon', hue: 0 },
-  { id: 'map_02', name: 'Beco Arcade', hue: 60 },
-  { id: 'map_03', name: 'Telhado Sintetico', hue: 140 },
-  { id: 'map_04', name: 'Templo Submerso', hue: 200 },
-  { id: 'map_05', name: 'Arena Final', hue: 300 },
-  // Arte real (scripts/import-throneroom.mjs): o placeholder nao sobrescreve.
-  { id: 'throneroom', name: 'Sala do Trono', realArt: true },
-];
 
 /* ------------------------------------------------------------- escrita --- */
 
@@ -525,13 +371,11 @@ function readJson(relativePath) {
 
 console.log('Gerando fixture de teste (dummy)...');
 write('public/assets/characters/dummy/dummy_spritesheet.png', buildSpriteSheet());
-write('public/assets/maps/dummy/dummy_map_bg.png', buildMapBackground());
 
 // O config do dummy e a fonte dos demais: valores de combate ajustados uma vez
 // so, e o elenco inteiro herda a mesma base (a especificacao pede stats
 // identicos entre os personagens).
 const characterTemplate = readJson('public/assets/characters/dummy/dummy_config.json');
-const mapTemplate = readJson('public/assets/maps/dummy/dummy_map_config.json');
 
 console.log('Gerando elenco placeholder...');
 for (const { id, name, description, hue, realArt } of ROSTER) {
@@ -547,18 +391,6 @@ for (const { id, name, description, hue, realArt } of ROSTER) {
   });
 }
 
-console.log('Gerando cenarios placeholder...');
-for (const [index, { id, name, hue, realArt }] of STAGES.entries()) {
-  if (realArt) continue;
-  write(`public/assets/maps/${id}/${id}_bg.png`, buildMapBackground(hue, index + 1));
-  writeJson(`public/assets/maps/${id}/${id}_config.json`, {
-    ...mapTemplate,
-    id,
-    name,
-    backgroundImage: `${id}_bg.png`,
-  });
-}
-
 console.log('Atualizando registros...');
 writeJson(
   'src/data/characters.json',
@@ -569,16 +401,6 @@ writeJson(
     config: `${id}_config.json`,
     portrait: `${id}_portrait.png`,
     isBoss: false,
-  })),
-);
-writeJson(
-  'src/data/maps.json',
-  STAGES.map(({ id, name }) => ({
-    id,
-    name,
-    dir: `/assets/maps/${id}`,
-    config: `${id}_config.json`,
-    background: `${id}_bg.png`,
   })),
 );
 

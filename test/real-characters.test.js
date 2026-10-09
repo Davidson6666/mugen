@@ -12,7 +12,7 @@ import { ComboDetector } from '../src/systems/ComboDetector.js';
 // garantem que a importacao continua produzindo um personagem jogavel e que
 // cada golpe do pacote faz o que o .cns faz: encadeia, acerta, segue.
 const map = JSON.parse(
-  readFileSync(new URL('../public/assets/maps/dummy/dummy_map_config.json', import.meta.url)),
+  readFileSync(new URL('./fixtures/arena.json', import.meta.url)),
 );
 const config = JSON.parse(
   readFileSync(new URL('../public/assets/characters/itachi/itachi_config.json', import.meta.url)),

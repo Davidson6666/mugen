@@ -135,8 +135,6 @@ O script `scripts/import-chunli.mjs` converte o pacote (SFF v1 com a paleta `SF3
 
 Chun-Li e Street Fighter são propriedade da Capcom.
 
-## Sala do Trono (cenário)
+## Cenários UTFPR-CM
 
-Cenário importado do pacote MUGEN **"The King's Throne Room"**, usado sem fins comerciais em projeto acadêmico. Créditos do próprio pacote (`throneroom(normal).def`): **xWagnerPlaguesx** (código base gerado pelo programa de Cybaster).
-
-O script `scripts/import-throneroom.mjs` junta as três camadas do pacote numa imagem de 1280x720. O pacote fica em `assets-src/throneroom/`, fora do git. Para regerar: `npm run assets:throneroom`.
+Seis cenários originais em pixel art inspirados nas fotografias do campus fornecidas pelo usuário, redesenhados com a ferramenta integrada imagegen. Imagens finais 512×288, ampliadas sem suavização. Detalhes e prompts: public/assets/maps/ART.md.
