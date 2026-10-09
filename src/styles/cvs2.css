@@ -478,3 +478,18 @@
   .menu-opt, .menu-title { animation: none; }
   .menu-opt__shift { transition: none; }
 }
+
+/* ---- Selecao de cenario: a previa troca com fade e zoom, o nome desliza ---- */
+.stage-preview-in { animation: stage-preview-in 420ms cubic-bezier(0.2, 0.8, 0.25, 1) both; }
+@keyframes stage-preview-in {
+  from { opacity: 0; transform: scale(1.08); }
+  to { opacity: 1; transform: scale(1); }
+}
+.stage-name-in { animation: stage-name-in 260ms cubic-bezier(0.2, 0.9, 0.25, 1) both; }
+@keyframes stage-name-in {
+  from { opacity: 0; transform: translateX(-40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stage-preview-in, .stage-name-in { animation: none; }
+}

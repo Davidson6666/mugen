@@ -168,12 +168,26 @@ export default function StageSelect() {
 
         <defs><clipPath id="stage-preview"><polygon points={toPoints(PREVIEW)} /></clipPath></defs>
         <Shape points={PREVIEW} fill={PALETTE.ink} />
-        <image
-          href={`${previewed.dir}/${previewed.background}`}
-          x={40} y={138} width={660} height={350} preserveAspectRatio="xMidYMid slice"
-          clipPath="url(#stage-preview)"
-        />
-        <Capsule x={48} y={512} width={520} size={38}>{previewed.name.toUpperCase()}</Capsule>
+        <g clipPath="url(#stage-preview)">
+          {/* A chave troca a imagem a cada cenario e reinicia o fade com zoom. */}
+          <image
+            key={previewed.id} className="stage-preview-in"
+            href={`${previewed.dir}/${previewed.background}`}
+            x={40} y={138} width={660} height={350} preserveAspectRatio="xMidYMid slice"
+            style={{ transformOrigin: '370px 313px' }}
+          />
+          <polygon points={toPoints(PREVIEW)} fill="url(#stage-shade)" />
+        </g>
+        <defs>
+          <linearGradient id="stage-shade" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="60%" stopColor={PALETTE.ink} stopOpacity={0} />
+            <stop offset="100%" stopColor={PALETTE.ink} stopOpacity={0.65} />
+          </linearGradient>
+        </defs>
+        <Label x={680} y={470} size={26} weight={800} anchor="end" stroke={5}>{`${cursors[0] + 1} / ${maps.length}`}</Label>
+        <g key={`name-${previewed.id}`} className="stage-name-in">
+          <Capsule x={48} y={512} width={520} size={38}>{previewed.name.toUpperCase()}</Capsule>
+        </g>
 
         {maps.map((stage, index) => {
           const [x, y] = optionPosition(index);
@@ -198,7 +212,7 @@ export default function StageSelect() {
               />
               {here.map((player, order) => (
                 <Label
-                  key={player} x={x - 12 - order * 50} y={y + 42} size={32} anchor="end"
+                  key={player} x={x - 34 - order * 50} y={y + 42} size={32} anchor="end"
                   fill={CURSOR_COLORS[player]} stroke={6}
                 >
                   {votedBy.includes(player) ? `${player + 1}P✓` : `${player + 1}P`}
