@@ -8,7 +8,9 @@ import characters from '../data/characters.json';
 import { TRAINING_DUMMY, TRAINING_MAP } from '../data/training.js';
 import { useAchievements } from '../context/AchievementsContext.js';
 import FighterSprite from './FighterSprite.jsx';
-import { Capsule, DiagonalBackdrop, Label, Pedestal, PortraitCell } from './cvs2.jsx';
+import { Capsule, DiagonalBackdrop, KeyHints, Label, Pedestal, PortraitCell, Spotlight } from './cvs2.jsx';
+import { loadAccent } from '../utils/accentColor.js';
+import { loadConfig } from '../utils/characterConfig.js';
 import { cellAt } from '../utils/cvs2Layout.js';
 
 // Selecao no padrao Capcom vs SNK 2 (docs/referencias-ui/cvs2/capcomvssnk2-s4.jpg):
@@ -46,8 +48,8 @@ function moveIndex(index, direction) {
 
 // Onde fica o personagem e o nome de cada lado.
 const SIDES = [
-  { tab: { x: 36, y: 96, align: 'start' }, status: [40, 186, 'start'], stand: [210, 470] },
-  { tab: { x: 1244, y: 578, align: 'end' }, status: [1240, 566, 'end'], stand: [1070, 500] },
+  { tab: { x: 36, y: 96, align: 'start' }, status: [40, 216, 'start'], tagline: [40, 178, 'start'], stand: [210, 470] },
+  { tab: { x: 1244, y: 578, align: 'end' }, status: [1240, 566, 'end'], tagline: [1240, 656, 'end'], stand: [1070, 500] },
 ];
 
 // O que dizer do lado direito enquanto ele ainda e "???": no versus avulso o
@@ -55,15 +57,27 @@ const SIDES = [
 // no online ainda nem existe (depende de quem a fila trouxer).
 const STATUS_2P = { online: 'AINDA NA FILA', story: 'JA DEFINIDO', training: 'BONECO DE TREINO' };
 
-function SideInfo({ player, character, confirmed, isCpu, label, hiddenStatus }) {
-  const { tab, status, stand } = SIDES[player];
+const SIDE_COLORS = [PALETTE.fieldYellow, PALETTE.cursorP2];
+
+function SideInfo({ player, character, confirmed, isCpu, label, hiddenStatus, accent, tagline, blockedText }) {
+  const { tab, status, stand, tagline: taglineAt } = SIDES[player];
   let statusText = confirmed ? 'PRONTO!' : 'ESCOLHENDO...';
   if (isCpu) statusText = hiddenStatus ?? 'SORTEADA';
+  const note = blockedText ?? tagline;
   return (
     <g>
-      <Pedestal x={stand[0]} y={stand[1]} />
+      <Spotlight id={player} x={stand[0]} y={stand[1]} color={isCpu ? SIDE_COLORS[1] : (accent ?? SIDE_COLORS[player])} />
+      <Pedestal x={stand[0]} y={stand[1]} ring={confirmed} />
       {isCpu && <Label x={stand[0]} y={stand[1] - 30} size={120} anchor="middle">?</Label>}
       <Capsule {...tab}>{isCpu ? '???' : character.name.toUpperCase()}</Capsule>
+      {!isCpu && note && (
+        <Label
+          x={taglineAt[0]} y={taglineAt[1]} size={blockedText ? 22 : 26} weight={700} anchor={taglineAt[2]}
+          fill={blockedText ? PALETTE.fieldYellow : PALETTE.textPrimary} stroke={5}
+        >
+          {note.toUpperCase()}
+        </Label>
+      )}
       <Label x={status[0]} y={status[1]} size={28} anchor={status[2]} fill={confirmed ? PALETTE.fieldYellow : PALETTE.textPrimary} stroke={6}>
         {label ?? (isCpu ? 'CPU' : `${player + 1}P`)} · {statusText}
       </Label>
@@ -184,6 +198,25 @@ export default function CharacterSelect() {
   const activePlayers = twoPlayers ? [0, 1] : [0];
   const shown = [characters[cursors[0]], characters[cursors[1]]];
 
+  // Cor de destaque (tirada do retrato) e frase de cada lutador sob o cursor.
+  const [extras, setExtras] = useState([{}, {}]);
+  useEffect(() => {
+    let alive = true;
+    cursors.forEach((cursor, player) => {
+      const character = characters[cursor];
+      const rect = character.portraitRect?.length === 4 ? character.portraitRect : undefined;
+      Promise.all([loadAccent(`${character.dir}/${character.portrait}`, rect), loadConfig(character)]).then(([accent, config]) => {
+        if (!alive) return;
+        setExtras((current) => {
+          const next = [...current];
+          next[player] = { accent, tagline: config?.description };
+          return next;
+        });
+      }).catch(() => {});
+    });
+    return () => { alive = false; };
+  }, [cursors]);
+
   return (
     <div className="cvs2-screen">
       <svg className="cvs2-svg" viewBox="0 0 1280 720">
@@ -206,11 +239,18 @@ export default function CharacterSelect() {
         ))}
 
         <Label x={410} y={58} size={40} weight={800}>PLAYER SELECT</Label>
+        <Label x={412} y={86} size={22} weight={700} stroke={4} fill={PALETTE.fieldYellow}>{characters.length} LUTADORES</Label>
 
-        <SideInfo player={0} character={shown[0]} confirmed={Boolean(confirmed[0])} label={sideLabels[0]} />
+        <SideInfo
+          player={0} character={shown[0]} confirmed={Boolean(confirmed[0])} label={sideLabels[0]}
+          accent={extras[0].accent} tagline={extras[0].tagline}
+          blockedText={blockedReason(shown[0])}
+        />
         <SideInfo
           player={1} character={shown[1]} confirmed={Boolean(confirmed[1])} isCpu={!twoPlayers}
           label={sideLabels[1]} hiddenStatus={STATUS_2P[setup.mode]}
+          accent={extras[1].accent} tagline={extras[1].tagline}
+          blockedText={twoPlayers ? blockedReason(shown[1]) : null}
         />
 
         {warning && (
@@ -219,14 +259,19 @@ export default function CharacterSelect() {
             <Label x={640} y={675} size={30} anchor="middle" stroke={6}>{warning}</Label>
           </g>
         )}
-        <Label x={24} y={706} size={22} weight={600} stroke={5}>
-          {twoPlayers ? 'P1 WASD + J · P2 SETAS + NUMPAD 1 · K VOLTA' : 'WASD ESCOLHE · J CONFIRMA · K VOLTA'}
-        </Label>
+        <KeyHints
+          x={24} y={706}
+          items={twoPlayers
+            ? [{ keys: 'WASD+J', text: 'P1' }, { keys: 'SETAS+NUM1', text: 'P2' }, { keys: 'K', text: 'VOLTA' }]
+            : [{ keys: 'WASD', text: 'ESCOLHE' }, { keys: 'J', text: 'CONFIRMA' }, { keys: 'K', text: 'VOLTA' }]}
+        />
       </svg>
 
       {activePlayers.map((player) => (
         <div key={player} className="cvs2-sprite" style={{ left: SIDES[player].stand[0], top: SIDES[player].stand[1] }}>
-          <FighterSprite entry={shown[player]} flip={player === 1} />
+          <div key={shown[player].id} className={`cvs2-sprite__inner cvs2-sprite__inner--${player === 0 ? 'left' : 'right'}`}>
+            <FighterSprite entry={shown[player]} flip={player === 1} />
+          </div>
         </div>
       ))}
     </div>

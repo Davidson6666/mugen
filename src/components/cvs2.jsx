@@ -54,13 +54,78 @@ export function Capsule({ x, y, width = 260, children, align = 'start', size = 4
   );
 }
 
-// Pedestal amarelo achatado onde o sprite pisa.
-export function Pedestal({ x, y, halfWidth = 110 }) {
+// Pedestal amarelo achatado onde o sprite pisa, com sombra por baixo e um anel
+// que pulsa quando "ring" esta ligado (o lutador acabou de ser escolhido).
+export function Pedestal({ x, y, halfWidth = 110, ring = false }) {
   return (
-    <polygon
-      points={toPoints([[x, y - 26], [x + halfWidth, y], [x, y + 26], [x - halfWidth, y]])}
-      fill={PALETTE.fieldYellow} stroke={PALETTE.ink} strokeWidth={5}
-    />
+    <g>
+      <ellipse cx={x} cy={y + 34} rx={halfWidth * 0.95} ry={11} fill={PALETTE.ink} opacity={0.38} />
+      <polygon
+        points={toPoints([[x, y - 26], [x + halfWidth, y], [x, y + 26], [x - halfWidth, y]])}
+        fill={PALETTE.fieldYellow} stroke={PALETTE.ink} strokeWidth={5}
+      />
+      {ring && (
+        <polygon
+          className="cvs2-ring"
+          points={toPoints([[x, y - 26], [x + halfWidth, y], [x, y + 26], [x - halfWidth, y]])}
+          fill="none" stroke={PALETTE.textPrimary} strokeWidth={4}
+          style={{ transformOrigin: `${x}px ${y}px` }}
+        />
+      )}
+    </g>
+  );
+}
+
+// Holofote atras do lutador, na cor dele: um clarao radial no chao e uma
+// coluna de luz subindo, para o personagem nao ficar solto no fundo liso.
+export function Spotlight({ x, y, color, id }) {
+  const glow = `spot-${id}`;
+  const shaft = `shaft-${id}`;
+  return (
+    <g pointerEvents="none">
+      <defs>
+        <radialGradient id={glow} cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor={color} stopOpacity={1} />
+          <stop offset="60%" stopColor={color} stopOpacity={0.45} />
+          <stop offset="100%" stopColor={color} stopOpacity={0} />
+        </radialGradient>
+        <radialGradient id={`${glow}-dark`} cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor={PALETTE.ink} stopOpacity={0.55} />
+          <stop offset="100%" stopColor={PALETTE.ink} stopOpacity={0} />
+        </radialGradient>
+        <linearGradient id={shaft} x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0%" stopColor={color} stopOpacity={0.7} />
+          <stop offset="100%" stopColor={color} stopOpacity={0} />
+        </linearGradient>
+      </defs>
+      <ellipse cx={x} cy={y + 8} rx={215} ry={80} fill={`url(#${glow}-dark)`} />
+      <polygon points={toPoints([[x - 60, y - 360], [x + 60, y - 360], [x + 140, y], [x - 140, y]])} fill={`url(#${shaft})`} />
+      <ellipse cx={x} cy={y} rx={200} ry={66} fill={`url(#${glow})`} />
+    </g>
+  );
+}
+
+// Teclas de ajuda como fichas: [W A S D] ESCOLHE, [J] CONFIRMA...
+export function KeyHints({ x, y, items }) {
+  const sized = items.map(({ keys, text }) => ({ keys, text, keyWidth: keys.length * 15 + 16, textWidth: text.length * 11 + 14 }));
+  const starts = sized.reduce((list, item, index) => {
+    const previous = sized[index - 1];
+    list.push(index === 0 ? x : list[index - 1] + previous.keyWidth + previous.textWidth + 16);
+    return list;
+  }, []);
+  return (
+    <g>
+      {sized.map(({ keys, text, keyWidth }, index) => {
+        const at = starts[index];
+        return (
+          <g key={text}>
+            <rect x={at} y={y - 20} width={keyWidth} height={26} rx={5} fill={PALETTE.ink} stroke={PALETTE.textPrimary} strokeWidth={2} />
+            <Label x={at + keyWidth / 2} y={y - 1} size={20} anchor="middle" stroke={0}>{keys}</Label>
+            <Label x={at + keyWidth + 8} y={y - 1} size={20} weight={700} stroke={4}>{text}</Label>
+          </g>
+        );
+      })}
+    </g>
   );
 }
 
@@ -136,12 +201,14 @@ export function PortraitCell({ at, image, portraitRect, id, cursors = [], blocke
       {blocked && (
         <g>
           <polygon points={toPoints(shape)} fill={PALETTE.ink} opacity={0.72} />
-          <Label x={cx} y={cy + 12} size={34} anchor="middle" stroke={5}>🔒</Label>
+          <rect x={cx - 11} y={cy - 2} width={22} height={17} rx={3} fill={PALETTE.fieldYellow} stroke={PALETTE.ink} strokeWidth={2} />
+          <path d={`M ${cx - 7} ${cy - 2} v -6 a 7 7 0 0 1 14 0 v 6`} fill="none" stroke={PALETTE.fieldYellow} strokeWidth={4} />
         </g>
       )}
       {cursors.map((player, order) => (
         <g key={player}>
           <polygon
+            className="cvs2-cursor"
             points={toPoints(diamond(at, CELL_RADIUS + 4 + order * 7))} fill="none"
             stroke={CURSOR_COLORS[player]} strokeWidth={7}
           />

@@ -159,3 +159,43 @@
 @media (prefers-reduced-motion: reduce) {
   .achievement-toast { animation: none; }
 }
+
+/* ---- Cortina diagonal entre telas ---- */
+.wipe {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.wipe__panel,
+.wipe__edge {
+  position: absolute;
+  inset: 0;
+  animation: wipe-sweep 520ms cubic-bezier(0.7, 0, 0.3, 1) both;
+}
+
+.wipe__panel { background: var(--color-ink); }
+
+/* A borda amarela fica logo a frente do preto, 6% mais larga. */
+.wipe__edge {
+  background: var(--color-field-yellow);
+  animation-name: wipe-sweep-edge;
+}
+
+@keyframes wipe-sweep {
+  from { clip-path: polygon(-30% 0, 130% 0, 130% 100%, -60% 100%); }
+  to { clip-path: polygon(130% 0, 130% 0, 130% 100%, 110% 100%); }
+}
+
+@keyframes wipe-sweep-edge {
+  from { clip-path: polygon(-36% 0, 130% 0, 130% 100%, -66% 100%); }
+  to { clip-path: polygon(124% 0, 130% 0, 130% 100%, 104% 100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wipe__panel,
+  .wipe__edge { animation: wipe-fade 200ms linear both; clip-path: none; }
+  @keyframes wipe-fade { from { opacity: 1; } to { opacity: 0; } }
+}

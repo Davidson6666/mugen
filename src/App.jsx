@@ -17,6 +17,7 @@ import MatchmakingScreen from './components/MatchmakingScreen.jsx';
 import AchievementsScreen from './components/AchievementsScreen.jsx';
 import AchievementToast from './components/AchievementToast.jsx';
 import UpdateBanner from './components/UpdateBanner.jsx';
+import ScreenTransition from './components/ScreenTransition.jsx';
 import { useStageScale } from './utils/useStageScale.js';
 import './App.css';
 
@@ -62,6 +63,7 @@ function Stage() {
     <div className={`app${fullscreen ? ' app--fullscreen' : ''}`} style={{ '--stage-scale': scale }}>
       <div className="app__stage">
         <Router />
+        <ScreenTransition />
       </div>
       <AchievementToast />
       <UpdateBanner />
