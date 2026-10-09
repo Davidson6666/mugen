@@ -4,6 +4,8 @@ import { useMenuInput } from '../utils/useMenuInput.js';
 import { ACHIEVEMENTS } from '../data/achievements.js';
 import { PALETTE } from '../utils/palette.js';
 import { Capsule, DiagonalBackdrop, Label, Shape } from './cvs2.jsx';
+import { diamond } from '../utils/hudGeometry.js';
+import { toPoints } from '../utils/cvs2Layout.js';
 
 // Dez conquistas tem que caber entre o titulo e a linha de dica, entao a
 // barra e mais baixa do que a dos outros menus.
@@ -26,9 +28,16 @@ export default function AchievementsScreen() {
         <Label x={48} y={100} size={52}>MINHAS CONQUISTAS</Label>
 
         {loggedIn ? (
-          <Capsule x={960} y={62} width={280} size={28}>
-            {`${earned.length} DE ${ACHIEVEMENTS.length}`}
-          </Capsule>
+          <g>
+            <Capsule x={960} y={62} width={280} size={28}>
+              {`${earned.length} DE ${ACHIEVEMENTS.length}`}
+            </Capsule>
+            <rect x={960} y={120} width={280} height={10} rx={5} fill={PALETTE.ink} stroke={PALETTE.textPrimary} strokeWidth={2} />
+            <rect
+              className="vs-bar" x={962} y={122} width={Math.max(0, 276 * (earned.length / ACHIEVEMENTS.length))} height={6} rx={3}
+              fill={PALETTE.fieldYellow} style={{ animationDuration: '900ms' }}
+            />
+          </g>
         ) : (
           <Capsule x={760} y={62} width={480} size={24}>
             ENTRE NA SUA CONTA PARA GANHAR CONQUISTAS
@@ -39,16 +48,25 @@ export default function AchievementsScreen() {
           const y = ROW_TOP + index * ROW_STEP;
           const got = earned.includes(achievement.id);
           return (
-            <g key={achievement.id}>
+            <g key={achievement.id} className="menu-opt" style={{ '--order': index }}>
               <Shape points={rowShape(y)} fill={got ? PALETTE.fieldYellow : PALETTE.ink} />
+              <polygon points={toPoints(diamond([92, y + ROW_HEIGHT / 2], 17))} fill={got ? PALETTE.ink : PALETTE.cellEmpty} />
+              {got ? (
+                <polyline points={`${84},${y + 22} ${90},${y + 28} ${101},${y + 15}`} fill="none" stroke={PALETTE.fieldYellow} strokeWidth={4} />
+              ) : (
+                <g>
+                  <rect x={86} y={y + 21} width={12} height={9} rx={2} fill={PALETTE.textSecondary} />
+                  <path d={`M 88.5 ${y + 21} v -3 a 3.5 3.5 0 0 1 7 0 v 3`} fill="none" stroke={PALETTE.textSecondary} strokeWidth={2} />
+                </g>
+              )}
               <Label
-                x={92} y={y + 22} size={25} weight={900}
+                x={128} y={y + 22} size={25} weight={900}
                 fill={got ? PALETTE.ink : PALETTE.textSecondary} stroke={0}
               >
                 {got ? achievement.name : '? ? ?'}
               </Label>
               <Label
-                x={92} y={y + 39} size={17} weight={700}
+                x={128} y={y + 39} size={17} weight={700}
                 fill={got ? PALETTE.ink : PALETTE.textSecondary} stroke={0}
               >
                 {achievement.description}
