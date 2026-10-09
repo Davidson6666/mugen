@@ -7,7 +7,9 @@ import { useAchievements } from '../context/AchievementsContext.js';
 import { PALETTE } from '../utils/palette.js';
 import characters from '../data/characters.json';
 import FighterSprite from './FighterSprite.jsx';
-import { Capsule, DiagonalBackdrop, Label, MenuOption, Pedestal } from './cvs2.jsx';
+import { Capsule, DiagonalBackdrop, Label, MenuOption, Pedestal, Spotlight } from './cvs2.jsx';
+import { useAccents } from '../utils/useAccents.js';
+import { loadConfig } from '../utils/characterConfig.js';
 
 const MENU_OPTION = { id: 'menu', label: 'MENU PRINCIPAL' };
 const DEFAULT_OPTIONS = [{ id: 'rematch', label: 'REVANCHE' }, MENU_OPTION];
@@ -38,6 +40,13 @@ export default function ResultScreen() {
 
   const winnerIndex = result?.winner ?? 0;
   const winner = characters.find((entry) => entry.id === setup.characters[winnerIndex]) ?? characters[0];
+  const [accent] = useAccents([winner]);
+  const [tagline, setTagline] = useState('');
+  useEffect(() => {
+    let alive = true;
+    loadConfig(winner).then((config) => alive && setTagline(config?.description ?? '')).catch(() => {});
+    return () => { alive = false; };
+  }, [winner]);
   const isStory = setup.mode === 'story';
   const online = setup.mode === 'online';
   let winnerLabel = winnerIndex === 1 && (setup.mode === 'versusCpu' || isStory) ? 'CPU' : `${winnerIndex + 1}P`;
@@ -98,6 +107,15 @@ export default function ResultScreen() {
   }, []);
 
   // W.O. nao vale ranking, e isso ja da pra dizer na hora de desenhar.
+  // Fichas de destaque da partida: so entra o que de fato aconteceu.
+  const stats = [];
+  if (result && !walkover) {
+    const combo = result.bestCombo?.[winnerIndex] ?? 0;
+    if (combo > 1) stats.push(`MELHOR COMBO · ${combo} HITS`);
+    if (result.perfect?.[winnerIndex]) stats.push('PERFECT');
+    if (comeback && winnerIndex === playerSide) stats.push('VIRADA');
+  }
+
   const rankingMessage = walkover && online
     ? 'O ADVERSARIO SAIU: A PARTIDA NAO VALE RANKING'
     : ranking;
@@ -128,19 +146,33 @@ export default function ResultScreen() {
       <svg className="cvs2-svg" viewBox="0 0 1280 720">
         <DiagonalBackdrop lattice={false} topWord="" bottomWord="" />
 
-        <Label x={48} y={96} size={52} fill={winnerIndex === 0 ? PALETTE.cursorP1 : PALETTE.cursorP2}>
-          {winnerLabel} VENCE
-        </Label>
-        <Label x={40} y={224} size={140} stroke={16}>{winner.name.toUpperCase()}</Label>
-        <Label x={48} y={300} size={56} fill={PALETTE.fieldYellow} stroke={10}>WINS!</Label>
+        <Spotlight id="result" x={STAND[0]} y={STAND[1]} color={accent ?? PALETTE.fieldYellow} />
+        <g className="menu-title menu-title--top">
+          <Label x={48} y={96} size={52} fill={winnerIndex === 0 ? PALETTE.cursorP1 : PALETTE.cursorP2}>
+            {winnerLabel} VENCE
+          </Label>
+          <Label x={40} y={224} size={140} stroke={16}>{winner.name.toUpperCase()}</Label>
+        </g>
+        <g className="vs-slam" style={{ animationDelay: '350ms' }}>
+          <Label x={48} y={300} size={56} fill={PALETTE.fieldYellow} stroke={10}>WINS!</Label>
+        </g>
+        {tagline && (
+          <Label x={48} y={340} size={28} weight={700} stroke={5}>{tagline.toUpperCase()}</Label>
+        )}
         {result?.walkover && (
-          <Label x={48} y={356} size={30} weight={800} stroke={6}>O ADVERSARIO SAIU DA PARTIDA</Label>
+          <Label x={48} y={380} size={30} weight={800} stroke={6}>O ADVERSARIO SAIU DA PARTIDA</Label>
         )}
         {rankingMessage && (
-          <Label x={48} y={404} size={26} weight={800} fill={PALETTE.fieldYellow} stroke={6}>{rankingMessage}</Label>
+          <Label x={48} y={416} size={26} weight={800} fill={PALETTE.fieldYellow} stroke={6}>{rankingMessage}</Label>
         )}
 
-        <Pedestal x={STAND[0]} y={STAND[1]} />
+        {stats.map((text, position) => (
+          <g key={text} className="menu-opt" style={{ '--order': position + 3 }}>
+            <Capsule x={380} y={430 + position * 52} width={280} size={28}>{text}</Capsule>
+          </g>
+        ))}
+
+        <Pedestal x={STAND[0]} y={STAND[1]} ring />
 
         {result && (
           <Capsule x={1240} y={96} width={300} size={52} align="end">
@@ -164,7 +196,9 @@ export default function ResultScreen() {
       </svg>
 
       <div className="cvs2-sprite" style={{ left: STAND[0], top: STAND[1] }}>
-        <FighterSprite entry={winner} animation="victoryPose" />
+        <div className="cvs2-sprite__inner cvs2-sprite__inner--left">
+          <FighterSprite entry={winner} animation="victoryPose" />
+        </div>
       </div>
     </div>
   );
