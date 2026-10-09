@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useMenu } from '../context/MenuContext.js';
 import { useAuth } from '../context/AuthContext.js';
 import { DiagonalBackdrop, Label } from './cvs2.jsx';
+import ShowcaseFighter from './ShowcaseFighter.jsx';
 
 // Login/cadastro: e a unica tela com campo de texto de verdade (as outras
 // sao tudo navegacao por seta/botao), entao aqui e um formulario HTML normal
@@ -53,6 +54,7 @@ export default function LoginScreen() {
         <DiagonalBackdrop lattice={false} topWord="" bottomWord="" />
         <Label x={48} y={130} size={90}>ENTRE NA SUA CONTA</Label>
       </svg>
+      <ShowcaseFighter x={900} y={560} />
 
       {CONTEXT[afterLogin] && <p className="auth-card__context">{CONTEXT[afterLogin]}</p>}
 

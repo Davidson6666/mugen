@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext.js';
 import { useMenuInput } from '../utils/useMenuInput.js';
 import { fetchLeaderboard } from '../utils/auth.js';
 import { DiagonalBackdrop, Label } from './cvs2.jsx';
+import ShowcaseFighter from './ShowcaseFighter.jsx';
 
 // Classificacao publica por Elo. Sem partida online ainda (Fase 2+), entao
 // por enquanto todo mundo comeca e fica em 1200 - a tela ja existe pra
@@ -40,6 +41,7 @@ export default function LeaderboardScreen() {
         <Label x={48} y={130} size={90}>RANKING ONLINE</Label>
         <Label x={1240} y={700} size={22} weight={600} anchor="end" stroke={5}>K OU ESC VOLTA</Label>
       </svg>
+      <ShowcaseFighter x={980} y={540} />
 
       <div className="leaderboard-card">
         <div className="leaderboard-card__header">
@@ -48,23 +50,28 @@ export default function LeaderboardScreen() {
           <span>ELO</span>
           <span>V</span>
           <span>D</span>
+          <span>%</span>
         </div>
         <div className="leaderboard-card__rows">
           {rows === null && !error && <p className="leaderboard-card__status">Carregando...</p>}
           {error && <p className="leaderboard-card__status leaderboard-card__status--error">{error}</p>}
           {rows?.length === 0 && <p className="leaderboard-card__status">Ninguem no ranking ainda.</p>}
-          {rows?.map((row, index) => (
-            <div
-              key={row.username}
-              className={`leaderboard-card__row${row.username === profile?.username ? ' leaderboard-card__row--self' : ''}`}
-            >
-              <span>{index + 1}</span>
-              <span>{row.username}</span>
-              <span>{row.elo_rating}</span>
-              <span>{row.wins}</span>
-              <span>{row.losses}</span>
-            </div>
-          ))}
+          {rows?.map((row, index) => {
+            const played = row.wins + row.losses;
+            return (
+              <div
+                key={row.username} style={{ '--order': index }}
+                className={`leaderboard-card__row${row.username === profile?.username ? ' leaderboard-card__row--self' : ''}`}
+              >
+                <span className={`lb-rank${index < 3 ? ` lb-rank--${index + 1}` : ''}`}>{index + 1}</span>
+                <span>{row.username}</span>
+                <span>{row.elo_rating}</span>
+                <span>{row.wins}</span>
+                <span>{row.losses}</span>
+                <span className="lb-rate">{played ? `${Math.round((row.wins / played) * 100)}%` : '-'}</span>
+              </div>
+            );
+          })}
         </div>
 
         <div className="leaderboard-card__footer">

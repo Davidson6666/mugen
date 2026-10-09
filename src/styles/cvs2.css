@@ -327,7 +327,8 @@
 .leaderboard-card__header,
 .leaderboard-card__row {
   display: grid;
-  grid-template-columns: 50px 1fr 90px 60px 60px;
+  grid-template-columns: 54px 1fr 90px 56px 56px 70px;
+  align-items: center;
   padding: 8px 20px;
 }
 
@@ -492,4 +493,36 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .stage-preview-in, .stage-name-in { animation: none; }
+}
+
+/* Lutador em destaque nas telas de ranking e login: por baixo dos paineis. */
+.showcase {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* ---- Ranking: medalhas, linhas entrando em escada e taxa de vitoria ---- */
+.leaderboard-card { animation: stage-name-in 360ms cubic-bezier(0.2, 0.9, 0.25, 1) both; }
+.leaderboard-card__row {
+  animation: lb-row-in 340ms cubic-bezier(0.2, 0.9, 0.25, 1) calc(var(--order, 0) * 70ms + 160ms) both;
+}
+@keyframes lb-row-in {
+  from { opacity: 0; transform: translateX(-36px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.lb-rank {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  font-weight: 900;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+.lb-rank--1 { background: #fbd409; color: #0a0a0c; }
+.lb-rank--2 { background: #d7dce6; color: #0a0a0c; }
+.lb-rank--3 { background: #e08a4b; color: #0a0a0c; }
+.lb-rate { color: var(--color-text-secondary); }
+@media (prefers-reduced-motion: reduce) {
+  .leaderboard-card, .leaderboard-card__row { animation: none; }
 }
