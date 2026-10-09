@@ -3,7 +3,7 @@ import { useMenu } from '../context/MenuContext.js';
 import { loadVolume, saveVolume } from '../systems/AudioManager.js';
 import { useMenuInput } from '../utils/useMenuInput.js';
 import { PALETTE } from '../utils/palette.js';
-import { Capsule, DiagonalBackdrop, Label, Shape } from './cvs2.jsx';
+import { Capsule, DiagonalBackdrop, KeyHints, Label, Shape } from './cvs2.jsx';
 import { useGamepads } from '../utils/useGamepads.js';
 import { padLabel } from '../utils/gamepad.js';
 import {
@@ -184,11 +184,12 @@ export default function SettingsScreen() {
         <Label x={640} y={678} size={20} weight={600} anchor="middle" stroke={5}>
           DASH: TOQUE DUPLO NA DIRECAO · DEFESA: SEGURAR PARA TRAS · PAUSA: ESC
         </Label>
-        <Label x={1240} y={706} size={20} weight={600} anchor="end" stroke={5}>
-          {capturing
-            ? 'APERTE A TECLA NOVA · ESC CANCELA'
-            : 'W/S ESCOLHE · A/D TROCA DE JOGADOR · J REMAPEIA · K VOLTA'}
-        </Label>
+        <KeyHints
+          x={1240} y={708} align="end"
+          items={capturing
+            ? [{ keys: 'TECLA', text: 'NOVA' }, { keys: 'ESC', text: 'CANCELA' }]
+            : [{ keys: 'W/S', text: 'ESCOLHE' }, { keys: 'A/D', text: 'JOGADOR' }, { keys: 'J', text: 'REMAPEIA' }, { keys: 'K', text: 'VOLTA' }]}
+        />
       </svg>
     </div>
   );

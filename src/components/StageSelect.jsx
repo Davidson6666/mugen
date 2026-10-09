@@ -6,7 +6,7 @@ import { PALETTE } from '../utils/palette.js';
 import { toPoints } from '../utils/cvs2Layout.js';
 import characters from '../data/characters.json';
 import maps from '../data/maps.json';
-import { Capsule, DiagonalBackdrop, Label, MenuOption, Shape } from './cvs2.jsx';
+import { Capsule, DiagonalBackdrop, KeyHints, Label, MenuOption, Shape } from './cvs2.jsx';
 
 const DIFFICULTIES = [
   { id: 'easy', label: 'FACIL' },
@@ -23,9 +23,9 @@ const DIFFICULTIES = [
 // a escolha fica guardada, andar com o cursor depois nao troca mais o cenario
 // sem querer.
 const STEPS = [
-  { id: 'map', title: 'ESCOLHA O CENARIO', hint: 'W/S ESCOLHE · J CONFIRMA · K VOLTA' },
-  { id: 'difficulty', title: 'ESCOLHA A DIFICULDADE', hint: 'A/D ESCOLHE · J CONFIRMA · K VOLTA AO CENARIO' },
-  { id: 'start', title: 'TUDO PRONTO', hint: 'J COMECA A PARTIDA · K VOLTA A DIFICULDADE' },
+  { id: 'map', title: 'ESCOLHA O CENARIO', hints: [{ keys: 'W/S', text: 'ESCOLHE' }, { keys: 'J', text: 'CONFIRMA' }, { keys: 'K', text: 'VOLTA' }] },
+  { id: 'difficulty', title: 'ESCOLHA A DIFICULDADE', hints: [{ keys: 'A/D', text: 'ESCOLHE' }, { keys: 'J', text: 'CONFIRMA' }, { keys: 'K', text: 'VOLTA' }] },
+  { id: 'start', title: 'TUDO PRONTO', hints: [{ keys: 'J', text: 'COMECA' }, { keys: 'K', text: 'VOLTA' }] },
 ];
 
 // Previa do cenario numa moldura inclinada, como as barras de vida.
@@ -264,11 +264,13 @@ export default function StageSelect() {
           />
         )}
 
-        <Label x={1240} y={700} size={22} weight={600} anchor="end" stroke={5}>
-          {twoPlayers
-            ? 'CADA JOGADOR VOTA · VOTOS DIFERENTES SORTEIAM ENTRE OS DOIS'
-            : STEPS[stepIndex].hint}
-        </Label>
+        {twoPlayers ? (
+          <Label x={1240} y={700} size={22} weight={600} anchor="end" stroke={5}>
+            CADA JOGADOR VOTA · VOTOS DIFERENTES SORTEIAM ENTRE OS DOIS
+          </Label>
+        ) : (
+          <KeyHints x={1240} y={702} align="end" items={STEPS[stepIndex].hints} />
+        )}
       </svg>
     </div>
   );

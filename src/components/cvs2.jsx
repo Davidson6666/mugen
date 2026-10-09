@@ -106,11 +106,13 @@ export function Spotlight({ x, y, color, id }) {
 }
 
 // Teclas de ajuda como fichas: [W A S D] ESCOLHE, [J] CONFIRMA...
-export function KeyHints({ x, y, items }) {
+export function KeyHints({ x, y, items, align = 'start' }) {
   const sized = items.map(({ keys, text }) => ({ keys, text, keyWidth: keys.length * 15 + 16, textWidth: text.length * 11 + 14 }));
+  const total = sized.reduce((sum, item) => sum + item.keyWidth + item.textWidth + 16, -16);
+  const origin = align === 'end' ? x - total : x;
   const starts = sized.reduce((list, item, index) => {
     const previous = sized[index - 1];
-    list.push(index === 0 ? x : list[index - 1] + previous.keyWidth + previous.textWidth + 16);
+    list.push(index === 0 ? origin : list[index - 1] + previous.keyWidth + previous.textWidth + 16);
     return list;
   }, []);
   return (

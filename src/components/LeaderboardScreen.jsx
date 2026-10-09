@@ -3,7 +3,7 @@ import { useMenu } from '../context/MenuContext.js';
 import { useAuth } from '../context/AuthContext.js';
 import { useMenuInput } from '../utils/useMenuInput.js';
 import { fetchLeaderboard } from '../utils/auth.js';
-import { DiagonalBackdrop, Label } from './cvs2.jsx';
+import { DiagonalBackdrop, KeyHints, Label } from './cvs2.jsx';
 import ShowcaseFighter from './ShowcaseFighter.jsx';
 
 // Classificacao publica por Elo. Sem partida online ainda (Fase 2+), entao
@@ -39,7 +39,7 @@ export default function LeaderboardScreen() {
       <svg className="cvs2-svg" viewBox="0 0 1280 720">
         <DiagonalBackdrop lattice={false} topWord="" bottomWord="" />
         <Label x={48} y={130} size={90}>RANKING ONLINE</Label>
-        <Label x={1240} y={700} size={22} weight={600} anchor="end" stroke={5}>K OU ESC VOLTA</Label>
+        <KeyHints x={1240} y={702} align="end" items={[{ keys: 'K/ESC', text: 'VOLTA' }]} />
       </svg>
       <ShowcaseFighter x={980} y={540} />
 

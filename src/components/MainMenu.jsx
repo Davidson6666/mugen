@@ -7,7 +7,7 @@ import { fetchLeaderboard } from '../utils/auth.js';
 import { PALETTE } from '../utils/palette.js';
 import characters from '../data/characters.json';
 import FighterSprite from './FighterSprite.jsx';
-import { DiagonalBackdrop, Label, MenuOption, Pedestal, Spotlight } from './cvs2.jsx';
+import { DiagonalBackdrop, KeyHints, Label, MenuOption, Pedestal, Spotlight } from './cvs2.jsx';
 import { useAccents } from '../utils/useAccents.js';
 import { loadConfig } from '../utils/characterConfig.js';
 
@@ -196,7 +196,7 @@ export default function MainMenu() {
         )}
 
         <Label x={1240} y={674} size={26} weight={800} anchor="end" stroke={6}>{OPTIONS[index].hint}</Label>
-        <Label x={1240} y={708} size={22} weight={600} anchor="end" stroke={5}>W/S NAVEGA · J CONFIRMA</Label>
+        <KeyHints x={1240} y={708} align="end" items={[{ keys: 'W/S', text: 'NAVEGA' }, { keys: 'J', text: 'CONFIRMA' }]} />
       </svg>
 
       {/* Mesmo ponto do pedestal: o sprite fica em pe em cima dele, centrado. */}

@@ -3,7 +3,7 @@ import { useAchievements } from '../context/AchievementsContext.js';
 import { useMenuInput } from '../utils/useMenuInput.js';
 import { ACHIEVEMENTS } from '../data/achievements.js';
 import { PALETTE } from '../utils/palette.js';
-import { Capsule, DiagonalBackdrop, Label, Shape } from './cvs2.jsx';
+import { Capsule, DiagonalBackdrop, KeyHints, Label, Shape } from './cvs2.jsx';
 import { diamond } from '../utils/hudGeometry.js';
 import { toPoints } from '../utils/cvs2Layout.js';
 
@@ -83,7 +83,7 @@ export default function AchievementsScreen() {
           );
         })}
 
-        <Label x={1240} y={700} size={22} weight={600} anchor="end" stroke={5}>K OU ESC VOLTA</Label>
+        <KeyHints x={1240} y={702} align="end" items={[{ keys: 'K/ESC', text: 'VOLTA' }]} />
       </svg>
     </div>
   );
