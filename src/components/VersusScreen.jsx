@@ -7,10 +7,11 @@ import { diamond } from '../utils/hudGeometry.js';
 import characters from '../data/characters.json';
 import maps from '../data/maps.json';
 import FighterSprite from './FighterSprite.jsx';
-import { Capsule, DiagonalBackdrop, Label, Pedestal, Shape } from './cvs2.jsx';
+import { Capsule, DiagonalBackdrop, Label, Pedestal, Shape, Spotlight } from './cvs2.jsx';
+import { useAccents } from '../utils/useAccents.js';
 import { STORY_LADDER } from '../data/storyLadder.js';
 
-const MINIMUM_DISPLAY_MS = 1800;
+const MINIMUM_DISPLAY_MS = 2400;
 
 // Cada lado no seu campo da faixa diagonal: P1 em cima a esquerda, P2 embaixo
 // a direita, com o nome gigante e o personagem em tamanho nativo no pedestal.
@@ -28,6 +29,7 @@ export default function VersusScreen() {
 
   const fighters = setup.characters.map((id) => characters.find((entry) => entry.id === id));
   const stage = maps.find((entry) => entry.id === setup.mapId);
+  const accents = useAccents(fighters);
 
   useEffect(() => {
     let cancelled = false;
@@ -87,17 +89,23 @@ export default function VersusScreen() {
           const { tag, name, stand } = SIDES[player];
           return (
             <g key={player}>
+              <Spotlight id={`vs${player}`} x={stand[0]} y={stand[1]} color={accents[player] ?? (player === 0 ? PALETTE.fieldYellow : PALETTE.cursorP2)} />
               <Pedestal x={stand[0]} y={stand[1]} />
-              <Label x={tag[0]} y={tag[1]} size={44} anchor={tag[2]} fill={player === 0 ? PALETTE.cursorP1 : PALETTE.cursorP2} stroke={8}>
-                {tags[player]}
-              </Label>
-              <Label x={name[0]} y={name[1]} size={104} anchor={name[2]} stroke={14}>{fighter.name.toUpperCase()}</Label>
+              <g className={`vs-slide vs-slide--${player === 0 ? 'left' : 'right'}`}>
+                <Label x={tag[0]} y={tag[1]} size={44} anchor={tag[2]} fill={player === 0 ? PALETTE.cursorP1 : PALETTE.cursorP2} stroke={8}>
+                  {tags[player]}
+                </Label>
+                <Label x={name[0]} y={name[1]} size={104} anchor={name[2]} stroke={14}>{fighter.name.toUpperCase()}</Label>
+              </g>
             </g>
           );
         })}
 
-        <Shape points={diamond([640, 330], 118)} fill={PALETTE.emblem} />
-        <Label x={640} y={392} size={180} anchor="middle" fill={PALETTE.fieldYellow} stroke={16}>VS</Label>
+        <g className="vs-slam">
+          <Shape points={diamond([640, 330], 118)} fill={PALETTE.emblem} />
+          <Label x={640} y={392} size={180} anchor="middle" fill={PALETTE.fieldYellow} stroke={16}>VS</Label>
+        </g>
+        <rect className="vs-flash" width={1280} height={720} fill={PALETTE.textPrimary} pointerEvents="none" />
 
         <Capsule x={420} y={498} width={440} size={34}>{`STAGE · ${stage.name.toUpperCase()}`}</Capsule>
         {setup.mode === 'story' && (
@@ -105,14 +113,18 @@ export default function VersusScreen() {
             {`MODO HISTORIA · LUTA ${setup.storyIndex + 1} DE ${STORY_LADDER.length}`}
           </Capsule>
         )}
-        <Label x={640} y={615} size={28} weight={800} anchor="middle" fill={loaded ? PALETTE.fieldYellow : PALETTE.textPrimary} stroke={6}>
-          {loaded ? 'PRONTO!' : 'CARREGANDO...'}
+        <Label x={640} y={615} size={28} weight={800} anchor="middle" fill={loaded && waited ? PALETTE.fieldYellow : PALETTE.textPrimary} stroke={6}>
+          {loaded && waited ? 'PRONTO!' : 'CARREGANDO...'}
         </Label>
+        <rect x={440} y={634} width={400} height={10} rx={5} fill={PALETTE.ink} stroke={PALETTE.textPrimary} strokeWidth={2} />
+        <rect className="vs-bar" x={442} y={636} width={396} height={6} rx={3} fill={PALETTE.fieldYellow} />
       </svg>
 
       {fighters.map((fighter, player) => (
         <div key={player} className="cvs2-sprite" style={{ left: SIDES[player].stand[0], top: SIDES[player].stand[1] }}>
-          <FighterSprite entry={fighter} flip={player === 1} />
+          <div className={`cvs2-sprite__inner cvs2-sprite__inner--${player === 0 ? 'left' : 'right'} vs-enter`}>
+            <FighterSprite entry={fighter} flip={player === 1} />
+          </div>
         </div>
       ))}
     </div>
