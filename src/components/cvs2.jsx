@@ -228,7 +228,7 @@ export function PortraitCell({ at, image, portraitRect, id, cursors = [], blocke
 // amarela com texto preto; as outras, pretas com o contorno em camadas.
 // height: da pra apertar a capsula quando a tela tem opcoes demais pra caber
 // na altura padrao (o menu principal, com sete modos).
-export function MenuOption({ x, y, width = 380, height = 54, label, active, disabled, marker = true, onPointerEnter, onClick }) {
+export function MenuOption({ x, y, width = 380, height = 54, label, active, disabled, marker = true, order = 0, onPointerEnter, onClick }) {
   const skew = 18;
   const points = [[x + skew, y], [x + width + skew, y], [x + width, y + height], [x, y + height]];
   let fill = PALETTE.ink;
@@ -241,10 +241,15 @@ export function MenuOption({ x, y, width = 380, height = 54, label, active, disa
     textColor = PALETTE.textSecondary;
   }
   return (
-    <g onPointerEnter={onPointerEnter} onClick={disabled ? undefined : onClick} style={{ cursor: disabled ? 'default' : 'pointer' }}>
-      <Shape points={points} fill={fill} />
-      <Label x={x + skew + 26} y={y + height - 12} size={38} fill={textColor} stroke={active ? 0 : 6}>{label}</Label>
-      {active && marker && <Label x={x + width - 14} y={y + height - 12} size={38} anchor="end" fill={PALETTE.cursorP1} stroke={6}>◀</Label>}
+    <g
+      className="menu-opt" onPointerEnter={onPointerEnter} onClick={disabled ? undefined : onClick}
+      style={{ cursor: disabled ? 'default' : 'pointer', '--order': order }}
+    >
+      <g className={`menu-opt__shift${active ? ' menu-opt__shift--active' : ''}`}>
+        <Shape points={points} fill={fill} />
+        <Label x={x + skew + 26} y={y + height - 12} size={38} fill={textColor} stroke={active ? 0 : 6}>{label}</Label>
+        {active && marker && <Label x={x + width - 14} y={y + height - 12} size={38} anchor="end" fill={PALETTE.cursorP1} stroke={6}>◀</Label>}
+      </g>
     </g>
   );
 }

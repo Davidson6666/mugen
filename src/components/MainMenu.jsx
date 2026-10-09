@@ -7,7 +7,9 @@ import { fetchLeaderboard } from '../utils/auth.js';
 import { PALETTE } from '../utils/palette.js';
 import characters from '../data/characters.json';
 import FighterSprite from './FighterSprite.jsx';
-import { DiagonalBackdrop, Label, MenuOption, Pedestal } from './cvs2.jsx';
+import { DiagonalBackdrop, Label, MenuOption, Pedestal, Spotlight } from './cvs2.jsx';
+import { useAccents } from '../utils/useAccents.js';
+import { loadConfig } from '../utils/characterConfig.js';
 
 const OPTIONS = [
   { id: 'versusCpu', label: 'VERSUS CPU', hint: 'ENFRENTE A MAQUINA EM UMA PARTIDA AVULSA' },
@@ -33,10 +35,10 @@ const optionPosition = (index) => {
   return [1212 - y - 16, y];
 };
 
-// Quem aparece no menu: os personagens com arte propria, em tamanho nativo.
-const MENU_FIGHTERS = ['itachi']
-  .map((id) => characters.find((entry) => entry.id === id))
-  .filter(Boolean);
+// Quem aparece no menu: um lutador por vez, em tamanho nativo, trocando a cada
+// poucos segundos. O Ensina GOD fica de fora: e segredo ate ser desbloqueado.
+const FEATURED = characters.filter((entry) => entry.id !== 'ensina_god');
+const FEATURE_MS = 5200;
 
 // Podio no canto de baixo: so entra quem ja jogou alguma partida online. Com
 // o ranking zerado (todo mundo em 1200, sem partida) nao tem podio nenhum.
@@ -49,6 +51,21 @@ export default function MainMenu() {
   const { profile, loading, logout } = useAuth();
   const [index, setIndex] = useState(0);
   const [podium, setPodium] = useState([]);
+  const [featuredIndex, setFeaturedIndex] = useState(() => Math.floor(Math.random() * FEATURED.length));
+  const [tagline, setTagline] = useState('');
+  const featured = FEATURED[featuredIndex];
+  const [accent] = useAccents([featured]);
+
+  useEffect(() => {
+    const timer = setInterval(() => setFeaturedIndex((current) => (current + 1) % FEATURED.length), FEATURE_MS);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    let alive = true;
+    loadConfig(featured).then((config) => alive && setTagline(config?.description ?? '')).catch(() => {});
+    return () => { alive = false; };
+  }, [featured]);
 
   useEffect(() => {
     let cancelled = false;
@@ -137,17 +154,21 @@ export default function MainMenu() {
           </g>
         )}
 
-        <Label x={48} y={150} size={130} stroke={18}>RUPTURA</Label>
-        <Label x={96} y={260} size={120} fill={PALETTE.fieldYellow} stroke={16}>ARENA</Label>
+        <Spotlight id="menu" x={180} y={470} color={accent ?? PALETTE.fieldYellow} />
+        <g className="menu-title menu-title--top"><Label x={48} y={150} size={130} stroke={18}>RUPTURA</Label></g>
+        <g className="menu-title menu-title--bottom"><Label x={96} y={260} size={120} fill={PALETTE.fieldYellow} stroke={16}>ARENA</Label></g>
 
         <Pedestal x={180} y={470} halfWidth={150} />
+        <Label key={featured.id} x={44} y={330} size={26} weight={800} fill={PALETTE.fieldYellow} stroke={5}>
+          {`${featured.name.toUpperCase()}${tagline ? ` · ${tagline.toUpperCase()}` : ''}`}
+        </Label>
 
         {OPTIONS.map((option, position) => {
           const [x, y] = optionPosition(position);
           return (
             <MenuOption
               key={option.id}
-              x={x} y={y} width={OPTION_WIDTH} height={OPTION_HEIGHT}
+              x={x} y={y} width={OPTION_WIDTH} height={OPTION_HEIGHT} order={position}
               label={option.label}
               active={position === index}
               disabled={option.disabled}
@@ -178,12 +199,12 @@ export default function MainMenu() {
         <Label x={1240} y={708} size={22} weight={600} anchor="end" stroke={5}>W/S NAVEGA · J CONFIRMA</Label>
       </svg>
 
-      {MENU_FIGHTERS.map((fighter, position) => (
-        // Mesmo ponto do pedestal: o sprite fica em pe em cima dele, centrado.
-        <div key={fighter.id} className="cvs2-sprite" style={{ left: 180 + position * 110, top: 470 }}>
-          <FighterSprite entry={fighter} flip={position === 1} />
+      {/* Mesmo ponto do pedestal: o sprite fica em pe em cima dele, centrado. */}
+      <div className="cvs2-sprite" style={{ left: 180, top: 470 }}>
+        <div key={featured.id} className="cvs2-sprite__inner cvs2-sprite__inner--left">
+          <FighterSprite entry={featured} />
         </div>
-      ))}
+      </div>
     </div>
   );
 }
