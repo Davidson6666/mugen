@@ -1,0 +1,30 @@
+<!doctype html><html lang="pt-BR"><meta charset="utf-8"><title>Humberto — Judgement Cut End</title>
+<style>body{margin:0;background:#080d19;color:#e4f4ff;font:16px system-ui}header{padding:20px}h1{font-size:24px;margin:0 0 8px}button{padding:10px 16px;margin:8px 6px 0 0;background:#162c47;color:#d0faff;border:1px solid #5287b8;border-radius:4px;cursor:pointer}canvas{width:100%;max-width:1200px;image-rendering:pixelated}#status{padding:16px;color:#a4cee7}</style>
+<header><h1>Humberto · Judgement Cut End</h1><div>↓ ← + Especial · oito cortes e finalização com a katana · uma vez por round</div><button id="play">Executar</button><button id="cuts">Ver cortes</button><button id="end">Ver finalização</button><button id="pause">Pausar / continuar</button><button id="flip">Trocar lado</button></header><div id="stage"></div><div id="status">Carregando…</div>
+<script type="module">
+import {Application,Container,Graphics} from 'pixi.js';
+import {SpriteSheetManager} from '/src/systems/SpriteSheetManager.js';
+import {Fighter} from '/src/systems/Fighter.js';
+import {EffectManager} from '/src/systems/EffectManager.js';
+import {AudioManager} from '/src/systems/AudioManager.js';
+const app=new Application();await app.init({width:1200,height:600,background:'#172237',antialias:false});document.querySelector('#stage').append(app.canvas);
+const dir='/assets/characters/humberto',record=await new SpriteSheetManager().loadCharacter({id:'humberto',dir,config:'humberto_config.json'});
+const map={groundLevel:490,leftBound:80,rightBound:1120};
+const ground=new Graphics().rect(0,490,1200,110).fill('#243448');
+for(let x=0;x<1200;x+=60)ground.moveTo(x,490).lineTo(x,600).stroke({color:'#3d5066',width:1});
+app.stage.addChild(ground);
+const back=new Container(),front=new Container();app.stage.addChild(back);
+const a=new Fighter({record,map,x:400,facing:1}),b=new Fighter({record,map,x:800,facing:-1});
+a.opponent=b;b.opponent=a;app.stage.addChild(a.sprite,b.sprite,front);
+const effects=new EffectManager({back,front,bounds:{left:0,right:1200}}),audio=new AudioManager(.6);
+await audio.preload(dir,record.config.sounds);
+let tick=0,paused=true,facing=1,acc=0;
+function reset(){a.resetForRound(facing===1?400:800,facing);b.resetForRound(facing===1?800:400,-facing);effects.clear();audio.stopAll();tick=0;acc=0;}
+function step(){a.update(tick===0?{combo:{animation:'judgementCutEnd'}}:{},1);b.update({},1);effects.collect([a,b]);effects.update(1,[a,b]);audio.update(0,a,dir);audio.update(1,b,dir);tick++;document.querySelector('#status').textContent=`${Math.round(tick/60*100)/100} s · vida do rival: ${Math.round(b.health)} · ${tick<30?'Preparação':tick<90?'Cortes dimensionais':tick<108?'Embainhando':tick<144?'Corte final':'Concluído'}`;}
+document.querySelector('#play').onclick=()=>{reset();paused=false;audio.resume();};
+document.querySelector('#pause').onclick=()=>{paused=!paused;if(paused)audio.pause();else audio.resume();};
+document.querySelector('#flip').onclick=()=>{facing*=-1;reset();paused=false;audio.resume();};
+for(const [id,at]of [['cuts',65],['end',110]])document.querySelector('#'+id).onclick=()=>{reset();while(tick<at)step();paused=true;audio.stopAll();};
+app.ticker.add(t=>{if(paused)return;acc+=Math.min(t.deltaTime,3);while(acc>=1){step();acc--;}});
+document.querySelector('#status').textContent='Pronto — execute o golpe para ouvir os efeitos.';
+</script></html>

@@ -7,7 +7,14 @@ import {arena,assertConfigIntegrity,cast,command,hits,loadRecord,run,step,mash} 
 const record=loadRecord('humberto');
 test('Humberto: novo atlas completo, transparente e efeitos em baixa resolução',()=>{
  assertConfigIntegrity(assert,record.config);
- const pages=record.config.sheets.map(f=>PNG.sync.read(readFileSync(new URL('../public/assets/characters/humberto/'+f,import.meta.url))));
+ const pages=record.config.sheets.map(f=>{
+   const data=readFileSync(new URL('../public/assets/characters/humberto/'+f,import.meta.url));
+   if(f.endsWith('.svg')) {
+     const tag=data.toString().match(/<svg\b[^>]*>/)[0];
+     return {width:Number(tag.match(/width="(\d+)"/)[1]),height:Number(tag.match(/height="(\d+)"/)[1])};
+   }
+   return PNG.sync.read(data);
+ });
  for(const def of [record.config,...Object.values(record.config.effects)])for(const [p,x,y,w,h,dx,dy]of def.atlas){assert.ok(x+w<=pages[p].width&&y+h<=pages[p].height);assert.ok(dx+w<=def.spriteGridSize.frameWidth&&dy+h<=def.spriteGridSize.frameHeight);}
  assert.equal(pages[2].width,256);assert.equal(pages[2].height,128);assert.ok(pages[2].data.some((v,i)=>i%4===3&&v===0));
  for(const file of Object.values(record.config.sounds))assert.ok(existsSync(new URL('../public/assets/characters/humberto/'+file,import.meta.url)));

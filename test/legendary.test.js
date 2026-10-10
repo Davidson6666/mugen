@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {arena,loadRecord,run,cast,step,command,hits,assertConfigIntegrity} from './helpers/world.js';
 const record=loadRecord('humberto');
-test('64 poses e referências válidas',()=>{assert.equal(record.config.atlas.length,64);assertConfigIntegrity(assert,record.config);for(const def of Object.values(record.config.modes.legendary.animations))assert.ok(record.config.animations[def].frames.every(f=>f>=32));});
+test('poses normais e lendárias preservadas e referências válidas',()=>{assert.equal(record.config.atlas.filter(([page])=>page===0||page===1).length,64);assertConfigIntegrity(assert,record.config);for(const def of Object.values(record.config.modes.legendary.animations))assert.ok(record.config.animations[def].frames.every(f=>f>=32&&f<64));});
 test('transformação manual dura 12 segundos e não carrega entre rounds',()=>{
  const w=run(arena(record,400,700),cast('legendaryTransform'),50),f=w.fighters[0];assert.equal(f.mode,'legendary');assert.equal(f.awakened,true);assert.equal(f.damageScale,1.2);
  for(let i=0;i<740;i++)step(w);assert.equal(f.mode,null);assert.equal(f.awakened,false);assert.equal(w.effects.effects.length,0);
