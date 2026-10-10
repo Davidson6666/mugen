@@ -11,6 +11,7 @@ import { EffectManager } from '../systems/EffectManager.js';
 import { HitFeedback, kindOf } from '../systems/HitFeedback.js';
 import { Camera } from '../systems/Camera.js';
 import { AudioManager } from '../systems/AudioManager.js';
+import { pauseSoundtrack, duckSoundtrack } from '../systems/Soundtrack.js';
 import { resolveAttack, resolveBodyCollision } from '../systems/CollisionDetector.js';
 import { InputHandler } from '../utils/InputHandler.js';
 import { buildCommand, PRESS_ACTIONS } from '../utils/combatInput.js';
@@ -132,6 +133,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
 
   useEffect(() => {
     pausedRef.current = paused;
+    pauseSoundtrack(paused);
     // Pausa congela tambem o som (a musica do super continua de onde parou).
     if (paused) audioRef.current?.pause();
     else audioRef.current?.resume();
@@ -543,6 +545,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
         if (training) keepDummyAlive(delta);
 
         fighters.forEach((fighter, index) => audio.update(index, fighter, characterEntries[index].dir));
+        duckSoundtrack(audio.playing.some(entry => entry.voice));
 
         const event = match.update(fighters, delta);
         if (event) handleMatchEvent(event);
@@ -645,6 +648,8 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       disposed = true;
       input.detach();
       audio.dispose();
+      duckSoundtrack(false);
+      pauseSoundtrack(false);
       audioRef.current = null;
       net?.dispose();
       net = null;
