@@ -95,7 +95,7 @@ export default function VersusScreen() {
                 <Label x={tag[0]} y={tag[1]} size={44} anchor={tag[2]} fill={player === 0 ? PALETTE.cursorP1 : PALETTE.cursorP2} stroke={8}>
                   {tags[player]}
                 </Label>
-                <Label x={name[0]} y={name[1]} size={104} anchor={name[2]} stroke={14} display>{fighter.name.toUpperCase()}</Label>
+                <Label x={name[0]} y={name[1]} size={90} anchor={name[2]} stroke={14} display>{fighter.name.toUpperCase()}</Label>
               </g>
             </g>
           );
@@ -116,8 +116,32 @@ export default function VersusScreen() {
         <Label x={640} y={615} size={28} weight={800} anchor="middle" fill={loaded && waited ? PALETTE.fieldYellow : PALETTE.textPrimary} stroke={6}>
           {loaded && waited ? 'PRONTO!' : 'CARREGANDO...'}
         </Label>
-        <rect x={440} y={634} width={400} height={10} rx={5} fill={PALETTE.ink} stroke={PALETTE.textPrimary} strokeWidth={2} />
-        <rect className="vs-bar" x={442} y={636} width={396} height={6} rx={3} fill={PALETTE.fieldYellow} />
+        <rect x={490} y={634} width={300} height={10} rx={5} fill={PALETTE.ink} stroke={PALETTE.textPrimary} strokeWidth={2} />
+        {setup.mode === 'story' && (
+          // A escada da campanha: as lutas ja vencidas viram check, a atual brilha
+          // e a ultima (o chefe) fica marcada com "!" sem dizer quem e.
+          <g>
+            {STORY_LADDER.map((_, index) => {
+              const x = 640 + (index - (STORY_LADDER.length - 1) / 2) * 56;
+              const done = index < setup.storyIndex;
+              const current = index === setup.storyIndex;
+              const boss = index === STORY_LADDER.length - 1;
+              return (
+                <g key={index} className={current ? 'ladder-current' : undefined}>
+                  <Shape points={diamond([x, 690], 19)} fill={done ? PALETTE.fieldYellow : current ? PALETTE.textPrimary : PALETTE.ink} />
+                  {done ? (
+                    <polyline points={`${x - 8},${690} ${x - 2},${696} ${x + 9},${683}`} fill="none" stroke={PALETTE.ink} strokeWidth={4} />
+                  ) : (
+                    <Label x={x} y={698} size={22} anchor="middle" fill={current ? PALETTE.ink : PALETTE.textSecondary} stroke={0}>
+                      {boss ? '!' : String(index + 1)}
+                    </Label>
+                  )}
+                </g>
+              );
+            })}
+          </g>
+        )}
+        <rect className="vs-bar" x={492} y={636} width={296} height={6} rx={3} fill={PALETTE.fieldYellow} />
       </svg>
 
       {fighters.map((fighter, player) => (

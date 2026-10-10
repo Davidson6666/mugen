@@ -599,3 +599,8 @@
 }
 .leaderboard-card::before, .auth-card::before { top: -12px; left: -12px; border-top-width: 4px; border-left-width: 4px; }
 .leaderboard-card::after, .auth-card::after { bottom: -12px; right: -12px; border-bottom-width: 4px; border-right-width: 4px; }
+
+/* Luta atual da escada do Modo Historia: pulsa devagar. */
+.ladder-current { animation: ladder-pulse 1.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes ladder-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.14); } }
+@media (prefers-reduced-motion: reduce) { .ladder-current { animation: none; } }

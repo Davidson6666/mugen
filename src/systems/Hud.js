@@ -345,7 +345,17 @@ export class Hud {
 
       const showCombo = fighter.comboCount > 1;
       side.combo.visible = showCombo;
-      if (showCombo) side.comboCount.text = String(fighter.comboCount);
+      if (showCombo) {
+        side.comboCount.text = String(fighter.comboCount);
+        // Cada golpe novo do combo "bate" no contador: cresce e volta.
+        if (fighter.comboCount > (side.lastCombo ?? 0)) side.comboPulse = 1;
+      }
+      side.lastCombo = showCombo ? fighter.comboCount : 0;
+      side.comboPulse = Math.max(0, (side.comboPulse ?? 0) - 0.09 * delta);
+      const bump = 1 + side.comboPulse * 0.28;
+      side.combo.pivot.set(118, 20);
+      side.combo.scale.set(bump);
+      side.combo.position.set((index === 1 ? this.width - 40 - 236 : 40) + 118, 214 + 20);
     });
 
     // Morte subita e treino nao tem cronometro correndo.
