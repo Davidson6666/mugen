@@ -35,7 +35,7 @@ const BUFF_BAR_MAX_TICKS = 1500;
 const LOW_LIFE = 0.25;
 const HIT_FLASH_FRAMES = 7;
 
-function label(text, size, { fill = PALETTE.textPrimary, weight = '900', stroke = Math.round(size / 5), display = false } = {}) {
+export function label(text, size, { fill = PALETTE.textPrimary, weight = '900', stroke = Math.round(size / 5), display = false } = {}) {
   return new Text({
     text,
     style: {

@@ -6,6 +6,7 @@ import { ComboDetector } from '../systems/ComboDetector.js';
 import { AIController } from '../systems/AIController.js';
 import { GameStateManager } from '../systems/GameStateManager.js';
 import { Hud } from '../systems/Hud.js';
+import { PlayerMarkers } from '../systems/PlayerMarker.js';
 import { EffectManager } from '../systems/EffectManager.js';
 import { HitFeedback, kindOf } from '../systems/HitFeedback.js';
 import { Camera } from '../systems/Camera.js';
@@ -322,6 +323,10 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       });
       instance.stage.addChild(hud.view);
 
+      // Setinhas 1P / 2P sobre as cabecas quando os dois lados sao gente.
+      const markers = matchSetup.mode === 'versusPlayer' || online ? new PlayerMarkers(['1P', '2P']) : null;
+      if (markers) world.addChild(markers.view);
+
       const debugLayer = new Graphics();
       debugLayer.visible = false;
       // Caixas de debug em coordenadas do mundo: acompanham o zoom da camera.
@@ -564,6 +569,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
           shadows[index].alpha = 1 - lift * 0.6;
         });
 
+        markers?.update(fighters, frameDelta);
         hud.update(
           {
             fighters,
