@@ -638,32 +638,3 @@
   @keyframes boot-fade { from { opacity: 1; } to { opacity: 0; } }
   .boot-bar { transition: none; }
 }
-
-/* Estouro do soco na abertura: bate no instante em que os lutadores se encontram. */
-.clash-burst {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: clash-burst 520ms cubic-bezier(0.2, 1.5, 0.4, 1) 520ms both;
-}
-@keyframes clash-burst {
-  from { opacity: 0; transform: scale(0.2) rotate(-14deg); }
-  60% { opacity: 1; }
-  to { opacity: 1; transform: scale(1) rotate(0); }
-}
-/* A faisca estoura um pouco depois das linhas, o quadro treme e um flash branco
-   cobre o instante do golpe. */
-.clash-burst--spark { animation-delay: 560ms; }
-.boot-fighters { position: absolute; inset: 0; opacity: 0.5; filter: saturate(0.85); pointer-events: none; }
-.boot-stage { position: absolute; inset: 0; animation: clash-shake 280ms linear 540ms both; }
-@keyframes clash-shake {
-  0%, 100% { transform: translate(0, 0); }
-  15% { transform: translate(-9px, 5px); }
-  35% { transform: translate(8px, -6px); }
-  55% { transform: translate(-5px, 3px); }
-  75% { transform: translate(3px, -2px); }
-}
-.clash-flash { opacity: 0; animation: clash-flash 200ms ease-out 540ms both; }
-@keyframes clash-flash { from { opacity: 0.85; } to { opacity: 0; } }
-@media (prefers-reduced-motion: reduce) {
-  .clash-burst, .boot-stage, .clash-flash { animation: none; }
-}

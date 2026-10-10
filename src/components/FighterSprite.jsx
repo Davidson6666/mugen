@@ -17,9 +17,7 @@ function frameAt(clip, ticks) {
 // Sprite do proprio jogo, animado, no tamanho nativo: ampliar deixa cada pixel
 // visivel e foi recusado. Os pes ficam na base da caixa, do mesmo jeito que o
 // importador monta a grade.
-// frameIndex: congela num quadro da animacao (uma imagem parada, como a cena de
-// confronto da abertura); pixelated: ampliado em blocos, sem suavizar.
-export default function FighterSprite({ entry, animation = 'idle', scale: baseScale = 1, flip = false, frameIndex, pixelated = false }) {
+export default function FighterSprite({ entry, animation = 'idle', scale: baseScale = 1, flip = false }) {
   const [config, setConfig] = useState(null);
   const [ticks, setTicks] = useState(0);
 
@@ -36,20 +34,18 @@ export default function FighterSprite({ entry, animation = 'idle', scale: baseSc
   const clip = config?.animations[animation];
 
   useEffect(() => {
-    if (!clip || frameIndex !== undefined) return undefined;
+    if (!clip) return undefined;
     // Quatro ticks por atualizacao: suave o bastante para uma pose parada.
     const interval = setInterval(() => setTicks((value) => value + 4), (1000 / 60) * 4);
     return () => clearInterval(interval);
-  }, [clip, frameIndex]);
+  }, [clip]);
 
   if (!clip) return null;
 
   // Personagem de sprite pequeno aparece na mesma escala da luta.
   const scale = baseScale * (config.spriteScale ?? 1);
   const { frameWidth, frameHeight, baseline = frameHeight } = config.spriteGridSize;
-  const frame = frameIndex === undefined
-    ? frameAt(clip, ticks)
-    : clip.frames[Math.max(0, Math.min(frameIndex, clip.frames.length - 1))];
+  const frame = frameAt(clip, ticks);
   // O pe nao fica no fundo do quadro, e sim na linha "baseline" (e o mesmo
   // numero que a luta usa para apoiar o personagem no chao). Sem descer essa
   // sobra, quem tem muito espaco vazio embaixo flutua acima do pedestal - a
@@ -61,7 +57,7 @@ export default function FighterSprite({ entry, animation = 'idle', scale: baseSc
     transform: [flip ? 'scaleX(-1)' : null, footGap ? `translateY(${footGap}px)` : null]
       .filter(Boolean).join(' ') || undefined,
     // Ampliado: suave, sem pixel em bloco.
-    imageRendering: scale === 1 || pixelated ? undefined : 'auto',
+    imageRendering: scale === 1 ? undefined : 'auto',
   };
 
   if (config.atlas) {
