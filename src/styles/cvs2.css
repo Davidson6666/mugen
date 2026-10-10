@@ -653,6 +653,7 @@
 /* A faisca estoura um pouco depois das linhas, o quadro treme e um flash branco
    cobre o instante do golpe. */
 .clash-burst--spark { animation-delay: 560ms; }
+.boot-fighters { position: absolute; inset: 0; opacity: 0.5; filter: saturate(0.85); pointer-events: none; }
 .boot-stage { position: absolute; inset: 0; animation: clash-shake 280ms linear 540ms both; }
 @keyframes clash-shake {
   0%, 100% { transform: translate(0, 0); }

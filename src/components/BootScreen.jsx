@@ -81,9 +81,9 @@ function ImpactLines({ x, y }) {
   return (
     <g className="clash-burst" pointerEvents="none">
       <defs><clipPath id="clash-lines"><rect x={0} y={190} width={1280} height={450} /></clipPath></defs>
-      <g clipPath="url(#clash-lines)">
+      <g clipPath="url(#clash-lines)" opacity={0.35}>
         {lines.map(([x1, y1, x2, y2]) => (
-          <line key={`${x1}${y1}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke={PALETTE.textPrimary} strokeWidth={8} strokeLinecap="round" />
+          <line key={`${x1}${y1}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke={PALETTE.textPrimary} strokeWidth={6} strokeLinecap="round" />
         ))}
       </g>
     </g>
@@ -197,84 +197,87 @@ export default function BootScreen({ leaving, onReady }) {
   return (
     <div className={`boot-screen${leaving ? ' boot-screen--leaving' : ''}`}>
       <div className="boot-stage">
-      <svg className="cvs2-svg" viewBox="0 0 1280 720">
-        <DiagonalBackdrop lattice={false} topWord="" bottomWord="" />
+        {/* Fundo: cores, focos de luz e linhas de velocidade. */}
+        <svg className="cvs2-svg" viewBox="0 0 1280 720">
+          <DiagonalBackdrop lattice={false} topWord="" bottomWord="" />
+          {scene && pair.map((fighter, side) => {
+            const place = side === 0 ? scene.attacker : scene.defender;
+            return <Spotlight key={fighter.id} id={`boot${side}`} x={place.x} y={place.feetY} color={accents[side] ?? PALETTE.fieldYellow} />;
+          })}
+          {scene && <ImpactLines x={scene.contact.x} y={scene.contact.y} />}
+        </svg>
 
-        {scene && pair.map((fighter, side) => {
-          const place = side === 0 ? scene.attacker : scene.defender;
-          return <Spotlight key={fighter.id} id={`boot${side}`} x={place.x} y={place.feetY} color={accents[side] ?? PALETTE.fieldYellow} />;
-        })}
+        {/* Os dois lutadores como pano de fundo: esmaecidos, atras de tudo. */}
+        <div className="boot-fighters">
+          {scene && pair.map((fighter, side) => {
+            const place = side === 0 ? scene.attacker : scene.defender;
+            return (
+              <div key={fighter.id} className="cvs2-sprite" style={{ left: place.x, top: place.feetY }}>
+                <div
+                  className={`cvs2-sprite__inner cvs2-sprite__inner--${side === 0 ? 'left' : 'right'} vs-enter`}
+                  style={{ '--enter-from': side === 0 ? '-170px' : '170px', animationDuration: '380ms' }}
+                >
+                  <FighterSprite
+                    entry={fighter} animation={place.clip} frameIndex={place.index}
+                    scale={place.scale} flip={side === 1} pixelated
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
 
-        <g className="menu-title menu-title--top">
-          <Label x={48} y={118} size={74} anchor="start" stroke={12} display>RUPTURA</Label>
-        </g>
-        <g className="menu-title menu-title--bottom">
-          <Label x={48} y={184} size={60} anchor="start" fill={PALETTE.fieldYellow} stroke={10} display>ARENA</Label>
-        </g>
-
-        <rect x={BAR.x} y={BAR.y} width={BAR.width} height={18} rx={9} fill={PALETTE.ink} stroke={PALETTE.textPrimary} strokeWidth={3} />
-        <rect
-          className="boot-bar" x={BAR.x + 3} y={BAR.y + 3} width={Math.max(0, (BAR.width - 6) * shown)} height={12} rx={6}
-          fill={PALETTE.fieldYellow}
-        />
-        <Label x={640} y={BAR.y - 12} size={26} weight={800} anchor="middle" fill={ready ? PALETTE.fieldYellow : PALETTE.textPrimary} stroke={6}>
-          {status}
-        </Label>
-        <Label x={BAR.x + BAR.width + 16} y={BAR.y + 17} size={22} weight={700} stroke={5}>
-          {`${Math.round(shown * 100)}%`}
-        </Label>
-
-        {slow && !ready && (
-          <Capsule x={850} y={36} width={390} size={21}>
-            {offline ? 'SEM INTERNET · ENTER ENTRA ASSIM MESMO' : 'DEMORANDO · ENTER ENTRA ASSIM MESMO'}
-          </Capsule>
-        )}
-
-        {updated && (
-          <g className="boot-updated">
-            <Capsule x={930} y={84} width={310} size={26}>VERSAO NOVA INSTALADA</Capsule>
-          </g>
-        )}
-        <Label x={40} y={706} size={20} weight={700} stroke={5}>
-          {`VERSAO ${BUILD_ID}${BUILD_DATE ? ` · ${BUILD_DATE}` : ''}`}
-        </Label>
-        {slow && !ready && <KeyHints x={1240} y={706} align="end" items={[{ keys: 'ENTER', text: 'ENTRAR' }]} />}
-
-        {scene && <ImpactLines x={scene.contact.x} y={scene.contact.y} />}
-      </svg>
-
-      {scene && pair.map((fighter, side) => {
-        const place = side === 0 ? scene.attacker : scene.defender;
-        return (
-          <div key={fighter.id} className="cvs2-sprite" style={{ left: place.x, top: place.feetY }}>
-            <div
-              className={`cvs2-sprite__inner cvs2-sprite__inner--${side === 0 ? 'left' : 'right'} vs-enter`}
-              style={{ '--enter-from': side === 0 ? '-170px' : '170px', animationDuration: '380ms' }}
-            >
-              <FighterSprite
-                entry={fighter} animation={place.clip} frameIndex={place.index}
-                scale={place.scale} flip={side === 1} pixelated
-              />
-            </div>
-          </div>
-        );
-      })}
-      {scene && (
+        {/* Frente: faisca, titulo, nomes, barra e avisos. */}
         <svg className="cvs2-svg" viewBox="0 0 1280 720" pointerEvents="none">
-          <ImpactSpark x={scene.contact.x} y={scene.contact.y} />
-          {pair.map((fighter, side) => (
+          {scene && <g opacity={0.8}><ImpactSpark x={scene.contact.x} y={scene.contact.y} /></g>}
+
+          <g className="menu-title menu-title--top">
+            <Label x={640} y={112} size={100} anchor="middle" stroke={15} display>RUPTURA</Label>
+          </g>
+          <g className="menu-title menu-title--bottom">
+            <Label x={640} y={190} size={82} anchor="middle" fill={PALETTE.fieldYellow} stroke={13} display>ARENA</Label>
+          </g>
+
+          {scene && pair.map((fighter, side) => (
             <g key={fighter.id} className={`vs-slide vs-slide--${side === 0 ? 'left' : 'right'}`} style={{ animationDelay: `${500 + side * 120}ms` }}>
               <Label
-                x={side === 0 ? 48 : 1232} y={650} size={74} anchor={side === 0 ? 'start' : 'end'}
-                fill={PALETTE.textPrimary} stroke={12} display
+                x={side === 0 ? 48 : 1232} y={650} size={60} anchor={side === 0 ? 'start' : 'end'}
+                fill={PALETTE.textPrimary} stroke={10} display
               >
                 {fighter.name.toUpperCase()}
               </Label>
             </g>
           ))}
+
+          <rect x={BAR.x} y={BAR.y} width={BAR.width} height={18} rx={9} fill={PALETTE.ink} stroke={PALETTE.textPrimary} strokeWidth={3} />
+          <rect
+            className="boot-bar" x={BAR.x + 3} y={BAR.y + 3} width={Math.max(0, (BAR.width - 6) * shown)} height={12} rx={6}
+            fill={PALETTE.fieldYellow}
+          />
+          <Label x={640} y={BAR.y - 12} size={26} weight={800} anchor="middle" fill={ready ? PALETTE.fieldYellow : PALETTE.textPrimary} stroke={6}>
+            {status}
+          </Label>
+          <Label x={BAR.x + BAR.width + 16} y={BAR.y + 17} size={22} weight={700} stroke={5}>
+            {`${Math.round(shown * 100)}%`}
+          </Label>
+
+          {slow && !ready && (
+            <Capsule x={850} y={36} width={390} size={21}>
+              {offline ? 'SEM INTERNET · ENTER ENTRA ASSIM MESMO' : 'DEMORANDO · ENTER ENTRA ASSIM MESMO'}
+            </Capsule>
+          )}
+          {updated && (
+            <g className="boot-updated">
+              <Capsule x={40} y={36} width={310} size={26}>VERSAO NOVA INSTALADA</Capsule>
+            </g>
+          )}
+          <Label x={40} y={706} size={20} weight={700} stroke={5}>
+            {`VERSAO ${BUILD_ID}${BUILD_DATE ? ` · ${BUILD_DATE}` : ''}`}
+          </Label>
+          {slow && !ready && <KeyHints x={1240} y={706} align="end" items={[{ keys: 'ENTER', text: 'ENTRAR' }]} />}
+
           <rect className="clash-flash" width={1280} height={720} fill={PALETTE.textPrimary} />
         </svg>
-      )}
       </div>
       {slow && !ready && <button type="button" className="boot-skip" tabIndex={-1} onClick={onReady} aria-label="Entrar assim mesmo" />}
     </div>

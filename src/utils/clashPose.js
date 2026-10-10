@@ -31,7 +31,7 @@ function visibleBounds(config, sheetFrame) {
 // eles se mantem porque cada um segue o proprio spriteScale.
 // overlapRatio: quanto do corpo de quem apanha o punho atravessa.
 export function clashLayout(attacker, defender, {
-  targetHeight = 440, feetY = 624, centerX = 640, maxWidth = 1160, maxFactor = 7, overlapRatio = 0.35,
+  targetHeight = 400, feetY = 624, centerX = 640, maxWidth = 1160, maxFactor = 7, overlapRatio = 0.35,
 } = {}) {
   const hit = frameOf(attacker, 'punch', attacker.animations.punch?.hits?.[0]?.from ?? 1);
   const hurt = frameOf(defender, 'hitReaction', 0);
