@@ -86,12 +86,34 @@
   margin: 0;
   display: grid;
   place-items: center;
-  font-family: 'Barlow Condensed', sans-serif;
-  font-style: italic;
-  font-weight: 800;
-  font-size: 32px;
-  letter-spacing: 1px;
+  grid-auto-flow: row;
+  align-content: center;
+  gap: 22px;
+  font-family: 'Dela Gothic One', 'Barlow Condensed', sans-serif;
+  font-weight: 400;
+  font-size: 26px;
+  letter-spacing: 2px;
   color: var(--color-text-primary);
+}
+
+/* Losango girando no lugar do texto solto: carregando tem movimento. */
+.game-canvas__status::before {
+  content: '';
+  justify-self: center;
+  width: 46px;
+  height: 46px;
+  background: var(--color-field-yellow);
+  border: 5px solid var(--color-ink);
+  outline: 3px solid var(--color-text-primary);
+  animation: status-spin 1.1s cubic-bezier(0.6, 0, 0.3, 1) infinite;
+}
+@keyframes status-spin {
+  from { transform: rotate(45deg) scale(1); }
+  50% { transform: rotate(225deg) scale(0.8); }
+  to { transform: rotate(405deg) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .game-canvas__status::before { animation: none; transform: rotate(45deg); }
 }
 
 /* Avisos de conquista, empilhados no canto de cima a direita. Mesma linguagem
