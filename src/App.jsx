@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { GameProvider } from './context/GameProvider.jsx';
 import { MenuProvider } from './context/MenuProvider.jsx';
 import { AuthProvider } from './context/AuthProvider.jsx';
@@ -18,6 +19,7 @@ import AchievementsScreen from './components/AchievementsScreen.jsx';
 import AchievementToast from './components/AchievementToast.jsx';
 import UpdateBanner from './components/UpdateBanner.jsx';
 import ScreenTransition from './components/ScreenTransition.jsx';
+import { setMenuMusic } from './systems/MenuAudio.js';
 import { useStageScale } from './utils/useStageScale.js';
 import './App.css';
 
@@ -60,6 +62,10 @@ export default function App() {
 // textura fixa, sem JS, so para tirar o aspecto de cor chapada.
 function Grain() {
   const { screen } = useMenu();
+  // A trilha dos menus acompanha o grao: toca em tudo menos na luta.
+  useEffect(() => {
+    setMenuMusic(screen !== 'battle');
+  }, [screen]);
   if (screen === 'battle') return null;
   return <div className="grain" aria-hidden="true" />;
 }

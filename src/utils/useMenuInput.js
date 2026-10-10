@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { connectedGamepads } from './gamepad.js';
 import { MenuInputGate } from './MenuInputGate.js';
 import { currentControls } from './controls.js';
+import { menuSound } from '../systems/MenuAudio.js';
 
 // Navegacao de menu por teclado e gamepad, com os mesmos controles da luta.
 // A leitura aqui e por evento (e nao por frame como na arena) porque menu
@@ -55,6 +56,8 @@ export function useMenuInput(handlers, enabled = true) {
 
     const emit = (type, player, direction) => {
       const handler = handlersRef.current[type === 'move' ? 'onMove' : `on${type[0].toUpperCase()}${type.slice(1)}`];
+      // So soa quando a tela de fato trata o evento: tecla sem efeito fica muda.
+      if (handler) menuSound[type === 'move' ? 'tick' : type]?.();
       handler?.(player, direction);
     };
 
