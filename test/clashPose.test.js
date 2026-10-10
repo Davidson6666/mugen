@@ -12,17 +12,17 @@ const configs = Object.fromEntries(roster.filter((entry) => entry.id !== 'dummy'
 ]));
 const ids = Object.keys(configs).filter((id) => id !== 'ensina_god');
 
-test('confronto: todo par se encosta, cabe na tela e usa quadros que existem', () => {
+test('confronto: todo par se encontra, cabe na tela e usa quadros que existem', () => {
   for (const a of ids) {
     for (const b of ids) {
       if (a === b) continue;
       const scene = clashLayout(configs[a], configs[b]);
-      const gap = scene.defender.x - scene.attacker.x;
-      assert.ok(gap >= 300 && gap <= 700, `${a} x ${b}: distancia ${gap}`);
-      assert.ok(scene.attacker.x > 150 && scene.defender.x < 1130, `${a} x ${b}: sai da tela`);
-      // O ponto de contato fica entre os dois e dentro da tela.
-      assert.ok(scene.contact.x >= scene.attacker.x && scene.contact.x <= scene.defender.x, `${a} x ${b}: contato fora`);
-      assert.ok(scene.contact.y > 150 && scene.contact.y < 590, `${a} x ${b}: contato em y ${scene.contact.y}`);
+      assert.ok(scene.factor >= 2 && scene.factor <= 7, `${a} x ${b}: fator ${scene.factor}`);
+      // O par inteiro cabe na tela e o soco entra no corpo do outro.
+      assert.ok(scene.left >= 40 && scene.right <= 1240, `${a} x ${b}: sai da tela (${scene.left}..${scene.right})`);
+      assert.ok(scene.defender.x > scene.attacker.x, `${a} x ${b}: ordem trocada`);
+      assert.ok(scene.contact.x > scene.attacker.x && scene.contact.x < scene.right, `${a} x ${b}: contato fora`);
+      assert.ok(scene.contact.y > 150 && scene.contact.y < scene.attacker.feetY, `${a} x ${b}: contato em y ${scene.contact.y}`);
       for (const side of [scene.attacker, scene.defender]) {
         assert.ok(Number.isInteger(side.sheetFrame), `${a} x ${b}: quadro invalido`);
       }

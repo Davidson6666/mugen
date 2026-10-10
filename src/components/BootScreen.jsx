@@ -69,22 +69,32 @@ function burstPoints(cx, cy, outer, inner, spikes = 14) {
   return points.join(' ');
 }
 
-function ImpactBurst({ x, y }) {
-  const lines = Array.from({ length: 10 }, (_, i) => {
-    const angle = (Math.PI * 2 * i) / 10 + 0.3;
-    const far = 215 + (i % 3) * 30;
-    return [x + Math.cos(angle) * 150, y + Math.sin(angle) * 150, x + Math.cos(angle) * far, y + Math.sin(angle) * far];
+// Linhas de velocidade atras dos lutadores e a faisca do golpe na frente deles,
+// na ponta do punho. As duas aparecem juntas, no instante do impacto.
+function ImpactLines({ x, y }) {
+  const lines = Array.from({ length: 12 }, (_, i) => {
+    const angle = (Math.PI * 2 * i) / 12 + 0.3;
+    const near = 120 + (i % 2) * 20;
+    const far = 250 + (i % 3) * 55;
+    return [x + Math.cos(angle) * near, y + Math.sin(angle) * near, x + Math.cos(angle) * far, y + Math.sin(angle) * far];
   });
   return (
     <g className="clash-burst" pointerEvents="none">
-      <defs><clipPath id="clash-lines"><rect x={0} y={205} width={1280} height={410} /></clipPath></defs>
+      <defs><clipPath id="clash-lines"><rect x={0} y={190} width={1280} height={450} /></clipPath></defs>
       <g clipPath="url(#clash-lines)">
-      {lines.map(([x1, y1, x2, y2]) => (
-        <line key={`${x1}${y1}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke={PALETTE.textPrimary} strokeWidth={7} strokeLinecap="round" />
-      ))}
+        {lines.map(([x1, y1, x2, y2]) => (
+          <line key={`${x1}${y1}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke={PALETTE.textPrimary} strokeWidth={8} strokeLinecap="round" />
+        ))}
       </g>
-      <polygon points={burstPoints(x, y, 130, 58)} fill={PALETTE.textPrimary} stroke={PALETTE.ink} strokeWidth={8} strokeLinejoin="round" />
-      <polygon points={burstPoints(x, y, 92, 40, 10)} fill={PALETTE.fieldYellow} stroke={PALETTE.ink} strokeWidth={5} strokeLinejoin="round" />
+    </g>
+  );
+}
+
+function ImpactSpark({ x, y }) {
+  return (
+    <g className="clash-burst clash-burst--spark" pointerEvents="none">
+      <polygon points={burstPoints(x, y, 78, 32, 12)} fill={PALETTE.textPrimary} stroke={PALETTE.ink} strokeWidth={6} strokeLinejoin="round" />
+      <polygon points={burstPoints(x, y, 54, 22, 9)} fill={PALETTE.fieldYellow} stroke={PALETTE.ink} strokeWidth={4} strokeLinejoin="round" />
     </g>
   );
 }
@@ -186,6 +196,7 @@ export default function BootScreen({ leaving, onReady }) {
 
   return (
     <div className={`boot-screen${leaving ? ' boot-screen--leaving' : ''}`}>
+      <div className="boot-stage">
       <svg className="cvs2-svg" viewBox="0 0 1280 720">
         <DiagonalBackdrop lattice={false} topWord="" bottomWord="" />
 
@@ -195,22 +206,11 @@ export default function BootScreen({ leaving, onReady }) {
         })}
 
         <g className="menu-title menu-title--top">
-          <Label x={640} y={104} size={92} anchor="middle" stroke={14} display>RUPTURA</Label>
+          <Label x={48} y={118} size={74} anchor="start" stroke={12} display>RUPTURA</Label>
         </g>
         <g className="menu-title menu-title--bottom">
-          <Label x={640} y={176} size={76} anchor="middle" fill={PALETTE.fieldYellow} stroke={12} display>ARENA</Label>
+          <Label x={48} y={184} size={60} anchor="start" fill={PALETTE.fieldYellow} stroke={10} display>ARENA</Label>
         </g>
-
-        {scene && pair.map((fighter, side) => (
-          <g key={fighter.id} className={`vs-slide vs-slide--${side === 0 ? 'left' : 'right'}`} style={{ animationDelay: `${500 + side * 120}ms` }}>
-            <Label
-              x={side === 0 ? 48 : 1232} y={650} size={74} anchor={side === 0 ? 'start' : 'end'}
-              fill={PALETTE.textPrimary} stroke={12} display
-            >
-              {fighter.name.toUpperCase()}
-            </Label>
-          </g>
-        ))}
 
         <rect x={BAR.x} y={BAR.y} width={BAR.width} height={18} rx={9} fill={PALETTE.ink} stroke={PALETTE.textPrimary} strokeWidth={3} />
         <rect
@@ -225,14 +225,14 @@ export default function BootScreen({ leaving, onReady }) {
         </Label>
 
         {slow && !ready && (
-          <Capsule x={40} y={40} width={390} size={21}>
+          <Capsule x={850} y={36} width={390} size={21}>
             {offline ? 'SEM INTERNET · ENTER ENTRA ASSIM MESMO' : 'DEMORANDO · ENTER ENTRA ASSIM MESMO'}
           </Capsule>
         )}
 
         {updated && (
           <g className="boot-updated">
-            <Capsule x={40} y={104} width={310} size={26}>VERSAO NOVA INSTALADA</Capsule>
+            <Capsule x={930} y={84} width={310} size={26}>VERSAO NOVA INSTALADA</Capsule>
           </g>
         )}
         <Label x={40} y={706} size={20} weight={700} stroke={5}>
@@ -240,7 +240,7 @@ export default function BootScreen({ leaving, onReady }) {
         </Label>
         {slow && !ready && <KeyHints x={1240} y={706} align="end" items={[{ keys: 'ENTER', text: 'ENTRAR' }]} />}
 
-        {scene && <ImpactBurst x={scene.contact.x} y={scene.contact.y} />}
+        {scene && <ImpactLines x={scene.contact.x} y={scene.contact.y} />}
       </svg>
 
       {scene && pair.map((fighter, side) => {
@@ -259,6 +259,23 @@ export default function BootScreen({ leaving, onReady }) {
           </div>
         );
       })}
+      {scene && (
+        <svg className="cvs2-svg" viewBox="0 0 1280 720" pointerEvents="none">
+          <ImpactSpark x={scene.contact.x} y={scene.contact.y} />
+          {pair.map((fighter, side) => (
+            <g key={fighter.id} className={`vs-slide vs-slide--${side === 0 ? 'left' : 'right'}`} style={{ animationDelay: `${500 + side * 120}ms` }}>
+              <Label
+                x={side === 0 ? 48 : 1232} y={650} size={74} anchor={side === 0 ? 'start' : 'end'}
+                fill={PALETTE.textPrimary} stroke={12} display
+              >
+                {fighter.name.toUpperCase()}
+              </Label>
+            </g>
+          ))}
+          <rect className="clash-flash" width={1280} height={720} fill={PALETTE.textPrimary} />
+        </svg>
+      )}
+      </div>
       {slow && !ready && <button type="button" className="boot-skip" tabIndex={-1} onClick={onReady} aria-label="Entrar assim mesmo" />}
     </div>
   );

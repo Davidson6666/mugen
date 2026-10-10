@@ -1,13 +1,12 @@
 // Cena de confronto da abertura: um lutador acerta o soco no outro, numa imagem
 // parada. Tudo sai das proprias configs dos dois: o quadro em que o soco esta
-// esticado (o primeiro acerto da animacao), onde a caixa de acerto termina (de
-// ate onde o punho chega) e o corpo do outro (a caixa de dano). Assim cada par
-// se encosta no lugar certo sem ninguem posicionar na mao.
+// esticado (o primeiro acerto da animacao) e o retangulo que cada quadro ocupa de
+// verdade no atlas (o desenho sem a margem transparente). Com isso o punho entra
+// no corpo de quem apanha e o par fica do tamanho certo, sem ninguem posicionar
+// na mao.
 //
 // Medidas em pixels da celula do sprite: x a partir da esquerda, y a partir do
 // topo; o pe fica na linha "baseline" e o corpo, no centro da celula.
-const DEFAULT_REACH = 40;
-
 function frameOf(config, name, index) {
   const clip = config.animations[name] ?? config.animations.idle;
   const at = Math.max(0, Math.min(index, clip.frames.length - 1));
@@ -19,37 +18,64 @@ export function sheetPageOf(config, sheetFrame) {
   return config.atlas?.[sheetFrame]?.[0] ?? 0;
 }
 
-// factor: quantas vezes maior que na luta cada um aparece (o tamanho relativo
-// entre os dois se mantem, porque ele multiplica o spriteScale de cada um).
-export function clashLayout(attacker, defender, { factor = 3.1, centerX = 640, feetY = 590, minGap = 300, maxGap = 700 } = {}) {
-  const attackScale = (attacker.spriteScale ?? 1) * factor;
-  const defendScale = (defender.spriteScale ?? 1) * factor;
-  const strike = attacker.animations.punch?.hits?.[0];
-  const box = strike?.box ?? attacker.hitbox;
-  const cellCenter = attacker.spriteGridSize.frameWidth / 2;
+// Parte visivel do quadro, em pixels da celula. Sem atlas, a celula inteira.
+function visibleBounds(config, sheetFrame) {
+  const { frameWidth, frameHeight, baseline = frameHeight } = config.spriteGridSize;
+  const rect = config.atlas?.[sheetFrame];
+  if (!rect) return { left: 0, right: frameWidth, top: 0, bottom: baseline };
+  const [, , , width, height, dx, dy] = rect;
+  return { left: dx, right: dx + width, top: dy, bottom: dy + height };
+}
 
-  // Do centro do corpo de quem bate ate a ponta do punho, e a que altura ela fica.
-  const reach = box ? (box.offsetX + box.width - cellCenter) * attackScale : DEFAULT_REACH * attackScale;
-  const fistUp = box ? (attacker.spriteGridSize.baseline - (box.offsetY + box.height / 2)) * attackScale : 55 * attackScale;
+// targetHeight: altura (na tela) do mais alto dos dois; o tamanho relativo entre
+// eles se mantem porque cada um segue o proprio spriteScale.
+// overlapRatio: quanto do corpo de quem apanha o punho atravessa.
+export function clashLayout(attacker, defender, {
+  targetHeight = 440, feetY = 624, centerX = 640, maxWidth = 1160, maxFactor = 7, overlapRatio = 0.35,
+} = {}) {
+  const hit = frameOf(attacker, 'punch', attacker.animations.punch?.hits?.[0]?.from ?? 1);
+  const hurt = frameOf(defender, 'hitReaction', 0);
+  const boundsA = visibleBounds(attacker, hit.sheetFrame);
+  const boundsD = visibleBounds(defender, hurt.sheetFrame);
+  const gridA = attacker.spriteGridSize;
+  const gridD = defender.spriteGridSize;
+  const sizeA = attacker.spriteScale ?? 1;
+  const sizeD = defender.spriteScale ?? 1;
+  const centerA = gridA.frameWidth / 2;
+  const centerD = gridD.frameWidth / 2;
 
-  // O corpo de quem apanha comeca perto da ponta do punho (um pouco dentro dele).
-  const bodyHalf = ((defender.hurtbox?.width ?? 30) / 2) * defendScale;
-  const gap = Math.max(minGap, Math.min(maxGap, reach + bodyHalf * 0.55));
+  // Em unidades de "factor" = 1: da linha do pe ate o topo, e as distancias a
+  // partir do centro do corpo (para a frente e para tras de cada um).
+  const heightA = Math.max(1, (gridA.baseline ?? gridA.frameHeight) - boundsA.top) * sizeA;
+  const heightD = Math.max(1, (gridD.baseline ?? gridD.frameHeight) - boundsD.top) * sizeD;
+  const frontA = (boundsA.right - centerA) * sizeA;
+  const backA = (centerA - boundsA.left) * sizeA;
+  const frontD = (boundsD.right - centerD) * sizeD;
+  const backD = (centerD - boundsD.left) * sizeD;
+  const overlap = (boundsD.right - boundsD.left) * sizeD * overlapRatio;
+  const gapUnits = frontA + frontD - overlap;
+  const spanUnits = backA + gapUnits + backD;
 
-  const attackerX = centerX - gap / 2;
+  // Tudo e proporcional ao fator: ele sai da altura desejada e, se o par ficar
+  // largo demais para a tela (golpe de espada comprida), diminui um pouco.
+  const factor = Math.min(maxFactor, targetHeight / Math.max(heightA, heightD), maxWidth / spanUnits);
+  const gap = gapUnits * factor;
+  const attackerX = centerX - (gap + backD * factor - backA * factor) / 2;
+
+  // A faisca fica na ponta do punho, na altura da caixa de acerto (ou no meio do
+  // corpo se o golpe nao tiver uma).
+  const strike = attacker.animations.punch?.hits?.[0]?.box ?? attacker.hitbox;
+  const fistUp = strike
+    ? ((gridA.baseline ?? gridA.frameHeight) - (strike.offsetY + strike.height / 2)) * sizeA * factor
+    : heightA * factor * 0.55;
+  const contactX = attackerX + frontA * factor - overlap * factor * 0.25;
+
   return {
-    attacker: {
-      x: attackerX,
-      feetY,
-      scale: factor,
-      ...frameOf(attacker, 'punch', strike?.from ?? 1),
-    },
-    defender: {
-      x: attackerX + gap,
-      feetY,
-      scale: factor,
-      ...frameOf(defender, 'hitReaction', 0),
-    },
-    contact: { x: attackerX + Math.min(reach, gap), y: feetY - fistUp },
+    factor,
+    left: attackerX - backA * factor,
+    right: attackerX + gap + backD * factor,
+    attacker: { x: attackerX, feetY, scale: factor, ...hit },
+    defender: { x: attackerX + gap, feetY, scale: factor, ...hurt },
+    contact: { x: contactX, y: feetY - fistUp },
   };
 }
