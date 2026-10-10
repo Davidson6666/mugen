@@ -1,0 +1,30 @@
+<!doctype html><html lang="pt-BR"><meta charset="utf-8"><title>Humberto — revisão de combate</title>
+<style>body{margin:0;background:#0c1119;color:#e8eef5;font:15px system-ui}header{padding:20px}h1{font-size:24px;margin:0 0 6px}p{color:#9eb0c7;margin:4px 0 14px}.controls{display:flex;flex-wrap:wrap;gap:8px}button,select{padding:10px;background:#203049;color:white;border:1px solid #435775;border-radius:5px}canvas{max-width:100%;image-rendering:pixelated;display:block}#status{padding:16px}label{display:flex;gap:8px;align-items:center}input{width:240px}</style>
+<header><h1>Humberto — anime, química e katana</h1><p>Escolha um golpe para conferir a animação em câmera próxima.</p><div class="controls"><select id="move" aria-label="Golpe"><option value="punch">Soco</option><option value="punch2">Segundo soco</option><option value="kick">Chute</option><option value="ionicPalm">Palma iônica</option><option value="special2">Combustão</option><option value="special1">Frasco reagente</option><option value="kiBlast">Plasma verde</option><option value="sixSeven">Six Seven</option><option value="greatFireball">Katon</option><option value="judgementCutEnd">Judgement Cut End</option></select><button id="play">Executar</button><button id="impact">Ver impacto</button><button id="pause">Pausar / continuar</button><button id="flip">Trocar lado</button><label>Velocidade <select id="speed"><option value="1">Normal</option><option value="0.4">Câmera lenta</option></select></label></div></header><div id="stage"></div><div id="status">Carregando…</div>
+<script type="module">
+import {Application,Container,Graphics} from 'pixi.js';
+import {SpriteSheetManager} from '/src/systems/SpriteSheetManager.js';
+import {Fighter} from '/src/systems/Fighter.js';
+import {EffectManager} from '/src/systems/EffectManager.js';
+import {AudioManager} from '/src/systems/AudioManager.js';
+import {resolveAttack,resolveBodyCollision} from '/src/systems/CollisionDetector.js';
+const app=new Application();await app.init({width:1000,height:500,background:'#152030',antialias:false});document.querySelector('#stage').append(app.canvas);
+const dir='/assets/characters/humberto',record=await new SpriteSheetManager().loadCharacter({id:'humberto',dir,config:'humberto_config.json'});
+const map={groundLevel:420,leftBound:80,rightBound:1120},world=new Container();world.scale.set(1.7);world.position.set(-450,-270);app.stage.addChild(world);
+const floor=new Graphics().rect(0,420,1280,180).fill('#233146');for(let x=0;x<1280;x+=40)floor.moveTo(x,420).lineTo(x,600).stroke({color:'#35465e',width:1});world.addChild(floor);
+const back=new Container(),front=new Container();world.addChild(back);
+const a=new Fighter({record,map,x:400,facing:1}),b=new Fighter({record,map,x:450,facing:-1});a.opponent=b;b.opponent=a;world.addChild(a.sprite,b.sprite,front);
+const effects=new EffectManager({back,front,bounds:{left:0,right:1280}}),audio=new AudioManager(.6);await audio.preload(dir,record.config.sounds);
+const select=document.querySelector('#move'),status=document.querySelector('#status');
+let tick=0,paused=true,facing=1,acc=0;
+const near=new Set(['punch','punch2','kick','ionicPalm','special2']);
+function reset(){const distance=near.has(select.value)?55:330;const x=facing===1?400:730;a.resetForRound(x,facing);b.resetForRound(x+distance*facing,-facing);effects.clear();audio.stopAll();tick=0;acc=0;}
+function step(){a.update(tick===0?{combo:{animation:select.value}}:{},1);b.update({},1);effects.collect([a,b]);resolveBodyCollision(a,b);resolveAttack(a,b);effects.update(1,[a,b]);audio.update(0,a,dir);audio.update(1,b,dir);tick++;status.textContent=`${select.selectedOptions[0].text} · ${(tick/60).toFixed(2)} s · vida do rival ${Math.round(b.health)} · ${tick} quadros`;}
+function play(){reset();paused=false;audio.resume();}
+select.onchange=play;document.querySelector('#play').onclick=play;
+document.querySelector('#pause').onclick=()=>{paused=!paused;if(paused)audio.pause();else audio.resume();};
+document.querySelector('#flip').onclick=()=>{facing*=-1;play();};
+document.querySelector('#impact').onclick=()=>{reset();const at={punch:7,punch2:6,kick:9,ionicPalm:11,special2:21,special1:38,kiBlast:25,sixSeven:29,greatFireball:32,judgementCutEnd:65}[select.value];while(tick<at)step();paused=true;audio.stopAll();};
+app.ticker.add(t=>{if(paused)return;acc+=Math.min(t.deltaTime,3)*Number(document.querySelector('#speed').value);while(acc>=1){step();acc--;}});
+status.textContent='Pronto. Escolha um golpe ou execute a animação.';
+</script></html>

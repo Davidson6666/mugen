@@ -1,0 +1,11 @@
+# Katon — Grande Bola de Fogo
+
+Inspirado na bola de fogo do Sasuke, adaptado ao pixel art do Humberto. **↓→P** (baixo, frente + Soco), relativo ao adversário. No jogador 1 olhando à direita: S, D + J. Disponível nas duas formas, com a aparência normal do professor durante os selos e o sopro. Preserva os comandos anteriores, inclusive o canhão lendário e Judgement Cut End.
+
+Preparação vulnerável de 22 ticks, um projétil de 22 de dano antes dos multiplicadores, bloqueável. Atinge uma vez e explode visualmente; desaparece ao alcançar a parede ou expirar. Recarga de 180 ticks (3 segundos). Sons originais sintetizados de inspiração e fogo, sem voz ou áudio retirados do anime.
+
+Arte criada com ImageGen integrado. Fonte: `assets-src/humberto/fireball-source.png`. Arquivos ativos: `humberto_fireball.png`, `fireball_fx.png`, `fireballInhale.wav` e `fireballBreath.wav`. Reconstruir com `node scripts/build-humberto-fireball.mjs`. Prévia: `/docs/humberto-fireball-preview.html`.
+
+## Prompt
+
+NEW fighting game production sprite sheet. Reference identity/style: Humberto stocky middle-aged man short black hair black t-shirt olive trousers black sneakers white soles. Preserve face and clothes. Coarse 16bit arcade pixel art limited palette crisp clusters no gradients no blur. Exactly FOUR columns THREE rows regular equally sized square cells, generous 15% transparent margins in each cell. Row ONE four full-body character poses facing RIGHT same size and foot baseline: hands clasped ninja hand seal in front chest; second hand seal fingers upright near mouth inhaling; leaning forward hand cupped at mouth blowing (NO fire embedded); same blowing pose stronger braced stance. Row TWO four consecutive looping FIREBALL frames traveling RIGHT: large ROUND orange red fire sphere with brilliant pale-yellow core and jagged swirling orange flame tongues, short tapered flame tail to LEFT, coherent consistent size about 65% cell width. This is Sasuke's Great Fireball jutsu visual translated to arcade pixel art. Row THREE four impact explosion frames: expanding orange yellow fire burst, maximum fiery burst jagged petals, dissipating red orange embers, sparse embers. Effects only on rows2/3, no characters there. No text labels borders grid scenery shadows background. Genuine transparent alpha. Every figure/effect fully within its own cell.
