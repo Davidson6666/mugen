@@ -138,3 +138,14 @@ Chun-Li e Street Fighter são propriedade da Capcom.
 ## Cenários UTFPR-CM
 
 Seis cenários originais em pixel art inspirados nas fotografias do campus fornecidas pelo usuário, redesenhados com a ferramenta integrada imagegen. Imagens finais 512×288, ampliadas sem suavização. Detalhes e prompts: public/assets/maps/ART.md.
+
+## Fontes
+
+- **Barlow Condensed** (Jeremy Tribby), usada no texto do jogo.
+- **Dela Gothic One** (Syun), usada nos títulos, nomes de lutadores e anúncios da luta.
+
+As duas estão sob a licença SIL Open Font License 1.1 e vêm embutidas no jogo pelos pacotes `@fontsource`.
+
+## Música e sons dos menus
+
+Gerados por código (Web Audio, `src/systems/MenuAudio.js`), sem arquivos de terceiros.
