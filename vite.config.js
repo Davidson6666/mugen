@@ -1,9 +1,26 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
+import { execSync } from 'node:child_process'
+
+// Identificacao da versao que aparece na abertura do jogo: o commit (na Vercel
+// vem pela variavel de ambiente) e a data do build. Sem git, cai em "dev".
+function buildId() {
+  const fromEnv = process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7)
+  if (fromEnv) return fromEnv
+  try {
+    return execSync('git rev-parse --short HEAD', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim()
+  } catch {
+    return 'dev'
+  }
+}
 
 // https://vite.dev/config/
 export default defineConfig({
+  define: {
+    'import.meta.env.VITE_BUILD_ID': JSON.stringify(buildId()),
+    'import.meta.env.VITE_BUILD_DATE': JSON.stringify(new Date().toISOString().slice(0, 10)),
+  },
   plugins: [
     react(),
     VitePWA({

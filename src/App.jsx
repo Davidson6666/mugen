@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import BootScreen from './components/BootScreen.jsx';
 import { GameProvider } from './context/GameProvider.jsx';
 import { MenuProvider } from './context/MenuProvider.jsx';
 import { AuthProvider } from './context/AuthProvider.jsx';
@@ -73,12 +74,24 @@ function Grain() {
 // Separado do App porque o hook da escala precisa rodar dentro dos providers.
 function Stage() {
   const { fullscreen, scale } = useStageScale();
+  // 'loading' -> 'leaving' (a abertura some) -> 'done'. O menu so entra quando a
+  // abertura termina, e suas animacoes de entrada acontecem com ela saindo.
+  const [boot, setBoot] = useState('loading');
+  const finishBoot = useCallback(() => {
+    setBoot((current) => (current === 'loading' ? 'leaving' : current));
+  }, []);
+  useEffect(() => {
+    if (boot !== 'leaving') return undefined;
+    const timer = setTimeout(() => setBoot('done'), 600);
+    return () => clearTimeout(timer);
+  }, [boot]);
   return (
     <div className={`app app--fullscreen${fullscreen ? ' app--real-fullscreen' : ''}`} style={{ '--stage-scale': scale }}>
       <div className="app__stage">
-        <Router />
+        {boot !== 'loading' && <Router />}
         <Grain />
-        <ScreenTransition />
+        {boot !== 'loading' && <ScreenTransition />}
+        {boot !== 'done' && <BootScreen leaving={boot === 'leaving'} onReady={finishBoot} />}
       </div>
       <AchievementToast />
       <UpdateBanner />
