@@ -3,17 +3,32 @@ import { useAuth } from '../context/AuthContext.js';
 import { PALETTE } from '../utils/palette.js';
 import characters from '../data/characters.json';
 import { preloadImage, runBoot } from '../utils/bootTasks.js';
-import { Capsule, DiagonalBackdrop, KeyHints, Label } from './cvs2.jsx';
+import { Capsule, DiagonalBackdrop, KeyHints, Label, Pedestal, Shape, Spotlight } from './cvs2.jsx';
+import { diamond } from '../utils/hudGeometry.js';
+import { useAccents } from '../utils/useAccents.js';
+import FighterSprite from './FighterSprite.jsx';
 
 // Tela de abertura: carrega o que o menu vai precisar (fontes, retratos, conta),
 // mostra uma barra que anda de verdade e diz que versao do jogo esta rodando. E
 // util a cada atualizacao nova (o jogador ve que e a versao nova) e quando a
 // conexao esta lenta (a tela avisa e deixa entrar assim mesmo, em vez de ficar
 // parada).
-const MIN_SHOWN_MS = 700;
+const MIN_SHOWN_MS = 2800;
 const AUTH_WAIT_MS = 6000;
 const SLOW_AFTER_MS = 4000;
-const BAR = { x: 340, y: 520, width: 600 };
+const BAR = { x: 340, y: 652, width: 600 };
+
+// Dois lutadores sorteados a cada abertura, de frente um para o outro. O Ensina
+// GOD fica de fora: e segredo ate ser desbloqueado.
+const POOL = characters.filter((entry) => entry.id !== 'ensina_god');
+const STANDS = [[300, 540], [980, 540]];
+
+function pickPair() {
+  const first = Math.floor(Math.random() * POOL.length);
+  let second = Math.floor(Math.random() * (POOL.length - 1));
+  if (second >= first) second += 1;
+  return [POOL[first], POOL[second]];
+}
 
 const BUILD_ID = import.meta.env.VITE_BUILD_ID ?? 'dev';
 const BUILD_DATE = import.meta.env.VITE_BUILD_DATE ?? '';
@@ -49,6 +64,8 @@ export default function BootScreen({ leaving, onReady }) {
   const [updated] = useState(readUpdateNotice);
   const [offline, setOffline] = useState(() => typeof navigator !== 'undefined' && navigator.onLine === false);
   const readyRef = useRef(false);
+  const [pair] = useState(pickPair);
+  const accents = useAccents(pair);
 
   useEffect(() => {
     let alive = true;
@@ -115,39 +132,62 @@ export default function BootScreen({ leaving, onReady }) {
       <svg className="cvs2-svg" viewBox="0 0 1280 720">
         <DiagonalBackdrop lattice={false} topWord="" bottomWord="" />
 
-        <Label x={640} y={250} size={150} anchor="middle" stroke={18} display>RUPTURA</Label>
-        <Label x={640} y={372} size={130} anchor="middle" fill={PALETTE.fieldYellow} stroke={16} display>ARENA</Label>
+        <Label x={640} y={150} size={118} anchor="middle" stroke={16} display>RUPTURA</Label>
+        <Label x={640} y={240} size={100} anchor="middle" fill={PALETTE.fieldYellow} stroke={14} display>ARENA</Label>
+
+        {pair.map((fighter, side) => (
+          <g key={fighter.id}>
+            <Spotlight id={`boot${side}`} x={STANDS[side][0]} y={STANDS[side][1]} color={accents[side] ?? PALETTE.fieldYellow} />
+            <Pedestal x={STANDS[side][0]} y={STANDS[side][1]} />
+            <g className={`vs-slide vs-slide--${side === 0 ? 'left' : 'right'}`} style={{ animationDelay: `${300 + side * 120}ms` }}>
+              <Label x={STANDS[side][0]} y={STANDS[side][1] + 92} size={62} anchor="middle" stroke={10} display>
+                {fighter.name.toUpperCase()}
+              </Label>
+            </g>
+          </g>
+        ))}
+        <g className="vs-slam" style={{ animationDelay: '900ms' }}>
+          <Shape points={diamond([640, 440], 84)} fill={PALETTE.emblem} />
+          <Label x={640} y={470} size={110} anchor="middle" fill={PALETTE.fieldYellow} stroke={12} display>VS</Label>
+        </g>
 
         <rect x={BAR.x} y={BAR.y} width={BAR.width} height={18} rx={9} fill={PALETTE.ink} stroke={PALETTE.textPrimary} strokeWidth={3} />
         <rect
           className="boot-bar" x={BAR.x + 3} y={BAR.y + 3} width={Math.max(0, (BAR.width - 6) * shown)} height={12} rx={6}
           fill={PALETTE.fieldYellow}
         />
-        <Label x={640} y={BAR.y - 18} size={30} weight={800} anchor="middle" fill={ready ? PALETTE.fieldYellow : PALETTE.textPrimary} stroke={6}>
+        <Label x={640} y={BAR.y - 14} size={28} weight={800} anchor="middle" fill={ready ? PALETTE.fieldYellow : PALETTE.textPrimary} stroke={6}>
           {status}
         </Label>
-        <Label x={BAR.x + BAR.width} y={BAR.y + 48} size={22} weight={700} anchor="end" stroke={5}>
+        <Label x={BAR.x + BAR.width} y={BAR.y + 44} size={22} weight={700} anchor="end" stroke={5}>
           {`${Math.round(shown * 100)}%`}
         </Label>
 
         {slow && !ready && (
           <g>
-            <Capsule x={290} y={600} width={700} size={28}>
+            <Capsule x={390} y={40} width={700} size={26}>
               {offline ? 'SEM INTERNET · VERIFIQUE A CONEXAO' : 'DEMORANDO MAIS QUE O NORMAL · A CONEXAO PODE ESTAR LENTA'}
             </Capsule>
-            <KeyHints x={520} y={672} items={[{ keys: 'ENTER', text: 'ENTRAR ASSIM MESMO' }]} />
+            <KeyHints x={520} y={692} items={[{ keys: 'ENTER', text: 'ENTRAR ASSIM MESMO' }]} />
           </g>
         )}
 
         {updated && (
           <g className="boot-updated">
-            <Capsule x={40} y={40} width={330} size={26}>VERSAO NOVA INSTALADA</Capsule>
+            <Capsule x={40} y={40} width={310} size={26}>VERSAO NOVA INSTALADA</Capsule>
           </g>
         )}
         <Label x={40} y={700} size={22} weight={700} stroke={5}>
           {`VERSAO ${BUILD_ID}${BUILD_DATE ? ` · ${BUILD_DATE}` : ''}`}
         </Label>
       </svg>
+      {pair.map((fighter, side) => (
+        <div key={fighter.id} className="cvs2-sprite" style={{ left: STANDS[side][0], top: STANDS[side][1] }}>
+          <div className={`cvs2-sprite__inner cvs2-sprite__inner--${side === 0 ? 'left' : 'right'} vs-enter`}>
+            <FighterSprite entry={fighter} flip={side === 1} />
+          </div>
+        </div>
+      ))}
       {slow && !ready && <button type="button" className="boot-skip" tabIndex={-1} onClick={onReady} aria-label="Entrar assim mesmo" />}
     </div>
   );
