@@ -6,7 +6,9 @@ import { useMenuInput } from '../utils/useMenuInput.js';
 import { findMatch, leaveQueue, fetchProfileById, exchangePicks, markMatchStarted } from '../utils/matchmaking.js';
 import { PALETTE } from '../utils/palette.js';
 import maps from '../data/maps.json';
-import { Capsule, DiagonalBackdrop, Label } from './cvs2.jsx';
+import { Capsule, DiagonalBackdrop, KeyHints, Label, Shape } from './cvs2.jsx';
+import { diamond } from '../utils/hudGeometry.js';
+import { toPoints } from '../utils/cvs2Layout.js';
 
 const POLL_MS = 2000;
 // Depois que os dois ja sabem a escolha um do outro, o canal fica no ar mais
@@ -125,15 +127,26 @@ export default function MatchmakingScreen() {
     <div className="cvs2-screen">
       <svg className="cvs2-svg" viewBox="0 0 1280 720">
         <DiagonalBackdrop lattice={false} topWord="" bottomWord="" />
-        <Label x={48} y={130} size={90}>PARTIDA ONLINE</Label>
+        <Label x={48} y={130} size={90} display>PARTIDA ONLINE</Label>
 
         {shownStatus === 'searching' && (
           <g>
-            <Label x={640} y={330} size={56} anchor="middle" fill={PALETTE.fieldYellow} stroke={10}>
-              {`PROCURANDO ADVERSARIO${dots}`}
+            {/* Radar: tres aneis que crescem e somem, e o losango da conta no meio. */}
+            <g pointerEvents="none">
+              {[0, 1, 2].map((ring) => (
+                <polygon
+                  key={ring} className="radar-ring" style={{ animationDelay: `${ring * 0.9}s` }}
+                  points={toPoints(diamond([640, 300], 90))} fill="none" stroke={PALETTE.fieldYellow} strokeWidth={5}
+                />
+              ))}
+              <polygon points={toPoints(diamond([640, 300], 58))} fill={PALETTE.fieldYellow} stroke={PALETTE.ink} strokeWidth={6} />
+              <Label x={640} y={322} size={64} anchor="middle" fill={PALETTE.ink} stroke={0}>?</Label>
+            </g>
+            <Label x={640} y={470} size={46} anchor="middle" fill={PALETTE.fieldYellow} stroke={9} display>
+              {`PROCURANDO${dots}`}
             </Label>
-            <Label x={640} y={392} size={32} anchor="middle" stroke={6}>
-              {`${seconds}s NA FILA`}
+            <Label x={640} y={520} size={30} anchor="middle" stroke={6}>
+              {`${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')} NA FILA`}
             </Label>
           </g>
         )}
@@ -156,9 +169,11 @@ export default function MatchmakingScreen() {
         )}
 
         {shownStatus === 'error' && (
-          <Label x={640} y={350} size={34} anchor="middle" fill={PALETTE.lifeTrail} stroke={8}>
-            {shownError}
-          </Label>
+          <g>
+            <Shape points={diamond([640, 290], 66)} fill={PALETTE.lifeTrail} />
+            <Label x={640} y={318} size={80} anchor="middle" stroke={0}>!</Label>
+            <Capsule x={290} y={390} width={700} size={32}>{shownError}</Capsule>
+          </g>
         )}
 
         {profile && (
@@ -167,7 +182,7 @@ export default function MatchmakingScreen() {
           </Capsule>
         )}
 
-        <Label x={1240} y={700} size={22} weight={600} anchor="end" stroke={5}>K OU ESC CANCELA</Label>
+        <KeyHints x={1240} y={702} align="end" items={[{ keys: 'K/ESC', text: 'CANCELA' }]} />
       </svg>
     </div>
   );
