@@ -3807,11 +3807,11 @@
     "offsetY": 39
   },
   "sheets": [
-    "killua_atlas_0.png",
-    "killua_atlas_1.png",
-    "killua_atlas_2.png"
+    "killua_atlas_0.webp",
+    "killua_atlas_1.webp",
+    "killua_atlas_2.webp"
   ],
-  "assetVersion": "f7a58dad8c",
+  "assetVersion": "da3672a6",
   "balance": {
     "damage": 1.692
   },

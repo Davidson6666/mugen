@@ -4857,11 +4857,11 @@
     "offsetY": 49
   },
   "sheets": [
-    "itachi_atlas_0.png",
-    "itachi_atlas_1.png",
-    "itachi_atlas_2.png"
+    "itachi_atlas_0.webp",
+    "itachi_atlas_1.webp",
+    "itachi_atlas_2.webp"
   ],
-  "assetVersion": "e81aff32b8",
+  "assetVersion": "845d2e80",
   "balance": {
     "damage": 0.945
   },

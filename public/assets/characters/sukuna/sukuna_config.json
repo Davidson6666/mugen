@@ -9147,12 +9147,12 @@
     "offsetY": 30
   },
   "sheets": [
-    "sukuna_atlas_0.png",
-    "sukuna_atlas_1.png",
-    "sukuna_atlas_2.png",
-    "sukuna_atlas_3.png"
+    "sukuna_atlas_0.webp",
+    "sukuna_atlas_1.webp",
+    "sukuna_atlas_2.webp",
+    "sukuna_atlas_3.webp"
   ],
-  "assetVersion": "9b27eae161",
+  "assetVersion": "650d62b9",
   "balance": {
     "damage": 0.847
   },

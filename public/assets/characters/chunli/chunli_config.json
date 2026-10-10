@@ -4297,10 +4297,10 @@
     "offsetY": 227
   },
   "sheets": [
-    "chunli_atlas_0.png",
-    "chunli_atlas_1.png"
+    "chunli_atlas_0.webp",
+    "chunli_atlas_1.webp"
   ],
-  "assetVersion": "d411703b36",
+  "assetVersion": "2eebd0fc",
   "balance": {
     "damage": 1.329
   },

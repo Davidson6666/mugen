@@ -2307,11 +2307,11 @@
     "offsetY": 33
   },
   "sheets": [
-    "zenitsu_atlas_0.png",
-    "zenitsu_atlas_1.png",
-    "zenitsu_atlas_2.png"
+    "zenitsu_atlas_0.webp",
+    "zenitsu_atlas_1.webp",
+    "zenitsu_atlas_2.webp"
   ],
-  "assetVersion": "7fad4fe8b6",
+  "assetVersion": "a68d4ce3",
   "balance": {
     "damage": 1.517
   },

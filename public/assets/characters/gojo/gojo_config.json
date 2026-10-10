@@ -3515,10 +3515,10 @@
     "offsetY": 32
   },
   "sheets": [
-    "gojo_atlas_0.png",
-    "gojo_atlas_1.png"
+    "gojo_atlas_0.webp",
+    "gojo_atlas_1.webp"
   ],
-  "assetVersion": "f52b3edd71",
+  "assetVersion": "7ab46cca",
   "balance": {
     "damage": 0.349
   },

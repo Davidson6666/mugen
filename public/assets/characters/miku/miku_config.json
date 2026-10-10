@@ -8961,10 +8961,10 @@
     "offsetY": 108
   },
   "sheets": [
-    "miku_atlas_0.png",
-    "miku_atlas_1.png"
+    "miku_atlas_0.webp",
+    "miku_atlas_1.webp"
   ],
-  "assetVersion": "63e58aaf0d",
+  "assetVersion": "4b9fd60c",
   "balance": {
     "damage": 0.631
   },

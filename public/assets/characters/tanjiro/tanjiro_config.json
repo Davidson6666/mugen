@@ -2326,10 +2326,10 @@
     "offsetY": 15
   },
   "sheets": [
-    "tanjiro_atlas_0.png",
-    "tanjiro_atlas_1.png"
+    "tanjiro_atlas_0.webp",
+    "tanjiro_atlas_1.webp"
   ],
-  "assetVersion": "95504347df",
+  "assetVersion": "7c79581a",
   "atlas": [
     [
       1,

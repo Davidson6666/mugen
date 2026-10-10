@@ -7923,13 +7923,13 @@
     "offsetY": 120
   },
   "sheets": [
-    "dante_atlas_0.png",
-    "dante_atlas_1.png",
-    "dante_atlas_2.png",
-    "dante_atlas_3.png",
-    "dante_atlas_4.png"
+    "dante_atlas_0.webp",
+    "dante_atlas_1.webp",
+    "dante_atlas_2.webp",
+    "dante_atlas_3.webp",
+    "dante_atlas_4.webp"
   ],
-  "assetVersion": "724851f684",
+  "assetVersion": "99bc9a85",
   "balance": {
     "damage": 0.732
   },

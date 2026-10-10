@@ -3840,11 +3840,11 @@
     "offsetY": 61
   },
   "sheets": [
-    "escanor_atlas_0.png",
-    "escanor_atlas_1.png",
-    "escanor_atlas_2.png"
+    "escanor_atlas_0.webp",
+    "escanor_atlas_1.webp",
+    "escanor_atlas_2.webp"
   ],
-  "assetVersion": "512877ac35",
+  "assetVersion": "f11e7a35",
   "balance": {
     "damage": 2.284
   },

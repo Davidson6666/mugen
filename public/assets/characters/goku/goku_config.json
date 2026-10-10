@@ -2430,10 +2430,10 @@
     "offsetY": 25
   },
   "sheets": [
-    "goku_atlas_0.png",
-    "goku_atlas_1.png"
+    "goku_atlas_0.webp",
+    "goku_atlas_1.webp"
   ],
-  "assetVersion": "f9eb592249",
+  "assetVersion": "9aa667f4",
   "balance": {
     "damage": 0.959
   },

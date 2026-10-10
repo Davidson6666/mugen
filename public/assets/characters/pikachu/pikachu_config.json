@@ -2559,9 +2559,9 @@
     "offsetY": 39
   },
   "sheets": [
-    "pikachu_atlas_0.png"
+    "pikachu_atlas_0.webp"
   ],
-  "assetVersion": "0b16843015",
+  "assetVersion": "3880d1e3",
   "balance": {
     "damage": 0.927
   },
