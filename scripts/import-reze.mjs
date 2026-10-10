@@ -811,5 +811,5 @@ importMugenCharacter({
       },
     },
   },
-  portrait: { sprite: [192, 2], crop: [2, 0, 30, 28], width: 54, height: 50, background: '#1A1418' },
+  portrait: { sprite: [9000, 1], crop: [0, 0, 120, 132], width: 50, height: 55, background: '#2A1A18' },
 });

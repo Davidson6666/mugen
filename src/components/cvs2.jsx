@@ -249,13 +249,13 @@ export function PortraitCell({ at, image, portraitRect, id, cursors = [], blocke
       </defs>
       <Shape points={shape} fill={PALETTE.portraitBg} />
       {image && portraitRect && <g clipPath={`url(#${clipId})`}>
-        <svg x={cx - 25} y={cy - 27} width={50} height={55} viewBox={portraitRect.join(' ')} preserveAspectRatio="xMidYMid slice">
+        <svg x={cx - 38} y={cy - 42} width={76} height={84} viewBox={portraitRect.join(' ')} preserveAspectRatio="xMidYMid slice">
           <image href={image} width={1536} height={1024} />
         </svg>
       </g>}
       {image && !portraitRect && (
         <image
-          href={image} x={cx - 25} y={cy - 27} width={50} height={55}
+          href={image} x={cx - 38} y={cy - 42} width={76} height={84}
           clipPath={`url(#${clipId})`} style={{ imageRendering: 'pixelated' }}
         />
       )}
