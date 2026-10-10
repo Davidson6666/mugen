@@ -77,7 +77,15 @@ export class Camera {
     this.zoom = this.options.zoomMax;
     this.x = view.width / 2;
     this.y = map.groundLevel;
+    // Foco temporario (o K.O.): aproxima no ponto e solta sozinho quando acaba.
+    this.spot = null;
     scene.position.set(view.width / 2, view.height / 2);
+  }
+
+  // Aproxima em { x, y } (mundo) ate "zoom" por "ticks" quadros do monitor.
+  // So desenho: nada da simulacao le a camera.
+  focus({ x, y, zoom, ticks }) {
+    this.spot = { x, y, zoom: Math.min(zoom, this.options.zoomMax * 1.4), ticks };
   }
 
   target(fighters) {
@@ -92,6 +100,7 @@ export class Camera {
   // Vai direto para onde a camera quer estar (comeco do round).
   snap(fighters) {
     const target = this.target(fighters);
+    this.spot = null;
     this.zoom = target.zoom;
     this.x = target.x;
     this.y = target.y;
@@ -100,12 +109,24 @@ export class Camera {
 
   // delta: o do monitor (1 = um quadro a 60 Hz).
   update(fighters, delta = 1) {
-    const target = this.target(fighters);
+    let target = this.target(fighters);
     const { zoomOutRate, zoomInRate, panRate } = this.options;
     const ease = (rate) => 1 - (1 - rate) ** delta;
-    this.zoom += (target.zoom - this.zoom) * ease(target.zoom < this.zoom ? zoomOutRate : zoomInRate);
-    this.x += (target.x - this.x) * ease(panRate);
-    this.y += (target.y - this.y) * ease(panRate);
+    let zoomRate = target.zoom < this.zoom ? zoomOutRate : zoomInRate;
+    let moveRate = panRate;
+    if (this.spot) {
+      this.spot.ticks -= delta;
+      if (this.spot.ticks <= 0) {
+        this.spot = null;
+      } else {
+        target = { zoom: this.spot.zoom, x: this.spot.x, y: this.spot.y };
+        zoomRate = 0.1;
+        moveRate = 0.1;
+      }
+    }
+    this.zoom += (target.zoom - this.zoom) * ease(zoomRate);
+    this.x += (target.x - this.x) * ease(moveRate);
+    this.y += (target.y - this.y) * ease(moveRate);
     // O suavizado nunca mostra o que o alvo nao mostraria: se o zoom atual e
     // maior que o do alvo a janela e menor, e o pivo do alvo ainda e valido; no
     // outro sentido a janela cresce e o pivo precisa ser reenquadrado.

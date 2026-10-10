@@ -65,6 +65,10 @@ function groundShadow() {
 
 // Quanto mais alto no pulo, menor e mais fraca a sombra.
 const SHADOW_FADE_HEIGHT = 160;
+// K.O.: quantos ticks a tela fica em camera lenta, e a que velocidade.
+const SLOW_TICKS = 42;
+const SLOW_TICKS_FINAL = 70;
+const SLOW_FACTOR = 0.3;
 
 // Quanto tempo o boneco de treino fica sem apanhar antes da vida voltar ao
 // topo (90 ticks = 1,5 segundo).
@@ -238,6 +242,9 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       const match = new GameStateManager({ introFrames: ROUND_INTRO_FRAMES, training });
       let matchEndTimer = 0;
       let walkoverSent = false;
+      // Camera lenta no K.O.: so afrouxa o relogio da tela (o acumulador), nunca
+      // a conta dos ticks, entao a simulacao e a sincronia online nao mudam.
+      let slowTicks = 0;
 
       // Numeros que as conquistas precisam saber no fim da partida. O maior
       // combo precisa ser guardado porque o contador do lutador zera sozinho,
@@ -272,6 +279,14 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
 
       const shadows = [groundShadow(), groundShadow()];
       for (const shadow of shadows) world.addChild(shadow);
+      // Reflexo no chao: o proprio sprite espelhado abaixo dos pes, fraco e
+      // azulado, sumindo quando o lutador sobe.
+      const reflections = fighters.map(() => {
+        const reflection = new Sprite();
+        reflection.tint = 0x8fa6d0;
+        world.addChild(reflection);
+        return reflection;
+      });
       const effectsBehind = new Container();
       world.addChild(effectsBehind);
       for (const fighter of fighters) world.addChild(fighter.sprite);
@@ -337,6 +352,14 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
           // Virada: ganhou o round depois de ter estado a menos de 10% de vida.
           if (event.winner !== null && roundLowHealth[event.winner] < 0.1) comeback = true;
           hud.announce(roundEndAnnounce(event.reason, event.winner, roundLowHealth), 140);
+          if (event.reason === 'ko' || event.reason === 'doubleKo') {
+            slowTicks = event.reason === 'ko' && match.matchWinner !== null ? SLOW_TICKS_FINAL : SLOW_TICKS;
+            hud.impact(1);
+            if (event.winner !== null) {
+              const loser = fighters[1 - event.winner];
+              camera.focus({ x: loser.x, y: map.groundLevel - 70, zoom: 2.1, ticks: 150 });
+            }
+          }
           if (event.winner !== null) {
             fighters[event.winner].playRoundEndPose(true);
             fighters[1 - event.winner].playRoundEndPose(false);
@@ -526,6 +549,15 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
         camera.update(fighters, frameDelta);
         fighters.forEach((fighter, index) => {
           fighter.syncSprite();
+          const body = fighter.sprite;
+          const mirror = reflections[index];
+          const height = Math.min(1, (map.groundLevel - fighter.y) / SHADOW_FADE_HEIGHT);
+          mirror.texture = body.texture;
+          mirror.anchor.copyFrom(body.anchor);
+          mirror.position.set(body.x, 2 * map.groundLevel - body.y);
+          mirror.scale.set(body.scale.x, -Math.abs(body.scale.y));
+          mirror.visible = body.visible;
+          mirror.alpha = 0.24 * (1 - height * 0.75) * body.alpha;
           const lift = Math.min(1, (map.groundLevel - fighter.y) / SHADOW_FADE_HEIGHT);
           shadows[index].position.set(fighter.x, map.groundLevel);
           shadows[index].scale.set(1 - lift * 0.5);
@@ -550,7 +582,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       instance.ticker.add((ticker) => {
         if (pausedRef.current) return;
 
-        accumulator += ticker.deltaMS;
+        accumulator += ticker.deltaMS * (slowTicks > 0 ? SLOW_FACTOR : 1);
         let steps = Math.floor(accumulator / MS_PER_TICK);
         accumulator -= steps * MS_PER_TICK;
         if (steps > MAX_CATCHUP_TICKS) steps = MAX_CATCHUP_TICKS;
@@ -569,6 +601,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
             break;
           }
           tick += 1;
+          if (slowTicks > 0) slowTicks -= 1;
           stepLogic();
         }
 

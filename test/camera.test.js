@@ -96,3 +96,23 @@ test('camera: o snap vai direto ao alvo e a cena fica no centro da tela', () => 
   // O tremor de impacto desloca a partir daqui: a posicao nao pode se mexer.
   assert.deepEqual([scene.position.x, scene.position.y], [view.width / 2, view.height / 2]);
 });
+
+test('camera: o foco do K.O. aproxima no ponto, solta sozinho e o snap cancela', () => {
+  const camera = new Camera({ scene: new Container(), map, view });
+  const fighters = [fighter(540), fighter(760)];
+  camera.snap(fighters);
+  const normal = camera.zoom;
+  camera.focus({ x: 700, y: map.groundLevel - 70, zoom: 2.1, ticks: 40 });
+  for (let tick = 0; tick < 30; tick += 1) camera.update(fighters, 1);
+  assert.ok(camera.zoom > normal + 0.15, `zoom ${camera.zoom} contra ${normal}`);
+  // Mesmo no foco, a janela nunca sai da imagem do mapa.
+  const box = visible({ zoom: camera.zoom, x: camera.x, y: camera.y });
+  assert.ok(box.left >= -1e-6 && box.right <= map.width + 1e-6 && box.top >= -1e-6 && box.bottom <= map.height + 1e-6);
+  for (let tick = 0; tick < 120; tick += 1) camera.update(fighters, 1);
+  assert.equal(camera.spot, null);
+  assert.ok(Math.abs(camera.zoom - normal) < 0.05, `voltou para ${camera.zoom}`);
+
+  camera.focus({ x: 700, y: map.groundLevel, zoom: 2, ticks: 99 });
+  camera.snap(fighters);
+  assert.equal(camera.spot, null);
+});

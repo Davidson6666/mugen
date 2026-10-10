@@ -118,7 +118,26 @@ export class Hud {
     this.timer.position.set(width / 2, TIMER_Y + 8);
     this.view.addChild(this.timer);
 
+    // Vinheta vermelha do K.O.: pisca forte e some devagar.
+    this.impactVignette = new Sprite(paintedTexture(256, 144, (context, w, h) => {
+      const gradient = context.createRadialGradient(w / 2, h / 2, h * 0.3, w / 2, h / 2, w * 0.62);
+      gradient.addColorStop(0, 'rgba(232, 32, 28, 0)');
+      gradient.addColorStop(1, 'rgba(232, 32, 28, 0.85)');
+      context.fillStyle = gradient;
+      context.fillRect(0, 0, w, h);
+    }));
+    this.impactVignette.width = width;
+    this.impactVignette.height = 720;
+    this.impactVignette.alpha = 0;
+    this.impactLevel = 0;
+    this.view.addChild(this.impactVignette);
+
     this.buildAnnouncement();
+  }
+
+  // Pisca a vinheta de impacto (1 = cheia).
+  impact(level = 1) {
+    this.impactLevel = level;
   }
 
   buildSide(index, name, tag, portrait) {
@@ -335,6 +354,10 @@ export class Hud {
       : String(Math.ceil(timeRemaining)).padStart(2, '0');
     this.roundLabel.text = suddenDeath ? 'FINAL ROUND' : `ROUND ${roundNumber}`;
 
+    if (this.impactLevel > 0) {
+      this.impactLevel = Math.max(0, this.impactLevel - 0.012 * delta);
+      this.impactVignette.alpha = this.impactLevel;
+    }
     if (this.announcementTimer > 0) this.animateAnnouncement(delta);
   }
 

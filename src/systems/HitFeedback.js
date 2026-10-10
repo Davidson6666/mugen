@@ -1,4 +1,4 @@
-import { Sprite } from 'pixi.js';
+import { Graphics, Sprite } from 'pixi.js';
 import { AnimationStateMachine } from './AnimationStateMachine.js';
 
 // O que faz o golpe "pesar": a luta congela alguns ticks no impacto (hitstop),
@@ -15,6 +15,16 @@ const SHAKE = {
   ko: { ticks: 24, amplitude: 9 },
 };
 const SPARK_BY_KIND = { block: 'block', hit: 'hit', heavy: 'heavy', ko: 'heavy' };
+// Estilhacos que voam do ponto do impacto: quantos e de que cor, por tipo.
+const DEBRIS = {
+  block: { count: 3, color: 0x7fb4ff },
+  hit: { count: 5, color: 0xffe14a },
+  heavy: { count: 12, color: 0xfff1a8 },
+  ko: { count: 22, color: 0xffffff },
+};
+const DEBRIS_GRAVITY = 0.32;
+const DEBRIS_LIFE = 26;
+
 // A partir desse dano o golpe conta como forte (os especiais do template).
 const HEAVY_DAMAGE = 30;
 
@@ -36,6 +46,7 @@ export class HitFeedback {
     this.active = [];
     this.hitstop = 0;
     this.shake = null;
+    this.debris = [];
     // O tremor desloca a cena a partir de onde a camera a deixou.
     this.origin = { x: scene.position.x, y: scene.position.y };
   }
@@ -48,7 +59,24 @@ export class HitFeedback {
     if (SHAKE[kind] && (!this.shake || SHAKE[kind].amplitude >= this.shake.amplitude)) {
       this.shake = { ...SHAKE[kind], remaining: SHAKE[kind].ticks };
     }
-    if (result.point) this.spawnSpark(SPARK_BY_KIND[kind], result.point);
+    if (result.point) {
+      this.spawnSpark(SPARK_BY_KIND[kind], result.point);
+      this.spawnDebris(kind, result.point);
+    }
+  }
+
+  // Quadradinhos de pixel que explodem do golpe e caem: desenho puro (Math.random
+  // aqui nao entra na simulacao, igual ao espelhamento da faisca).
+  spawnDebris(kind, { x, y }) {
+    const { count, color } = DEBRIS[kind];
+    for (let i = 0; i < count; i += 1) {
+      const piece = new Graphics().rect(-2, -2, 4, 4).fill({ color });
+      piece.position.set(Math.round(x), Math.round(y));
+      const angle = Math.random() * Math.PI * 2;
+      const speed = (kind === 'ko' ? 4 : 2) + Math.random() * (kind === 'heavy' || kind === 'ko' ? 6 : 3);
+      this.layer.addChild(piece);
+      this.debris.push({ piece, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed - 2, life: DEBRIS_LIFE * (0.6 + Math.random() * 0.6), age: 0, spin: (Math.random() - 0.5) * 0.4 });
+    }
   }
 
   spawnSpark(id, { x, y }) {
@@ -81,6 +109,20 @@ export class HitFeedback {
       return true;
     });
 
+    this.debris = this.debris.filter((bit) => {
+      bit.age += delta;
+      if (bit.age >= bit.life) {
+        bit.piece.destroy();
+        return false;
+      }
+      bit.vy += DEBRIS_GRAVITY * delta;
+      bit.piece.x += bit.vx * delta;
+      bit.piece.y += bit.vy * delta;
+      bit.piece.rotation += bit.spin * delta;
+      bit.piece.alpha = 1 - bit.age / bit.life;
+      return true;
+    });
+
     if (this.shake) {
       this.shake.remaining -= delta;
       const strength = Math.max(0, this.shake.remaining / this.shake.ticks) * this.shake.amplitude;
@@ -104,6 +146,8 @@ export class HitFeedback {
   clear() {
     for (const spark of this.active) spark.sprite.destroy();
     this.active = [];
+    for (const bit of this.debris) bit.piece.destroy();
+    this.debris = [];
     this.hitstop = 0;
     this.shake = null;
     this.scene.position.set(this.origin.x, this.origin.y);
