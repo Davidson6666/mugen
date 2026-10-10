@@ -74,7 +74,7 @@ function Grain() {
 function Stage() {
   const { fullscreen, scale } = useStageScale();
   return (
-    <div className={`app${fullscreen ? ' app--fullscreen' : ''}`} style={{ '--stage-scale': scale }}>
+    <div className={`app app--fullscreen${fullscreen ? ' app--real-fullscreen' : ''}`} style={{ '--stage-scale': scale }}>
       <div className="app__stage">
         <Router />
         <Grain />

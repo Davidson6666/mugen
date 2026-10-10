@@ -22,19 +22,24 @@
    sem distorcer. A escala vem de useStageScale (o app instalado ja abre
    direto em tela cheia, via manifest - nao tem mais botao pra isso). */
 .app--fullscreen {
+  position: relative;
   width: 100vw;
   height: 100vh;
   margin: 0;
   padding: 0;
-  display: grid;
-  place-items: center;
   overflow: hidden;
   background: var(--color-ink);
 }
 
+/* O palco (1280x720) fica no centro e escala para caber na janela, maior ou
+   menor que ele; so a posicao absoluta centraliza mesmo quando a janela e menor
+   que o palco (uma grade deixaria ele vazar para a direita). */
 .app--fullscreen .app__stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
   flex: none;
-  transform: scale(var(--stage-scale, 1));
+  transform: translate(-50%, -50%) scale(var(--stage-scale, 1));
   outline: none;
 }
 

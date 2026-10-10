@@ -8,13 +8,16 @@ const STAGE_HEIGHT = 720;
 
 export function useStageScale() {
   const [fullscreen, setFullscreen] = useState(() => Boolean(document.fullscreenElement));
-  const [scale, setScale] = useState(1);
+  const [scale, setScale] = useState(() => Math.max(0.2, Math.min(window.innerWidth / STAGE_WIDTH, window.innerHeight / STAGE_HEIGHT)));
 
   useEffect(() => {
     const update = () => {
       const active = Boolean(document.fullscreenElement);
       setFullscreen(active);
-      setScale(active ? Math.min(window.innerWidth / STAGE_WIDTH, window.innerHeight / STAGE_HEIGHT) : 1);
+      // O palco sempre se ajusta a janela (em janela pequena nao precisa rolar
+      // a pagina, em monitor grande ele cresce): so a tela cheia de verdade
+      // liga o Esc exclusivo e a trava de teclado.
+      setScale(Math.max(0.2, Math.min(window.innerWidth / STAGE_WIDTH, window.innerHeight / STAGE_HEIGHT)));
     };
     document.addEventListener('fullscreenchange', update);
     window.addEventListener('resize', update);
