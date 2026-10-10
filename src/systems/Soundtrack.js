@@ -4,7 +4,7 @@ export const MUSIC_KEY = 'mugen.musicVolume';
 export const DEFAULT_MUSIC_VOLUME = 0.2;
 export const TRACKS = [
   { id: 'tekken3', title: 'Opening — Tekken 3', src: '/assets/music/tekken3-opening.mp3', scene: 'menu' },
-  { id: 'dmc3', title: 'Devils Never Cry — Devil May Cry 3', src: '/assets/music/devils-never-cry.mp3', scene: 'battle' },
+  { id: 'dmc3', title: 'Devils Never Cry — Devil May Cry 3', src: '/assets/music/devils-never-cry.mp3', scene: 'battle', startAt: 75 },
   { id: 'bayonetta', title: 'Fly Me To The Moon (Climax) — Bayonetta', src: '/assets/music/bayonetta-fly-me-to-the-moon.mp3', scene: 'battle' },
 ];
 const clamp = (n) => Math.min(1, Math.max(0, n));
@@ -38,9 +38,17 @@ export class SoundtrackPlayer {
     this.hidden = false;
     this.ducked = false;
     this.starting = false;
+    this.waitingForStart = false;
     this.failed = new Set();
     audio.preload = 'metadata';
     audio.volume = 0;
+    audio.onloadedmetadata = () => {
+      if (!this.waitingForStart || !this.current) return;
+      const start = this.current.startAt ?? 0;
+      audio.currentTime = start < audio.duration ? start : 0;
+      this.waitingForStart = false;
+      this.tick();
+    };
     audio.onended = () => this.next();
     audio.onerror = () => { if (this.current) this.failed.add(this.current.id); this.next(); };
   }
@@ -75,10 +83,11 @@ export class SoundtrackPlayer {
       this.current = this.pending;
       this.pending = null;
       this.audio.src = this.current.src;
+      this.waitingForStart = (this.current.startAt ?? 0) > 0;
       this.audio.load();
     }
     const muted = this.master() * this.music() === 0;
-    const stopped = !this.unlocked || this.paused || this.hidden || muted || !this.current;
+    const stopped = !this.unlocked || this.paused || this.hidden || muted || !this.current || this.waitingForStart;
     if (stopped) { this.audio.pause(); this.audio.volume = 0; return; }
     if (this.audio.paused && !this.starting) {
       this.starting = true;
@@ -94,6 +103,7 @@ export class SoundtrackPlayer {
   }
   dispose() {
     this.audio.pause();this.audio.onended = null;this.audio.onerror = null;
+    this.audio.onloadedmetadata = null;
     this.audio.removeAttribute('src');this.audio.load();
   }
 }

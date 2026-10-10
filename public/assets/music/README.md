@@ -3,7 +3,7 @@
 MP3s completos fornecidos pelo usuário, copiados sem cortes, recompressão ou alteração de velocidade.
 
 - `tekken3-opening.mp3`: Opening — Tekken 3, nos menus.
-- `devils-never-cry.mp3`: Devils Never Cry — Devil May Cry 3, nas lutas.
+- `devils-never-cry.mp3`: Devils Never Cry — Devil May Cry 3, nas lutas. A reprodução começa em 1:15, pulando a introdução; o arquivo original permanece completo.
 - `bayonetta-fly-me-to-the-moon.mp3`: Fly Me To The Moon (Climax) — Bayonetta, nas lutas. Fonte: a segunda cópia enviada, com sufixo `- Someone`; a primeira estava vazia.
 
 As duas músicas de luta alternam ao terminar e entre partidas. Uma única faixa toca por vez, com redução suave antes da troca. Não reinicia entre rounds. Pausa do jogo, aba oculta e volume zero suspendem a reprodução sem perder a posição.

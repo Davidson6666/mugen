@@ -6,13 +6,19 @@ class FakeAudio {
   constructor(){this.paused=true;this.volume=0;this.src='';this.plays=0;this.currentTime=0;}
   play(){this.paused=false;this.plays++;return Promise.resolve();}
   pause(){this.paused=true;}
-  load(){this.currentTime=0;}
+  load(){this.currentTime=0;this.duration=300;this.onloadedmetadata?.();}
   removeAttribute(){this.src='';}
 }
 const settle=p=>{for(let i=0;i<60;i++)p.tick();};
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 function setup(){const audio=new FakeAudio();let master=.8,music=DEFAULT_MUSIC_VOLUME;const p=new SoundtrackPlayer({audio,master:()=>master,music:()=>music});return {p,audio,master:v=>master=v,music:v=>music=v};}
 test('trilha: arquivos reais disponíveis para todas as faixas',()=>{for(const track of TRACKS)assert.ok(statSync(`public${track.src}`).size>10000);});
+test('trilha: DMC pula introdução após carregar e mantém posição ao pausar',async()=>{
+ const {p,audio}=setup();audio.load=()=>{audio.currentTime=0;audio.duration=300;};
+ p.setScene('battle');p.unlock();assert.equal(audio.plays,0);
+ audio.onloadedmetadata();await flush();assert.equal(audio.currentTime,75);assert.equal(audio.paused,false);
+ audio.currentTime=90;p.setPaused(true);p.setPaused(false);await flush();assert.equal(audio.currentTime,90);
+});
 test('trilha: espera gesto, volume discreto, pausa e retoma a mesma posição',async()=>{
  const {p,audio}=setup();p.setScene('menu');settle(p);assert.equal(audio.plays,0);
  p.unlock();await flush();settle(p);assert.ok(audio.volume<=.161);assert.ok(audio.volume>.15);
