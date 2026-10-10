@@ -10,6 +10,7 @@ import { useAchievements } from '../context/AchievementsContext.js';
 import FighterSprite from './FighterSprite.jsx';
 import { Capsule, DiagonalBackdrop, KeyHints, Label, Pedestal, PortraitCell, Spotlight } from './cvs2.jsx';
 import { loadAccent } from '../utils/accentColor.js';
+import { useAccents } from '../utils/useAccents.js';
 import { loadConfig } from '../utils/characterConfig.js';
 import { cellAt } from '../utils/cvs2Layout.js';
 
@@ -86,6 +87,7 @@ function SideInfo({ player, character, confirmed, isCpu, label, hiddenStatus, ac
 }
 
 export default function CharacterSelect() {
+  const accents = useAccents(characters);
   const { go, back } = useMenu();
   const { setup, chooseCharacter, chooseMap, applyStoryStage } = useGame();
   const { profile } = useAuth();
@@ -231,6 +233,7 @@ export default function CharacterSelect() {
             portraitRect={character.portraitRect}
             cursors={activePlayers.filter((player) => cursors[player] === index)}
             blocked={Boolean(blockedReason(character))}
+            accent={accents[index]}
             onPointerEnter={() => {
               if (!confirmed[0]) setCursors((current) => [index, current[1]]);
             }}
@@ -238,7 +241,7 @@ export default function CharacterSelect() {
           />
         ))}
 
-        <Label x={410} y={58} size={40} weight={800}>PLAYER SELECT</Label>
+        <Label x={410} y={58} size={40} weight={800} display>PLAYER SELECT</Label>
         <Label x={412} y={86} size={22} weight={700} stroke={4} fill={PALETTE.fieldYellow}>{characters.length} LUTADORES</Label>
 
         <SideInfo

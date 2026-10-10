@@ -56,6 +56,14 @@ export default function App() {
   );
 }
 
+// Grao de filme por cima dos menus (nao da luta: la quebraria o pixel art). E uma
+// textura fixa, sem JS, so para tirar o aspecto de cor chapada.
+function Grain() {
+  const { screen } = useMenu();
+  if (screen === 'battle') return null;
+  return <div className="grain" aria-hidden="true" />;
+}
+
 // Separado do App porque o hook da escala precisa rodar dentro dos providers.
 function Stage() {
   const { fullscreen, scale } = useStageScale();
@@ -63,6 +71,7 @@ function Stage() {
     <div className={`app${fullscreen ? ' app--fullscreen' : ''}`} style={{ '--stage-scale': scale }}>
       <div className="app__stage">
         <Router />
+        <Grain />
         <ScreenTransition />
       </div>
       <AchievementToast />

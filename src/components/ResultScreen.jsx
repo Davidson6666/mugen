@@ -151,7 +151,7 @@ export default function ResultScreen() {
           <Label x={48} y={96} size={52} fill={winnerIndex === 0 ? PALETTE.cursorP1 : PALETTE.cursorP2}>
             {winnerLabel} VENCE
           </Label>
-          <Label x={40} y={224} size={140} stroke={16}>{winner.name.toUpperCase()}</Label>
+          <Label x={40} y={224} size={140} stroke={16} display>{winner.name.toUpperCase()}</Label>
         </g>
         <g className="vs-slam" style={{ animationDelay: '350ms' }}>
           <Label x={48} y={300} size={56} fill={PALETTE.fieldYellow} stroke={10}>WINS!</Label>

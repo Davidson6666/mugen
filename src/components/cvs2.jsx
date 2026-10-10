@@ -1,4 +1,7 @@
 import { PALETTE } from '../utils/palette.js';
+import { themeFor } from '../utils/theme.js';
+import { useMenu } from '../context/MenuContext.js';
+import { useGame } from '../context/GameContext.js';
 import { OUTLINE_LAYERS, diamond } from '../utils/hudGeometry.js';
 import { BAND, CELL_RADIUS, cellAt, toPoints } from '../utils/cvs2Layout.js';
 import '../styles/cvs2.css';
@@ -21,8 +24,23 @@ export function Shape({ points, fill, outline = true }) {
 
 // Texto em italico pesado com contorno preto por baixo do preenchimento.
 export function Label({
-  x, y, size, children, anchor = 'start', weight = 900, fill = PALETTE.textPrimary, stroke = 8,
+  x, y, size, children, anchor = 'start', weight = 900, fill = PALETTE.textPrimary, stroke = 8, display = false,
 }) {
+  // Fonte de destaque (titulos e nomes): larga e pesada, contrasta com o
+  // condensado do resto. O tamanho pedido vale como altura aproximada da
+  // condensada, entao encolhe para a mesma largura caber; inclinada por
+  // transform, ja que a fonte nao tem italico.
+  if (display) {
+    return (
+      <text
+        transform={`translate(${x} ${y}) skewX(-9)`} fontSize={Math.round(size * 0.68)} textAnchor={anchor}
+        fontFamily="'Dela Gothic One'" fontWeight={400}
+        fill={fill} stroke={PALETTE.ink} strokeWidth={stroke} strokeLinejoin="round" paintOrder="stroke"
+      >
+        {children}
+      </text>
+    );
+  }
   return (
     <text
       x={x} y={y} fontSize={size} textAnchor={anchor}
@@ -144,20 +162,46 @@ const SPEED_LINES = [
   { from: [1280, 470], length: 420, width: 4 }, { from: [1280, 610], length: 200, width: 6 },
 ];
 
-// Fundo das telas de menu: campos diagonais, letreiro gigante apagado, linhas
-// de velocidade e a faixa preta, com a grade vazada quando a tela tem casas.
-export function DiagonalBackdrop({ topWord = 'RUPTURA', bottomWord = 'ARENA', lattice = true }) {
+// Pontos de luz que sobem devagar pelo fundo: posicao e ritmo fixos (nada de
+// sorteio na hora de desenhar, para o quadro nao mudar a cada render).
+const SPARKS = Array.from({ length: 18 }, (_, index) => ({
+  x: (index * 197 + 60) % 1280,
+  size: 5 + ((index * 7) % 6),
+  dur: 11 + ((index * 5) % 9),
+  delay: -((index * 3.7) % 14),
+}));
+
+// Fundo das telas de menu: campos diagonais na cor do modo, letreiro gigante
+// apagado, linhas de velocidade, meio-tom, profundidade, faiscas subindo, um
+// brilho que varre a moldura e a faixa preta, com a grade vazada quando a tela
+// tem casas.
+export function DiagonalBackdrop({ topWord = 'RUPTURA', bottomWord = 'ARENA', lattice = true, theme: override }) {
+  const { screen } = useMenu();
+  const { setup } = useGame();
+  const theme = override ?? themeFor(screen, setup.mode);
   return (
     <g>
-      <rect width={1280} height={720} fill={PALETTE.fieldOrange} />
-      <polygon points="0,380 0,720 360,720" fill={PALETTE.fieldRed} />
-      <polygon points={toPoints([[1212, 0], [1280, 0], [1280, 720], [492, 720]])} fill={PALETTE.fieldBlue} />
-      <Label x={40} y={420} size={260} fill={PALETTE.fieldOrangeLight} stroke={0}>{topWord}</Label>
-      <Label x={1240} y={690} size={200} anchor="end" fill={PALETTE.fieldBlueLight} stroke={0}>{bottomWord}</Label>
+      <defs>
+        <pattern id="halftone" width={16} height={16} patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <circle cx={8} cy={8} r={2.6} fill="#fff" />
+        </pattern>
+        <linearGradient id="backdrop-depth" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#fff" stopOpacity={0.14} />
+          <stop offset="55%" stopColor="#000" stopOpacity={0} />
+          <stop offset="100%" stopColor="#000" stopOpacity={0.3} />
+        </linearGradient>
+      </defs>
+      <rect width={1280} height={720} fill={theme.a} />
+      <polygon points="0,380 0,720 360,720" fill={theme.aDark} />
+      <polygon points={toPoints([[1212, 0], [1280, 0], [1280, 720], [492, 720]])} fill={theme.b} />
+      <rect width={1280} height={720} fill="url(#halftone)" opacity={0.07} />
+      <rect width={1280} height={720} fill="url(#backdrop-depth)" />
+      <Label x={40} y={420} size={260} fill={theme.aLight} stroke={0} display>{topWord}</Label>
+      <Label x={1240} y={690} size={200} anchor="end" fill={theme.bLight} stroke={0} display>{bottomWord}</Label>
       {SPEED_LINES.map(({ from: [x, y], length, width }) => (
         <line
           key={`${x}-${y}`} x1={x} y1={y} x2={x - length * Math.SQRT1_2} y2={y + length * Math.SQRT1_2}
-          stroke={y === 0 ? PALETTE.fieldOrangeLight : PALETTE.fieldBlueLight} strokeWidth={width}
+          stroke={y === 0 ? theme.aLight : theme.bLight} strokeWidth={width}
         />
       ))}
       <polygon points={toPoints(BAND)} fill={PALETTE.ink} />
@@ -169,6 +213,15 @@ export function DiagonalBackdrop({ topWord = 'RUPTURA', bottomWord = 'ARENA', la
       </g>
       <polyline points="788,0 68,720" stroke={PALETTE.fieldYellow} strokeWidth={10} fill="none" />
       <polyline points="1212,0 492,720" stroke={PALETTE.fieldYellow} strokeWidth={10} fill="none" />
+      <polyline className="bg-shine" points="788,0 68,720" stroke="#fff" strokeWidth={10} fill="none" />
+      <polyline className="bg-shine bg-shine--late" points="1212,0 492,720" stroke="#fff" strokeWidth={10} fill="none" />
+      <g pointerEvents="none">
+        {SPARKS.map(({ x, size, dur, delay }) => (
+          <g key={x} className="bg-spark" style={{ '--dur': `${dur}s`, '--delay': `${delay}s` }}>
+            <polygon points={toPoints(diamond([x, 0], size))} fill="#fff" />
+          </g>
+        ))}
+      </g>
     </g>
   );
 }
@@ -181,13 +234,19 @@ const CURSOR_COLORS = [PALETTE.cursorP1, PALETTE.cursorP2];
 // blocked: personagem que nao da pra escolher agora (travado ou proibido no
 // modo). Continua aparecendo na grade, so que apagado e com cadeado - some
 // da lista seria pior, porque ninguem ficaria sabendo que ele existe.
-export function PortraitCell({ at, image, portraitRect, id, cursors = [], blocked = false, onPointerEnter, onClick }) {
+export function PortraitCell({ at, image, portraitRect, id, cursors = [], blocked = false, accent = null, onPointerEnter, onClick }) {
   const [cx, cy] = at;
   const clipId = `cell-${id}`;
   const shape = diamond(at, CELL_RADIUS);
   return (
     <g onPointerEnter={onPointerEnter} onClick={onClick} style={{ cursor: 'pointer' }}>
-      <defs><clipPath id={clipId}><polygon points={toPoints(shape)} /></clipPath></defs>
+      <defs>
+        <clipPath id={clipId}><polygon points={toPoints(shape)} /></clipPath>
+        <linearGradient id={`shade-${id}`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="45%" stopColor={PALETTE.ink} stopOpacity={0} />
+          <stop offset="100%" stopColor={PALETTE.ink} stopOpacity={0.55} />
+        </linearGradient>
+      </defs>
       <Shape points={shape} fill={PALETTE.portraitBg} />
       {image && portraitRect && <g clipPath={`url(#${clipId})`}>
         <svg x={cx - 25} y={cy - 27} width={50} height={55} viewBox={portraitRect.join(' ')} preserveAspectRatio="xMidYMid slice">
@@ -200,6 +259,13 @@ export function PortraitCell({ at, image, portraitRect, id, cursors = [], blocke
           clipPath={`url(#${clipId})`} style={{ imageRendering: 'pixelated' }}
         />
       )}
+      {/* Acabamento igual para todos, venham de foto, desenho ou pixel art: sombra
+          embaixo, um aro interno na cor do lutador e, fora do foco, um leve apagado. */}
+      <polygon points={toPoints(shape)} fill={`url(#shade-${id})`} pointerEvents="none" />
+      {accent && (
+        <polygon points={toPoints(diamond(at, CELL_RADIUS - 5))} fill="none" stroke={accent} strokeWidth={2.5} opacity={0.9} pointerEvents="none" />
+      )}
+      {cursors.length === 0 && !blocked && <polygon points={toPoints(shape)} fill={PALETTE.ink} opacity={0.16} pointerEvents="none" />}
       {blocked && (
         <g>
           <polygon points={toPoints(shape)} fill={PALETTE.ink} opacity={0.72} />

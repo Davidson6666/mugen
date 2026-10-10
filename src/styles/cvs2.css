@@ -557,3 +557,45 @@
 @media (prefers-reduced-motion: reduce) {
   .credits-roll__track { animation: none; }
 }
+
+/* ---- Fundo vivo: faiscas subindo e brilho varrendo as molduras amarelas ---- */
+.bg-spark {
+  opacity: 0;
+  animation: bg-spark var(--dur, 14s) cubic-bezier(0.3, 0.1, 0.4, 1) var(--delay, 0s) infinite;
+}
+@keyframes bg-spark {
+  0% { opacity: 0; transform: translateY(780px); }
+  12% { opacity: 0.55; }
+  80% { opacity: 0.35; }
+  100% { opacity: 0; transform: translateY(-60px) translateX(26px); }
+}
+
+.bg-shine {
+  stroke-dasharray: 130 1100;
+  opacity: 0.85;
+  animation: bg-shine 7s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+}
+.bg-shine--late { animation-delay: 3.5s; }
+@keyframes bg-shine {
+  from { stroke-dashoffset: 1180; }
+  to { stroke-dashoffset: -160; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-spark, .bg-shine { animation: none; opacity: 0; }
+}
+
+/* ---- Paineis com marcas de canto (em vez da caixa simples) ---- */
+.leaderboard-card::before,
+.leaderboard-card::after,
+.auth-card::before,
+.auth-card::after {
+  content: '';
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border: 0 solid var(--color-text-primary);
+  pointer-events: none;
+}
+.leaderboard-card::before, .auth-card::before { top: -12px; left: -12px; border-top-width: 4px; border-left-width: 4px; }
+.leaderboard-card::after, .auth-card::after { bottom: -12px; right: -12px; border-bottom-width: 4px; border-right-width: 4px; }

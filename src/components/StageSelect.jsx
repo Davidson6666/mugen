@@ -159,7 +159,7 @@ export default function StageSelect() {
       <svg className="cvs2-svg" viewBox="0 0 1280 720">
         <DiagonalBackdrop lattice={false} topWord="" bottomWord="" />
 
-        <Label x={48} y={100} size={62}>{twoPlayers ? 'VOTEM O CENARIO' : 'STAGE SELECT'}</Label>
+        <Label x={48} y={100} size={62} display>{twoPlayers ? 'VOTEM O CENARIO' : 'STAGE SELECT'}</Label>
         {!twoPlayers && (
           <Label x={48} y={132} size={26} weight={800} fill={PALETTE.fieldYellow} stroke={6}>
             {`PASSO ${stepIndex + 1} DE 3 · ${STEPS[stepIndex].title}`}

@@ -52,7 +52,7 @@ export default function LoginScreen() {
     <div className="cvs2-screen">
       <svg className="cvs2-svg" viewBox="0 0 1280 720">
         <DiagonalBackdrop lattice={false} topWord="" bottomWord="" />
-        <Label x={48} y={130} size={90}>ENTRE NA SUA CONTA</Label>
+        <Label x={48} y={130} size={90} display>ENTRE NA SUA CONTA</Label>
       </svg>
       <ShowcaseFighter x={900} y={560} />
 

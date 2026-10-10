@@ -35,7 +35,7 @@ const MS_PER_TICK = 1000 / 60;
 const MAX_CATCHUP_TICKS = 5;
 
 // Variantes da Barlow Condensed que o HUD usa.
-const HUD_FONTS = ['italic 900 40px "Barlow Condensed"', 'italic 800 28px "Barlow Condensed"', 'italic 600 22px "Barlow Condensed"'];
+const HUD_FONTS = ['400 40px "Dela Gothic One"', 'italic 900 40px "Barlow Condensed"', 'italic 800 28px "Barlow Condensed"', 'italic 600 22px "Barlow Condensed"'];
 
 // Abertura do round: "ROUND N" com os lutadores parados; depois "FIGHT!" e o
 // controle e liberado, como nos Street Fighter de fliperama.

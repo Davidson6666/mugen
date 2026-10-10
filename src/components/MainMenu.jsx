@@ -155,8 +155,8 @@ export default function MainMenu() {
         )}
 
         <Spotlight id="menu" x={180} y={470} color={accent ?? PALETTE.fieldYellow} />
-        <g className="menu-title menu-title--top"><Label x={48} y={150} size={130} stroke={18}>RUPTURA</Label></g>
-        <g className="menu-title menu-title--bottom"><Label x={96} y={260} size={120} fill={PALETTE.fieldYellow} stroke={16}>ARENA</Label></g>
+        <g className="menu-title menu-title--top"><Label x={48} y={150} size={130} stroke={18} display>RUPTURA</Label></g>
+        <g className="menu-title menu-title--bottom"><Label x={96} y={260} size={120} fill={PALETTE.fieldYellow} stroke={16} display>ARENA</Label></g>
 
         <Pedestal x={180} y={470} halfWidth={150} />
         <Label key={featured.id} x={44} y={330} size={26} weight={800} fill={PALETTE.fieldYellow} stroke={5}>

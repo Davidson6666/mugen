@@ -68,7 +68,7 @@ export default function StoryEndingScreen() {
 
         <Spotlight id="ending" x={STAND[0]} y={STAND[1]} color={accent ?? PALETTE.fieldYellow} />
         <g className="vs-slam" style={{ animationDelay: '150ms' }}>
-          <Label x={48} y={130} size={90} fill={PALETTE.fieldYellow} stroke={16}>CAMPEAO!</Label>
+          <Label x={48} y={130} size={90} fill={PALETTE.fieldYellow} stroke={16} display>CAMPEAO!</Label>
         </g>
         <g className="menu-title menu-title--bottom">
           <Label x={48} y={220} size={44} weight={800} stroke={8}>MODO HISTORIA CONCLUIDO</Label>

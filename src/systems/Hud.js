@@ -12,6 +12,7 @@ import {
 // e a mesma da prancha de estilo (src/utils/hudGeometry.js).
 
 const FONT = '"Barlow Condensed", sans-serif';
+const DISPLAY_FONT = '"Dela Gothic One", "Barlow Condensed", sans-serif';
 
 // A trilha vermelha segura o dano recente por um instante e depois desce.
 const TRAIL_HOLD_FRAMES = 30;
@@ -34,13 +35,13 @@ const BUFF_BAR_MAX_TICKS = 1500;
 const LOW_LIFE = 0.25;
 const HIT_FLASH_FRAMES = 7;
 
-function label(text, size, { fill = PALETTE.textPrimary, weight = '900', stroke = Math.round(size / 5) } = {}) {
+function label(text, size, { fill = PALETTE.textPrimary, weight = '900', stroke = Math.round(size / 5), display = false } = {}) {
   return new Text({
     text,
     style: {
-      fontFamily: FONT,
-      fontStyle: 'italic',
-      fontWeight: weight,
+      fontFamily: display ? DISPLAY_FONT : FONT,
+      fontStyle: display ? 'normal' : 'italic',
+      fontWeight: display ? '400' : weight,
       fontSize: size,
       fill,
       stroke: stroke ? { color: PALETTE.ink, width: stroke, join: 'round' } : undefined,
@@ -254,7 +255,8 @@ export class Hud {
     this.announcementBand = new Graphics();
     this.announcementBand.pivot.set(this.width / 2, 300);
     this.announcementBand.position.set(this.width / 2, 300);
-    this.announcementText = label('', 96, { stroke: 14 });
+    this.announcementText = label('', 96, { stroke: 14, display: true });
+    this.announcementText.skew.x = -0.16;
     this.announcementText.anchor.set(0.5);
     this.announcementText.position.set(this.width / 2, 300);
     // Clarao branco que cobre a tela no instante do impacto (K.O., FIGHT!).
@@ -268,7 +270,7 @@ export class Hud {
 
   announce(text, durationFrames = 90) {
     // Texto curto (K.O.) sai enorme; frases longas cabem na largura da tela.
-    const size = text.length <= 4 ? 190 : 88;
+    const size = text.length <= 4 ? 140 : 64;
     const bandHeight = text.length <= 4 ? 170 : 116;
     this.announcementText.text = text;
     this.announcementText.style.fontSize = size;

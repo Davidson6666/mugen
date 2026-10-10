@@ -95,7 +95,7 @@ export default function VersusScreen() {
                 <Label x={tag[0]} y={tag[1]} size={44} anchor={tag[2]} fill={player === 0 ? PALETTE.cursorP1 : PALETTE.cursorP2} stroke={8}>
                   {tags[player]}
                 </Label>
-                <Label x={name[0]} y={name[1]} size={104} anchor={name[2]} stroke={14}>{fighter.name.toUpperCase()}</Label>
+                <Label x={name[0]} y={name[1]} size={104} anchor={name[2]} stroke={14} display>{fighter.name.toUpperCase()}</Label>
               </g>
             </g>
           );
@@ -103,7 +103,7 @@ export default function VersusScreen() {
 
         <g className="vs-slam">
           <Shape points={diamond([640, 330], 118)} fill={PALETTE.emblem} />
-          <Label x={640} y={392} size={180} anchor="middle" fill={PALETTE.fieldYellow} stroke={16}>VS</Label>
+          <Label x={640} y={392} size={180} anchor="middle" fill={PALETTE.fieldYellow} stroke={16} display>VS</Label>
         </g>
         <rect className="vs-flash" width={1280} height={720} fill={PALETTE.textPrimary} pointerEvents="none" />
 

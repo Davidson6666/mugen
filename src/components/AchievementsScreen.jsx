@@ -25,7 +25,7 @@ export default function AchievementsScreen() {
     <div className="cvs2-screen">
       <svg className="cvs2-svg" viewBox="0 0 1280 720">
         <DiagonalBackdrop lattice={false} topWord="" bottomWord="" />
-        <Label x={48} y={100} size={52}>MINHAS CONQUISTAS</Label>
+        <Label x={48} y={100} size={52} display>MINHAS CONQUISTAS</Label>
 
         {loggedIn ? (
           <g>

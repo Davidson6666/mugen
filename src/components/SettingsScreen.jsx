@@ -130,7 +130,7 @@ export default function SettingsScreen() {
     <div className="cvs2-screen">
       <svg className="cvs2-svg" viewBox="0 0 1280 720">
         <DiagonalBackdrop lattice={false} topWord="" bottomWord="" />
-        <Label x={48} y={100} size={64}>CONFIGURACOES</Label>
+        <Label display x={48} y={100} size={64}>CONFIGURACOES</Label>
 
         {COLUMNS.map((column) => (
           <Capsule key={column.key} x={column.x - 20} y={120} width={column.key === 'action' ? 300 : 200} size={26}>
