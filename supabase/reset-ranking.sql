@@ -18,7 +18,7 @@ delete from public.matches;
 delete from public.queue;
 
 -- 3. Quem sobrou volta pro Elo inicial, sem vitorias nem derrotas.
-update public.profiles set elo_rating = 1200, wins = 0, losses = 0;
+update public.profiles set elo_rating = 1000, wins = 0, losses = 0;
 
 -- Confere como ficou.
 select username, elo_rating, wins, losses from public.profiles order by username;

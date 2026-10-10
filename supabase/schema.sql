@@ -8,7 +8,7 @@
 create table if not exists public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   username text unique not null check (username ~ '^[a-z0-9_]{3,20}$'),
-  elo_rating integer not null default 1200,
+  elo_rating integer not null default 1000,
   wins integer not null default 0,
   losses integer not null default 0,
   created_at timestamptz not null default now()
@@ -41,7 +41,7 @@ create policy "Cada um cria so o proprio perfil"
 -- na fila so atualiza o horario, nao duplica.
 create table if not exists public.queue (
   user_id uuid primary key references auth.users(id) on delete cascade,
-  elo_rating integer not null default 1200,
+  elo_rating integer not null default 1000,
   joined_at timestamptz not null default now()
 );
 
