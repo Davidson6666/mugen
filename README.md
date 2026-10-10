@@ -44,7 +44,7 @@ Equilíbrio entre os lutadores: `npm run balance:sim` (torneio da IA), `balance:
 
 ## Estrutura
 
-```
+```text
 src/components   telas do jogo (menus, seleção, luta, resultado)
 src/systems      simulação: lutador, colisão, câmera, HUD, áudio, online
 src/data         lutadores, cenários, escada do Modo História
