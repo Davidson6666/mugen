@@ -33,6 +33,7 @@ Controles padrão (remapeáveis em Configurações): `WASD` move, `J` soco, `K` 
 - [Diagrama de casos de uso](docs/casos-de-uso.png), com `<<include>>` e `<<extend>>`
 - [Histórias de usuário](docs/HISTORIAS_DE_USUARIO.md), uma por caso de uso, com critérios de aceite
 - [Quadro Kanban no Trello](docs/TRELLO.md): como montar e os cartões prontos para colar
+- [Prints das telas](docs/telas/): abertura, menu, seleção, cenário, versus, luta, pausa, lista de golpes, Modo História, resultado, ranking, conquistas, treino, configurações, login e final da campanha
 
 ## Como o jogo é montado
 
