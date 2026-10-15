@@ -323,9 +323,12 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       });
       instance.stage.addChild(hud.view);
 
-      // Setinhas 1P / 2P sobre as cabecas quando os dois lados sao gente.
-      const markers = matchSetup.mode === 'versusPlayer' || online ? new PlayerMarkers(['1P', '2P']) : null;
-      if (markers) world.addChild(markers.view);
+      // Setinhas sobre as cabecas: 1P e 2P (ou CPU). No treino so o 1P tem seta.
+      let otherLabel = '2P';
+      if (cpuEnabled) otherLabel = 'CPU';
+      else if (training) otherLabel = null;
+      const markers = new PlayerMarkers(['1P', otherLabel]);
+      world.addChild(markers.view);
 
       const debugLayer = new Graphics();
       debugLayer.visible = false;
@@ -569,7 +572,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
           shadows[index].alpha = 1 - lift * 0.6;
         });
 
-        markers?.update(fighters, frameDelta);
+        markers.update(fighters, frameDelta);
         hud.update(
           {
             fighters,
