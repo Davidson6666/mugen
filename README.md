@@ -28,6 +28,12 @@ Para o ranking e a partida online é preciso um projeto no [Supabase](https://su
 
 Controles padrão (remapeáveis em Configurações): `WASD` move, `J` soco, `K` chute, `L` especial. O segundo jogador usa as setas e `Num 1/2/3`. Controles de PS5 e Xbox em [docs/CONTROLES.md](docs/CONTROLES.md). A lista de golpes de cada lutador abre na pausa (`Esc`).
 
+## Documentação do projeto
+
+- [Diagrama de casos de uso](docs/casos-de-uso.png), com `<<include>>` e `<<extend>>`
+- [Histórias de usuário](docs/HISTORIAS_DE_USUARIO.md), uma por caso de uso, com critérios de aceite
+- [Quadro Kanban no Trello](docs/TRELLO.md): como montar e os cartões prontos para colar
+
 ## Como o jogo é montado
 
 - **Simulação determinística** a 60 ticks por segundo (`src/systems/`): a mesma partida dá o mesmo resultado nos dois computadores, e é isso que permite o online. Nada da simulação lê o relógio real ou a câmera.

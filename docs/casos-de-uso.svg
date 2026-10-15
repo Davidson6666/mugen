@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1660" height="1010" viewBox="0 0 1660 1010" font-family="Segoe UI, Arial, sans-serif">
+<defs>
+  <marker id="open" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+    <path d="M1,1 L11,6 L1,11" fill="none" stroke="#333" stroke-width="1.6"/>
+  </marker>
+</defs>
+<rect width="1660" height="1010" fill="#fff"/>
+<rect x="250" y="50" width="1170" height="920" fill="#fafcff" stroke="#333" stroke-width="2"/>
+<text x="830" y="36" text-anchor="middle" font-size="22" font-weight="700">Ruptura Arena — Diagrama de Casos de Uso</text>
+<text x="270" y="78" font-size="16" font-weight="700" fill="#333">Sistema: Ruptura Arena</text>
+<line x1="132.70526781297977" y1="497.06869553842625" x2="347.76690545678974" y2="185.14723636038127" stroke="#333" stroke-width="1.5"/>
+<line x1="149.85530855409525" y1="533.3991734374495" x2="470.74601368015715" y2="560.7672506337021" stroke="#333" stroke-width="1.5"/>
+<line x1="149.61320082546789" y1="524.4507369533288" x2="471.32728108796186" y2="479.3830317441433" stroke="#333" stroke-width="1.5"/>
+<line x1="142.22604050597698" y1="506.3043819808993" x2="439.13905549648723" y2="287.9859886055241" stroke="#333" stroke-width="1.5"/>
+<line x1="147.2446443207803" y1="515.4110840218142" x2="472.95263726489077" y2="387.829612131264" stroke="#333" stroke-width="1.5"/>
+<line x1="148.07232975283245" y1="542.2677506981349" x2="480.9017528688182" y2="649.512787035508" stroke="#333" stroke-width="1.5"/>
+<line x1="144.0141939510005" y1="551.0483873459161" x2="462.3732052383966" y2="748.0527260138592" stroke="#333" stroke-width="1.5"/>
+<line x1="136.73542918452142" y1="559.752593606599" x2="397.92110963125737" y2="850.4137740410545" stroke="#333" stroke-width="1.5"/>
+<line x1="1532.4137931034484" y1="861.0344827586207" x2="1292.7839984745406" y2="609.4231983982676" stroke="#333" stroke-width="1.5"/>
+<line x1="1522.4257072071941" y1="876.2824010438962" x2="1004.010919732163" y2="687.0198595847579" stroke="#333" stroke-width="1.5"/>
+<line x1="1520.8936354375774" y1="881.5921316190792" x2="653.0940418397657" y2="695.0152189955496" stroke="#333" stroke-width="1.5"/>
+<line x1="442.3985810456725" y1="177.99943564316519" x2="829.6014189543275" y2="332.00056435683484" stroke="#1f5fbf" stroke-width="1.5" stroke-dasharray="7 5" marker-end="url(#open)"/>
+<text x="636" y="250" text-anchor="middle" font-size="13" fill="#1f5fbf" stroke="#fff" stroke-width="4" paint-order="stroke">&lt;&lt;include&gt;&gt;</text>
+<line x1="628.3892077941285" y1="537.6893033122524" x2="850.6107922058715" y2="392.3106966877476" stroke="#1f5fbf" stroke-width="1.5" stroke-dasharray="7 5" marker-end="url(#open)"/>
+<text x="739.5" y="460" text-anchor="middle" font-size="13" fill="#1f5fbf" stroke="#fff" stroke-width="4" paint-order="stroke">&lt;&lt;include&gt;&gt;</text>
+<line x1="653.1150234709107" y1="439.51816728697656" x2="820.8849765290893" y2="385.48183271302344" stroke="#1f5fbf" stroke-width="1.5" stroke-dasharray="7 5" marker-end="url(#open)"/>
+<text x="737" y="407.5" text-anchor="middle" font-size="13" fill="#1f5fbf" stroke="#fff" stroke-width="4" paint-order="stroke">&lt;&lt;include&gt;&gt;</text>
+<line x1="572.0872443607319" y1="277.2335592737424" x2="811.9127556392681" y2="337.7664407262576" stroke="#1f5fbf" stroke-width="1.5" stroke-dasharray="7 5" marker-end="url(#open)"/>
+<text x="692" y="302.5" text-anchor="middle" font-size="13" fill="#1f5fbf" stroke="#fff" stroke-width="4" paint-order="stroke">&lt;&lt;include&gt;&gt;</text>
+<line x1="656" y1="360" x2="788" y2="360" stroke="#1f5fbf" stroke-width="1.5" stroke-dasharray="7 5" marker-end="url(#open)"/>
+<text x="722" y="355" text-anchor="middle" font-size="13" fill="#1f5fbf" stroke="#fff" stroke-width="4" paint-order="stroke">&lt;&lt;include&gt;&gt;</text>
+<line x1="947.0449822564547" y1="327.32987343301755" x2="1212.9550177435453" y2="142.67012656698245" stroke="#1f5fbf" stroke-width="1.5" stroke-dasharray="7 5" marker-end="url(#open)"/>
+<text x="1080" y="230" text-anchor="middle" font-size="13" fill="#1f5fbf" stroke="#fff" stroke-width="4" paint-order="stroke">&lt;&lt;include&gt;&gt;</text>
+<line x1="969.8606146400696" y1="331.86169688108305" x2="1190.1393853599304" y2="243.13830311891692" stroke="#1f5fbf" stroke-width="1.5" stroke-dasharray="7 5" marker-end="url(#open)"/>
+<text x="1080" y="282.5" text-anchor="middle" font-size="13" fill="#1f5fbf" stroke="#fff" stroke-width="4" paint-order="stroke">&lt;&lt;include&gt;&gt;</text>
+<line x1="666.554565701559" y1="592.4498886414253" x2="842.445434298441" y2="637.5501113585747" stroke="#1f5fbf" stroke-width="1.5" stroke-dasharray="7 5" marker-end="url(#open)"/>
+<text x="754.5" y="610" text-anchor="middle" font-size="13" fill="#1f5fbf" stroke="#fff" stroke-width="4" paint-order="stroke">&lt;&lt;include&gt;&gt;</text>
+<line x1="630.6841655115963" y1="496.0489108841609" x2="873.3158344884037" y2="628.9510891158391" stroke="#1f5fbf" stroke-width="1.5" stroke-dasharray="7 5" marker-end="url(#open)"/>
+<text x="752" y="557.5" text-anchor="middle" font-size="13" fill="#1f5fbf" stroke="#fff" stroke-width="4" paint-order="stroke">&lt;&lt;include&gt;&gt;</text>
+<line x1="674.2212559639199" y1="481.07046378430204" x2="1159.77874403608" y2="558.929536215698" stroke="#1f5fbf" stroke-width="1.5" stroke-dasharray="7 5" marker-end="url(#open)"/>
+<text x="917" y="515" text-anchor="middle" font-size="13" fill="#1f5fbf" stroke="#fff" stroke-width="4" paint-order="stroke">&lt;&lt;include&gt;&gt;</text>
+<line x1="1148.9293192538348" y1="349.62794503109023" x2="1011.0706807461651" y2="355.37205496890977" stroke="#b5361f" stroke-width="1.5" stroke-dasharray="7 5" marker-end="url(#open)"/>
+<text x="1080" y="347.5" text-anchor="middle" font-size="13" fill="#b5361f" stroke="#fff" stroke-width="4" paint-order="stroke">&lt;&lt;extend&gt;&gt;</text>
+<line x1="1260" y1="414" x2="1260" y2="381" stroke="#b5361f" stroke-width="1.5" stroke-dasharray="7 5" marker-end="url(#open)"/>
+<text x="1260" y="392.5" text-anchor="middle" font-size="13" fill="#b5361f" stroke="#fff" stroke-width="4" paint-order="stroke">&lt;&lt;extend&gt;&gt;</text>
+<line x1="990.5023379736588" y1="195.4502945933478" x2="919.4976620263412" y2="324.5497054066522" stroke="#b5361f" stroke-width="1.5" stroke-dasharray="7 5" marker-end="url(#open)"/>
+<text x="955" y="255" text-anchor="middle" font-size="13" fill="#b5361f" stroke="#fff" stroke-width="4" paint-order="stroke">&lt;&lt;extend&gt;&gt;</text>
+<line x1="695.1780959934913" y1="159.3577463797594" x2="548.8219040065087" y2="225.6422536202406" stroke="#b5361f" stroke-width="1.5" stroke-dasharray="7 5" marker-end="url(#open)"/>
+<text x="622" y="187.5" text-anchor="middle" font-size="13" fill="#b5361f" stroke="#fff" stroke-width="4" paint-order="stroke">&lt;&lt;extend&gt;&gt;</text>
+<line x1="818.8803473053141" y1="664.5048507849197" x2="671.1196526946859" y2="670.4951492150803" stroke="#b5361f" stroke-width="1.5" stroke-dasharray="7 5" marker-end="url(#open)"/>
+<text x="745" y="662.5" text-anchor="middle" font-size="13" fill="#b5361f" stroke="#fff" stroke-width="4" paint-order="stroke">&lt;&lt;extend&gt;&gt;</text>
+<ellipse cx="372" cy="150" rx="112" ry="36" fill="#e8f1ff" stroke="#2b4a7a" stroke-width="1.8"/>
+<text x="372" y="147" text-anchor="middle" font-size="15">Jogar contra</text><text x="372" y="166" text-anchor="middle" font-size="15">a CPU</text>
+<ellipse cx="484" cy="255" rx="112" ry="36" fill="#e8f1ff" stroke="#2b4a7a" stroke-width="1.8"/>
+<text x="484" y="252" text-anchor="middle" font-size="15">Jogar Modo</text><text x="484" y="271" text-anchor="middle" font-size="15">História</text>
+<ellipse cx="544" cy="360" rx="112" ry="36" fill="#e8f1ff" stroke="#2b4a7a" stroke-width="1.8"/>
+<text x="544" y="357" text-anchor="middle" font-size="15">Treinar</text><text x="544" y="376" text-anchor="middle" font-size="15">Golpes</text>
+<ellipse cx="574" cy="465" rx="112" ry="36" fill="#e8f1ff" stroke="#2b4a7a" stroke-width="1.8"/>
+<text x="574" y="462" text-anchor="middle" font-size="15">Jogar Partida</text><text x="574" y="481" text-anchor="middle" font-size="15">Online</text>
+<ellipse cx="579" cy="570" rx="112" ry="36" fill="#e8f1ff" stroke="#2b4a7a" stroke-width="1.8"/>
+<text x="579" y="567" text-anchor="middle" font-size="15">Jogar Versus</text><text x="579" y="586" text-anchor="middle" font-size="15">Local (2 jogadores)</text>
+<ellipse cx="560" cy="675" rx="112" ry="36" fill="#e8f1ff" stroke="#2b4a7a" stroke-width="1.8"/>
+<text x="560" y="680" text-anchor="middle" font-size="15">Ver Ranking</text>
+<ellipse cx="514" cy="780" rx="112" ry="36" fill="#e8f1ff" stroke="#2b4a7a" stroke-width="1.8"/>
+<text x="514" y="785" text-anchor="middle" font-size="15">Ver Conquistas</text>
+<ellipse cx="429" cy="885" rx="112" ry="36" fill="#e8f1ff" stroke="#2b4a7a" stroke-width="1.8"/>
+<text x="429" y="882" text-anchor="middle" font-size="15">Configurar</text><text x="429" y="901" text-anchor="middle" font-size="15">Controles e Som</text>
+<ellipse cx="760" cy="130" rx="112" ry="36" fill="#e8f1ff" stroke="#2b4a7a" stroke-width="1.8"/>
+<text x="760" y="127" text-anchor="middle" font-size="15">Liberar Lutador</text><text x="760" y="146" text-anchor="middle" font-size="15">Secreto</text>
+<ellipse cx="1010" cy="160" rx="112" ry="36" fill="#e8f1ff" stroke="#2b4a7a" stroke-width="1.8"/>
+<text x="1010" y="157" text-anchor="middle" font-size="15">Pedir</text><text x="1010" y="176" text-anchor="middle" font-size="15">Revanche</text>
+<ellipse cx="900" cy="360" rx="112" ry="36" fill="#cfe3ff" stroke="#2b4a7a" stroke-width="1.8"/>
+<text x="900" y="357" text-anchor="middle" font-size="15">Executar</text><text x="900" y="376" text-anchor="middle" font-size="15">Combate</text>
+<ellipse cx="930" cy="660" rx="112" ry="36" fill="#cfe3ff" stroke="#2b4a7a" stroke-width="1.8"/>
+<text x="930" y="657" text-anchor="middle" font-size="15">Fazer Login /</text><text x="930" y="676" text-anchor="middle" font-size="15">Criar Conta</text>
+<ellipse cx="1260" cy="110" rx="112" ry="36" fill="#e8f1ff" stroke="#2b4a7a" stroke-width="1.8"/>
+<text x="1260" y="107" text-anchor="middle" font-size="15">Selecionar</text><text x="1260" y="126" text-anchor="middle" font-size="15">Personagem</text>
+<ellipse cx="1260" cy="215" rx="112" ry="36" fill="#e8f1ff" stroke="#2b4a7a" stroke-width="1.8"/>
+<text x="1260" y="212" text-anchor="middle" font-size="15">Selecionar</text><text x="1260" y="231" text-anchor="middle" font-size="15">Mapa</text>
+<ellipse cx="1260" cy="345" rx="112" ry="36" fill="#e8f1ff" stroke="#2b4a7a" stroke-width="1.8"/>
+<text x="1260" y="342" text-anchor="middle" font-size="15">Pausar</text><text x="1260" y="361" text-anchor="middle" font-size="15">Partida</text>
+<ellipse cx="1260" cy="450" rx="112" ry="36" fill="#e8f1ff" stroke="#2b4a7a" stroke-width="1.8"/>
+<text x="1260" y="447" text-anchor="middle" font-size="15">Ver Lista</text><text x="1260" y="466" text-anchor="middle" font-size="15">de Golpes</text>
+<ellipse cx="1260" cy="575" rx="112" ry="36" fill="#e8f1ff" stroke="#2b4a7a" stroke-width="1.8"/>
+<text x="1260" y="572" text-anchor="middle" font-size="15">Buscar Oponente</text><text x="1260" y="591" text-anchor="middle" font-size="15">(fila por Elo)</text>
+<g stroke="#333" stroke-width="2" fill="none">
+  <circle cx="110" cy="488" r="13" fill="#fff"/>
+  <line x1="110" y1="501" x2="110" y2="540"/>
+  <line x1="86" y1="514" x2="134" y2="514"/>
+  <line x1="110" y1="540" x2="92" y2="570"/>
+  <line x1="110" y1="540" x2="128" y2="570"/>
+</g>
+<text x="110" y="595" text-anchor="middle" font-size="16" font-weight="700">Jogador</text>
+<g stroke="#333" stroke-width="2" fill="none">
+  <circle cx="1560" cy="848" r="13" fill="#fff"/>
+  <line x1="1560" y1="861" x2="1560" y2="900"/>
+  <line x1="1536" y1="874" x2="1584" y2="874"/>
+  <line x1="1560" y1="900" x2="1542" y2="930"/>
+  <line x1="1560" y1="900" x2="1578" y2="930"/>
+</g>
+<text x="1560" y="955" text-anchor="middle" font-size="16" font-weight="700">Servidor Online</text>
+<text x="20" y="998" font-size="13" fill="#555">Linha cheia: associação · Azul tracejado: &lt;&lt;include&gt;&gt; (sempre acontece) · Vermelho tracejado: &lt;&lt;extend&gt;&gt; (opcional)</text>
+</svg>
