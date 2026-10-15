@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useMenu } from '../context/MenuContext.js';
 import { loadVolume, saveVolume } from '../systems/AudioManager.js';
+import { loadMusicVolume, saveMusicVolume, refreshSoundtrackVolume } from '../systems/Soundtrack.js';
 import { useMenuInput } from '../utils/useMenuInput.js';
 import { PALETTE } from '../utils/palette.js';
 import { Capsule, DiagonalBackdrop, KeyHints, Label, Shape } from './cvs2.jsx';
@@ -22,6 +23,7 @@ import {
 const ROWS = [
   ...BINDABLE.map((entry) => ({ type: 'bind', ...entry })),
   { type: 'volume', label: 'VOLUME' },
+  { type: 'music', label: 'MUSICA' },
   { type: 'reset', label: 'RESTAURAR PADRAO' },
 ];
 
@@ -37,7 +39,7 @@ const COLUMNS = [
 const DIRECTIONS = ['up', 'down', 'left', 'right'];
 
 const ROW_TOP = 162;
-const ROW_STEP = 42;
+const ROW_STEP = 38;
 
 // Linha da tabela: barra preta inclinada como as opcoes de menu.
 const rowShape = (y) => [[70, y], [1230, y], [1212, y + 34], [52, y + 34]];
@@ -56,10 +58,12 @@ export default function SettingsScreen() {
   const [notice, setNotice] = useState('');
 
   const [volume, setVolume] = useState(() => Math.round(loadVolume() * 10));
+  const [musicVolume, setMusicVolume] = useState(() => Math.round(loadMusicVolume() * 10));
   const changeVolume = (step) => {
     setVolume((current) => {
       const next = Math.min(10, Math.max(0, current + step));
       saveVolume(next / 10);
+      refreshSoundtrackVolume();
       return next;
     });
   };
@@ -97,6 +101,12 @@ export default function SettingsScreen() {
       setRow((current) => (current + (direction === 'up' ? -1 : 1) + ROWS.length) % ROWS.length);
       return;
     }
+    if (ROWS[row].type === 'music') {
+      const next = Math.min(10, Math.max(0, musicVolume + (direction === 'left' ? -1 : 1)));
+      setMusicVolume(next);
+      saveMusicVolume(next / 10);
+      return;
+    }
     if (ROWS[row].type === 'volume') {
       changeVolume(direction === 'left' ? -1 : 1);
       return;
@@ -122,6 +132,9 @@ export default function SettingsScreen() {
     if (entry.type === 'bind') return keyLabel(controls[side][entry.action]);
     if (entry.type === 'volume' && side === 0) {
       return `◀  ${'■'.repeat(volume)}${'□'.repeat(10 - volume)}  ${volume * 10}%  ▶`;
+    }
+    if (entry.type === 'music' && side === 0) {
+      return `◀  ${'■'.repeat(musicVolume)}${'□'.repeat(10 - musicVolume)}  ${musicVolume * 10}%  ▶`;
     }
     return '';
   };

@@ -38,13 +38,13 @@ const page=name=>{let p=c.sheets.indexOf(name);if(p<0){p=c.sheets.length;c.sheet
 const p=page('humberto_combat_v2.png'),f=page('combat_fx_v2.png');
 let first=c.atlas.findIndex(a=>a[0]===p);
 if(first<0){first=c.atlas.length;c.atlas.push(...Array.from({length:12},(_,i)=>[p,i%4*320,Math.floor(i/4)*350,320,350,0,0]));}
-const use=(name,frames,durations)=>{c.animations[name].frames=frames.map(i=>first+i);c.animations[name].durations=durations;};
-use('punch',[0,1,2,3],[5,4,4,5]);use('punch2',[0,2,1,3],[4,4,4,6]);
-use('kick',[4,5,6,7],[7,5,6,6]);
-use('ionicPalm',[8,9,10,11],[8,6,4,12]);
-use('special2',[8,9,10,11],[14,4,8,20]);
-use('neutralizeHit',[8,9,10,11],[4,8,4,10]);
-use('kiBlast',[8,9,10,11],[9,7,6,8]);
+const setPoses=(name,frames,durations)=>{c.animations[name].frames=frames.map(i=>first+i);c.animations[name].durations=durations;};
+setPoses('punch',[0,1,2,3],[5,4,4,5]);setPoses('punch2',[0,2,1,3],[4,4,4,6]);
+setPoses('kick',[4,5,6,7],[7,5,6,6]);
+setPoses('ionicPalm',[8,9,10,11],[8,6,4,12]);
+setPoses('special2',[8,9,10,11],[14,4,8,20]);
+setPoses('neutralizeHit',[8,9,10,11],[4,8,4,10]);
+setPoses('kiBlast',[8,9,10,11],[9,7,6,8]);
 const grid={frameWidth:64,frameHeight:64,baseline:32};
 const atlas=Array.from({length:16},(_,i)=>[f,i%4*64,Math.floor(i/4)*64,64,64,0,0]);
 function reskin(id,frames,durations){const d=c.effects[id];d.spriteGridSize=grid;d.atlas=atlas;d.animation={frames,durations,loop:d.animation.loop};}

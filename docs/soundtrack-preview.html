@@ -1,0 +1,16 @@
+<!doctype html><html lang="pt-BR"><meta charset="utf-8"><title>Trilha sonora — Mugen</title>
+<style>body{margin:32px;background:#121926;color:#f3f5f9;font:17px system-ui;max-width:720px}button{padding:12px;margin:8px 8px 8px 0;background:#293f5f;color:white;border:1px solid #6682a7;border-radius:6px}p{line-height:1.5;color:#bed0e8}audio{display:block;width:100%;margin-top:16px}</style>
+<h1>Trilha sonora</h1><p>Tekken 3 nos menus. Trilha de combate durante as lutas. Volume musical padrão: 20%, combinado com o volume geral. As vozes dos especiais reduzem a música automaticamente.</p>
+<button id="menu">Ouvir menu</button><button id="battle">Ouvir luta</button><button id="pause">Pausar / continuar</button><button id="voice">Simular fala de especial</button><button id="next">Próxima faixa</button>
+<p id="status">Escolha uma trilha para começar.</p><audio id="audio" preload="metadata"></audio>
+<script type="module">
+import {SoundtrackPlayer,TRACKS} from '/src/systems/Soundtrack.js';
+const audio=document.querySelector('#audio'),p=new SoundtrackPlayer({audio,master:()=>.8,music:()=>.2});
+for(const scene of ['menu','battle'])document.querySelector('#'+scene).onclick=()=>{p.setScene(scene);p.unlock();};
+document.querySelector('#pause').onclick=()=>p.setPaused(!p.paused);
+document.querySelector('#voice').onclick=()=>p.setDucked(!p.ducked);
+document.querySelector('#next').onclick=()=>p.next();
+document.addEventListener('visibilitychange',()=>p.setHidden(document.hidden));
+setInterval(()=>{p.tick();if(p.current)document.querySelector('#status').textContent=`${p.current.title} · ${p.paused?'Pausada':audio.paused?'Aguardando':'Tocando'} · ${audio.currentTime.toFixed(1)} s · nível ${(audio.volume*100).toFixed(1)}%${p.ducked?' · especial em destaque':''}${audio.error?' · falha de áudio':''}`;},50);
+const list=document.createElement('ul');for(const t of TRACKS){const item=document.createElement('li');item.textContent=t.title;list.append(item);}document.body.append(list);
+</script></html>

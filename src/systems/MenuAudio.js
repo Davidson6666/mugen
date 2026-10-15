@@ -6,6 +6,7 @@
 // O navegador so libera audio depois de um gesto do jogador, entao tudo fica
 // pendente ate o primeiro toque de tecla ou clique.
 import { loadVolume } from './AudioManager.js';
+import { unlockSoundtrack } from './Soundtrack.js';
 
 const SFX_LEVEL = 0.5;
 const MUSIC_LEVEL = 0.2;
@@ -86,6 +87,7 @@ function noise({ length = 0.04, gain = 0.05, at = 0, out = null, highpass = 4000
 }
 
 function sfx(play) {
+  unlockSoundtrack();
   const ctx = ensure();
   if (!ctx) return;
   if (ctx.state === 'suspended') ctx.resume();
