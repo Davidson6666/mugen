@@ -92,6 +92,9 @@ export function applyHit(attacker, defender, attack, hitRect, serial = attacker.
   // Combo longo perde forca (so no acerto; a guarda ja corta o dano sozinha).
   const comboScale = defender.blocking && !attack.unblockable ? 1 : (attacker.comboScaleFor?.(serial) ?? 1);
   if (comboScale !== 1) attack = { ...attack, damage: attack.damage * comboScale };
+  // E o atordoamento encurta, para nenhum combo durar para sempre.
+  const stunScale = defender.blocking && !attack.unblockable ? 1 : (attacker.hitstunScaleFor?.(serial) ?? 1);
+  if (stunScale !== 1) attack = { ...attack, hitstun: Math.max(1, Math.round(attack.hitstun * stunScale)) };
   // Finalizadores removem a vida restante, independentemente do balanceamento.
   if (attack.instantKill) attack = { ...attack, damage: defender.health, unblockable: true };
   const heavy = Boolean(attack.heavy);

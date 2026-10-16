@@ -65,6 +65,12 @@ export const THROW_MOVE = 'universalThrow';
 const COMBO_FULL_MOVES = 3;
 const COMBO_SCALING_STEP = 0.1;
 const COMBO_SCALING_FLOOR = 0.5;
+// Rede de seguranca contra laco infinito: num combo longo o atordoamento de
+// cada golpe a mais vai encurtando, ate o oponente conseguir sair. Tambem
+// conta golpes (um super de muitos acertos nao solta o oponente no meio).
+const HITSTUN_FULL_MOVES = 5;
+const HITSTUN_DECAY_STEP = 0.12;
+const HITSTUN_DECAY_FLOOR = 0.35;
 // Os dois botoes contam como "juntos" se sairem com ate estes ticks de folga
 // (o soco ou o chute que saiu primeiro vira arremesso).
 const THROW_INPUT_TICKS = 3;
@@ -628,6 +634,14 @@ export class Fighter {
     this.comboTimer = 0;
     this.comboMoves = 0;
     this.comboSerial = null;
+  }
+
+  // Multiplicador do atordoamento do acerto que esta chegando agora.
+  hitstunScaleFor(serial) {
+    if (this.config.comboScaling === false) return 1;
+    const moves = (this.comboMoves ?? 0) + (serial === this.comboSerial ? 0 : 1);
+    if (moves <= HITSTUN_FULL_MOVES) return 1;
+    return Math.max(HITSTUN_DECAY_FLOOR, 1 - HITSTUN_DECAY_STEP * (moves - HITSTUN_FULL_MOVES));
   }
 
   // Multiplicador de dano do acerto que esta chegando agora (do golpe "serial").

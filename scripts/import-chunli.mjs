@@ -100,7 +100,9 @@ const ANIMATIONS = {
   lightningLegs: {
     actions: [1300, 1310, 1310, 1310],
     cooldown: 30,
-    hits: [...Array(12)].map(() => ({ damage: 1, hitstun: 14, push: 0 })),
+    // O ultimo chute empurra: sem isso, a Chun-Li se recuperava antes do
+    // oponente e o proximo chute relampago pegava de novo (laco infinito).
+    hits: [...Array(12)].map((_, index) => ({ damage: 1, hitstun: 14, push: index === 11 ? 9 : 0 })),
     events: [{ at: 0, sound: 'legs' }, ...[0, 15, 30].map((at) => ({ action: 1310, at, sound: 'voiceLight' }))],
   },
 

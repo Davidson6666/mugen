@@ -1245,7 +1245,7 @@
           },
           "damage": 1,
           "hitstun": 14,
-          "push": 0
+          "push": 9
         }
       ],
       "events": [
