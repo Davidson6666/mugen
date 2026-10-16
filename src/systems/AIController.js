@@ -7,6 +7,7 @@
 // ComboDetector do jogador. Ela joga com as mesmas regras.
 
 import { analyzeMove, buffActive, phaseOf, reachOf, requirementMet } from './AIKnowledge.js';
+import { THROW_MOVE } from './Fighter.js';
 
 export const DIFFICULTY_PRESETS = {
   easy: {
@@ -209,6 +210,9 @@ export class AIController {
     const attacking = phase.kind === 'startup' || phase.kind === 'active';
     const opponentReach = attacking ? reachOf(opponent, opponent.animation.name) + self.halfWidth : 0;
     const threatened = attacking && distance <= Math.max(range * 1.3, opponentReach);
+    // Arremesso do oponente chegando: as vezes aperta soco + chute e escapa.
+    if (opponent.state === 'attack' && opponent.animation.name === THROW_MOVE && distance <= range * 1.3
+      && this.chance(this.params.blockChance * 0.6)) return { type: 'throw' };
     if (threatened) {
       // O contra-ataque so entra se a postura ficar pronta antes do golpe chegar.
       const counter = options.find((option) => option.info?.counter
@@ -252,6 +256,11 @@ export class AIController {
       if (this.chance(this.params.jumpChance)) return { type: 'jump' };
       return { type: 'approach' };
     }
+
+    // Colado em quem so defende: arremessa, que a guarda nao segura.
+    const throwRange = self.halfWidth + opponent.halfWidth + 20;
+    if (distance <= throwRange && opponent.blocking && opponent.canBeThrown
+      && this.chance(this.params.aggression * 0.45)) return { type: 'throw' };
 
     // Ao alcance: pune a recuperacao do oponente com mais vontade.
     const attackChance = punish ? Math.min(1, this.params.aggression + 0.35) : this.params.aggression;
@@ -320,6 +329,7 @@ export class AIController {
   }
 
   scriptFor(intent, self) {
+    if (intent.type === 'throw') return [{ punch: true, kick: true }];
     if (intent.type === 'attack') {
       // Personagem com sequencias (cancels): a IA aperta de novo no ritmo do
       // golpe, e a sequencia so continua se o primeiro conectar.

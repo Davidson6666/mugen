@@ -52,6 +52,45 @@ const CHAIN_BUFFER_TICKS = 10;
 // pelos cancels; o que acaba e emendar sequencia atras de sequencia na guarda
 // (o chute da Chun-Li, que saia em 2 ticks, nunca deixava o outro reagir).
 export const GUARD_GAP_TICKS = 10;
+
+// Arremesso (soco + chute juntos, colado no oponente): nao se defende, derruba
+// e e o que pune quem so fica na guarda. Quem vai ser arremessado escapa
+// apertando soco + chute tambem, pouco antes de ser pego.
+export const THROW_MOVE = 'universalThrow';
+// Os dois botoes contam como "juntos" se sairem com ate estes ticks de folga
+// (o soco ou o chute que saiu primeiro vira arremesso).
+const THROW_INPUT_TICKS = 3;
+const THROW_TECH_TICKS = 8;
+// Alcance alem do encosto dos dois corpos (px de tela).
+const THROW_REACH = 26;
+export const THROW_DAMAGE = 10;
+const THROW_STATES = ['idle', 'walk', 'crouch'];
+
+// Golpe de arremesso montado na hora, com a pose de agarrao do personagem (ou
+// a do soco): agarra no segundo quadro e joga o oponente longe.
+function buildThrow(config) {
+  const source = config.animations.grab ?? config.animations.punch ?? config.animations.idle;
+  const frames = source.frames.slice(0, 3);
+  while (frames.length < 3) frames.push(frames.at(-1));
+  const { frameWidth, baseline = config.spriteGridSize.frameHeight } = config.spriteGridSize;
+  const scale = config.spriteScale ?? 1;
+  return {
+    frames,
+    durations: [4, 6, 18],
+    loop: false,
+    hits: [{
+      from: 1,
+      until: 1,
+      damage: THROW_DAMAGE,
+      hitstun: 30,
+      heavy: true,
+      unblockable: true,
+      throw: true,
+      launch: { vx: 6, vy: 7 },
+      box: { offsetX: frameWidth / 2, offsetY: 0, width: (config.hurtbox.width / 2 + THROW_REACH / RENDER_SCALE / scale) * 1.6, height: baseline },
+    }],
+  };
+}
 // Quem encadeia vai atras do oponente empurrado (px por tick) ate a
 // distancia em que o proximo golpe acerta (o meio da caixa dele): o empurrao
 // fica visivel e a sequencia continua alcancando.
@@ -113,6 +152,9 @@ export class Fighter {
     this.random = random;
     this.minHealth = minHealth;
     this.config = record.config;
+    // O arremesso existe para todo mundo: entra no config uma vez (o mesmo nos
+    // dois lados de uma partida online).
+    if (!this.config.animations[THROW_MOVE]) this.config.animations[THROW_MOVE] = buildThrow(this.config);
     this.frames = record.frames;
     this.effectFrames = record.effectFrames ?? {};
     this.map = map;
@@ -151,6 +193,7 @@ export class Fighter {
     this.cooldowns = new Map();
     this.roundUses = new Map();
     this.blockRecoil = 0;
+    this.lastPress = { punch: -Infinity, kick: -Infinity };
     // Sons pedidos neste tick (o GameCanvas toca pelo AudioManager). moveRun
     // conta golpes comecados (nao os encadeados): o som com stopWithMove para
     // quando esse golpe acaba.
@@ -614,6 +657,8 @@ export class Fighter {
       this.pendingPose = null;
     }
 
+    if (command.punch) this.lastPress.punch = this.roundClock;
+    if (command.kick) this.lastPress.kick = this.roundClock;
     this.tickCooldowns(delta);
     this.tickSeals(delta);
     this.tickEchoes();
@@ -752,7 +797,32 @@ export class Fighter {
 
   // Golpe novo a partir do input: dash, combo reconhecido ou botao. No ar vale
   // o golpe aereo (do combo ou do botao).
+  // Soco e chute apertados juntos agora (um deles neste tick).
+  throwPressed(command) {
+    if (!command.punch && !command.kick) return false;
+    return Math.abs(this.lastPress.punch - this.lastPress.kick) <= THROW_INPUT_TICKS;
+  }
+
+  // Apertou soco + chute ha pouco: escapa de um arremesso que chegar agora.
+  get throwTechReady() {
+    const latest = Math.min(this.lastPress.punch, this.lastPress.kick);
+    return Math.abs(this.lastPress.punch - this.lastPress.kick) <= THROW_INPUT_TICKS
+      && this.roundClock - latest <= THROW_TECH_TICKS;
+  }
+
+  get canBeThrown() {
+    return this.grounded && !this.isKnockedOut && !this.invulnerable && THROW_STATES.includes(this.state);
+  }
+
+  tryThrow() {
+    const rival = this.opponent;
+    if (!this.grounded || !rival?.canBeThrown) return false;
+    if (Math.abs(rival.x - this.x) > this.halfWidth + rival.halfWidth + THROW_REACH) return false;
+    return this.startAttack(THROW_MOVE);
+  }
+
   chooseAction(command) {
+    if (this.throwPressed(command) && this.tryThrow()) return;
     const { combo } = command;
     if (combo?.movement) {
       this.startDash(combo.animation);
@@ -776,6 +846,11 @@ export class Fighter {
     const move = this.animation.current;
     const pressed = BUTTONS.find((name) => command[name]);
     if (pressed) this.buffered = { button: pressed, forward, down: Boolean(command.down), clock: this.moveClock };
+
+    // O soco (ou chute) que saiu um pouco antes do outro botao vira arremesso.
+    const ground = this.buttons.ground ?? {};
+    const basic = this.animation.name === ground.punch || this.animation.name === ground.kick;
+    if (basic && this.moveClock <= THROW_INPUT_TICKS && this.throwPressed(command) && this.tryThrow()) return;
 
     // Segurar para carregar (os especiais do Escanor): solta ao largar o botao
     // (depois do minimo) ou quando a carga acaba.
@@ -1208,6 +1283,7 @@ export class Fighter {
     this.chainUsed.clear();
     this.roundUses.clear();
     this.blockRecoil = 0;
+    this.lastPress = { punch: -Infinity, kick: -Infinity };
     this.illusion = null;
     this.seals = {};
     this.buffs = {};

@@ -20,8 +20,13 @@ function fallbackList(config) {
   return [...basics, ...combos];
 }
 
+// Golpes que todo lutador tem, alem dos do proprio config.
+export const COMMON_MOVES = [
+  { section: 'Todos os lutadores', name: 'Arremesso — colado no oponente', input: 'PK', note: 'Soco + chute juntos; não dá para defender. Apertar junto também escapa' },
+];
+
 export function moveListFor(config) {
-  return config.moveList ?? fallbackList(config);
+  return [...(config.moveList ?? fallbackList(config)), ...COMMON_MOVES];
 }
 
 // Golpes agrupados na ordem em que as secoes aparecem.

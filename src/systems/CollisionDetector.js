@@ -92,6 +92,16 @@ export function applyHit(attacker, defender, attack, hitRect, serial = attacker.
   // Finalizadores removem a vida restante, independentemente do balanceamento.
   if (attack.instantKill) attack = { ...attack, damage: defender.health, unblockable: true };
   const heavy = Boolean(attack.heavy);
+  // Arremesso: so pega quem esta no chao e solto (nao no meio de um golpe ou
+  // atordoado); quem apertou soco + chute junto escapa e os dois se separam.
+  if (attack.throw) {
+    if (!defender.canBeThrown && defender.state !== 'attack') return null;
+    if (defender.throwTechReady) {
+      defender.pushBack(BLOCK_PUSH * 2);
+      attacker.pushBack(BLOCK_PUSH * 2);
+      return { outcome: 'evade', damage: 0, point, tech: true };
+    }
+  }
   // Esquiva (Genjutsu do dedo): o golpe atravessa sem dano nem hitstun.
   if (!attack.guaranteed && !defender.blocking && defender.tryEvade?.()) return { outcome: 'evade', damage: 0, point };
   // Genjutsu nao se defende: o golpe "unblockable" passa pela guarda.
