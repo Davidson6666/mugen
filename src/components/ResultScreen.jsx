@@ -10,6 +10,7 @@ import FighterSprite from './FighterSprite.jsx';
 import { Capsule, DiagonalBackdrop, Label, MenuOption, Pedestal, Spotlight } from './cvs2.jsx';
 import { useAccents } from '../utils/useAccents.js';
 import { loadConfig } from '../utils/characterConfig.js';
+import { pickVictoryQuote } from '../data/victoryQuotes.js';
 
 const MENU_OPTION = { id: 'menu', label: 'MENU PRINCIPAL' };
 const DEFAULT_OPTIONS = [{ id: 'rematch', label: 'REVANCHE' }, MENU_OPTION];
@@ -42,6 +43,8 @@ export default function ResultScreen() {
   const winner = characters.find((entry) => entry.id === setup.characters[winnerIndex]) ?? characters[0];
   const [accent] = useAccents([winner]);
   const [tagline, setTagline] = useState('');
+  // Frase de vitoria (sorteada uma vez); sem frase, fica a descricao do lutador.
+  const [quote] = useState(() => pickVictoryQuote(winner.id));
   useEffect(() => {
     let alive = true;
     loadConfig(winner).then((config) => alive && setTagline(config?.description ?? '')).catch(() => {});
@@ -156,7 +159,11 @@ export default function ResultScreen() {
         <g className="vs-slam" style={{ animationDelay: '350ms' }}>
           <Label x={48} y={300} size={56} fill={PALETTE.fieldYellow} stroke={10}>WINS!</Label>
         </g>
-        {tagline && (
+        {quote ? (
+          <g className="menu-opt" style={{ '--order': 2 }}>
+            <Label x={48} y={344} size={30} weight={800} stroke={6}>{`“${quote.toUpperCase()}”`}</Label>
+          </g>
+        ) : tagline && (
           <Label x={48} y={340} size={28} weight={700} stroke={5}>{tagline.toUpperCase()}</Label>
         )}
         {result?.walkover && (
