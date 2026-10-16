@@ -24,9 +24,9 @@ Para o ranking e a partida online é preciso um projeto no [Supabase](https://su
 | Versus Player | Dois jogadores no mesmo teclado ou com controles (o 1P precisa de conta) |
 | Partida online | Fila por Elo, lutas sincronizadas por *lockstep* |
 | Modo História | Seis lutas com dificuldade crescente; vencer libera um lutador secreto |
-| Área de treino | Boneco que não revida, para treinar golpes e combos |
+| Área de treino | Boneco que não revida (parado ou defendendo, escolhido na pausa), com histórico de teclas e dano do combo na tela |
 
-Controles padrão (remapeáveis em Configurações): `WASD` move, `J` soco, `K` chute, `L` especial. O segundo jogador usa as setas e `Num 1/2/3`. Controles de PS5 e Xbox em [docs/CONTROLES.md](docs/CONTROLES.md). A lista de golpes de cada lutador abre na pausa (`Esc`).
+Controles padrão (remapeáveis em Configurações): `WASD` move, `J` soco, `K` chute, `L` especial. `J` + `K` juntos, colado no oponente, é o arremesso (não dá para defender; apertar junto também escapa). O segundo jogador usa as setas e `Num 1/2/3`. Controles de PS5 e Xbox em [docs/CONTROLES.md](docs/CONTROLES.md). A lista de golpes de cada lutador abre na pausa (`Esc`).
 
 ## Documentação do projeto
 

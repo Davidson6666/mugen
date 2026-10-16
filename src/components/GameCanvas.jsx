@@ -8,6 +8,8 @@ import { GameStateManager } from '../systems/GameStateManager.js';
 import { Hud } from '../systems/Hud.js';
 import { PlayerMarkers } from '../systems/PlayerMarker.js';
 import { SuperCutIn } from '../systems/SuperCutIn.js';
+import { TrainingPanel } from '../systems/TrainingPanel.js';
+import { ComboDamage, InputHistory } from '../utils/trainingInput.js';
 import { isSuperMove } from '../utils/superMoves.js';
 import { EffectManager } from '../systems/EffectManager.js';
 import { HitFeedback, kindOf } from '../systems/HitFeedback.js';
@@ -123,13 +125,15 @@ function drawBoxes(layer, fighters, effects) {
   }
 }
 
-export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
+// dummyMode: o que o boneco da area de treino faz ('stand' parado, 'block' defende).
+export default function GameCanvas({ setup, paused = false, onMatchEnd, dummyMode = 'stand' }) {
   const containerRef = useRef(null);
   const [status, setStatus] = useState('loading');
   // A configuracao da partida e capturada na montagem: ela nao muda enquanto a
   // luta acontece, e reconstruir o canvas no meio do combate seria um desastre.
   const setupRef = useRef(setup);
   const pausedRef = useRef(paused);
+  const dummyModeRef = useRef(dummyMode);
   const audioRef = useRef(null);
   const onMatchEndRef = useRef(onMatchEnd);
 
@@ -144,6 +148,10 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
   useEffect(() => {
     onMatchEndRef.current = onMatchEnd;
   }, [onMatchEnd]);
+
+  useEffect(() => {
+    dummyModeRef.current = dummyMode;
+  }, [dummyMode]);
 
   useEffect(() => {
     let disposed = false;
@@ -339,6 +347,12 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
       instance.stage.addChild(cutIn.view);
       instance.stage.addChild(hud.view);
 
+      // Area de treino: teclas apertadas e dano do combo no boneco.
+      const inputHistory = training ? new InputHistory() : null;
+      const comboDamage = training ? new ComboDamage() : null;
+      const trainingPanel = training ? new TrainingPanel({ width: STAGE_WIDTH }) : null;
+      if (trainingPanel) instance.stage.addChild(trainingPanel.view);
+
       // Setinhas sobre as cabecas: 1P e 2P (ou CPU). No treino so o 1P tem seta.
       let otherLabel = '2P';
       if (cpuEnabled) otherLabel = 'CPU';
@@ -444,6 +458,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
 
       function keepDummyAlive(delta) {
         const dummy = fighters[1];
+        comboDamage.update(Math.max(0, dummyHealth - dummy.health), fighters[0].comboCount);
         dummyIdle = dummy.health < dummyHealth ? 0 : dummyIdle + delta;
         if (dummyIdle >= TRAINING_REFILL_TICKS) dummy.health = dummy.config.stats.maxHealth;
         dummyHealth = dummy.health;
@@ -517,13 +532,19 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
                 const scheduled = index === localIndex ? net.localCommand(tick) : net.remoteCommand(tick);
                 command = scheduled ?? { ...NEUTRAL_COMMAND };
               } else if (index === 1 && training) {
-                // O boneco fica parado: nem IA, nem o teclado do jogador 2.
+                // O boneco nao tem IA nem o teclado do jogador 2: fica parado
+                // ou, se pedido na pausa, fica na guarda sem sair do lugar (e
+                // agachado quando o jogador agacha) para treinar contra ela.
                 command = { ...NEUTRAL_COMMAND };
+                if (dummyModeRef.current === 'block') {
+                  command = { ...command, guard: true, down: fighters[0].state === 'crouch' };
+                }
               } else {
                 command = index === 1 && cpuEnabled
                   ? ai.update(fighter, fighters[0], delta)
                   : { ...buildCommand(input, index), ...latched[index] };
                 latched[index] = {};
+                if (index === 0 && inputHistory) inputHistory.push(command, fighter.facing);
               }
               // O buffer le a direcao ja relativa ao lado que o personagem
               // encara, por isso o flip precisa acontecer antes.
@@ -590,6 +611,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
         });
 
         markers.update(fighters, frameDelta);
+        trainingPanel?.update(inputHistory, comboDamage);
         // Golpe novo que e super: corte na tela pelo lado de quem soltou.
         fighters.forEach((fighter, index) => {
           if (fighter.moveRun === seenMoves[index]) return;

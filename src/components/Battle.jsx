@@ -22,6 +22,12 @@ export default function Battle() {
   const { setup, finishMatch } = useGame();
   const [paused, setPaused] = useState(false);
   const [pauseIndex, setPauseIndex] = useState(0);
+  // Area de treino: o boneco fica parado ou defende (trocado na pausa).
+  const [dummyMode, setDummyMode] = useState('stand');
+  const training = setup.mode === 'training';
+  const pauseOptions = training
+    ? [PAUSE_OPTIONS[0], { id: 'dummy', label: `BONECO: ${dummyMode === 'block' ? 'DEFENDE' : 'PARADO'}` }, ...PAUSE_OPTIONS.slice(1)]
+    : PAUSE_OPTIONS;
   // Lista de golpes aberta por cima da pausa, e de qual jogador (0 = 1P).
   const [moveListPlayer, setMoveListPlayer] = useState(null);
   const listOpenRef = useRef(false);
@@ -85,15 +91,16 @@ export default function Battle() {
       return;
     }
     if (direction === 'up' || direction === 'down') {
-      setPauseIndex((current) => (current + (direction === 'up' ? -1 : 1) + PAUSE_OPTIONS.length)
-        % PAUSE_OPTIONS.length);
+      setPauseIndex((current) => (current + (direction === 'up' ? -1 : 1) + pauseOptions.length)
+        % pauseOptions.length);
     }
   };
 
   const onConfirm = (index = pauseIndex) => {
     if (moveListPlayer !== null) return;
-    const option = PAUSE_OPTIONS[index].id;
+    const option = pauseOptions[index].id;
     if (option === 'resume') setPaused(false);
+    else if (option === 'dummy') setDummyMode((mode) => (mode === 'block' ? 'stand' : 'block'));
     else if (option === 'moves') setMoveListPlayer(0);
     else resetTo('mainMenu');
   };
@@ -118,7 +125,7 @@ export default function Battle() {
 
   return (
     <div className="screen screen--battle">
-      <GameCanvas setup={setup} paused={paused} onMatchEnd={handleMatchEnd} />
+      <GameCanvas setup={setup} paused={paused} onMatchEnd={handleMatchEnd} dummyMode={dummyMode} />
 
       {paused && (
         // Pausa no padrao dos anuncios do HUD: luta escurecida e faixa amarela.
@@ -127,10 +134,10 @@ export default function Battle() {
             <rect width={1280} height={720} fill={PALETTE.ink} opacity={0.6} />
             <rect x={-10} y={200} width={1300} height={130} fill={PALETTE.fieldYellow} stroke={PALETTE.ink} strokeWidth={8} />
             <Label x={640} y={305} size={120} anchor="middle" stroke={14}>PAUSA</Label>
-            {PAUSE_OPTIONS.map((option, index) => (
+            {pauseOptions.map((option, index) => (
               <MenuOption
                 key={option.id}
-                x={440 - index * 18} y={380 + index * 72} width={400}
+                x={440 - index * 18} y={370 + index * (pauseOptions.length > 3 ? 60 : 72)} width={400}
                 label={option.label}
                 active={index === pauseIndex}
                 onPointerEnter={() => setPauseIndex(index)}
