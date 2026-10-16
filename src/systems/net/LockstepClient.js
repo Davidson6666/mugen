@@ -1,4 +1,5 @@
 import { supabase } from '../../utils/supabaseClient.js';
+import { DelayAgreement } from './inputDelay.js';
 
 // Lockstep com atraso fixo: os dois computadores rodam a luta inteira
 // localmente e trocam SO o input, nunca o estado do jogo. O que eu aperto no
@@ -9,7 +10,9 @@ import { supabase } from '../../utils/supabaseClient.js';
 // os dois lados chegam exatamente no mesmo resultado sem trocar nada alem
 // disso.
 
-// Quantos ticks de antecedencia o input viaja (8 ticks = ~133ms).
+// Quantos ticks de antecedencia o input viaja, se a medicao da conexao nao der
+// resultado (8 ticks = ~133ms). Normalmente os dois lados combinam um numero
+// pela conexao de verdade (src/systems/net/inputDelay.js).
 export const NET_INPUT_DELAY = 8;
 // Ticks acumulados antes de mandar o lote (3 = 20 pacotes por segundo, em vez
 // de 60: o Realtime do Supabase tem limite de mensagens por segundo).
@@ -66,6 +69,11 @@ export class LockstepClient {
     this.joinedAt = Date.now();
     this.opponentReady = false;
     this.disposed = false;
+    this.inputDelay = NET_INPUT_DELAY;
+    this.agreement = new DelayAgreement({
+      fallback: NET_INPUT_DELAY,
+      send: (event, payload) => this.channel?.send({ type: 'broadcast', event: `delay:${event}`, payload }),
+    });
   }
 
   async join() {
@@ -79,6 +87,12 @@ export class LockstepClient {
         this.remoteByTick.set(frame.t, decodeCommand(frame.m));
       }
     });
+    for (const event of ['ping', 'pong', 'delay']) {
+      this.channel.on('broadcast', { event: `delay:${event}` }, ({ payload }) => {
+        this.lastRemoteAt = Date.now();
+        this.agreement.receive(event, payload);
+      });
+    }
     this.channel.on('broadcast', { event: 'ready' }, () => {
       this.lastRemoteAt = Date.now();
       if (this.opponentReady) return;
@@ -126,6 +140,16 @@ export class LockstepClient {
     });
   }
 
+  // Mede a conexao e combina o atraso com o outro lado (os dois ficam com o
+  // mesmo numero). Chamar depois de waitForOpponent. Devolve false se o outro
+  // parou de responder no meio.
+  async agreeDelay() {
+    const agreed = await this.agreement.run();
+    if (agreed === null) return false;
+    this.inputDelay = agreed;
+    return true;
+  }
+
   // Guarda o que eu apertei e enfileira pro adversario.
   schedule(tick, command) {
     this.localByTick.set(tick, command);
@@ -157,7 +181,7 @@ export class LockstepClient {
   // Da pra simular esse tick? Os primeiros ticks ninguem agendou (o input so
   // comeca a valer depois do atraso), entao rodam com comando neutro.
   canStep(tick) {
-    if (tick <= NET_INPUT_DELAY) return true;
+    if (tick <= this.inputDelay) return true;
     return this.remoteByTick.has(tick);
   }
 

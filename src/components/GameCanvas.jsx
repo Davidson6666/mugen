@@ -17,7 +17,7 @@ import { InputHandler } from '../utils/InputHandler.js';
 import { buildCommand, PRESS_ACTIONS } from '../utils/combatInput.js';
 import { createRandom, randomSeed } from '../utils/rng.js';
 import { roundEndAnnounce } from '../utils/roundAnnounce.js';
-import { LockstepClient, NET_INPUT_DELAY } from '../systems/net/LockstepClient.js';
+import { LockstepClient } from '../systems/net/LockstepClient.js';
 import { PALETTE, PALETTE_HEX } from '../utils/palette.js';
 import characters from '../data/characters.json';
 import maps from '../data/maps.json';
@@ -271,7 +271,10 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
         // Realtime nao guarda mensagem pra quem chega depois), e os dois
         // acabariam travados esperando ticks que nunca chegam.
         setStatus('waiting');
-        const ready = await net.waitForOpponent();
+        let ready = await net.waitForOpponent();
+        if (disposed) return;
+        // Mede a conexao e combina o atraso de input (o mesmo nos dois lados).
+        if (ready) ready = await net.agreeDelay();
         if (disposed) return;
         if (!ready) {
           // Nunca apareceu: nem comeca a partida.
@@ -476,7 +479,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
           // lado esquerdo ou o direito da partida.
           const pressed = { ...buildCommand(input, 0), ...latched[localIndex] };
           latched[localIndex] = {};
-          net.schedule(tick + NET_INPUT_DELAY, pressed);
+          net.schedule(tick + net.inputDelay, pressed);
         }
 
         // Durante a pausa de impacto a luta inteira congela; so faisca,
