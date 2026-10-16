@@ -47,6 +47,11 @@ const MOVE_FRICTION = 0.85;
 // Por quantos ticks um aperto de botao continua valendo para encadear: quem
 // aperta um pouco antes do golpe conectar nao perde a sequencia.
 const CHAIN_BUFFER_TICKS = 10;
+// Golpe bloqueado: quem atacou so comeca um golpe NOVO depois que o defensor
+// sai da defesa e fica livre por estes ticks. A sequencia em andamento segue
+// pelos cancels; o que acaba e emendar sequencia atras de sequencia na guarda
+// (o chute da Chun-Li, que saia em 2 ticks, nunca deixava o outro reagir).
+export const GUARD_GAP_TICKS = 10;
 // Quem encadeia vai atras do oponente empurrado (px por tick) ate a
 // distancia em que o proximo golpe acerta (o meio da caixa dele): o empurrao
 // fica visivel e a sequencia continua alcancando.
@@ -145,6 +150,7 @@ export class Fighter {
     this.pendingPose = null;
     this.cooldowns = new Map();
     this.roundUses = new Map();
+    this.blockRecoil = 0;
     // Sons pedidos neste tick (o GameCanvas toca pelo AudioManager). moveRun
     // conta golpes comecados (nao os encadeados): o som com stopWithMove para
     // quando esse golpe acaba.
@@ -458,6 +464,7 @@ export class Fighter {
     const move = this.config.animations[animationName];
     if (!move) return false;
     if (!chained && this.isOnCooldown(animationName)) return false;
+    if (!chained && this.blockRecoil > 0) return false;
     if (!chained && move.requires && !this.effectTags.has(move.requires)) return false;
     // Golpe de misericordia (Hollow Nuke): so com o oponente abaixo de uma
     // fracao da vida.
@@ -524,6 +531,10 @@ export class Fighter {
       }
     }
     if (outcome === 'block') {
+      // So o golpe corpo a corpo atual: projetil bloqueado nao trava o atacante.
+      if (serial === this.attackSerial && this.opponent) {
+        this.blockRecoil = Math.max(this.blockRecoil, (this.opponent.stunTimer ?? 0) + GUARD_GAP_TICKS);
+      }
       this.breakCombo();
       return;
     }
@@ -943,6 +954,7 @@ export class Fighter {
   }
 
   tickCooldowns(delta) {
+    if (this.blockRecoil > 0) this.blockRecoil = Math.max(0, this.blockRecoil - delta);
     for (const [name, remaining] of this.cooldowns) {
       const next = remaining - delta;
       if (next <= 0) this.cooldowns.delete(name);
@@ -1195,6 +1207,7 @@ export class Fighter {
     this.cooldowns.clear();
     this.chainUsed.clear();
     this.roundUses.clear();
+    this.blockRecoil = 0;
     this.illusion = null;
     this.seals = {};
     this.buffs = {};
