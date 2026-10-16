@@ -1,7 +1,7 @@
 {
   "id": "humberto",
   "name": "Humberto",
-  "description": "Professor de química — Six Seven, petrificação e fúria lendária",
+  "description": "O químico lendário",
   "assetVersion": "humberto-combat-v2",
   "sheets": [
     "humberto_body.png",
@@ -1084,6 +1084,11 @@
           "on": "punch",
           "to": "punch2",
           "after": 8
+        },
+        {
+          "on": "kick",
+          "to": "kick",
+          "after": 8
         }
       ],
       "events": [
@@ -1103,31 +1108,43 @@
     },
     "punch2": {
       "frames": [
-        76,
-        78,
-        77,
-        79
+        73,
+        7,
+        7,
+        72
       ],
       "durations": [
         4,
-        4,
-        4,
+        3,
+        5,
         6
       ],
       "loop": false,
       "hits": [
         {
           "from": 1,
-          "until": 1,
+          "until": 2,
           "damage": 7.801,
           "hitstun": 15,
+          "push": 4,
           "box": {
             "offsetX": 185,
             "offsetY": 155,
             "width": 120,
             "height": 95
-          },
-          "push": 4
+          }
+        }
+      ],
+      "cancels": [
+        {
+          "on": "punch",
+          "to": "punch3",
+          "after": 7
+        },
+        {
+          "on": "kick",
+          "to": "kick2",
+          "after": 7
         }
       ],
       "events": [
@@ -1186,6 +1203,18 @@
             "offsetX": 260,
             "offsetY": 150
           }
+        }
+      ],
+      "cancels": [
+        {
+          "on": "kick",
+          "to": "kick2",
+          "after": 10
+        },
+        {
+          "on": "punch",
+          "to": "punch3",
+          "after": 10
         }
       ]
     },
@@ -1908,6 +1937,11 @@
           "on": "punch",
           "to": "legend_punch2",
           "after": 8
+        },
+        {
+          "on": "kick",
+          "to": "legend_kick",
+          "after": 8
         }
       ],
       "events": [
@@ -1929,27 +1963,41 @@
       "frames": [
         38,
         39,
-        40
+        39,
+        38
       ],
       "durations": [
         4,
-        4,
-        10
+        3,
+        5,
+        6
       ],
       "loop": false,
       "hits": [
         {
           "from": 1,
-          "until": 1,
+          "until": 2,
           "damage": 7.801,
           "hitstun": 15,
+          "push": 4,
           "box": {
             "offsetX": 185,
             "offsetY": 155,
             "width": 120,
             "height": 95
-          },
-          "push": 4
+          }
+        }
+      ],
+      "cancels": [
+        {
+          "on": "punch",
+          "to": "legend_punch3",
+          "after": 7
+        },
+        {
+          "on": "kick",
+          "to": "legend_kick2",
+          "after": 7
         }
       ],
       "events": [
@@ -2006,6 +2054,18 @@
             "offsetX": 260,
             "offsetY": 150
           }
+        }
+      ],
+      "cancels": [
+        {
+          "on": "kick",
+          "to": "legend_kick2",
+          "after": 10
+        },
+        {
+          "on": "punch",
+          "to": "legend_punch3",
+          "after": 10
         }
       ]
     },
@@ -2588,6 +2648,196 @@
             "id": "fireBreath",
             "offsetX": 110,
             "offsetY": 220
+          }
+        }
+      ]
+    },
+    "punch3": {
+      "frames": [
+        75,
+        26,
+        26,
+        87
+      ],
+      "durations": [
+        5,
+        4,
+        9,
+        9
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 1,
+          "until": 2,
+          "damage": 10,
+          "hitstun": 18,
+          "push": 7,
+          "heavy": true,
+          "box": {
+            "offsetX": 185,
+            "offsetY": 155,
+            "width": 120,
+            "height": 95
+          }
+        }
+      ],
+      "events": [
+        {
+          "at": 5,
+          "sound": "swing"
+        },
+        {
+          "at": 5,
+          "effect": {
+            "id": "combatTrail",
+            "offsetX": 230,
+            "offsetY": 170
+          }
+        }
+      ]
+    },
+    "kick2": {
+      "frames": [
+        84,
+        85,
+        86,
+        86,
+        87
+      ],
+      "durations": [
+        5,
+        4,
+        4,
+        8,
+        9
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 2,
+          "until": 3,
+          "damage": 12,
+          "hitstun": 18,
+          "heavy": true,
+          "launch": {
+            "vx": 5,
+            "vy": 4
+          },
+          "box": {
+            "offsetX": 180,
+            "offsetY": 145,
+            "width": 140,
+            "height": 115
+          }
+        }
+      ],
+      "events": [
+        {
+          "at": 9,
+          "sound": "reaction"
+        },
+        {
+          "at": 9,
+          "effect": {
+            "id": "combatTrail",
+            "offsetX": 240,
+            "offsetY": 190
+          }
+        }
+      ]
+    },
+    "legend_punch3": {
+      "frames": [
+        38,
+        58,
+        58,
+        32
+      ],
+      "durations": [
+        5,
+        4,
+        9,
+        9
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 1,
+          "until": 2,
+          "damage": 10,
+          "hitstun": 18,
+          "push": 7,
+          "heavy": true,
+          "box": {
+            "offsetX": 185,
+            "offsetY": 155,
+            "width": 120,
+            "height": 95
+          }
+        }
+      ],
+      "events": [
+        {
+          "at": 5,
+          "sound": "swing"
+        },
+        {
+          "at": 5,
+          "effect": {
+            "id": "combatTrail",
+            "offsetX": 230,
+            "offsetY": 170
+          }
+        }
+      ]
+    },
+    "legend_kick2": {
+      "frames": [
+        60,
+        52,
+        61,
+        61,
+        32
+      ],
+      "durations": [
+        5,
+        4,
+        4,
+        8,
+        9
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 2,
+          "until": 3,
+          "damage": 12,
+          "hitstun": 18,
+          "heavy": true,
+          "launch": {
+            "vx": 5,
+            "vy": 4
+          },
+          "box": {
+            "offsetX": 180,
+            "offsetY": 145,
+            "width": 140,
+            "height": 115
+          }
+        }
+      ],
+      "events": [
+        {
+          "at": 9,
+          "sound": "reaction"
+        },
+        {
+          "at": 9,
+          "effect": {
+            "id": "combatTrail",
+            "offsetX": 240,
+            "offsetY": 190
           }
         }
       ]
@@ -6903,13 +7153,21 @@
     },
     {
       "section": "Laboratório de combate",
-      "name": "Soco — combo",
-      "input": "P"
+      "name": "Sequência de socos",
+      "input": "PPP",
+      "note": "Direita, jab de esquerda e soco pesado"
     },
     {
       "section": "Laboratório de combate",
-      "name": "Chute",
-      "input": "K"
+      "name": "Sequência de chutes",
+      "input": "KK",
+      "note": "Chute e empurrão de duas mãos que lança"
+    },
+    {
+      "section": "Laboratório de combate",
+      "name": "Mistura",
+      "input": "PPK",
+      "note": "Soco e chute se encadeiam: PK, KP, PPK..."
     },
     {
       "section": "Lendário",
@@ -7013,7 +7271,9 @@
         "special1": "legend_special1",
         "special2": "legend_special2",
         "kiBlast": "legend_kiBlast",
-        "medusa": "legend_medusa"
+        "medusa": "legend_medusa",
+        "punch3": "legend_punch3",
+        "kick2": "legend_kick2"
       },
       "buttons": {
         "ground": {
