@@ -7,6 +7,8 @@ import { AIController } from '../systems/AIController.js';
 import { GameStateManager } from '../systems/GameStateManager.js';
 import { Hud } from '../systems/Hud.js';
 import { PlayerMarkers } from '../systems/PlayerMarker.js';
+import { SuperCutIn } from '../systems/SuperCutIn.js';
+import { isSuperMove } from '../utils/superMoves.js';
 import { EffectManager } from '../systems/EffectManager.js';
 import { HitFeedback, kindOf } from '../systems/HitFeedback.js';
 import { Camera } from '../systems/Camera.js';
@@ -326,6 +328,15 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
         labels: ['1P', cpuEnabled ? 'CPU' : '2P'],
         portraits,
       });
+      // Corte de super (escurece, faixa com o retrato): por baixo do HUD.
+      const cutIn = new SuperCutIn({
+        width: STAGE_WIDTH,
+        height: STAGE_HEIGHT,
+        portraits,
+        names: fighters.map((fighter) => fighter.config.name),
+      });
+      const seenMoves = fighters.map((fighter) => fighter.moveRun);
+      instance.stage.addChild(cutIn.view);
       instance.stage.addChild(hud.view);
 
       // Setinhas sobre as cabecas: 1P e 2P (ou CPU). No treino so o 1P tem seta.
@@ -579,6 +590,13 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd }) {
         });
 
         markers.update(fighters, frameDelta);
+        // Golpe novo que e super: corte na tela pelo lado de quem soltou.
+        fighters.forEach((fighter, index) => {
+          if (fighter.moveRun === seenMoves[index]) return;
+          seenMoves[index] = fighter.moveRun;
+          if (fighter.state === 'attack' && isSuperMove(fighter.config.animations[fighter.animation.name])) cutIn.play(index);
+        });
+        cutIn.update(frameDelta);
         hud.update(
           {
             fighters,
