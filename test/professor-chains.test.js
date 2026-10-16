@@ -39,6 +39,26 @@ for (const id of ['ensina_god', 'humberto']) {
     assert.ok(hits(world).length >= 3, `acertos ${hits(world).length}`);
   });
 
+  // Martelar o botao nao pode virar laco infinito: o finalizador joga o
+  // adversario longe o bastante para ele cair fora do alcance e levantar.
+  for (const button of ['punch', 'kick']) {
+    test(`${id}: martelar ${button} nao prende o adversario para sempre`, () => {
+      const world = arena(record, 600, 640);
+      const rival = world.fighters[1];
+      // Sem nocaute (como o boneco do treino): o laco aparece inteiro.
+      rival.minHealth = 1;
+      let locked = 0;
+      let longest = 0;
+      for (let tick = 0; tick < 600; tick += 1) {
+        step(world, command(tick % 2 === 0 ? { [button]: true } : {}));
+        const stuck = ['hitstun', 'launched', 'knockdown', 'down', 'getUp'].includes(rival.state);
+        locked = stuck ? locked + 1 : 0;
+        longest = Math.max(longest, locked);
+      }
+      assert.ok(longest < 120, `preso por ${longest} ticks seguidos`);
+    });
+  }
+
   test(`${id}: socando o ar, de longe, a sequencia nao continua`, () => {
     const world = press(arena(record, 300, 900), ['punch', 'punch', 'punch']);
     assert.ok(!world.visited.has('punch2'));

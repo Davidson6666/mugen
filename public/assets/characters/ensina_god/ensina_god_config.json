@@ -764,8 +764,8 @@
           "hitstun": 20,
           "heavy": true,
           "launch": {
-            "vx": 3,
-            "vy": 8
+            "vx": 9,
+            "vy": 5
           },
           "box": {
             "offsetX": 140,
@@ -797,7 +797,7 @@
           "damage": 16,
           "hitstun": 18,
           "launch": {
-            "vx": 3,
+            "vx": 8,
             "vy": 3
           },
           "box": {
@@ -2842,6 +2842,48 @@
       "name": "Sequência de chutes",
       "input": "KK",
       "note": "Chute alto e rasteira que derruba"
+    },
+    {
+      "section": "Básicos",
+      "name": "Mistura",
+      "input": "PPK",
+      "note": "Soco e chute se encadeiam: PK, KP, PPK..."
+    },
+    {
+      "section": "Básicos",
+      "name": "Mistura",
+      "input": "PPK",
+      "note": "Soco e chute se encadeiam: PK, KP, PPK..."
+    },
+    {
+      "section": "Básicos",
+      "name": "Mistura",
+      "input": "PPK",
+      "note": "Soco e chute se encadeiam: PK, KP, PPK..."
+    },
+    {
+      "section": "Básicos",
+      "name": "Mistura",
+      "input": "PPK",
+      "note": "Soco e chute se encadeiam: PK, KP, PPK..."
+    },
+    {
+      "section": "Básicos",
+      "name": "Mistura",
+      "input": "PPK",
+      "note": "Soco e chute se encadeiam: PK, KP, PPK..."
+    },
+    {
+      "section": "Básicos",
+      "name": "Mistura",
+      "input": "PPK",
+      "note": "Soco e chute se encadeiam: PK, KP, PPK..."
+    },
+    {
+      "section": "Básicos",
+      "name": "Mistura",
+      "input": "PPK",
+      "note": "Soco e chute se encadeiam: PK, KP, PPK..."
     },
     {
       "section": "Básicos",

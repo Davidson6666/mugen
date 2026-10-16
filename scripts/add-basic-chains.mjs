@@ -50,13 +50,13 @@ update('ensina_god/ensina_god_config.json', (c) => {
     frames: [4, 16, 16, 0],
     durations: [5, 4, 9, 10],
     loop: false,
-    hits: [{ from: 1, until: 2, damage: 18, hitstun: 20, heavy: true, launch: { vx: 3, vy: 8 }, box: { offsetX: 140, offsetY: 20, width: 95, height: 150 } }],
+    hits: [{ from: 1, until: 2, damage: 18, hitstun: 20, heavy: true, launch: { vx: 9, vy: 5 }, box: { offsetX: 140, offsetY: 20, width: 95, height: 150 } }],
   };
   a.kick2 = {
     frames: [22, 23, 23, 4],
     durations: [4, 4, 8, 10],
     loop: false,
-    hits: [{ from: 1, until: 2, damage: 16, hitstun: 18, launch: { vx: 3, vy: 3 }, box: { offsetX: 170, offsetY: 205, width: 105, height: 55 } }],
+    hits: [{ from: 1, until: 2, damage: 16, hitstun: 18, launch: { vx: 8, vy: 3 }, box: { offsetX: 170, offsetY: 205, width: 105, height: 55 } }],
   };
   setBasics(c, ['Soco', 'Chute', 'Sequência de socos', 'Sequência de chutes'], [
     { section: 'Básicos', name: 'Sequência de socos', input: 'PPP', note: 'Soco reto, palmada e gancho que lança' },
