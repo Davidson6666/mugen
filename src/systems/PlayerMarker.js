@@ -21,11 +21,27 @@ function arrow(color) {
   return marker;
 }
 
+// Topo do desenho do quadro atual, em coordenadas do mundo. O atlas guarda o
+// recorte do desenho dentro da celula (trim); sem ele, o topo da celula.
+export function visualTop(sprite) {
+  const texture = sprite.texture;
+  const cellHeight = texture?.orig?.height ?? texture?.height ?? 0;
+  const trimTop = texture?.trim ? texture.trim.y : 0;
+  return sprite.y + (trimTop - sprite.anchor.y * cellHeight) * Math.abs(sprite.scale.y);
+}
+
+// Subir para acompanhar um braco erguido e rapido; descer e devagar, senao a
+// seta treme a cada quadro da animacao.
+const RISE = 0.6;
+const FALL = 0.12;
+const FADE = 0.15;
+
 export class PlayerMarkers {
   constructor(labels) {
     this.view = new Container();
     this.time = 0;
     this.labels = labels;
+    this.heights = labels.map(() => null);
     this.markers = labels.map((text, index) => {
       const color = index === 0 ? PALETTE.cursorP1 : PALETTE.cursorP2;
       const marker = arrow(color);
@@ -39,13 +55,28 @@ export class PlayerMarkers {
     });
   }
 
-  update(fighters, frameDelta) {
+  // show: a luta esta valendo. Fora dela (K.O., pose de vitoria, troca de
+  // round) as setas somem, para nao cobrir as animacoes.
+  update(fighters, frameDelta, show = true) {
     this.time += frameDelta;
-    const spots = markerPositions(fighters.map((fighter) => fighter.hurtRect));
+    // O ponto mais alto entre o corpo e o desenho do quadro.
+    const rects = fighters.map((fighter) => {
+      const rect = fighter.hurtRect;
+      const top = Math.min(rect.y, visualTop(fighter.sprite));
+      return { ...rect, y: top };
+    });
+    const spots = markerPositions(rects);
     this.markers.forEach((marker, index) => {
+      const target = spots[index].y;
+      const current = this.heights[index] ?? target;
+      const rate = target < current ? RISE : FALL;
+      this.heights[index] = current + (target - current) * Math.min(1, rate * frameDelta);
       const bob = Math.sin(this.time * BOB_SPEED + index * Math.PI) * BOB_PIXELS;
-      marker.position.set(spots[index].x, spots[index].y + bob);
-      marker.visible = this.labels[index] !== null && fighters[index].sprite.visible;
+      marker.position.set(spots[index].x, this.heights[index] + bob);
+      const wanted = show && fighters[index].sprite.visible ? 1 : 0;
+      marker.alpha += Math.max(-FADE, Math.min(FADE, wanted - marker.alpha)) * frameDelta;
+      marker.alpha = Math.max(0, Math.min(1, marker.alpha));
+      marker.visible = this.labels[index] !== null && marker.alpha > 0.01;
     });
   }
 }

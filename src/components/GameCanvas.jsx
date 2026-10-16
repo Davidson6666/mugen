@@ -610,7 +610,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd, dummyMod
           shadows[index].alpha = 1 - lift * 0.6;
         });
 
-        markers.update(fighters, frameDelta);
+        markers.update(fighters, frameDelta, match.phase === 'fighting' || match.phase === 'intro');
         trainingPanel?.update(inputHistory, comboDamage);
         // Golpe novo que e super: corte na tela pelo lado de quem soltou.
         fighters.forEach((fighter, index) => {

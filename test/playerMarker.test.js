@@ -26,3 +26,19 @@ test('marcador: colados, o 2P sobe para as setas nao se cobrirem', () => {
   ]);
   assert.ok(p1.y - p2.y >= 30, `diferenca ${p1.y - p2.y}`);
 });
+
+// O topo do desenho vem do recorte do quadro no atlas (trim): um braco erguido
+// sobe a seta junto.
+test('marcador: topo do desenho usa o recorte do quadro', async () => {
+  const { visualTop } = await import('../src/systems/PlayerMarker.js');
+  const sprite = (trimY) => ({
+    y: 500,
+    anchor: { y: 0.9 },
+    scale: { y: 2 },
+    texture: { orig: { height: 200 }, trim: { y: trimY } },
+  });
+  // Ancora no pe (180 px abaixo do topo da celula): sem folga em cima, o topo
+  // fica 360 px acima do pe; com 40 px vazios em cima, 80 px mais baixo.
+  assert.equal(visualTop(sprite(0)), 500 - 360);
+  assert.equal(visualTop(sprite(40)), 500 - 280);
+});
