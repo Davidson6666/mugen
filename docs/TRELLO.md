@@ -63,12 +63,12 @@ Testes automatizados (669 testes passando)
 Diagrama de casos de uso com include e extend (15/10)
 Histórias de usuário (15/10)
 Prints de todas as telas (15/10)
+Protótipo das telas aprovado pelo professor (prints das telas)
 ```
 
 ## Coluna "A Fazer"
 
 ```text
-Confirmar com o professor se os prints das telas valem como protótipo (senão, montar no Figma)
 Revisar o diagrama de casos de uso com a equipe
 Testar Versus Local e Partida Online com duas pessoas
 Rodar o ajuste de equilíbrio com o elenco atual
