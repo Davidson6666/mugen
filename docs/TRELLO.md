@@ -72,6 +72,8 @@ Atraso do online combinado pela conexão (15/10)
 Corte de super na tela (15/10)
 Frase de vitória de cada lutador (15/10)
 Área de treino: teclas, dano do combo e boneco que defende (15/10)
+Correção: setas 1P/2P cobriam o lutador nas animações (15/10)
+Correção: laços infinitos (Chun-Li no K + L, Gojo, Pikachu, Killua, Tanjiro) (15/10)
 ```
 
 ## Coluna "A Fazer"
