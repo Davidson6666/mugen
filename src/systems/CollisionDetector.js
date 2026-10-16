@@ -89,6 +89,9 @@ export function applyHit(attacker, defender, attack, hitRect, serial = attacker.
   // Sem arredondar: o ajuste fino de equilibrio (x1.15 num golpe de dano 2)
   // precisa valer na media.
   if (scale !== 1) attack = { ...attack, damage: attack.damage * scale };
+  // Combo longo perde forca (so no acerto; a guarda ja corta o dano sozinha).
+  const comboScale = defender.blocking && !attack.unblockable ? 1 : (attacker.comboScaleFor?.(serial) ?? 1);
+  if (comboScale !== 1) attack = { ...attack, damage: attack.damage * comboScale };
   // Finalizadores removem a vida restante, independentemente do balanceamento.
   if (attack.instantKill) attack = { ...attack, damage: defender.health, unblockable: true };
   const heavy = Boolean(attack.heavy);

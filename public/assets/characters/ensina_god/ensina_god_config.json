@@ -2965,5 +2965,6 @@
     "offsetY": 0,
     "scale": 0.75
   },
-  "assetVersion": "ensina-shadow-video-v2"
+  "assetVersion": "ensina-shadow-video-v2",
+  "comboScaling": false
 }
