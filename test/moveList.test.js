@@ -24,7 +24,7 @@ test('a lista do Itachi cobre todos os combos do config', () => {
   const listed = new Set(moveListFor(config).map((move) => `${move.hold ?? ''}${move.input}`));
   for (const combo of config.combos) assert.ok(listed.has(`${combo.hold ?? ''}${combo.input}`), combo.id);
   const sections = groupBySection(moveListFor(config)).map((section) => section.title);
-  assert.deepEqual(sections, ['Movimento', 'Sequências', 'Jutsus', 'Supers']);
+  assert.deepEqual(sections, ['Movimento', 'Sequências', 'Jutsus', 'Supers', 'Todos os lutadores']);
 });
 
 test('personagem sem lista propria mostra os basicos e os combos', () => {
