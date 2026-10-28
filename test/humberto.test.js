@@ -25,7 +25,7 @@ for(const [move,distance,count]of[['special1',300,1],['special2',50,1],['ionicPa
  test(`Humberto ${move}: acerto, guarda, limpeza e orientação ${facing}`,()=>{
  const a=facing===1?400:850,b=a+distance*facing;
  const w=run(arena(record,a,b),cast(move),220);assert.equal(hits(w).length,count);assert.equal(w.effects.effects.length,0);
- const g=arena(record,a,b);for(let t=0;t<220;t++)step(g,t===0?cast(move):command(),command({[facing===1?'right':'left']:true}));
+ const g=arena(record,a,b);for(let t=0;t<220;t++)step(g,t===0?cast(move):command(),command({guard:true}));
  assert.equal(hits(g).length,0);assert.ok(g.results.some(r=>r.outcome==='block'));assert.equal(g.effects.effects.length,0);
  });
 }

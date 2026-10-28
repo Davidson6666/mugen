@@ -48,7 +48,7 @@ for (const [name, gap, minimum] of [
 test('pikachu: chute no ar', () => {
   const world = arena(record, 500, 560);
   step(world, command({ up: true, jump: true }));
-  for (let tick = 0; tick < 16; tick += 1) step(world);
+  for (let tick = 0; tick < 26; tick += 1) step(world);
   run(world, command({ combo: { animation: 'airKick', airAnimation: 'airKick' } }), 60);
   assert.ok(hits(world).length >= 1);
 });

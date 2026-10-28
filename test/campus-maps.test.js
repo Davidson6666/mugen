@@ -26,7 +26,7 @@ for(const entry of maps) {
   assert.equal(map.id,entry.id);
   assert.equal(map.name,entry.name);
   assert.deepEqual([png.width,png.height],[512,288]);
-  assert.equal(map.rightBound-map.leftBound,700);
+  assert.equal(map.rightBound-map.leftBound,864);
   assert.equal(map.width/png.width,map.height/png.height);
   for(let i=3;i<png.data.length;i+=4)assert.equal(png.data[i],255);
   const center=(map.leftBound+map.rightBound)/2;

@@ -63,7 +63,8 @@ function runDash(animation, facing = 1) {
 test('dash para frente anda a distancia do config e volta a ficar parado', () => {
   const { fighter, moved, invulnerableTicks } = runDash('dashForward');
   assert.equal(fighter.state, 'idle');
-  assert.ok(moved > 140 && moved < 180, `andou ${moved}px`);
+  // O config anda ~140 px; o motor garante o minimo de 260 (MIN_DASH_DISTANCE).
+  assert.ok(moved > 250 && moved < 290, `andou ${moved}px`);
   assert.ok(invulnerableTicks > 0, 'deveria ficar invulneravel enquanto some');
 });
 

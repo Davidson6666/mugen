@@ -12,9 +12,9 @@ test('Ensina: segundo salto reinicia a pose, troca para queda e recupera ao ater
   step(world,command({jump:true}));
   assert.equal(hero.animation.name,'airJump');
   assert.equal(hero.airJumpsLeft,0);
-  for(let i=0;i<14;i++)step(world);
+  for(let i=0;i<22;i++)step(world);
   assert.equal(hero.animation.name,'jumpFall');
-  for(let i=0;i<80;i++)step(world);
+  for(let i=0;i<100;i++)step(world);
   assert.equal(hero.grounded,true);
   assert.equal(hero.airJumpsLeft,1);
 });

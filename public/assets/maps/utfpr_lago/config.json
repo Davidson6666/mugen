@@ -5,8 +5,8 @@
   "width": 1024,
   "height": 576,
   "groundLevel": 464,
-  "leftBound": 162,
-  "rightBound": 862,
+  "leftBound": 80,
+  "rightBound": 944,
   "camera": {
     "zoomMin": 1.25,
     "zoomMax": 1.8,

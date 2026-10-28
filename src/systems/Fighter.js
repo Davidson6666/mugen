@@ -53,6 +53,27 @@ const CHAIN_BUFFER_TICKS = 10;
 // (o chute da Chun-Li, que saia em 2 ticks, nunca deixava o outro reagir).
 export const GUARD_GAP_TICKS = 10;
 
+// Ritmo de movimento (valem para todo o elenco, em cima do que cada config
+// declara, para nao se perder numa reimportacao): andar mais rapido, pulo mais
+// alto e dash com distancia minima. Quem ja passa do minimo (Aizen, Unohana...)
+// fica como estava.
+export const WALK_BOOST = 1.27;
+export const JUMP_BOOST = 1.2;
+export const MIN_DASH_DISTANCE = 260;
+export const MIN_DASH_BACK_DISTANCE = 200;
+
+// Distancia (px de tela) que um dash percorre: velocidade vezes os ticks dos
+// quadros em que ele se move.
+export function dashDistance(animation, scale) {
+  const { dash, durations, frames, speed } = animation;
+  if (!dash) return 0;
+  let ticks = 0;
+  frames.forEach((_, index) => {
+    if (index >= dash.moveFrom && index <= dash.moveUntil) ticks += durations ? durations[index] : 1 / (speed || 1);
+  });
+  return dash.speed * scale * ticks;
+}
+
 // Arremesso (soco + chute juntos, colado no oponente): nao se defende, derruba
 // e e o que pune quem so fica na guarda. Quem vai ser arremessado escapa
 // apertando soco + chute tambem, pouco antes de ser pego.
@@ -673,7 +694,9 @@ export class Fighter {
     // Selo "slow" (Quicksilver do Dante): o tempo deste lutador anda pela
     // metade, inclusive o do proprio selo.
     if (this.seals.slow) delta *= SLOW_FACTOR;
-    const { walkSpeed, jumpForce, jumpGravity } = this.config.stats;
+    const { jumpGravity } = this.config.stats;
+    const walkSpeed = this.config.stats.walkSpeed * WALK_BOOST;
+    const jumpForce = this.config.stats.jumpForce * JUMP_BOOST;
     const back = this.facing === 1 ? command.left : command.right;
     const forward = this.facing === 1 ? command.right : command.left;
 
@@ -818,7 +841,8 @@ export class Fighter {
 
   airJump(command) {
     if (this.airJumpsLeft <= 0 || this.seals.noJump) return;
-    const { walkSpeed, jumpForce } = this.config.stats;
+    const walkSpeed = this.config.stats.walkSpeed * WALK_BOOST;
+    const jumpForce = this.config.stats.jumpForce * JUMP_BOOST;
     const direction = command.guard ? 0 : (command.right ? 1 : 0) - (command.left ? 1 : 0);
     this.airJumpsLeft -= 1;
     this.vy = -jumpForce * AIR_JUMP_RATIO;
@@ -1238,6 +1262,9 @@ export class Fighter {
     name = chosen;
     this.state = 'dash';
     this.dashDirection = /backward/i.test(name) ? -1 : 1;
+    const wanted = this.dashDirection === -1 ? MIN_DASH_BACK_DISTANCE : MIN_DASH_DISTANCE;
+    const distance = dashDistance(animation, this.scale);
+    this.dashBoost = distance > 0 && distance < wanted ? wanted / distance : 1;
     this.effectSpawned = false;
     this.attackSerial += 1;
     this.vx = 0;
@@ -1255,7 +1282,7 @@ export class Fighter {
     }
     const frame = this.animation.localFrame;
     const moving = frame >= dash.moveFrom && frame <= dash.moveUntil;
-    this.vx = moving ? this.dashDirection * this.facing * dash.speed * this.scale : 0;
+    this.vx = moving ? this.dashDirection * this.facing * dash.speed * this.scale * (this.dashBoost ?? 1) : 0;
   }
 
   // Nos quadros em que some no dash (ou no trecho invulneravel de um golpe),
