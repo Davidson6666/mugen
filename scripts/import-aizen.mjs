@@ -149,7 +149,7 @@ const ANIMATIONS = {
   strong: {
     actions: [{ id: 400, times: { 1: 18 } }],
     cooldown: 30,
-    events: [fx(12, 'cloneDash', [30, 0])],
+    events: [fx(12, 'cloneDash', [0, 0])],
   },
 
   // ---- No ar: 605 -a-> 600, b = 610 (garras), c = 900 (clone mergulha) ----
@@ -181,7 +181,7 @@ const ANIMATIONS = {
   airStrong: {
     actions: [{ id: 400, times: { 1: 18 } }],
     air: true,
-    events: [{ at: 5, vx: -2, vy: -4 }, fx(12, 'cloneDive', [30, 0])],
+    events: [{ at: 5, vx: -2, vy: -4 }, fx(12, 'cloneDive', [0, 0])],
   },
 
   // ---- Kidou ----

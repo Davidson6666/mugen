@@ -19512,15 +19512,18 @@
           "until": 0,
           "box": {
             "width": 121,
-            "height": 115,
+            "height": 50,
             "offsetX": 40,
-            "offsetY": -115
+            "offsetY": -24
           },
           "damage": 1,
           "hitstun": 16,
           "push": 2
         }
-      ]
+      ],
+      "velocityX": 16,
+      "lifetime": 45,
+      "destroyOnHit": true
     },
     "muzzle": {
       "spriteGridSize": {

@@ -1016,7 +1016,7 @@
           "at": 12,
           "effect": {
             "id": "cloneDash",
-            "offsetX": 30,
+            "offsetX": 0,
             "offsetY": 0
           }
         },
@@ -1269,7 +1269,7 @@
           "at": 12,
           "effect": {
             "id": "cloneDive",
-            "offsetX": 30,
+            "offsetX": 0,
             "offsetY": 0
           }
         },
