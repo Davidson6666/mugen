@@ -62,3 +62,31 @@ test('aperto: aperto velho demais nao dispara depois (so vale por 10 ticks)', ()
   // Ja acabou tudo e o L foi apertado cedo demais: nada pendente.
   assert.equal(fighter.state, 'idle');
 });
+
+// O especial tem janela maior (20 ticks) que soco e chute (10).
+function pressWhenLeft(id, button, left) {
+  const world = arena(loadRecord(id), 600, 900);
+  const [fighter] = world.fighters;
+  step(world, command({ punch: true }));
+  const seen = new Set();
+  let pressed = false;
+  for (let tick = 0; tick < 200; tick += 1) {
+    const remaining = fighter.animation.length - fighter.animation.progress;
+    const press = !pressed && fighter.state === 'attack' && fighter.animation.name === fighter.config.buttons.ground.punch && remaining <= left;
+    if (press) pressed = true;
+    step(world, command(press ? { [button]: true } : {}));
+    if (fighter.state === 'attack') seen.add(nameOf(fighter));
+  }
+  assert.ok(pressed);
+  return { seen, special: fighter.config.buttons.ground.special };
+}
+
+test('aperto: o especial apertado 15 ticks antes do fim do soco ainda dispara (dante)', () => {
+  const { seen, special } = pressWhenLeft('dante', 'special', 15);
+  assert.ok(seen.has(special), [...seen].join(','));
+});
+
+test('aperto: mais cedo que 20 ticks nao dispara; o soco tem so 10', () => {
+  assert.ok(!pressWhenLeft('dante', 'special', 30).seen.has('guns'));
+  assert.ok(!pressWhenLeft('dante', 'kick', 15).seen.has('kick'));
+});

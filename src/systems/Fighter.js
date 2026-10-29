@@ -47,6 +47,9 @@ const MOVE_FRICTION = 0.85;
 // Por quantos ticks um aperto de botao continua valendo para encadear: quem
 // aperta um pouco antes do golpe conectar nao perde a sequencia.
 const CHAIN_BUFFER_TICKS = 10;
+// O especial (L) e apertado mais cedo que soco e chute, porque quem quer soltar
+// um especial espera o fim do golpe com o dedo ja no botao.
+const SPECIAL_BUFFER_TICKS = 20;
 // Golpe bloqueado: quem atacou so comeca um golpe NOVO depois que o defensor
 // sai da defesa e fica livre por estes ticks. A sequencia em andamento segue
 // pelos cancels; o que acaba e emendar sequencia atras de sequencia na guarda
@@ -909,7 +912,8 @@ export class Fighter {
   startBuffered() {
     const press = this.buffered;
     if (!press || !this.grounded || !this.canAct) return false;
-    if (this.moveClock - press.clock > CHAIN_BUFFER_TICKS) return false;
+    const window = press.button === 'special' ? SPECIAL_BUFFER_TICKS : CHAIN_BUFFER_TICKS;
+    if (this.moveClock - press.clock > window) return false;
     const name = this.buttons.ground?.[press.button];
     if (!name) return false;
     return this.startAttack(name, null, { basic: press.button !== 'special' });
