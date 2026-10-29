@@ -980,15 +980,9 @@ export class Fighter {
     if (this.animation.finished) {
       if (move.next) this.continueMove(move.next);
       else {
-        // O aperto guardado e lido antes do endMove: ele zera o estado do golpe.
-        const press = this.buffered;
-        const clock = this.moveClock;
+        // endMove nao zera o aperto guardado: se ele for recente, vira golpe.
         this.endMove();
-        if (press) {
-          this.buffered = press;
-          this.moveClock = clock;
-          if (!this.startBuffered()) this.buffered = null;
-        }
+        if (!this.startBuffered()) this.buffered = null;
       }
     }
   }
