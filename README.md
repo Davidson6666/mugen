@@ -48,6 +48,8 @@ Cada lutador vem de um pacote MUGEN e é convertido por um script (`scripts/impo
 
 Depois de reimportar alguém, rode `npm run assets:optimize`: ele converte os atlas de PNG para WebP sem perda (os pixels ficam idênticos e o download cai pela metade).
 
+> **Cuidado ao reimportar.** O `config.json` de cada lutador em `public/assets/characters/` já tem ajustes feitos à mão depois da importação (danos do balanceamento, sons, correções de golpes e de caixas de acerto), e rodar `npm run assets:<nome>` **sobrescreve tudo isso** com o que o MUGEN diz. Trate o config como a fonte de verdade: faça commit antes, reimporte, confira com `git diff` e restaure o que não quiser perder. Corrigir só o script de importação não muda o jogo.
+
 Equilíbrio entre os lutadores: `npm run balance:sim` (torneio da IA), `balance:audit` e `balance:tune`.
 
 ## Estrutura
