@@ -209,7 +209,7 @@ const ANIMATIONS = {
   byakurai: {
     actions: [1700],
     cooldown: 60,
-    events: [fx(5, 'byakurai', [0, 0])],
+    events: [fx(5, 'byakurai', [0, -33])],
   },
   // Shunpo (480): reaparece do outro lado do oponente.
   shunpo: {
