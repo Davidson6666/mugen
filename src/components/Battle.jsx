@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import GameCanvas from './GameCanvas.jsx';
+import TouchControls from './TouchControls.jsx';
+import { wantsTouchControls } from '../utils/touchKeys.js';
 import MoveList from './MoveList.jsx';
 import { useMenu } from '../context/MenuContext.js';
 import { useGame } from '../context/GameContext.js';
@@ -24,6 +26,7 @@ export default function Battle() {
   const [pauseIndex, setPauseIndex] = useState(0);
   // Area de treino: o boneco fica parado ou defende (trocado na pausa).
   const [dummyMode, setDummyMode] = useState('stand');
+  const [touch] = useState(wantsTouchControls);
   const training = setup.mode === 'training';
   const pauseOptions = training
     ? [PAUSE_OPTIONS[0], { id: 'dummy', label: `BONECO: ${dummyMode === 'block' ? 'DEFENDE' : 'PARADO'}` }, ...PAUSE_OPTIONS.slice(1)]
@@ -126,6 +129,7 @@ export default function Battle() {
   return (
     <div className="screen screen--battle">
       <GameCanvas setup={setup} paused={paused} onMatchEnd={handleMatchEnd} dummyMode={dummyMode} />
+      {touch && <TouchControls hidden={paused} />}
 
       {paused && (
         // Pausa no padrao dos anuncios do HUD: luta escurecida e faixa amarela.

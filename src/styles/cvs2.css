@@ -656,3 +656,31 @@
   .boot-bar { transition: none; }
   .boot-emblem, .boot-ring, .boot-slam, .boot-ribbon-in, .boot-ribbon, .boot-stripes, .boot-tip { animation: none; }
 }
+
+/* ---- Controles na tela (celular): so aparecem em tela de toque ---- */
+.touch-controls { position: absolute; inset: 0; z-index: 40; pointer-events: none; user-select: none; -webkit-user-select: none; touch-action: none; }
+.touch-controls > * { pointer-events: auto; }
+.touch-controls__pad {
+  position: absolute; left: 24px; bottom: 24px; width: 220px; height: 220px;
+  display: grid; grid-template: "a up b" 1fr "left . right" 1fr "c down d" 1fr / 1fr 1fr 1fr; gap: 6px;
+}
+.touch-controls__actions { position: absolute; right: 24px; bottom: 24px; display: flex; gap: 14px; align-items: flex-end; }
+.touch-controls__pause {
+  position: absolute; top: 14px; right: 18px; width: 56px; height: 56px; border-radius: 12px;
+  background: rgba(10, 10, 14, 0.55); color: #fff; border: 3px solid rgba(255, 255, 255, 0.6); font-size: 20px; touch-action: none;
+}
+.touch-btn {
+  background: rgba(10, 10, 14, 0.5); color: #fff; border: 3px solid rgba(255, 255, 255, 0.55);
+  font: 900 22px "Barlow Condensed", sans-serif; font-style: italic; touch-action: none; -webkit-tap-highlight-color: transparent;
+}
+.touch-btn:active { background: rgba(255, 210, 0, 0.75); color: #0a0a0e; }
+.touch-btn--up { grid-area: up; border-radius: 14px; }
+.touch-btn--left { grid-area: left; border-radius: 14px; }
+.touch-btn--right { grid-area: right; border-radius: 14px; }
+.touch-btn--down { grid-area: down; border-radius: 14px; }
+.touch-btn--action { width: 92px; height: 92px; border-radius: 50%; font-size: 20px; }
+.touch-btn--action:nth-child(2) { margin-bottom: 38px; }
+@media (max-height: 520px) {
+  .touch-controls__pad { width: 170px; height: 170px; left: 14px; bottom: 14px; }
+  .touch-btn--action { width: 74px; height: 74px; }
+}
