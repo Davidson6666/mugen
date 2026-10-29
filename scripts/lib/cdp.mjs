@@ -35,7 +35,11 @@ export async function abrir(url = 'about:blank') {
   socket.onmessage = (event) => {
     const message = JSON.parse(event.data);
     if (message.id && waiting.has(message.id)) { waiting.get(message.id)(message); waiting.delete(message.id); }
-    if (message.method === 'Runtime.exceptionThrown') erros.push(message.params.exceptionDetails.text);
+    if (message.method === 'Runtime.exceptionThrown') {
+      const details = message.params.exceptionDetails;
+      const detail = details.exception?.description ? `: ${details.exception.description.split('\n').slice(0, 3).join(' | ')}` : '';
+      erros.push(`${details.text}${detail}`);
+    }
     if (message.method === 'Runtime.consoleAPICalled' && message.params.type === 'error') {
       erros.push(message.params.args.map((arg) => arg.value ?? arg.description).join(' '));
     }

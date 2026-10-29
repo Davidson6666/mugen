@@ -11,26 +11,31 @@
 export const MIN_INPUT_DELAY = 4;
 export const MAX_INPUT_DELAY = 14;
 const TICK_MS = 1000 / 60;
-// O lote de input sai a cada 3 ticks (ou 45 ms parado): soma no caminho.
+// Pelo servidor, o lote de input sai a cada 3 ticks (ou 45 ms parado): soma no
+// caminho. Pela conexao direta cada tick sai na hora e a rede tem menos variacao.
 const BATCH_MS = 50;
+const DIRECT_BATCH_MS = 8;
 // Folga para a variacao da rede (um pacote que atrasa um pouco mais).
 const JITTER_MS = 30;
+const DIRECT_JITTER_MS = 20;
 
 // Atraso (em ticks) para uma conexao com essas medidas de ida e volta (ms).
 // Usa a mediana: um pico isolado nao deve deixar a partida inteira pesada.
-export function proposeDelay(rttSamples) {
+export function proposeDelay(rttSamples, { direct = false } = {}) {
   if (!rttSamples.length) return null;
   const sorted = [...rttSamples].sort((a, b) => a - b);
   const median = sorted[Math.floor(sorted.length / 2)];
-  const ticks = Math.ceil((median / 2 + BATCH_MS + JITTER_MS) / TICK_MS);
+  const extra = direct ? DIRECT_BATCH_MS + DIRECT_JITTER_MS : BATCH_MS + JITTER_MS;
+  const ticks = Math.ceil((median / 2 + extra) / TICK_MS);
   return Math.min(MAX_INPUT_DELAY, Math.max(MIN_INPUT_DELAY, ticks));
 }
 
 // Uma ponta da combinacao. send(event, payload) manda pelo canal; o canal
 // entrega as mensagens do outro lado em receive(event, payload).
 export class DelayAgreement {
-  constructor({ send, now = () => Date.now(), fallback }) {
+  constructor({ send, now = () => Date.now(), fallback, isDirect = () => false }) {
     this.send = send;
+    this.isDirect = isDirect;
     this.now = now;
     this.fallback = fallback;
     this.samples = [];
@@ -67,7 +72,7 @@ export class DelayAgreement {
     }
     // Ultimas respostas ainda a caminho.
     await wait(interval * 2);
-    this.mine = proposeDelay(this.samples) ?? this.fallback;
+    this.mine = proposeDelay(this.samples, { direct: this.isDirect() }) ?? this.fallback;
     // Manda pelo menos uma vez: a dele pode ja ter chegado enquanto eu media.
     this.send('delay', { ticks: this.mine });
     const started = this.now();

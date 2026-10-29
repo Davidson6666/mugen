@@ -1,5 +1,6 @@
 import { supabase } from '../../utils/supabaseClient.js';
 import { DelayAgreement } from './inputDelay.js';
+import { PeerLink, peerSupported } from './PeerLink.js';
 
 // Lockstep com atraso fixo: os dois computadores rodam a luta inteira
 // localmente e trocam SO o input, nunca o estado do jogo. O que eu aperto no
@@ -30,6 +31,13 @@ const READY_TIMEOUT_MS = 90000;
 const READY_RETRY_MS = 250;
 // Ticks antigos sao jogados fora: uma luta longa encheria a memoria a 60/s.
 const KEEP_TICKS = 600;
+// Pela conexao direta cada tick sai na hora, com os ultimos quadros de novo (a
+// conexao e sem reenvio: um pacote perdido e coberto pelo seguinte).
+const DIRECT_REDUNDANCY = 6;
+// Quanto esperar a conexao direta abrir antes de combinar o atraso. Se nao
+// abrir, a partida segue pelo servidor.
+const PEER_OPEN_TIMEOUT_MS = 3500;
+const LIVE_PING_EVERY_MS = 1000;
 
 // O comando e so um punhado de booleanos, entao cabe todo num inteiro.
 const FLAGS = [
@@ -58,8 +66,16 @@ export function decodeCommand(mask) {
 }
 
 export class LockstepClient {
-  constructor({ matchId }) {
+  // initiator: o lado que abre a conexao direta (o jogador 0 da partida).
+  constructor({ matchId, initiator = false, RTC = globalThis.RTCPeerConnection }) {
     this.matchId = matchId;
+    this.initiator = initiator;
+    this.RTC = RTC;
+    this.peer = null;
+    this.recent = [];
+    this.rtt = null;
+    this.pings = new Map();
+    this.pingTimer = null;
     this.channel = null;
     this.localByTick = new Map();
     this.remoteByTick = new Map();
@@ -72,7 +88,8 @@ export class LockstepClient {
     this.inputDelay = NET_INPUT_DELAY;
     this.agreement = new DelayAgreement({
       fallback: NET_INPUT_DELAY,
-      send: (event, payload) => this.channel?.send({ type: 'broadcast', event: `delay:${event}`, payload }),
+      isDirect: () => Boolean(this.peer?.open),
+      send: (event, payload) => this.sendControl(event, payload),
     });
   }
 
@@ -81,18 +98,27 @@ export class LockstepClient {
     this.channel = supabase.channel(`match:${this.matchId}:play`, {
       config: { broadcast: { self: false } },
     });
-    this.channel.on('broadcast', { event: 'input' }, ({ payload }) => {
-      this.lastRemoteAt = Date.now();
-      for (const frame of payload.frames ?? []) {
-        this.remoteByTick.set(frame.t, decodeCommand(frame.m));
-      }
-    });
-    for (const event of ['ping', 'pong', 'delay']) {
-      this.channel.on('broadcast', { event: `delay:${event}` }, ({ payload }) => {
-        this.lastRemoteAt = Date.now();
-        this.agreement.receive(event, payload);
+    this.bind();
+    await new Promise((resolve, reject) => {
+      this.channel.subscribe((status) => {
+        if (status === 'SUBSCRIBED') resolve();
+        if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') reject(new Error(`canal: ${status}`));
       });
+    });
+  }
+
+  // Registra o que o canal da partida escuta. Separado do join para dar para
+  // ligar o cliente a um canal simulado nos testes.
+  bind() {
+    this.channel.on('broadcast', { event: 'input' }, ({ payload }) => this.ingest(payload.frames));
+    for (const event of ['ping', 'pong', 'delay', 'lp', 'lq']) {
+      this.channel.on('broadcast', { event: `delay:${event}` }, ({ payload }) => this.control(event, payload));
     }
+    // Sinalizacao da conexao direta: oferta, resposta e candidatos ICE.
+    this.channel.on('broadcast', { event: 'rtc' }, ({ payload }) => {
+      this.lastRemoteAt = Date.now();
+      this.ensurePeer()?.handleSignal(payload.kind, payload.data).catch(() => {});
+    });
     this.channel.on('broadcast', { event: 'ready' }, () => {
       this.lastRemoteAt = Date.now();
       if (this.opponentReady) return;
@@ -101,12 +127,81 @@ export class LockstepClient {
       // canal, e nesse caso ele nunca recebeu.
       this.sendReady();
     });
-    await new Promise((resolve, reject) => {
-      this.channel.subscribe((status) => {
-        if (status === 'SUBSCRIBED') resolve();
-        if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') reject(new Error(`canal: ${status}`));
-      });
+  }
+
+  // Quadros de comando que chegaram (pelo servidor ou pela conexao direta). A
+  // mesma tick pode chegar duas vezes: gravar de novo nao muda nada.
+  ingest(frames) {
+    this.lastRemoteAt = Date.now();
+    for (const frame of frames ?? []) this.remoteByTick.set(frame.t, decodeCommand(frame.m));
+  }
+
+  // Mensagens de controle (medicao do atraso e ping ao vivo).
+  control(event, payload) {
+    this.lastRemoteAt = Date.now();
+    if (event === 'lp') {
+      this.sendControl('lq', payload);
+    } else if (event === 'lq') {
+      // A resposta chega pelos dois caminhos: vale a primeira.
+      const sentAt = this.pings.get(payload.id);
+      if (sentAt === undefined) return;
+      this.pings.delete(payload.id);
+      const sample = performance.now() - sentAt;
+      this.rtt = this.rtt === null ? sample : this.rtt * 0.7 + sample * 0.3;
+    } else {
+      this.agreement.receive(event, payload);
+    }
+  }
+
+  // Controle sai pelos dois caminhos: o que chegar primeiro vale.
+  sendControl(event, payload) {
+    this.channel?.send({ type: 'broadcast', event: `delay:${event}`, payload });
+    this.peer?.send(JSON.stringify({ c: event, p: payload }));
+  }
+
+  ensurePeer() {
+    if (this.peer || !peerSupported(this.RTC) || this.disposed) return this.peer;
+    this.peer = new PeerLink({
+      initiator: this.initiator,
+      RTC: this.RTC,
+      signal: (kind, data) => this.channel?.send({ type: 'broadcast', event: 'rtc', payload: { kind, data } }),
+      onMessage: (text) => {
+        let message;
+        try { message = JSON.parse(text); } catch { return; }
+        if (message.frames) this.ingest(message.frames);
+        else if (message.c) this.control(message.c, message.p);
+      },
     });
+    return this.peer;
+  }
+
+  // Tenta abrir a conexao direta. Devolve true se abriu a tempo; senao a
+  // partida segue pelo servidor, como sempre foi.
+  async openPeer(timeoutMs = PEER_OPEN_TIMEOUT_MS) {
+    const peer = this.ensurePeer();
+    if (!peer) return false;
+    if (this.initiator) peer.start().catch(() => {});
+    const started = Date.now();
+    while (!peer.open && !this.disposed && Date.now() - started < timeoutMs) {
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+    return peer.open;
+  }
+
+  // 'p2p' (direto) ou 'relay' (pelo servidor), e o ping medido ao vivo (ms).
+  get stats() {
+    return { transport: this.peer?.open ? 'p2p' : 'relay', rtt: this.rtt };
+  }
+
+  startPingLoop() {
+    if (this.pingTimer) return;
+    let id = 0;
+    this.pingTimer = setInterval(() => {
+      id += 1;
+      this.pings.set(id, performance.now());
+      if (this.pings.size > 20) this.pings.delete(this.pings.keys().next().value);
+      this.sendControl('lp', { id });
+    }, LIVE_PING_EVERY_MS);
   }
 
   sendReady() {
@@ -144,17 +239,27 @@ export class LockstepClient {
   // mesmo numero). Chamar depois de waitForOpponent. Devolve false se o outro
   // parou de responder no meio.
   async agreeDelay() {
+    // Primeiro tenta o caminho direto: as medicoes e o atraso saem dele.
+    await this.openPeer();
     const agreed = await this.agreement.run();
     if (agreed === null) return false;
     this.inputDelay = agreed;
+    this.startPingLoop();
     return true;
   }
 
   // Guarda o que eu apertei e enfileira pro adversario.
   schedule(tick, command) {
     this.localByTick.set(tick, command);
-    this.pending.push({ t: tick, m: encodeCommand(command) });
+    const frame = { t: tick, m: encodeCommand(command) };
+    this.pending.push(frame);
     if (this.pending.length >= SEND_EVERY) this.flush();
+    // Conexao direta: todo tick sai na hora, repetindo os ultimos quadros.
+    if (this.peer?.open) {
+      this.recent.push(frame);
+      if (this.recent.length > DIRECT_REDUNDANCY) this.recent.shift();
+      this.peer.send(JSON.stringify({ frames: this.recent }));
+    }
   }
 
   flush() {
@@ -201,6 +306,9 @@ export class LockstepClient {
 
   dispose() {
     this.disposed = true;
+    clearInterval(this.pingTimer);
+    this.pingTimer = null;
+    this.peer?.close();
     if (!this.channel) return;
     supabase.removeChannel(this.channel);
     this.channel = null;

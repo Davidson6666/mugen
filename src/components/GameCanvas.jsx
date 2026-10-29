@@ -5,7 +5,8 @@ import { Fighter } from '../systems/Fighter.js';
 import { ComboDetector } from '../systems/ComboDetector.js';
 import { AIController } from '../systems/AIController.js';
 import { GameStateManager } from '../systems/GameStateManager.js';
-import { Hud } from '../systems/Hud.js';
+import { Hud, label } from '../systems/Hud.js';
+import { netLabelColor, netLabelText } from '../utils/netLabel.js';
 import { PlayerMarkers } from '../systems/PlayerMarker.js';
 import { SuperCutIn } from '../systems/SuperCutIn.js';
 import { TrainingPanel } from '../systems/TrainingPanel.js';
@@ -272,7 +273,7 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd, dummyMod
       const healthPct = (fighter) => fighter.health / fighter.config.stats.maxHealth;
 
       if (online) {
-        net = new LockstepClient({ matchId: matchSetup.matchId });
+        net = new LockstepClient({ matchId: matchSetup.matchId, initiator: localIndex === 0 });
         await net.join();
         if (disposed) return;
         // Um computador carrega muito mais rapido que o outro. Quem chega
@@ -357,6 +358,13 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd, dummyMod
       let otherLabel = '2P';
       if (cpuEnabled) otherLabel = 'CPU';
       else if (training) otherLabel = null;
+      // Partida online: por onde os comandos passam e o ping, no canto de baixo.
+      const netInfo = online ? label('', 20, { stroke: 5 }) : null;
+      if (netInfo) {
+        netInfo.position.set(14, STAGE_HEIGHT - 34);
+        instance.stage.addChild(netInfo);
+      }
+      let netInfoClock = 0;
       const markers = new PlayerMarkers(['1P', otherLabel]);
       world.addChild(markers.view);
 
@@ -664,6 +672,13 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd, dummyMod
 
         if (online) {
           net.flushIfStale();
+          netInfoClock += ticker.deltaMS;
+          if (netInfo && netInfoClock >= 500) {
+            netInfoClock = 0;
+            const stats = net.stats;
+            netInfo.text = netLabelText(stats);
+            netInfo.style.fill = netLabelColor(stats.rtt);
+          }
           net.forget(tick);
           // Adversario sumiu no meio da luta: vitoria por W.O. Com a partida
           // ja decidida isso nao vale mais - o resultado de verdade ja existe.

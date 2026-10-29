@@ -31,7 +31,8 @@
     "balance:sim": "node scripts/balance-sim.mjs",
     "balance:tune": "node scripts/balance-tune.mjs",
     "balance:audit": "node scripts/balance-audit.mjs",
-    "smoke": "node scripts/smoke.mjs"
+    "smoke": "node scripts/smoke.mjs",
+    "net:check": "node scripts/net-check.mjs"
   },
   "dependencies": {
     "@fontsource/barlow-condensed": "^5.3.0",

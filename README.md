@@ -11,6 +11,7 @@ npm install
 npm run dev        # servidor local (http://localhost:5173)
 npm test           # testes da simulação, dos golpes e da câmera
 npm run smoke      # abre cada tela num Chrome e falha se houver erro de console
+npm run net:check  # mede a rede da partida online (dois Chromes, servidor x conexão direta)
 npm run lint
 npm run build      # versão de produção (PWA instalável)
 ```
@@ -23,7 +24,7 @@ Para o ranking e a partida online é preciso um projeto no [Supabase](https://su
 | --- | --- |
 | Versus CPU | Partida avulsa contra a máquina, em três dificuldades |
 | Versus Player | Dois jogadores no mesmo teclado ou com controles (o 1P precisa de conta) |
-| Partida online | Fila por Elo, lutas sincronizadas por *lockstep* |
+| Partida online | Fila por Elo, lutas sincronizadas por *lockstep*; os comandos vão direto de um jogador ao outro (WebRTC) e, se isso não abrir, pelo servidor. O canto da tela mostra o caminho e o ping |
 | Modo História | Seis lutas com dificuldade crescente; vencer libera um lutador secreto |
 | Área de treino | Boneco que não revida (parado ou defendendo, escolhido na pausa), com histórico de teclas e dano do combo na tela |
 
