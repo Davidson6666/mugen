@@ -312,6 +312,7 @@ export function MenuOption({ x, y, width = 380, height = 54, fontSize = 38, labe
     <g
       className="menu-opt" onPointerEnter={onPointerEnter} onClick={disabled ? undefined : onClick}
       style={{ cursor: disabled ? 'default' : 'pointer', '--order': order }}
+      role="menuitem" aria-label={label} aria-current={active ? 'true' : undefined} aria-disabled={disabled ? 'true' : undefined}
     >
       <g className={`menu-opt__shift${active ? ' menu-opt__shift--active' : ''}`}>
         <Shape points={points} fill={fill} />
