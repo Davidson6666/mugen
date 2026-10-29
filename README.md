@@ -10,6 +10,7 @@ Jogo de luta 2D no navegador, no estilo dos fliperamas (Capcom vs SNK 2), feito 
 npm install
 npm run dev        # servidor local (http://localhost:5173)
 npm test           # testes da simulação, dos golpes e da câmera
+npm run smoke      # abre cada tela num Chrome e falha se houver erro de console
 npm run lint
 npm run build      # versão de produção (PWA instalável)
 ```

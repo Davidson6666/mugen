@@ -5,7 +5,7 @@
 //   npm run smoke                     sobe o servidor sozinho (porta 5198)
 //   npm run smoke -- http://localhost:5199/   usa um servidor que ja esta rodando
 //   CHROME_PATH=... npm run smoke     se o Chrome nao for achado
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { abrir } from './lib/cdp.mjs';
 
 const externo = process.argv[2];
@@ -74,8 +74,9 @@ try {
     await pagina.fechar();
   }
 } finally {
-  servidor?.kill();
-  if (process.platform === 'win32' && servidor) spawn('taskkill', ['/pid', String(servidor.pid), '/T', '/F'], { stdio: 'ignore' });
+  // No Windows o servidor roda dentro de um shell: matar so o shell deixa o vite vivo.
+  if (servidor && process.platform === 'win32') spawnSync('taskkill', ['/pid', String(servidor.pid), '/T', '/F'], { stdio: 'ignore' });
+  else servidor?.kill();
 }
 console.log(falhas ? `\n${falhas} tela(s) com erro` : '\nTodas as telas abriram sem erro de console.');
 process.exit(falhas ? 1 : 0);
