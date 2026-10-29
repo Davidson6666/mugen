@@ -30,7 +30,8 @@
     "assets:impact": "node scripts/make-impact-sounds.mjs",
     "balance:sim": "node scripts/balance-sim.mjs",
     "balance:tune": "node scripts/balance-tune.mjs",
-    "balance:audit": "node scripts/balance-audit.mjs"
+    "balance:audit": "node scripts/balance-audit.mjs",
+    "smoke": "node scripts/smoke.mjs"
   },
   "dependencies": {
     "@fontsource/barlow-condensed": "^5.3.0",
