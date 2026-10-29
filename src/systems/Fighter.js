@@ -538,11 +538,15 @@ export class Fighter {
     return (this.cooldowns.get(animationName) ?? 0) > 0;
   }
 
-  startAttack(animationName, override = null, { chained = false } = {}) {
+  // basic: o golpe veio do botao de soco ou chute puro. So esses esperam a pausa
+  // depois de um golpe defendido (blockRecoil): especiais e supers nao, senao o
+  // cancelamento em especial depois de defender, e o L logo depois de um soco
+  // defendido, simplesmente sumiriam.
+  startAttack(animationName, override = null, { chained = false, basic = false } = {}) {
     const move = this.config.animations[animationName];
     if (!move) return false;
     if (!chained && this.isOnCooldown(animationName)) return false;
-    if (!chained && this.blockRecoil > 0) return false;
+    if (!chained && basic && this.blockRecoil > 0) return false;
     if (!chained && move.requires && !this.effectTags.has(move.requires)) return false;
     // Golpe de misericordia (Hollow Nuke): so com o oponente abaixo de uma
     // fracao da vida.
@@ -896,7 +900,19 @@ export class Fighter {
     const button = BUTTONS.find((name) => command[name]);
     if (!button) return;
     const map = this.grounded ? this.buttons.ground : (this.buttons.air ?? this.buttons.ground);
-    if (map[button]) this.startAttack(map[button]);
+    if (map[button]) this.startAttack(map[button], null, { basic: button !== 'special' });
+  }
+
+  // Botao apertado durante o golpe que acabou de terminar: dispara agora, se o
+  // aperto for recente (CHAIN_BUFFER_TICKS). Sem isso, apertar o L um instante
+  // antes da recuperacao acabar nao fazia nada.
+  startBuffered() {
+    const press = this.buffered;
+    if (!press || !this.grounded || !this.canAct) return false;
+    if (this.moveClock - press.clock > CHAIN_BUFFER_TICKS) return false;
+    const name = this.buttons.ground?.[press.button];
+    if (!name) return false;
+    return this.startAttack(name, null, { basic: press.button !== 'special' });
   }
 
   // Durante o golpe: guarda o botao apertado, segue sozinho quando acertou
@@ -963,7 +979,17 @@ export class Fighter {
 
     if (this.animation.finished) {
       if (move.next) this.continueMove(move.next);
-      else this.endMove();
+      else {
+        // O aperto guardado e lido antes do endMove: ele zera o estado do golpe.
+        const press = this.buffered;
+        const clock = this.moveClock;
+        this.endMove();
+        if (press) {
+          this.buffered = press;
+          this.moveClock = clock;
+          if (!this.startBuffered()) this.buffered = null;
+        }
+      }
     }
   }
 
