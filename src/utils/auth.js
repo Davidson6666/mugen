@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient.js';
+import { NETWORK_MESSAGE, isNetworkError } from './networkError.js';
 
 // O Supabase Auth pede e-mail, nao usuario. Como nao existe uma caixa de
 // entrada de verdade pra "usuario@mugenfighter.local", a confirmacao de
@@ -24,6 +25,7 @@ const emailFor = (username) => `${username}@${EMAIL_DOMAIN}`;
 // Erros do Supabase em ingles viram uma frase que da pra mostrar na tela.
 function friendlyError(error) {
   if (!error) return null;
+  if (isNetworkError(error)) return NETWORK_MESSAGE;
   const msg = error.message ?? '';
   if (msg.includes('already registered') || msg.includes('already exists')) return 'Esse nome de usuario ja existe.';
   if (msg.includes('Invalid login credentials')) return 'Usuario ou senha errados.';

@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient.js';
+import { NETWORK_MESSAGE, isNetworkError } from './networkError.js';
 
 // Fila de partida online (Fase 2). Todo o emparelhamento acontece dentro da
 // funcao find_match no Postgres (supabase/schema.sql): ela e atomica, entao
@@ -7,6 +8,7 @@ import { supabase } from './supabaseClient.js';
 
 // Erro do Postgres em ingles vira uma frase que da pra mostrar na tela.
 function friendlyError(error) {
+  if (isNetworkError(error)) return NETWORK_MESSAGE;
   const msg = error.message ?? '';
   if (msg.includes('find_match')) return 'Fila ainda nao configurada no servidor.';
   if (msg.includes('logado')) return 'Precisa estar logado para procurar partida.';
@@ -43,7 +45,7 @@ export async function reportMatchResult(matchId, winnerUserId) {
     match_id: matchId,
     winner: winnerUserId,
   });
-  if (error) return { error: error.message };
+  if (error) return { error: isNetworkError(error) ? NETWORK_MESSAGE : error.message };
   return { status: data };
 }
 
@@ -97,6 +99,6 @@ export async function fetchProfileById(userId) {
     .select('id, username, elo_rating')
     .eq('id', userId)
     .single();
-  if (error) return { error: error.message };
+  if (error) return { error: isNetworkError(error) ? NETWORK_MESSAGE : error.message };
   return { profile: data };
 }

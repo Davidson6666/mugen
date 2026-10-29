@@ -432,7 +432,9 @@ export default function GameCanvas({ setup, paused = false, onMatchEnd, dummyMod
           debugLayer.visible = !debugLayer.visible;
           overlay.visible = debugLayer.visible;
         }
-        if (event.code === 'KeyR') restartMatch();
+        // Reiniciar a luta so no desenvolvimento e fora do online: no online
+        // reiniciaria so o meu lado e a partida dessincronizaria.
+        if (event.code === 'KeyR' && import.meta.env.DEV && !online) restartMatch();
       };
       window.addEventListener('keydown', onDebugKey);
 
