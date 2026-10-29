@@ -11511,5 +11511,8 @@
     "s5_40": "sfx/s5_40.mp3",
     "s5_27": "sfx/s5_27.mp3"
   },
-  "spriteScale": 1.9
+  "spriteScale": 1.9,
+  "balance": {
+    "damage": 0.5
+  }
 }
