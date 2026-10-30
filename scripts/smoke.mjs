@@ -73,6 +73,25 @@ try {
     conferir(nome, pagina, desde);
     await pagina.fechar();
   }
+  // Rotas: endereco direto abre a tela certa, 404 e paginas que exigem pre-condicao.
+  const ROTAS = [
+    ['/ranking', '/ranking'], ['/cadastro', '/cadastro'], ['/login', '/login'], ['/conquistas', '/conquistas'],
+    ['/nao-existe', '/nao-existe'], // 404: fica no endereco e mostra a pagina de nao encontrado
+    ['/luta', '/'], ['/resultado', '/'], // sem partida, voltam ao menu
+    ['/conta', '/login'], // area protegida sem sessao, vai ao login
+  ];
+  for (const [entrada, esperado] of ROTAS) {
+    const pagina = await abrir(url);
+    await pagina.enviar('Emulation.setDeviceMetricsOverride', { width: 1280, height: 720, deviceScaleFactor: 1, mobile: false });
+    await pagina.enviar('Page.navigate', { url: new URL(entrada, url).href });
+    await pagina.esperar(5200);
+    const desde = 0;
+    const onde = (await pagina.enviar('Runtime.evaluate', { expression: 'location.pathname', returnByValue: true })).result.result.value;
+    const nome = `rota ${entrada}`;
+    if (onde !== esperado) { falhas += 1; console.log(`${nome.padEnd(24)} FALHOU: ficou em ${onde}, esperava ${esperado}`); }
+    else conferir(nome, pagina, desde);
+    await pagina.fechar();
+  }
 } finally {
   // No Windows o servidor roda dentro de um shell: matar so o shell deixa o vite vivo.
   if (servidor && process.platform === 'win32') spawnSync('taskkill', ['/pid', String(servidor.pid), '/T', '/F'], { stdio: 'ignore' });

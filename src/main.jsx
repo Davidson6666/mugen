@@ -1,5 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 // Fonte servida pelo proprio projeto: a apresentacao nao pode depender de
 // internet para a interface sair com a cara certa.
 import '@fontsource/barlow-condensed/600-italic.css';
@@ -14,6 +15,8 @@ applyPaletteToCss();
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </StrictMode>,
 );

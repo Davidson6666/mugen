@@ -1,30 +1,45 @@
 import { useCallback, useMemo, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { MenuContext } from './MenuContext.js';
+import { pathFor, screenFor } from '../routes.js';
 
-// Navegacao entre telas com pilha de historico, para "voltar" funcionar em
-// qualquer ponto do fluxo sem cada tela precisar saber de onde veio.
+// Navegacao entre telas sobre o React Router: cada tela tem uma URL (src/routes.js),
+// o botao voltar do navegador funciona, e as telas continuam usando as mesmas
+// tres funcoes de sempre, sem saber que existe uma URL.
 export function MenuProvider({ children }) {
-  const [history, setHistory] = useState(['mainMenu']);
+  const navigate = useNavigate();
+  const location = useLocation();
   // Pra onde voltar depois de um login pedido no meio de outro fluxo (ex.:
   // VERSUS PLAYER exige o jogador 1 logado): quem manda pra 'login' guarda
   // aqui a tela de destino; a LoginScreen le e limpa ao terminar.
   const [afterLogin, setAfterLogin] = useState(null);
 
-  const go = useCallback((screen) => {
-    setHistory((current) => [...current, screen]);
-  }, []);
+  // Endereco que nao existe: nenhuma tela (a pagina 404 cuida dele).
+  const screen = screenFor(location.pathname);
+  // O Router guarda a posicao no historico: acima de 0 ha para onde voltar
+  // dentro do jogo.
+  const canGoBack = (window.history.state?.idx ?? 0) > 0;
+
+  // replace: a nova tela substitui a atual no historico (a luta substitui a
+  // tela de versus, senao o botao voltar do navegador reiniciaria a partida).
+  const go = useCallback((target, { replace = false } = {}) => {
+    navigate(pathFor(target), { replace });
+  }, [navigate]);
 
   const back = useCallback(() => {
-    setHistory((current) => (current.length > 1 ? current.slice(0, -1) : current));
-  }, []);
+    if ((window.history.state?.idx ?? 0) > 0) navigate(-1);
+    else navigate('/', { replace: true });
+  }, [navigate]);
 
-  const resetTo = useCallback((screen) => {
-    setHistory([screen]);
-  }, []);
+  // Vai para a tela sem deixar a anterior no historico (fim de partida, sair
+  // para o menu): o voltar do navegador nao volta para dentro da partida.
+  const resetTo = useCallback((target) => {
+    navigate(pathFor(target), { replace: true });
+  }, [navigate]);
 
   const value = useMemo(
-    () => ({ screen: history.at(-1), canGoBack: history.length > 1, go, back, resetTo, afterLogin, setAfterLogin }),
-    [history, go, back, resetTo, afterLogin],
+    () => ({ screen, canGoBack, go, back, resetTo, afterLogin, setAfterLogin }),
+    [screen, canGoBack, go, back, resetTo, afterLogin],
   );
 
   return <MenuContext.Provider value={value}>{children}</MenuContext.Provider>;

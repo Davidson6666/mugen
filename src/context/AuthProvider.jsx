@@ -30,14 +30,14 @@ export function AuthProvider({ children }) {
     return () => subscription.subscription.unsubscribe();
   }, []);
 
-  const login = useCallback(async (username, password) => {
-    const result = await signIn(username, password);
+  const login = useCallback(async (identifier, password) => {
+    const result = await signIn(identifier, password);
     if (result.profile) setProfile(result.profile);
     return result;
   }, []);
 
-  const register = useCallback(async (username, password) => {
-    const result = await signUp(username, password);
+  const register = useCallback(async (values) => {
+    const result = await signUp(values);
     if (result.profile) setProfile(result.profile);
     return result;
   }, []);

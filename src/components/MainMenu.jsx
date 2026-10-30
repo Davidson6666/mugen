@@ -48,7 +48,7 @@ const PODIUM_COLORS = [PALETTE.fieldYellow, PALETTE.textPrimary, PALETTE.fieldOr
 export default function MainMenu() {
   const { go, setAfterLogin } = useMenu();
   const { startSetup } = useGame();
-  const { profile, loading, logout } = useAuth();
+  const { profile, loading } = useAuth();
   const [index, setIndex] = useState(0);
   const [podium, setPodium] = useState([]);
   const [featuredIndex, setFeaturedIndex] = useState(() => Math.floor(Math.random() * FEATURED.length));
@@ -141,9 +141,9 @@ export default function MainMenu() {
             CARREGANDO CONTA...
           </Label>
         ) : profile ? (
-          <g onClick={logout} style={{ cursor: 'pointer' }}>
+          <g onClick={() => go('account')} style={{ cursor: 'pointer' }}>
             <Label x={1240} y={38} size={24} weight={700} anchor="end" stroke={5}>
-              LOGADO COMO {profile.username.toUpperCase()} · CLIQUE PARA SAIR
+              LOGADO COMO {profile.username.toUpperCase()} · MINHA CONTA
             </Label>
           </g>
         ) : (

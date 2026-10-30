@@ -1,11 +1,11 @@
 import { supabase } from './supabaseClient.js';
 import { NETWORK_MESSAGE, isNetworkError } from './networkError.js';
 
-// O Supabase Auth pede e-mail, nao usuario. Como nao existe uma caixa de
-// entrada de verdade pra "usuario@mugenfighter.local", a confirmacao de
-// e-mail fica DESLIGADA no painel do Supabase (Authentication > Sign In /
-// Providers > User Signups > "Confirm email"). Sem isso, ninguem confirmaria
-// a conta (o e-mail nunca chega a lugar nenhum) e o login nunca liberaria.
+// Contas novas usam o e-mail de verdade. Contas antigas (criadas so com nome de
+// usuario) tem um e-mail interno "usuario@mugenfighter.local", que nao recebe
+// nada: por isso a confirmacao de e-mail fica DESLIGADA no painel do Supabase
+// (Authentication > Sign In / Providers > Email > "Confirm email"), e essas
+// contas continuam entrando pelo nome de usuario.
 const EMAIL_DOMAIN = 'mugenfighter.local';
 
 const USERNAME_PATTERN = /^[a-z0-9_]{3,20}$/;
@@ -28,37 +28,55 @@ function friendlyError(error) {
   if (isNetworkError(error)) return NETWORK_MESSAGE;
   const msg = error.message ?? '';
   if (msg.includes('already registered') || msg.includes('already exists')) return 'Esse nome de usuario ja existe.';
-  if (msg.includes('Invalid login credentials')) return 'Usuario ou senha errados.';
+  if (msg.includes('Invalid login credentials')) return 'E-mail, usuário ou senha incorretos.';
+  if (msg.includes('Email not confirmed')) return 'Confirme o e-mail que enviamos antes de entrar.';
+  if (msg.includes('rate limit')) return 'Muitas tentativas. Espere um pouco e tente de novo.';
   if (msg.includes('Password should be at least')) return 'Senha precisa ter pelo menos 6 caracteres.';
   return msg || 'Algo deu errado. Tenta de novo.';
 }
 
-// Cria a conta (Supabase Auth) e o perfil publico (tabela profiles) em
-// seguida. Devolve { profile } ou { error }.
-export async function signUp(rawUsername, password) {
+// Cria a conta (Supabase Auth, com e-mail e senha) e o perfil publico (tabela
+// profiles) com o nome de exibicao. O e-mail nunca vai para o perfil: o ranking
+// mostra so o nome de exibicao. Devolve { profile }, { fieldErrors } (erro de um
+// campo), { pending } (falta confirmar o e-mail) ou { error }.
+export async function signUp({ email, displayName, password }) {
   if (!supabase) return { error: 'Supabase nao configurado.' };
-  const username = normalizeUsername(rawUsername);
+  const username = normalizeUsername(displayName);
   if (!isValidUsername(username)) {
-    return { error: 'Usuario precisa ter 3-20 letras minusculas, numeros ou "_".' };
+    return { fieldErrors: { displayName: 'Use de 3 a 20 letras minúsculas, números ou "_".' } };
   }
-  const { data, error } = await supabase.auth.signUp({ email: emailFor(username), password });
-  if (error) return { error: friendlyError(error) };
-  if (!data.user) return { error: 'Nao foi possivel criar a conta.' };
+  // O nome e unico no ranking: confere antes de criar a conta, senao sobraria
+  // uma conta sem perfil.
+  const { data: taken, error: lookupError } = await supabase.from('profiles').select('id').eq('username', username).maybeSingle();
+  if (lookupError) return { error: friendlyError(lookupError) };
+  if (taken) return { fieldErrors: { displayName: 'Esse nome de exibição já está em uso.' } };
 
-  const { data: profile, error: profileError } = await supabase
-    .from('profiles')
-    .insert({ id: data.user.id, username })
-    .select()
-    .single();
-  if (profileError) return { error: friendlyError(profileError) };
+  const { data, error } = await supabase.auth.signUp({ email, password, options: { data: { display_name: username } } });
+  if (error) {
+    if (/already registered|already exists/i.test(error.message ?? '')) {
+      return { fieldErrors: { email: 'Esse e-mail já tem conta. Use a aba ENTRAR.' } };
+    }
+    return { error: friendlyError(error) };
+  }
+  if (!data.user) return { error: 'Nao foi possivel criar a conta.' };
+  // Com a confirmacao de e-mail ligada no Supabase ainda nao ha sessao.
+  if (!data.session) return { pending: 'Conta criada. Confirme o e-mail que enviamos e depois entre.' };
+  return createProfile(data.user.id, username);
+}
+
+async function createProfile(userId, username) {
+  const { data: profile, error } = await supabase.from('profiles').insert({ id: userId, username }).select().single();
+  if (error) return { error: friendlyError(error) };
   return { profile };
 }
 
-// Loga com usuario + senha. Devolve { profile } ou { error }.
-export async function signIn(rawUsername, password) {
+// Loga com e-mail (ou, em conta antiga, com o nome de usuario) e senha.
+// Devolve { profile } ou { error }.
+export async function signIn(identifier, password) {
   if (!supabase) return { error: 'Supabase nao configurado.' };
-  const username = normalizeUsername(rawUsername);
-  const { error } = await supabase.auth.signInWithPassword({ email: emailFor(username), password });
+  const text = identifier.trim();
+  const email = text.includes('@') ? text : emailFor(normalizeUsername(text));
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) return { error: friendlyError(error) };
   return fetchOwnProfile();
 }
@@ -73,11 +91,15 @@ export async function signOut() {
 export async function fetchOwnProfile() {
   if (!supabase) return { error: 'Supabase nao configurado.' };
   const { data: session } = await supabase.auth.getSession();
-  const userId = session.session?.user?.id;
-  if (!userId) return { profile: null };
-  const { data: profile, error } = await supabase.from('profiles').select().eq('id', userId).single();
+  const user = session.session?.user;
+  if (!user) return { profile: null };
+  const { data: profile, error } = await supabase.from('profiles').select().eq('id', user.id).maybeSingle();
   if (error) return { error: friendlyError(error) };
-  return { profile };
+  if (profile) return { profile };
+  // Conta sem perfil (criada com a confirmacao de e-mail ligada): o perfil nasce
+  // no primeiro acesso, com o nome de exibicao escolhido no cadastro.
+  const wanted = user.user_metadata?.display_name;
+  return wanted && isValidUsername(wanted) ? createProfile(user.id, wanted) : { profile: null };
 }
 
 // Ranking: os perfis por Elo, do maior pro menor.

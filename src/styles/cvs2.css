@@ -684,3 +684,26 @@
   .touch-controls__pad { width: 170px; height: 170px; left: 14px; bottom: 14px; }
   .touch-btn--action { width: 74px; height: 74px; }
 }
+
+/* ---- Cadastro: cartao mais largo, campos em duas colunas e erro por campo ---- */
+.auth-card--wide { width: 640px; top: 190px; gap: 10px; }
+.auth-card__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px; align-items: start; }
+.auth-card__field--invalid input { border-color: var(--color-field-orange-light); }
+.auth-card__fielderror { color: var(--color-field-orange-light); font-size: 15px; font-weight: 800; line-height: 1.1; }
+.auth-card__notice { margin: -6px 0 0; color: var(--color-field-yellow); font-size: 16px; font-weight: 800; }
+
+/* ---- Cadastro: cartao mais largo, campos em duas colunas e erro por campo ---- */
+.auth-card--wide { width: 640px; top: 190px; gap: 10px; }
+.auth-card__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px; align-items: start; }
+.auth-card__field--invalid input { border-color: var(--color-field-orange-light); }
+.auth-card__fielderror { color: var(--color-field-orange-light); font-size: 15px; font-weight: 800; line-height: 1.1; }
+.auth-card__notice { margin: -6px 0 0; color: var(--color-field-yellow); font-size: 16px; font-weight: 800; }
+
+/* ---- Minha conta ---- */
+.account-card__name { display: flex; flex-direction: column; gap: 2px; }
+.account-card__label { color: var(--color-text-secondary); font-size: 18px; font-weight: 700; }
+.account-card__name strong { font-size: 40px; font-style: italic; font-weight: 900; color: var(--color-field-yellow); }
+.account-card__stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px; margin: 0; }
+.account-card__stats div { background: var(--color-bg-primary); border: 3px solid var(--color-cell-empty); padding: 8px 12px; }
+.account-card__stats dt { color: var(--color-text-secondary); font-size: 15px; font-weight: 700; }
+.account-card__stats dd { margin: 0; font-size: 30px; font-weight: 900; font-style: italic; }

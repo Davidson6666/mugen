@@ -15,6 +15,9 @@ export const THEMES = {
 const BY_SCREEN = {
   leaderboard: 'online',
   login: 'online',
+  register: 'online',
+  account: 'online',
+  notFound: 'online',
   matchmaking: 'online',
   achievements: 'story',
   storyEnding: 'story',

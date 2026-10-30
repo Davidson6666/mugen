@@ -1,10 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import BootScreen from './components/BootScreen.jsx';
 import { GameProvider } from './context/GameProvider.jsx';
 import { MenuProvider } from './context/MenuProvider.jsx';
 import { AuthProvider } from './context/AuthProvider.jsx';
 import { AchievementsProvider } from './context/AchievementsProvider.jsx';
 import { useMenu } from './context/MenuContext.js';
+import { useAuth } from './context/AuthContext.js';
+import { useGame } from './context/GameContext.js';
+import { ROUTES, guardFor } from './routes.js';
 import MainMenu from './components/MainMenu.jsx';
 import CharacterSelect from './components/CharacterSelect.jsx';
 import StageSelect from './components/StageSelect.jsx';
@@ -17,6 +21,8 @@ import LoginScreen from './components/LoginScreen.jsx';
 import LeaderboardScreen from './components/LeaderboardScreen.jsx';
 import MatchmakingScreen from './components/MatchmakingScreen.jsx';
 import AchievementsScreen from './components/AchievementsScreen.jsx';
+import AccountScreen from './components/AccountScreen.jsx';
+import NotFoundScreen from './components/NotFoundScreen.jsx';
 import AchievementToast from './components/AchievementToast.jsx';
 import UpdateBanner from './components/UpdateBanner.jsx';
 import ScreenTransition from './components/ScreenTransition.jsx';
@@ -24,25 +30,57 @@ import { setSoundtrackScene } from './systems/Soundtrack.js';
 import { useStageScale } from './utils/useStageScale.js';
 import './App.css';
 
+// Tela de cada rota (os enderecos estao em src/routes.js).
 const SCREENS = {
-  mainMenu: MainMenu,
-  characterSelect: CharacterSelect,
-  stageSelect: StageSelect,
-  versus: VersusScreen,
-  battle: Battle,
-  result: ResultScreen,
-  storyEnding: StoryEndingScreen,
-  settings: SettingsScreen,
-  login: LoginScreen,
-  leaderboard: LeaderboardScreen,
-  matchmaking: MatchmakingScreen,
-  achievements: AchievementsScreen,
+  mainMenu: <MainMenu />,
+  characterSelect: <CharacterSelect />,
+  stageSelect: <StageSelect />,
+  versus: <VersusScreen />,
+  battle: <Battle />,
+  result: <ResultScreen />,
+  storyEnding: <StoryEndingScreen />,
+  settings: <SettingsScreen />,
+  login: <LoginScreen mode="login" />,
+  register: <LoginScreen mode="register" />,
+  leaderboard: <LeaderboardScreen />,
+  matchmaking: <MatchmakingScreen />,
+  achievements: <AchievementsScreen />,
+  account: <AccountScreen />,
 };
 
+// Manda para o login quem esta sem sessao, guardando para onde a pessoa vai
+// voltar depois de entrar.
+function RedirectToLogin({ then }) {
+  const { setAfterLogin } = useMenu();
+  useEffect(() => { setAfterLogin(then); }, [setAfterLogin, then]);
+  return <Navigate to="/login" replace />;
+}
+
+// Pre-condicao de cada tela (src/routes.js): luta sem lutador escolhido,
+// resultado sem partida ou conta sem login voltam ao menu / ao login em vez de
+// abrir uma tela quebrada (por exemplo, quem recarrega a pagina no meio da luta).
+function Guarded({ screen, children }) {
+  const guard = guardFor(screen);
+  const { setup, result } = useGame();
+  const { profile, loading } = useAuth();
+  if (guard === 'setup' && !setup.mode) return <Navigate to="/" replace />;
+  if (guard === 'result' && !result) return <Navigate to="/" replace />;
+  if (guard === 'auth') {
+    if (loading) return null;
+    if (!profile) return <RedirectToLogin then={screen} />;
+  }
+  return children;
+}
+
 function Router() {
-  const { screen } = useMenu();
-  const Screen = SCREENS[screen] ?? MainMenu;
-  return <Screen />;
+  return (
+    <Routes>
+      {ROUTES.map(({ screen, path }) => (
+        <Route key={screen} path={path} element={<Guarded screen={screen}>{SCREENS[screen]}</Guarded>} />
+      ))}
+      <Route path="*" element={<NotFoundScreen />} />
+    </Routes>
+  );
 }
 
 export default function App() {

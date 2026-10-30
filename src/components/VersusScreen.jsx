@@ -56,7 +56,7 @@ export default function VersusScreen() {
   }, []);
 
   useEffect(() => {
-    if (loaded && waited) go('battle');
+    if (loaded && waited) go('battle', { replace: true });
   }, [loaded, waited, go]);
 
   if (failed) {
