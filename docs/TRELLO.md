@@ -84,6 +84,11 @@ Teste das telas: npm run smoke (29/10)
 Acessibilidade: página em pt-BR e menus com papel para leitor de tela (29/10)
 Online: conexão direta entre os jogadores (WebRTC) e indicador de ping (29/10)
 Limpeza: arquivo sem uso removido e avisos sobre importadores (29/10)
+Rotas com React Router, página 404 e guardas (30/10)
+Formulários de login e cadastro validados com Zod (30/10)
+Cadastro com e-mail e nome de exibição; contas antigas continuam entrando (30/10)
+Página Minha conta (área protegida) com logout (30/10)
+README com Supabase e políticas, .env.example e vercel.json (30/10)
 ```
 
 ## Coluna "A Fazer"
@@ -93,6 +98,8 @@ Revisar o diagrama de casos de uso com a equipe
 Testar Versus Local e Partida Online com duas pessoas
 Testar o online entre dois computadores e ver se o indicador mostra DIRETO
 Decidir sobre as músicas comerciais no repositório (Tekken 3, DMC3, Bayonetta)
+Publicar na Vercel e preencher o endereço no README (30/10)
+Colocar o endereço publicado em Site URL no Supabase (30/10)
 ```
 
 ## Coluna "Backlog"

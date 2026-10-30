@@ -106,9 +106,11 @@ Como **jogador**, quero **ver a classificação dos jogadores online**, para **s
 - O ranking é aberto a todos, com ou sem conta.
 
 ### HU15 — Fazer Login / Criar Conta
-Como **jogador**, quero **criar uma conta e entrar nela**, para **jogar online, aparecer no ranking e guardar conquistas**.
-- Toda conta nova começa com Elo 1000.
-- O menu mostra com qual conta estou logado e deixa sair.
+Como **jogador**, quero **criar uma conta com e-mail e entrar nela**, para **jogar online, aparecer no ranking e guardar conquistas**.
+- O cadastro (`/cadastro`) pede e-mail, nome no ranking, senha e repetição da senha; o login (`/login`) pede e-mail (ou usuário, nas contas antigas) e senha.
+- Cada campo mostra a própria mensagem de erro embaixo (validação com Zod) antes de enviar.
+- O ranking mostra só o nome escolhido; o e-mail não aparece em lugar nenhum.
+- Toda conta nova começa com Elo 1000, e a sessão continua ao recarregar a página.
 - Depois de entrar, o jogo continua para onde eu estava indo.
 
 ### HU16 — Ver Conquistas
@@ -122,3 +124,15 @@ Como **jogador**, quero **trocar as teclas e ajustar o volume e a música**, par
 - Volume geral e música têm ajuste próprio.
 - "Restaurar padrão" volta tudo como era.
 - Controles de PS5 e Xbox funcionam sem configuração.
+
+### HU18 — Acessar Minha Conta
+Como **jogador logado**, quero **ver os dados da minha conta e sair dela**, para **conferir meu Elo e encerrar a sessão**.
+- A página `/conta` só abre com sessão ativa; sem login, leva ao login e volta para a conta depois de entrar.
+- Mostra o nome no ranking, o Elo, vitórias, derrotas e aproveitamento.
+- O botão "Sair da conta" encerra a sessão e volta ao menu.
+
+### HU19 — Ver página não encontrada
+Como **jogador**, quero **uma mensagem clara quando abro um endereço que não existe**, para **voltar ao jogo sem ficar perdido**.
+- Qualquer endereço inexistente mostra a página 404 com o endereço digitado.
+- Enter, Esc ou o botão levam de volta ao menu.
+- Abrir a luta ou o resultado sem ter jogado volta ao menu em vez de abrir uma tela quebrada.
