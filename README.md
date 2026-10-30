@@ -4,19 +4,88 @@ Jogo de luta 2D no navegador, no estilo dos fliperamas (Capcom vs SNK 2), feito 
 
 > Projeto acadêmico, sem fins comerciais. Os créditos de cada personagem, cenário e fonte estão em [CREDITS.md](CREDITS.md).
 
+## Aplicação publicada
+
+**Endereço:** _preencher depois da publicação_ (veja [Publicação](#publicação)).
+
 ## Como rodar
+
+Precisa de Node 20 ou mais novo.
 
 ```bash
 npm install
-npm run dev        # servidor local (http://localhost:5173)
-npm test           # testes da simulação, dos golpes e da câmera
-npm run smoke      # abre cada tela num Chrome e falha se houver erro de console
+cp .env.example .env.local   # e preencha com os dados do seu projeto no Supabase
+npm run dev                  # servidor local (http://localhost:5173)
+```
+
+Outros comandos:
+
+```bash
+npm test           # testes da simulação, dos golpes, da câmera, das rotas e da validação
+npm run smoke      # abre cada tela e cada rota num Chrome e falha se houver erro de console
 npm run net:check  # mede a rede da partida online (dois Chromes, servidor x conexão direta)
 npm run lint
 npm run build      # versão de produção (PWA instalável)
 ```
 
-Para o ranking e a partida online é preciso um projeto no [Supabase](https://supabase.com): crie `.env.local` com `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` e rode `supabase/schema.sql` no SQL Editor. Sem isso o jogo funciona normalmente, só sem as partes online.
+Sem o Supabase o jogo funciona normalmente (CPU, versus local, história e treino); só ficam de fora a conta, o ranking e a partida online.
+
+## Variáveis de ambiente
+
+Ficam em `.env.local` (fora do git). O arquivo [`.env.example`](.env.example) mostra o formato, sem credenciais.
+
+| Variável | O que é |
+| --- | --- |
+| `VITE_SUPABASE_URL` | Endereço do projeto no Supabase (`https://xxxx.supabase.co`) |
+| `VITE_SUPABASE_ANON_KEY` | Chave pública `anon` do projeto. Pode ir para o navegador porque as tabelas têm RLS |
+
+A chave `service_role` (administrativa) **nunca** entra no projeto nem no navegador.
+
+## Preparando o Supabase
+
+1. Crie um projeto em [supabase.com](https://supabase.com) e copie, em **Project Settings > API**, a URL e a chave `anon` para o `.env.local`.
+2. Em **SQL Editor > New query**, cole o conteúdo de [`supabase/schema.sql`](supabase/schema.sql) e rode. Ele cria as tabelas, liga o RLS, cria as políticas e as funções do ranking e da fila. Pode rodar de novo sem problema (usa `if not exists`).
+3. Em **Authentication > Sign In / Providers > Email**, deixe o provedor de e-mail ligado e **desligue "Confirm email"**. Assim a conta vale logo depois do cadastro. (Se você deixar ligado, o jogo pede para confirmar o e-mail e cria o perfil no primeiro acesso.)
+4. Opcional: [`supabase/elo-inicial-1000.sql`](supabase/elo-inicial-1000.sql) acerta o Elo inicial em 1000 e [`supabase/reset-ranking.sql`](supabase/reset-ranking.sql) zera o ranking.
+
+### Tabelas e políticas de acesso (RLS)
+
+Todas as tabelas têm RLS ligado. O navegador só usa a chave `anon`; quem manda no que cada pessoa pode fazer é o banco.
+
+| Tabela | Leitura | Escrita |
+| --- | --- | --- |
+| `profiles` (nome de exibição, Elo, vitórias e derrotas) | Pública: é o ranking | Cada conta cria só o próprio perfil. **Não existe política de UPDATE**: nem o dono muda o Elo, só a função `report_match_result` (no servidor) |
+| `queue` (fila da partida online) | Cada um vê só a própria linha | Entra pela função `find_match`; cada um só apaga a própria linha (sair da fila) |
+| `matches` (partidas online) | Os dois jogadores veem a própria partida | Só pelas funções do servidor (`find_match`, `start_match`, `report_match_result`) |
+| `achievements`, `character_wins` | Cada um vê só as próprias conquistas | Só pela função do servidor `record_match_result` |
+
+O ranking é **por Elo**: ao fim de uma partida online, `report_match_result` calcula e grava o novo Elo dos dois jogadores. Quem perde pontos continua no banco; o ranking mostra a classificação atual.
+
+## Autenticação e navegação
+
+- **Cadastro** (`/cadastro`): e-mail, nome no ranking, senha e repetição, validados com Zod. O e-mail fica só na conta do Supabase; o ranking mostra apenas o nome escolhido.
+- **Login** (`/login`): e-mail e senha (contas antigas, criadas só com nome de usuário, entram pelo usuário). A sessão continua ao recarregar a página.
+- **Minha conta** (`/conta`): área protegida, só abre com login e tem o logout. Sem login, manda para `/login` e volta depois de entrar.
+- Dá para jogar sem conta. A conta é pedida para a partida online e para o Versus Player (jogador 1).
+
+| Rota | Tela |
+| --- | --- |
+| `/` | Menu principal |
+| `/personagem`, `/cenario`, `/versus`, `/luta`, `/resultado`, `/final`, `/fila` | Fluxo da partida (voltam ao menu se abertas sem partida) |
+| `/ranking`, `/conquistas`, `/configuracoes` | Ranking, conquistas e controles |
+| `/login`, `/cadastro`, `/conta` | Conta |
+| qualquer outra | Página "não encontrada" (404) |
+
+As rotas usam o React Router (`src/routes.js` lista todas). O estado de sessão fica em contexto (`src/context/AuthProvider.jsx`) e as chamadas ao Supabase ficam em `src/utils/auth.js`, `matchmaking.js` e `achievements.js`, fora dos componentes.
+
+## Publicação
+
+O projeto é um app estático (Vite), pronto para a Vercel; o [`vercel.json`](vercel.json) já manda qualquer endereço para o `index.html`, que é o que faz as rotas funcionarem ao abrir ou recarregar uma URL direta.
+
+1. Em [vercel.com/new](https://vercel.com/new), importe o repositório do GitHub.
+2. Em **Environment Variables**, cadastre `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` (os mesmos do `.env.local`).
+3. Faça o deploy e cole o endereço em **Aplicação publicada**, acima.
+4. No Supabase, em **Authentication > URL Configuration**, ponha esse endereço em **Site URL**.
 
 ## Modos
 
