@@ -2,7 +2,7 @@
   "id": "humberto",
   "name": "Humberto",
   "description": "O químico lendário",
-  "assetVersion": "humberto-combat-v2",
+  "assetVersion": "humberto-polish-v7",
   "sheets": [
     "humberto_body.png",
     "humberto_legendary.png",
@@ -13,7 +13,8 @@
     "humberto_fireball.png",
     "fireball_fx.png",
     "humberto_combat_v2.png",
-    "combat_fx_v2.png"
+    "combat_fx_v2.png",
+    "humberto_polish.png"
   ],
   "atlas": [
     [
@@ -807,6 +808,60 @@
       350,
       0,
       0
+    ],
+    [
+      10,
+      0,
+      0,
+      320,
+      350,
+      0,
+      0
+    ],
+    [
+      10,
+      320,
+      0,
+      320,
+      350,
+      0,
+      0
+    ],
+    [
+      10,
+      640,
+      0,
+      320,
+      350,
+      0,
+      0
+    ],
+    [
+      10,
+      960,
+      0,
+      320,
+      350,
+      0,
+      0
+    ],
+    [
+      10,
+      0,
+      350,
+      320,
+      350,
+      0,
+      0
+    ],
+    [
+      10,
+      320,
+      350,
+      320,
+      350,
+      0,
+      0
     ]
   ],
   "spriteGridSize": {
@@ -822,9 +877,9 @@
     "jumpGravity": 0.55
   },
   "hurtbox": {
-    "offsetX": 110,
+    "offsetX": 115,
     "offsetY": 85,
-    "width": 100,
+    "width": 90,
     "height": 245
   },
   "hitbox": {
@@ -1458,7 +1513,7 @@
     "ionicPalm": {
       "frames": [
         84,
-        85,
+        92,
         86,
         87
       ],
@@ -1540,9 +1595,9 @@
     },
     "special2": {
       "frames": [
-        84,
+        93,
         85,
-        86,
+        92,
         87
       ],
       "durations": [
@@ -1590,7 +1645,7 @@
     },
     "kiBlast": {
       "frames": [
-        84,
+        93,
         85,
         86,
         87
@@ -2654,10 +2709,10 @@
     },
     "punch3": {
       "frames": [
-        75,
-        26,
-        26,
-        87
+        89,
+        88,
+        88,
+        79
       ],
       "durations": [
         5,
@@ -2699,11 +2754,11 @@
     },
     "kick2": {
       "frames": [
-        84,
-        85,
-        86,
-        86,
-        87
+        80,
+        90,
+        91,
+        81,
+        83
       ],
       "durations": [
         5,
