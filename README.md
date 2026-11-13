@@ -114,6 +114,12 @@ Controles padrão (remapeáveis em Configurações): `WASD` move, `J` soco, `K` 
 
 ## Lutadores e arte
 
+O [Humberto](public/assets/characters/humberto/ART.md) tem 192 poses refeitas
+a partir das fotografias originais, com o mesmo pixel art detalhado dos demais
+professores: movimento, combate, reações e especiais nas formas normal e
+lendária. Reconstrua com `npm run assets:humberto` e confira as animações em
+`/docs/humberto-remaster-preview.html`.
+
 A [Flavia](docs/COORDENADORA.md), coordenadora e professora de matemática, tem 100 poses
 próprias, quatro especiais matemáticos, a Espada do Carrasco (↓←S), com lâmina
 de luz amarela em forma de cruz e corte pesado, e o Tribunal da Coordenação (↓↓S),

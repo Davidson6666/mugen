@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Humberto — O químico lendário</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:#101712;color:#f4f1df;font:15px system-ui,sans-serif}main{max-width:1160px;margin:auto;padding:36px 30px 50px}.eyebrow{color:#b6cc88;letter-spacing:.2em;font-size:11px;font-weight:700;text-transform:uppercase}header{display:flex;justify-content:space-between;align-items:center;gap:24px}h1{font-size:46px;line-height:1.05;margin:12px 0}h1 span{color:#a9bc87}p{color:#aeb8a6;line-height:1.6;margin:10px 0}.badge{border:1px solid #536342;border-radius:50px;padding:10px 18px;white-space:nowrap;color:#d3dfb3}.panel{background:#19221b;border:1px solid #36432e;border-radius:16px;overflow:hidden;margin-top:28px}.titles{display:grid;grid-template-columns:1fr 1fr;padding:23px 25px 0;text-align:center}.titles strong{font-size:18px}.titles small{display:block;color:#94a482;margin-top:6px}#stage canvas{display:block;width:100%;height:auto;image-rendering:pixelated}.controls{display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:18px 22px;border-top:1px solid #36432e}button,select{font:inherit;color:#f4f1df;background:#263322;border:1px solid #526244;border-radius:7px;padding:10px 14px;cursor:pointer}button:hover{background:#34472c}label{display:flex;align-items:center;gap:9px;color:#bdc8af}input{accent-color:#a8cd72}.note{font-size:13px}#status{margin-left:auto;color:#c8d8ac}details{margin-top:24px}summary{cursor:pointer;color:#cee2a9;padding:10px 0}#gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-top:15px}.tile{margin:0;background:#1e2920;border:1px solid #36432e;border-radius:8px}.tile canvas{width:100%;height:auto;display:block;image-rendering:pixelated}.tile figcaption{text-align:center;font-size:11px;color:#b9c8aa;padding:0 4px 12px}@media(max-width:650px){main{padding:22px 14px}header{display:block}h1{font-size:36px}.badge{display:inline-block;margin-top:10px}.controls{gap:8px}.titles{padding:18px 5px 0}.titles strong{font-size:15px}#status{margin-left:0}}
+  </style>
+</head>
+<body><main>
+  <header><div><div class="eyebrow">Ruptura Arena · professores</div><h1>Humberto<span>.</span></h1><p>O professor que a gente conhece.<br>O químico lendário dentro da arena.</p></div><div class="badge">192 poses · 2 formas · 8 folhas</div></header>
+  <section class="panel">
+    <div class="titles"><div><strong>Professor Humberto</strong><small>Rosto e roupas das fotografias</small></div><div><strong>Forma lendária</strong><small>A mesma identidade, outro poder</small></div></div>
+    <div id="stage"></div>
+    <div class="controls">
+      <label>Animação <select id="move" aria-label="Animação"></select></label>
+      <button id="pause">Pausar</button><button id="restart">Repetir</button><button id="flip">Trocar lado</button>
+      <label>Velocidade <select id="speed"><option value="1">Normal</option><option value="0.35">Câmera lenta</option></select></label>
+      <span id="status">Carregando…</span>
+    </div>
+  </section>
+  <p class="note">Camiseta preta, calça oliva, tênis com solado claro e a expressão de quem é querido pela turma. As poses de química, os gestos de 6 e 7 e os especiais fazem parte do mesmo conjunto.</p>
+  <details id="all"><summary>Conferir as 192 poses</summary><div id="gallery"></div></details>
+</main>
+<script type="module">
+  import { Application, Container, Graphics } from 'pixi.js';
+  import { SpriteSheetManager } from '/src/systems/SpriteSheetManager.js';
+  import { Fighter } from '/src/systems/Fighter.js';
+  import { sheetUrl } from '/src/utils/characterConfig.js';
+  const entry = { id:'humberto',dir:'/assets/characters/humberto',config:'humberto_config.json' };
+  const record = await new SpriteSheetManager().loadCharacter(entry);
+  const app = new Application();
+  await app.init({width:1100,height:450,background:'#19221b',antialias:false});
+  document.querySelector('#stage').append(app.canvas);
+  const world = new Container();world.scale.set(3);app.stage.addChild(world);
+  world.addChild(new Graphics().moveTo(18,128).lineTo(348,128).stroke({color:'#536444',width:.5}));
+  const map={groundLevel:128,leftBound:0,rightBound:400};
+  const normal=new Fighter({record,map,x:95,facing:1}),legendary=new Fighter({record,map,x:275,facing:1});
+  legendary.mode='legendary';world.addChild(normal.sprite,legendary.sprite);
+  const labels={victoryPose:'Vitória e simpatia',idle:'Postura de luta',walkForward:'Caminhada',jump:'Salto',dashForward:'Avanço',blockStanding:'Defesa em pé',blockCrouching:'Defesa agachada',punch:'Soco',punch2:'Soco cruzado',kick:'Chute',sweep:'Rasteira',uppercut:'Uppercut',special1:'Frasco reagente',ionicPalm:'Palma iônica',special2:'Combustão',neutralize:'Neutralização',sixSeven:'Six Seven',medusa:'Petrificação',greatFireball:'Katon',judgementCutEnd:'Judgement Cut End',hitReaction:'Recebendo dano',knockdown:'Nocaute',getUp:'Levantando'};
+  const select=document.querySelector('#move');
+  for(const [value,label] of Object.entries(labels))select.add(new Option(label,value));
+  let paused=false,finishedFor=0;
+  const play=()=>{normal.animation.play(select.value,{restart:true});legendary.animation.play(record.config.modes.legendary.animations[select.value]??select.value,{restart:true});normal.syncSprite();legendary.syncSprite();finishedFor=0;};
+  select.onchange=play;document.querySelector('#restart').onclick=play;
+  document.querySelector('#pause').onclick=()=>{paused=!paused;document.querySelector('#pause').textContent=paused?'Continuar':'Pausar';};
+  document.querySelector('#flip').onclick=()=>{for(const f of [normal,legendary]){f.facing*=-1;f.syncSprite();}};
+  play();
+  app.ticker.add(t=>{if(paused)return;const delta=Math.min(t.deltaTime,3)*Number(document.querySelector('#speed').value);for(const f of [normal,legendary]){f.animation.update(delta);f.syncSprite();}if(normal.animation.finished){finishedFor+=delta;if(finishedFor>40)play();}document.querySelector('#status').textContent=`${normal.animation.localFrame+1} / ${normal.animation.current.frames.length} quadros`;});
+  document.querySelector('#all').ontoggle=async event=>{
+    if(!event.target.open||document.querySelector('#gallery').children.length)return;
+    const pages=await Promise.all(record.config.sheets.map(file=>new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=reject;img.src=sheetUrl(entry,record.config,file);}))); 
+    for(const [index,[page,x,y,w,h,dx,dy]] of record.config.atlas.entries()){
+      const figure=document.createElement('figure');figure.className='tile';const canvas=document.createElement('canvas');canvas.width=320;canvas.height=350;
+      canvas.getContext('2d').drawImage(pages[page],x,y,w,h,dx,dy,w,h);
+      const label=document.createElement('figcaption');label.textContent=`${index<96?'Normal':'Lendário'} · ${index%96+1}`;figure.append(canvas,label);document.querySelector('#gallery').append(figure);
+    }
+  };
+  window.humbertoPreview={normal,legendary,record,app,play};
+</script>
+</body></html>

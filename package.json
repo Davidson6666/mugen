@@ -10,6 +10,7 @@
     "test": "node --test",
     "preview": "vite preview",
     "assets:placeholder": "node scripts/generate-placeholder-assets.mjs",
+    "assets:humberto": "node scripts/build-humberto-remaster.mjs",
     "assets:professor-web": "node scripts/build-professor-web.mjs",
     "assets:coordenadora": "node scripts/build-coordenadora.mjs",
     "assets:itachi": "node scripts/import-itachi.mjs",

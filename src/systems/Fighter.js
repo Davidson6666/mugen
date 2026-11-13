@@ -1511,7 +1511,10 @@ export class Fighter {
     }
     this.sprite.tint = petrified ? 0xb6b1a5 : 0xffffff;
     this.sprite.filters = petrified && this.stoneFilter ? [this.stoneFilter] : null;
-    this.sprite.texture = this.frames[this.animation.sheetFrame];
+    // Mantém eventos, recarga e usos por round do golpe compartilhado;
+    // o modo troca somente a textura, inclusive se expirar durante o golpe.
+    const frame = this.animation.sheetFrame;
+    this.sprite.texture = this.frames[this.modeDef?.frameMap?.[frame] ?? frame];
     this.sprite.x = Math.round(this.x);
     this.sprite.y = Math.round(this.y);
     this.sprite.scale.set(this.scale * this.facing, this.scale);
