@@ -85,6 +85,7 @@ export function assertConfigIntegrity(assert, config) {
   const spawnsIn = (definition) => [
     definition.effect,
     ...(definition.events ?? []).map((event) => event.effect),
+    ...(definition.events ?? []).flatMap((event) => event.verdict ? [{ id: event.verdict.expel }, { id: event.verdict.warning }] : []),
     ...(definition.spawns ?? []),
     definition.onHitSpawn,
     definition.onDeathSpawn,

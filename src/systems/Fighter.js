@@ -222,6 +222,8 @@ export class Fighter {
     this.state = 'idle';
     this.blocking = false;
     this.health = this.config.stats.maxHealth;
+    this.damageTaken = 0;
+    this.expulsion = null;
     this.stunTimer = 0;
     this.resetReactions();
     // Pelo menos um acerto do golpe atual (corpo) ja conectou.
@@ -294,7 +296,25 @@ export class Fighter {
     // (um golpe liga com event.buff), o dano sobe (o Power Charge do Sukuna).
     const buff = this.config.damageBuff;
     const boosted = buff && this.buffs[buff.kind] > 0 ? buff.scale : 1;
-    return (this.config.balance?.damage ?? 1) * (this.awakened ? (this.awakening.damageScale ?? 1) : 1) * boosted;
+    return (this.config.balance?.damage ?? 1) * (this.awakened ? (this.awakening.damageScale ?? 1) : 1) * boosted * this.passiveDamageScale;
+  }
+
+  get passiveProgress() {
+    const def = this.config.damagePassive;
+    if (!def) return 0;
+    return Math.min(1, this.damageTaken / (this.config.stats.maxHealth * def.fullAt));
+  }
+
+  get passiveDamageScale() {
+    const def = this.config.damagePassive;
+    return def ? def.minScale + (def.maxScale - def.minScale) * this.passiveProgress : 1;
+  }
+
+  recordDamageTaken(previousHealth) {
+    const def = this.config.damagePassive;
+    if (!def) return;
+    const actual = Math.max(0, previousHealth - this.health);
+    this.damageTaken = Math.min(this.config.stats.maxHealth * def.fullAt, this.damageTaken + actual);
   }
 
   fillAwakening(amount) {
@@ -426,7 +446,7 @@ export class Fighter {
   }
 
   get isKnockedOut() {
-    return this.state === 'ko';
+    return this.state === 'ko' || Boolean(this.expulsion);
   }
 
   // Quanto a hitbox base avanca alem do centro do corpo. A IA usa isso para
@@ -458,7 +478,7 @@ export class Fighter {
   }
 
   get canAct() {
-    return !this.isKnockedOut && this.state !== 'pose' && this.state !== 'launched' && this.state !== 'down' && this.stunTimer <= 0;
+    return !this.isKnockedOut && !this.pinned?.disableActions && this.state !== 'pose' && this.state !== 'launched' && this.state !== 'down' && this.stunTimer <= 0;
   }
 
   // Retangulo declarado no espaco do frame (origem no canto superior esquerdo)
@@ -690,6 +710,13 @@ export class Fighter {
   }
 
   update(command, delta) {
+    // Expulsão já decidiu o K.O.; o deslocamento é só visual, sem arrastar a câmera.
+    if (this.expulsion) {
+      this.expulsion.ticks += delta;
+      this.animation.update(delta);
+      this.syncSprite();
+      return;
+    }
     // Petrificacao: pausa movimento e animacao, mas expira no tempo real.
     if (this.seals.petrify > 0 && !this.isKnockedOut) {
       this.seals.petrify = Math.max(0, this.seals.petrify - delta);
@@ -885,7 +912,7 @@ export class Fighter {
     const rival = this.opponent;
     if (!this.grounded || !rival?.canBeThrown) return false;
     if (Math.abs(rival.x - this.x) > this.halfWidth + rival.halfWidth + THROW_REACH) return false;
-    return this.startAttack(THROW_MOVE);
+    return this.startAttack(this.base(THROW_MOVE));
   }
 
   chooseAction(command) {
@@ -993,14 +1020,17 @@ export class Fighter {
 
   // Preso por um golpe (o crucificado do Tsukuyomi): fica parado no ponto
   // marcado, sem gravidade, ate o tempo acabar; depois cai normalmente.
-  pin({ x, y, ticks }) {
-    this.pinned = { x, y, remaining: ticks };
+  pin({ x, y, ticks, disableActions = false, sourceSerial }) {
+    if (disableActions && (this.state === 'attack' || this.state === 'dash')) this.endMove();
+    this.pinned = { x, y, remaining: ticks, ...(disableActions ? { disableActions: true } : {}), ...(sourceSerial !== undefined ? { sourceSerial } : {}) };
   }
 
   holdPin(delta) {
     if (!this.pinned) return;
     this.pinned.remaining -= delta;
-    if (this.pinned.remaining <= 0 || this.isKnockedOut) {
+    const interrupted = this.pinned.sourceSerial !== undefined
+      && (this.opponent?.state !== 'attack' || this.opponent.attackSerial !== this.pinned.sourceSerial);
+    if (this.pinned.remaining <= 0 || this.isKnockedOut || interrupted) {
       this.pinned = null;
       return;
     }
@@ -1081,9 +1111,9 @@ export class Fighter {
     // ataca fica a "standAt" px do centro; o oponente, preso no centro.
     if (event.standAt !== undefined) this.x = this.stageCenter + event.standAt * this.facing * k;
     if (event.pinOpponent && this.opponent) {
-      const { dx = 0, lift = 0, ticks, relative = 'stage' } = event.pinOpponent;
+      const { dx = 0, lift = 0, ticks, relative = 'stage', disableActions, releaseOnInterrupt } = event.pinOpponent;
       const originX = relative === 'self' ? this.x : this.stageCenter;
-      this.opponent.pin({ x: originX + dx * this.facing * k, y: this.map.groundLevel - lift * k, ticks });
+      this.opponent.pin({ x: originX + dx * this.facing * k, y: this.map.groundLevel - lift * k, ticks, disableActions, ...(releaseOnInterrupt ? { sourceSerial: this.attackSerial } : {}) });
     }
     if (event.land) {
       this.y = this.map.groundLevel;
@@ -1097,6 +1127,13 @@ export class Fighter {
         attack: this.currentAttack,
         serial: this.attackSerial,
       });
+    }
+    if (event.verdict && this.opponent && !this.opponent.isKnockedOut) {
+      const { threshold, expel, warning, offsetY = 290 } = event.verdict;
+      const lowLife = this.opponent.health / this.opponent.config.stats.maxHealth <= threshold;
+      this.pendingEffects.push({ owner: this, spawn: { id: lowLife ? expel : warning, target: 'opponent', offsetY }, attack: this.currentAttack, serial: this.attackSerial });
+      const sound = lowLife ? event.verdict.expelSound : event.verdict.warningSound;
+      if (sound) this.pendingSounds.push({ key: sound, run: this.moveRun, stopWithMove: false });
     }
     this.clampToBounds();
   }
@@ -1175,7 +1212,9 @@ export class Fighter {
     this.fillAwakening(this.awakening?.onHit ?? 0);
     // Arredondado a 6 casas: o dano pode ser fracionario (ajuste de equilibrio)
     // e a sobra de ponto flutuante nao pode impedir o nocaute.
+    const previousHealth = this.health;
     this.health = Math.max(this.minHealth, Math.round((this.health - damage) * 1e6) / 1e6);
+    this.recordDamageTaken(previousHealth);
     const away = from === null ? -this.facing : (this.x >= from ? 1 : -1);
     if (this.health === 0) {
       this.knockOut({ launch, away, scale });
@@ -1312,6 +1351,7 @@ export class Fighter {
   // Nos quadros em que some no dash (ou no trecho invulneravel de um golpe),
   // nenhum golpe pega.
   get invulnerable() {
+    if (this.expulsion) return true;
     if (this.state === 'down') return true;
     if (this.state === 'dash') {
       const { dash } = this.animation.current;
@@ -1333,7 +1373,9 @@ export class Fighter {
 
   takeBlockedHit(damage, blockstun) {
     const crouching = this.state === 'crouch';
+    const previousHealth = this.health;
     this.health = Math.max(this.minHealth, Math.round((this.health - damage) * 1e6) / 1e6);
+    this.recordDamageTaken(previousHealth);
     if (this.health === 0) {
       this.knockOut();
       return 'ko';
@@ -1359,6 +1401,8 @@ export class Fighter {
     this.state = 'idle';
     this.blocking = false;
     this.health = this.config.stats.maxHealth;
+    this.damageTaken = 0;
+    this.expulsion = null;
     this.stunTimer = 0;
     this.resetReactions();
     this.attackHasLanded = false;
@@ -1422,6 +1466,13 @@ export class Fighter {
     this.animation.play(this.base('ko'), { restart: true });
   }
 
+  expelFrom(from) {
+    this.expulsion = { direction: this.x >= from ? 1 : -1, ticks: 0 };
+    this.pinned = null;
+    this.vx = 0; this.vy = 0;
+    this.animation.play(this.base(this.hasAnimation('launched') ? 'launched' : 'ko'), { restart: true });
+  }
+
   updateAnimation(movingForward) {
     if (this.state === 'attack' || this.state === 'dash' || !this.canAct) return;
     if (this.transient) {
@@ -1465,5 +1516,11 @@ export class Fighter {
     this.sprite.y = Math.round(this.y);
     this.sprite.scale.set(this.scale * this.facing, this.scale);
     this.sprite.alpha = this.illusion ? 0.55 : 1;
+    if (this.expulsion) {
+      const { direction, ticks } = this.expulsion;
+      this.sprite.x = Math.round(this.x + direction * ticks * 18);
+      this.sprite.y = Math.round(this.y - ticks * 2);
+      this.sprite.alpha = Math.max(0, 1 - ticks / 45);
+    }
   }
 }

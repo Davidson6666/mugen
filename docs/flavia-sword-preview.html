@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<title>Flavia | Espada do Carrasco</title>
+<style>
+body{margin:0;background:#11101b;color:#fff2d4;font:16px system-ui}header{padding:20px 28px}h1{font-size:26px;margin:0 0 6px}p{margin:0 0 12px;color:#dccaa7}button{padding:10px 16px;margin:0 6px 6px 0;background:#31243b;color:#fff2d4;border:1px solid #b68b49;border-radius:5px;cursor:pointer}canvas{width:100%;max-width:1280px}#status{padding:10px 28px;color:#f7ce7b}
+</style>
+<header><h1>Flavia · Espada do Carrasco</h1><p>↓← + especial · lâmina de luz, corte pesado e derrubada</p><button id="play">Executar</button><button id="ready">Espada erguida</button><button id="slash">Ver corte</button><button id="flip">Trocar lado</button><button id="rigor">Rigor máximo</button></header>
+<div id="stage"></div><div id="status">Carregando…</div>
+<script type="module">
+import {Application,Container,Graphics} from 'pixi.js';
+import {SpriteSheetManager} from '/src/systems/SpriteSheetManager.js';
+import {Fighter} from '/src/systems/Fighter.js';
+import {EffectManager} from '/src/systems/EffectManager.js';
+import {resolveAttack,resolveBodyCollision} from '/src/systems/CollisionDetector.js';
+import {AudioManager} from '/src/systems/AudioManager.js';
+const app=new Application();await app.init({width:1280,height:540,background:'#1c1827',antialias:false});document.querySelector('#stage').append(app.canvas);
+const dir='/assets/characters/coordenadora',record=await new SpriteSheetManager().loadCharacter({id:'coordenadora',dir,config:'coordenadora_config.json'});
+const map={groundLevel:425,leftBound:70,rightBound:1210};
+app.stage.addChild(new Graphics().rect(0,425,1280,115).fill('#332b3b').moveTo(0,425).lineTo(1280,425).stroke({color:'#bc8b46',width:2}));
+const back=new Container(),front=new Container();app.stage.addChild(back);
+const a=new Fighter({record,map,x:500,facing:1}),b=new Fighter({record,map,x:630,facing:-1});a.opponent=b;b.opponent=a;app.stage.addChild(a.sprite,b.sprite,front);
+const effects=new EffectManager({back,front,bounds:{left:0,right:1280}}),audio=new AudioManager(.5);await audio.preload(dir,record.config.sounds);
+let tick=0,facing=1,paused=true,maximum=false,acc=0;
+function reset(){a.resetForRound(facing===1?500:780,facing);b.resetForRound(facing===1?630:650,-facing);if(maximum){a.damageTaken=80;}effects.clear();audio.stopAll();tick=0;acc=0;}
+function step(){a.faceTowards(b.x);b.faceTowards(a.x);a.update(tick===0?{combo:{animation:'executionerSword'}}:{},1);b.update({},1);effects.collect([a,b]);resolveBodyCollision(a,b);resolveAttack(a,b);effects.update(1,[a,b]);audio.update(0,a,dir);audio.update(1,b,dir);tick++;document.querySelector('#status').textContent=`${tick<26?'Invocação e preparação':tick<38?'Corte':'Recuperação'} · vida do adversário: ${b.health.toFixed(1)} · Rigor: ×${a.damageScale.toFixed(2)}`;}
+function show(at,side=facing){facing=side;reset();while(tick<at)step();paused=true;audio.stopAll();app.render();return {tick,health:b.health,state:a.state,effects:effects.effects.length,frame:a.animation.localFrame};}
+document.querySelector('#play').onclick=()=>{reset();paused=false;audio.resume();};
+document.querySelector('#ready').onclick=()=>show(21);
+document.querySelector('#slash').onclick=()=>show(31);
+document.querySelector('#flip').onclick=()=>show(31,-facing);
+document.querySelector('#rigor').onclick=()=>{maximum=!maximum;document.querySelector('#rigor').textContent=maximum?'Rigor inicial':'Rigor máximo';show(31);};
+app.ticker.add(t=>{if(paused)return;acc+=Math.min(t.deltaTime,3);while(acc>=1){step();acc--;if(tick>=180){paused=true;break;}}});
+window.flaviaQA={show,a,b,app};show(21);
+</script>
+</html>

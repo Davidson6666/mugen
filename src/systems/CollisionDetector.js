@@ -97,6 +97,7 @@ export function applyHit(attacker, defender, attack, hitRect, serial = attacker.
   if (stunScale !== 1) attack = { ...attack, hitstun: Math.max(1, Math.round(attack.hitstun * stunScale)) };
   // Finalizadores removem a vida restante, independentemente do balanceamento.
   if (attack.instantKill) attack = { ...attack, damage: defender.health, unblockable: true };
+  else if (attack.nonLethal) attack = { ...attack, damage: Math.min(attack.damage, Math.max(0, defender.health - Math.max(1, defender.minHealth))) };
   const heavy = Boolean(attack.heavy);
   // Arremesso: so pega quem esta no chao e solto (nao no meio de um golpe ou
   // atordoado); quem apertou soco + chute junto escapa e os dois se separam.
@@ -112,7 +113,8 @@ export function applyHit(attacker, defender, attack, hitRect, serial = attacker.
   if (!attack.guaranteed && !defender.blocking && defender.tryEvade?.()) return { outcome: 'evade', damage: 0, point };
   // Genjutsu nao se defende: o golpe "unblockable" passa pela guarda.
   if (defender.blocking && !attack.unblockable) {
-    const damage = Math.max(1, Math.round(attack.damage * CHIP_DAMAGE_RATIO));
+    const chip = Math.max(1, Math.round(attack.damage * CHIP_DAMAGE_RATIO));
+    const damage = attack.nonLethal ? Math.min(chip, Math.max(0, defender.health - Math.max(1, defender.minHealth))) : chip;
     const blockstun = Math.round(attack.hitstun * BLOCKSTUN_RATIO);
     const outcome = defender.takeBlockedHit(damage, blockstun);
     defender.pushBack(Math.min(attack.push ?? BLOCK_PUSH, BLOCK_PUSH * 2));
@@ -122,6 +124,7 @@ export function applyHit(attacker, defender, attack, hitRect, serial = attacker.
 
   // launch: o golpe derruba (fall = 1 no MUGEN); a queda e para longe de quem bateu.
   const outcome = defender.takeHit(attack.damage, attack.hitstun, { launch: attack.launch, from: attacker.x, scale: attacker.scale, heavy });
+  if (outcome === 'ko' && attack.expel) defender.expelFrom(attacker.x);
   defender.pushBack(attack.push ?? HIT_PUSH);
   if (attack.seal && outcome === 'hit') defender.applySeal?.(attack.seal);
   attacker.onAttackResolved(outcome, serial, attack);

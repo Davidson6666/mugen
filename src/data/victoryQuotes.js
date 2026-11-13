@@ -2,6 +2,8 @@
 // sorteada a cada vitoria). Frases proprias do jogo, no jeito de cada
 // personagem, e curtas para caber numa linha.
 export const VICTORY_QUOTES = {
+  coordenadora: ['Resultado correto. Próximo exercício.', 'Essa conta fechou a meu favor.', 'A coordenação encerrou a partida.'],
+  professor_web: ['Deploy concluído. Próximo desafio.', 'Seu código tinha uma falha de defesa.', 'Essa luta passou nos meus testes.'],
   dante: ['Isso foi só o aquecimento. Cadê a festa?', 'Estilo também conta ponto, sabia?', 'Volta quando tiver mais graça.'],
   escanor: ['O sol está no alto. Ninguém me alcança.', 'Orgulho não é defeito quando se vence.', 'Ajoelhe-se diante do meio-dia.'],
   humberto: ['Reação concluída. Sobrou só o resíduo.', 'Tá na tabela periódica: eu ganho.', 'Six... seven! Próximo!'],

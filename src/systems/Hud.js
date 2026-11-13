@@ -224,6 +224,14 @@ export class Hud {
   }
 
   drawStatus(side, fighter) {
+    const passive = fighter.config.damagePassive;
+    if (passive) {
+      side.status.visible = true;
+      side.status.alpha = 1;
+      side.statusText.text = `${passive.label} ×${fighter.passiveDamageScale.toFixed(2).replace('.', ',')}`;
+      side.statusBar.clear().roundRect(8, 24, 184 * fighter.passiveProgress, 4, 2).fill({ color: PALETTE_HEX.fieldYellow });
+      return;
+    }
     const buff = fighter.config.damageBuff;
     const ticks = buff ? (fighter.buffs?.[buff.kind] ?? 0) : 0;
     side.status.visible = ticks > 0;
@@ -258,10 +266,13 @@ export class Hud {
     side.awakeBlink = (side.awakeBlink + delta) % 20;
     const name = (def.label ?? def.mode).toUpperCase();
     if (fighter.awakened) {
-      side.awake.text = `${name} MODE`;
+      side.awake.text = def.manualInput ? `${name} ${Math.ceil(fighter.awakeGauge / 60)}s` : `${name} MODE`;
       side.awake.style.fill = side.awakeBlink < 10 ? PALETTE.lifeFill : PALETTE.textPrimary;
     } else {
-      side.awake.text = `${name} ${Math.floor(((fighter.awakeGauge ?? 0) / def.gauge) * 100)}%`;
+      const spent = def.transform && (fighter.roundUses.get(def.transform) ?? 0) > 0;
+      side.awake.text = def.manualInput
+        ? `${name} ${spent ? 'ESGOTADO' : def.manualInput}`
+        : `${name} ${Math.floor(((fighter.awakeGauge ?? 0) / def.gauge) * 100)}%`;
       side.awake.style.fill = PALETTE.textPrimary;
     }
   }

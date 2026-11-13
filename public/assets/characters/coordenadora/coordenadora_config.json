@@ -1,0 +1,3483 @@
+{
+  "id": "coordenadora",
+  "name": "Flavia",
+  "description": "Coordenadora: Rigor Crescente, Tribunal da Coordenação e a Espada do Carrasco.",
+  "assetVersion": "flavia-higuruma-v2",
+  "sheets": [
+    "coordenadora_movement.webp",
+    "coordenadora_combat.webp",
+    "coordenadora_reactions.webp",
+    "coordenadora_fx.webp",
+    "coordenadora_domain-poses.webp",
+    "coordenadora_domain-court.webp",
+    "coordenadora_domain-fx.webp",
+    "flavia_executioner.webp",
+    "flavia_sword-fx.webp"
+  ],
+  "atlas": [
+    [
+      0,
+      135,
+      56,
+      134,
+      244,
+      327,
+      248
+    ],
+    [
+      0,
+      516,
+      56,
+      134,
+      244,
+      324,
+      248
+    ],
+    [
+      0,
+      898,
+      64,
+      137,
+      236,
+      322,
+      256
+    ],
+    [
+      0,
+      1283,
+      61,
+      136,
+      239,
+      323,
+      253
+    ],
+    [
+      0,
+      116,
+      378,
+      145,
+      242,
+      308,
+      250
+    ],
+    [
+      0,
+      516,
+      376,
+      126,
+      244,
+      324,
+      248
+    ],
+    [
+      0,
+      891,
+      379,
+      155,
+      241,
+      315,
+      251
+    ],
+    [
+      0,
+      1297,
+      376,
+      108,
+      244,
+      337,
+      248
+    ],
+    [
+      0,
+      122,
+      751,
+      128,
+      189,
+      314,
+      303
+    ],
+    [
+      0,
+      510,
+      690,
+      133,
+      250,
+      318,
+      242
+    ],
+    [
+      0,
+      886,
+      757,
+      135,
+      183,
+      310,
+      309
+    ],
+    [
+      0,
+      1273,
+      701,
+      151,
+      239,
+      313,
+      253
+    ],
+    [
+      0,
+      94,
+      1062,
+      174,
+      198,
+      286,
+      294
+    ],
+    [
+      0,
+      486,
+      1043,
+      186,
+      217,
+      294,
+      275
+    ],
+    [
+      0,
+      888,
+      1034,
+      153,
+      226,
+      312,
+      266
+    ],
+    [
+      0,
+      1271,
+      1029,
+      152,
+      231,
+      311,
+      261
+    ],
+    [
+      0,
+      122,
+      1371,
+      133,
+      209,
+      314,
+      283
+    ],
+    [
+      0,
+      505,
+      1403,
+      134,
+      177,
+      313,
+      315
+    ],
+    [
+      0,
+      886,
+      1342,
+      140,
+      238,
+      310,
+      254
+    ],
+    [
+      0,
+      1285,
+      1400,
+      119,
+      180,
+      325,
+      312
+    ],
+    [
+      0,
+      126,
+      1661,
+      147,
+      239,
+      318,
+      253
+    ],
+    [
+      0,
+      501,
+      1663,
+      147,
+      237,
+      309,
+      255
+    ],
+    [
+      0,
+      856,
+      1675,
+      196,
+      225,
+      280,
+      267
+    ],
+    [
+      0,
+      1237,
+      1685,
+      186,
+      215,
+      277,
+      277
+    ],
+    [
+      1,
+      123,
+      56,
+      148,
+      244,
+      315,
+      248
+    ],
+    [
+      1,
+      503,
+      57,
+      152,
+      243,
+      311,
+      249
+    ],
+    [
+      1,
+      877,
+      58,
+      202,
+      242,
+      301,
+      250
+    ],
+    [
+      1,
+      1275,
+      57,
+      149,
+      243,
+      315,
+      249
+    ],
+    [
+      1,
+      110,
+      378,
+      158,
+      242,
+      302,
+      250
+    ],
+    [
+      1,
+      497,
+      378,
+      165,
+      242,
+      305,
+      250
+    ],
+    [
+      1,
+      871,
+      382,
+      227,
+      238,
+      295,
+      254
+    ],
+    [
+      1,
+      1266,
+      379,
+      154,
+      241,
+      306,
+      251
+    ],
+    [
+      1,
+      124,
+      683,
+      131,
+      257,
+      316,
+      235
+    ],
+    [
+      1,
+      492,
+      684,
+      153,
+      256,
+      300,
+      236
+    ],
+    [
+      1,
+      886,
+      688,
+      245,
+      252,
+      310,
+      240
+    ],
+    [
+      1,
+      1284,
+      684,
+      128,
+      256,
+      324,
+      236
+    ],
+    [
+      1,
+      88,
+      1075,
+      151,
+      185,
+      280,
+      307
+    ],
+    [
+      1,
+      470,
+      1081,
+      214,
+      179,
+      278,
+      313
+    ],
+    [
+      1,
+      852,
+      1080,
+      247,
+      180,
+      276,
+      312
+    ],
+    [
+      1,
+      1283,
+      1070,
+      132,
+      190,
+      323,
+      302
+    ],
+    [
+      1,
+      112,
+      1343,
+      141,
+      237,
+      304,
+      255
+    ],
+    [
+      1,
+      492,
+      1329,
+      150,
+      251,
+      300,
+      241
+    ],
+    [
+      1,
+      915,
+      1316,
+      144,
+      264,
+      339,
+      228
+    ],
+    [
+      1,
+      1270,
+      1340,
+      154,
+      240,
+      310,
+      252
+    ],
+    [
+      1,
+      111,
+      1658,
+      144,
+      242,
+      303,
+      250
+    ],
+    [
+      1,
+      478,
+      1662,
+      206,
+      238,
+      286,
+      254
+    ],
+    [
+      1,
+      850,
+      1703,
+      268,
+      197,
+      274,
+      295
+    ],
+    [
+      1,
+      1282,
+      1669,
+      140,
+      231,
+      322,
+      261
+    ],
+    [
+      2,
+      126,
+      56,
+      147,
+      244,
+      318,
+      248
+    ],
+    [
+      2,
+      505,
+      54,
+      153,
+      246,
+      313,
+      246
+    ],
+    [
+      2,
+      882,
+      56,
+      192,
+      244,
+      306,
+      248
+    ],
+    [
+      2,
+      1272,
+      56,
+      150,
+      244,
+      312,
+      248
+    ],
+    [
+      2,
+      102,
+      389,
+      187,
+      231,
+      294,
+      261
+    ],
+    [
+      2,
+      473,
+      373,
+      217,
+      247,
+      281,
+      245
+    ],
+    [
+      2,
+      860,
+      381,
+      231,
+      239,
+      284,
+      253
+    ],
+    [
+      2,
+      1257,
+      387,
+      188,
+      233,
+      297,
+      259
+    ],
+    [
+      2,
+      111,
+      699,
+      159,
+      241,
+      303,
+      251
+    ],
+    [
+      2,
+      488,
+      751,
+      141,
+      189,
+      296,
+      303
+    ],
+    [
+      2,
+      849,
+      717,
+      201,
+      223,
+      273,
+      269
+    ],
+    [
+      2,
+      1200,
+      790,
+      259,
+      150,
+      240,
+      342
+    ],
+    [
+      2,
+      81,
+      1110,
+      235,
+      150,
+      273,
+      342
+    ],
+    [
+      2,
+      464,
+      1110,
+      203,
+      150,
+      272,
+      342
+    ],
+    [
+      2,
+      812,
+      1173,
+      249,
+      87,
+      236,
+      405
+    ],
+    [
+      2,
+      1205,
+      1199,
+      260,
+      61,
+      245,
+      431
+    ],
+    [
+      2,
+      84,
+      1456,
+      221,
+      124,
+      276,
+      368
+    ],
+    [
+      2,
+      476,
+      1408,
+      187,
+      172,
+      284,
+      320
+    ],
+    [
+      2,
+      873,
+      1377,
+      144,
+      203,
+      297,
+      289
+    ],
+    [
+      2,
+      1264,
+      1359,
+      159,
+      221,
+      304,
+      271
+    ],
+    [
+      2,
+      97,
+      1655,
+      195,
+      245,
+      289,
+      247
+    ],
+    [
+      2,
+      476,
+      1649,
+      209,
+      251,
+      284,
+      241
+    ],
+    [
+      2,
+      891,
+      1642,
+      135,
+      258,
+      315,
+      234
+    ],
+    [
+      2,
+      1266,
+      1626,
+      147,
+      274,
+      306,
+      218
+    ],
+    [
+      4,
+      130,
+      57,
+      142,
+      243,
+      322,
+      249
+    ],
+    [
+      4,
+      515,
+      58,
+      142,
+      242,
+      323,
+      250
+    ],
+    [
+      4,
+      899,
+      58,
+      142,
+      242,
+      323,
+      250
+    ],
+    [
+      4,
+      1276,
+      58,
+      149,
+      242,
+      316,
+      250
+    ],
+    [
+      4,
+      121,
+      378,
+      145,
+      242,
+      313,
+      250
+    ],
+    [
+      4,
+      503,
+      377,
+      153,
+      243,
+      311,
+      249
+    ],
+    [
+      4,
+      871,
+      387,
+      203,
+      233,
+      295,
+      259
+    ],
+    [
+      4,
+      1272,
+      378,
+      151,
+      242,
+      312,
+      250
+    ],
+    [
+      4,
+      123,
+      697,
+      145,
+      243,
+      315,
+      249
+    ],
+    [
+      4,
+      509,
+      697,
+      144,
+      243,
+      317,
+      249
+    ],
+    [
+      4,
+      888,
+      698,
+      173,
+      242,
+      312,
+      250
+    ],
+    [
+      4,
+      1272,
+      699,
+      168,
+      241,
+      312,
+      251
+    ],
+    [
+      4,
+      120,
+      1016,
+      148,
+      244,
+      312,
+      248
+    ],
+    [
+      4,
+      503,
+      1016,
+      154,
+      244,
+      311,
+      248
+    ],
+    [
+      4,
+      873,
+      1017,
+      188,
+      243,
+      297,
+      249
+    ],
+    [
+      4,
+      1256,
+      1014,
+      197,
+      246,
+      296,
+      246
+    ],
+    [
+      7,
+      299,
+      242,
+      167,
+      250,
+      299,
+      242
+    ],
+    [
+      7,
+      1063,
+      208,
+      210,
+      284,
+      295,
+      208
+    ],
+    [
+      7,
+      1842,
+      166,
+      249,
+      326,
+      306,
+      166
+    ],
+    [
+      7,
+      2597,
+      167,
+      273,
+      325,
+      293,
+      167
+    ],
+    [
+      7,
+      289,
+      695,
+      234,
+      309,
+      289,
+      183
+    ],
+    [
+      7,
+      1063,
+      733,
+      247,
+      271,
+      295,
+      221
+    ],
+    [
+      7,
+      1818,
+      753,
+      330,
+      251,
+      282,
+      241
+    ],
+    [
+      7,
+      2599,
+      749,
+      273,
+      255,
+      295,
+      237
+    ],
+    [
+      7,
+      309,
+      1263,
+      226,
+      253,
+      309,
+      239
+    ],
+    [
+      7,
+      1069,
+      1211,
+      214,
+      305,
+      301,
+      187
+    ],
+    [
+      7,
+      1835,
+      1269,
+      169,
+      247,
+      299,
+      245
+    ],
+    [
+      7,
+      2609,
+      1268,
+      167,
+      248,
+      305,
+      244
+    ]
+  ],
+  "spriteGridSize": {
+    "frameWidth": 768,
+    "frameHeight": 512,
+    "baseline": 492
+  },
+  "spriteScale": 0.5,
+  "textureScaleMode": "nearest",
+  "stats": {
+    "maxHealth": 100,
+    "walkSpeed": 3.2,
+    "jumpForce": 9.4,
+    "jumpGravity": 0.55,
+    "airJumps": 1
+  },
+  "hurtbox": {
+    "offsetX": 334,
+    "offsetY": 252,
+    "width": 100,
+    "height": 240
+  },
+  "hitbox": {
+    "offsetX": 414,
+    "offsetY": 302,
+    "width": 124,
+    "height": 90
+  },
+  "animations": {
+    "idle": {
+      "frames": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "durations": [
+        11,
+        9,
+        11,
+        9
+      ],
+      "loop": true
+    },
+    "walkForward": {
+      "frames": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "durations": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "loop": true
+    },
+    "walkBackward": {
+      "frames": [
+        7,
+        6,
+        5,
+        4
+      ],
+      "durations": [
+        7,
+        7,
+        7,
+        7
+      ],
+      "loop": true
+    },
+    "jump": {
+      "frames": [
+        9,
+        10
+      ],
+      "durations": [
+        7,
+        14
+      ],
+      "loop": false
+    },
+    "jumpUp": {
+      "frames": [
+        9,
+        10
+      ],
+      "durations": [
+        7,
+        14
+      ],
+      "loop": false
+    },
+    "jumpForward": {
+      "frames": [
+        9,
+        10
+      ],
+      "durations": [
+        7,
+        14
+      ],
+      "loop": false
+    },
+    "jumpBack": {
+      "frames": [
+        9,
+        10
+      ],
+      "durations": [
+        7,
+        14
+      ],
+      "loop": false
+    },
+    "airJump": {
+      "frames": [
+        9,
+        10
+      ],
+      "durations": [
+        7,
+        14
+      ],
+      "loop": false
+    },
+    "airJumpForward": {
+      "frames": [
+        9,
+        10
+      ],
+      "durations": [
+        7,
+        14
+      ],
+      "loop": false
+    },
+    "airJumpBack": {
+      "frames": [
+        9,
+        10
+      ],
+      "durations": [
+        7,
+        14
+      ],
+      "loop": false
+    },
+    "jumpStart": {
+      "frames": [
+        8,
+        9
+      ],
+      "durations": [
+        3,
+        4
+      ],
+      "loop": false
+    },
+    "jumpFall": {
+      "frames": [
+        10,
+        11
+      ],
+      "durations": [
+        5,
+        9
+      ],
+      "loop": false
+    },
+    "landing": {
+      "frames": [
+        8,
+        16,
+        0
+      ],
+      "durations": [
+        3,
+        3,
+        3
+      ],
+      "loop": false
+    },
+    "crouchDown": {
+      "frames": [
+        16,
+        17
+      ],
+      "durations": [
+        3,
+        4
+      ],
+      "loop": false
+    },
+    "crouch": {
+      "frames": [
+        17
+      ],
+      "durations": [
+        10
+      ],
+      "loop": true
+    },
+    "crouchUp": {
+      "frames": [
+        17,
+        16,
+        0
+      ],
+      "durations": [
+        3,
+        3,
+        3
+      ],
+      "loop": false
+    },
+    "blockStanding": {
+      "frames": [
+        18
+      ],
+      "durations": [
+        8
+      ],
+      "loop": true
+    },
+    "blockCrouching": {
+      "frames": [
+        19
+      ],
+      "durations": [
+        8
+      ],
+      "loop": true
+    },
+    "guardEndStanding": {
+      "frames": [
+        18,
+        0
+      ],
+      "durations": [
+        3,
+        3
+      ],
+      "loop": false
+    },
+    "guardEndCrouching": {
+      "frames": [
+        19,
+        17
+      ],
+      "durations": [
+        3,
+        3
+      ],
+      "loop": false
+    },
+    "turn": {
+      "frames": [
+        20,
+        21,
+        0
+      ],
+      "durations": [
+        3,
+        3,
+        3
+      ],
+      "loop": false
+    },
+    "dashForward": {
+      "frames": [
+        12,
+        13,
+        14,
+        15
+      ],
+      "durations": [
+        3,
+        5,
+        5,
+        4
+      ],
+      "loop": false,
+      "dash": {
+        "speed": 40,
+        "moveFrom": 1,
+        "moveUntil": 2
+      }
+    },
+    "dashBackward": {
+      "frames": [
+        15,
+        12,
+        22,
+        0
+      ],
+      "durations": [
+        3,
+        5,
+        5,
+        4
+      ],
+      "loop": false,
+      "dash": {
+        "speed": 32,
+        "moveFrom": 1,
+        "moveUntil": 2
+      }
+    },
+    "airDashForward": {
+      "frames": [
+        9,
+        22,
+        22,
+        11
+      ],
+      "durations": [
+        3,
+        4,
+        4,
+        3
+      ],
+      "loop": false,
+      "dash": {
+        "speed": 40,
+        "moveFrom": 1,
+        "moveUntil": 2
+      }
+    },
+    "airDashBackward": {
+      "frames": [
+        10,
+        23,
+        23,
+        11
+      ],
+      "durations": [
+        3,
+        4,
+        4,
+        3
+      ],
+      "loop": false,
+      "dash": {
+        "speed": 32,
+        "moveFrom": 1,
+        "moveUntil": 2
+      }
+    },
+    "hitReaction": {
+      "frames": [
+        56,
+        56
+      ],
+      "durations": [
+        5,
+        9
+      ],
+      "loop": false
+    },
+    "hitStanding": {
+      "frames": [
+        56,
+        56
+      ],
+      "durations": [
+        5,
+        9
+      ],
+      "loop": false
+    },
+    "hitHeavy": {
+      "frames": [
+        56,
+        56
+      ],
+      "durations": [
+        5,
+        9
+      ],
+      "loop": false
+    },
+    "hitCrouching": {
+      "frames": [
+        57,
+        57
+      ],
+      "durations": [
+        5,
+        9
+      ],
+      "loop": false
+    },
+    "hitAir": {
+      "frames": [
+        58,
+        59
+      ],
+      "durations": [
+        6,
+        8
+      ],
+      "loop": false
+    },
+    "launched": {
+      "frames": [
+        58,
+        59
+      ],
+      "durations": [
+        6,
+        10
+      ],
+      "loop": false
+    },
+    "falling": {
+      "frames": [
+        59,
+        60
+      ],
+      "durations": [
+        5,
+        7
+      ],
+      "loop": false
+    },
+    "knockdown": {
+      "frames": [
+        60,
+        61,
+        62,
+        63
+      ],
+      "durations": [
+        3,
+        4,
+        5,
+        12
+      ],
+      "loop": false
+    },
+    "getUp": {
+      "frames": [
+        64,
+        65,
+        66,
+        67
+      ],
+      "durations": [
+        5,
+        5,
+        6,
+        5
+      ],
+      "loop": false
+    },
+    "ko": {
+      "frames": [
+        60,
+        61,
+        62,
+        63
+      ],
+      "durations": [
+        4,
+        5,
+        6,
+        18
+      ],
+      "loop": false
+    },
+    "defeatPose": {
+      "frames": [
+        63
+      ],
+      "durations": [
+        15
+      ],
+      "loop": false
+    },
+    "victoryPose": {
+      "frames": [
+        67,
+        70,
+        71
+      ],
+      "durations": [
+        8,
+        24,
+        30
+      ],
+      "loop": false
+    },
+    "grab": {
+      "frames": [
+        68,
+        69,
+        0
+      ],
+      "durations": [
+        4,
+        6,
+        18
+      ],
+      "loop": false
+    },
+    "punch": {
+      "frames": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "durations": [
+        3,
+        3,
+        5,
+        7
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 2,
+          "until": 2,
+          "damage": 6,
+          "hitstun": 17,
+          "push": 3,
+          "box": {
+            "offsetX": 414,
+            "offsetY": 302,
+            "width": 124,
+            "height": 90
+          }
+        }
+      ],
+      "events": [
+        {
+          "at": 6,
+          "sound": "swing"
+        }
+      ],
+      "cancels": [
+        {
+          "on": "punch",
+          "to": "punch2",
+          "after": 7
+        },
+        {
+          "on": "kick",
+          "to": "kick",
+          "after": 7
+        }
+      ]
+    },
+    "punch2": {
+      "frames": [
+        28,
+        29,
+        30,
+        31
+      ],
+      "durations": [
+        3,
+        3,
+        5,
+        7
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 2,
+          "until": 2,
+          "damage": 7,
+          "hitstun": 17,
+          "push": 3,
+          "box": {
+            "offsetX": 414,
+            "offsetY": 302,
+            "width": 124,
+            "height": 90
+          }
+        }
+      ],
+      "events": [
+        {
+          "at": 6,
+          "sound": "swing"
+        }
+      ],
+      "cancels": [
+        {
+          "on": "punch",
+          "to": "punch3",
+          "after": 7
+        },
+        {
+          "on": "kick",
+          "to": "kick2",
+          "after": 7
+        }
+      ]
+    },
+    "punch3": {
+      "frames": [
+        40,
+        41,
+        42,
+        43
+      ],
+      "durations": [
+        4,
+        4,
+        7,
+        12
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 2,
+          "until": 2,
+          "damage": 10,
+          "hitstun": 17,
+          "push": 3,
+          "box": {
+            "offsetX": 402,
+            "offsetY": 252,
+            "width": 130,
+            "height": 175
+          },
+          "heavy": true,
+          "launch": {
+            "vx": 5,
+            "vy": 6
+          }
+        }
+      ],
+      "events": [
+        {
+          "at": 8,
+          "sound": "swing"
+        }
+      ]
+    },
+    "kick": {
+      "frames": [
+        32,
+        33,
+        34,
+        35,
+        0
+      ],
+      "durations": [
+        4,
+        3,
+        6,
+        5,
+        5
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 2,
+          "until": 2,
+          "damage": 9,
+          "hitstun": 17,
+          "push": 3,
+          "box": {
+            "offsetX": 410,
+            "offsetY": 327,
+            "width": 150,
+            "height": 95
+          }
+        }
+      ],
+      "events": [
+        {
+          "at": 7,
+          "sound": "swing"
+        }
+      ],
+      "cancels": [
+        {
+          "on": "kick",
+          "to": "kick2",
+          "after": 8
+        },
+        {
+          "on": "punch",
+          "to": "punch3",
+          "after": 8
+        }
+      ]
+    },
+    "kick2": {
+      "frames": [
+        36,
+        37,
+        38,
+        39,
+        0
+      ],
+      "durations": [
+        4,
+        4,
+        7,
+        7,
+        5
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 2,
+          "until": 2,
+          "damage": 11,
+          "hitstun": 17,
+          "push": 3,
+          "box": {
+            "offsetX": 402,
+            "offsetY": 427,
+            "width": 166,
+            "height": 62
+          },
+          "heavy": true,
+          "launch": {
+            "vx": 6,
+            "vy": 3
+          }
+        }
+      ],
+      "events": [
+        {
+          "at": 8,
+          "sound": "swing"
+        }
+      ]
+    },
+    "sweep": {
+      "frames": [
+        36,
+        37,
+        38,
+        39
+      ],
+      "durations": [
+        5,
+        4,
+        7,
+        13
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 2,
+          "until": 2,
+          "damage": 10,
+          "hitstun": 17,
+          "push": 3,
+          "box": {
+            "offsetX": 402,
+            "offsetY": 427,
+            "width": 166,
+            "height": 62
+          },
+          "heavy": true,
+          "launch": {
+            "vx": 4,
+            "vy": 3
+          }
+        }
+      ],
+      "events": [
+        {
+          "at": 9,
+          "sound": "swing"
+        }
+      ]
+    },
+    "crouchPunch": {
+      "frames": [
+        17,
+        40,
+        41,
+        17
+      ],
+      "durations": [
+        3,
+        3,
+        5,
+        9
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 2,
+          "until": 2,
+          "damage": 6,
+          "hitstun": 17,
+          "push": 3,
+          "box": {
+            "offsetX": 407,
+            "offsetY": 357,
+            "width": 108,
+            "height": 83
+          }
+        }
+      ],
+      "events": [
+        {
+          "at": 6,
+          "sound": "swing"
+        }
+      ]
+    },
+    "crouchKick": {
+      "frames": [
+        36,
+        37,
+        38,
+        39
+      ],
+      "durations": [
+        4,
+        4,
+        6,
+        10
+      ],
+      "loop": false,
+      "hits": [
+        {
+          "from": 2,
+          "until": 2,
+          "damage": 8,
+          "hitstun": 17,
+          "push": 3,
+          "box": {
+            "offsetX": 402,
+            "offsetY": 427,
+            "width": 166,
+            "height": 62
+          }
+        }
+      ],
+      "events": [
+        {
+          "at": 8,
+          "sound": "swing"
+        }
+      ]
+    },
+    "uppercut": {
+      "frames": [
+        40,
+        41,
+        42,
+        43
+      ],
+      "durations": [
+        5,
+        4,
+        8,
+        13
+      ],
+      "loop": false,
+      "cooldown": 55,
+      "hits": [
+        {
+          "from": 2,
+          "until": 2,
+          "damage": 12,
+          "hitstun": 17,
+          "push": 3,
+          "box": {
+            "offsetX": 400,
+            "offsetY": 234,
+            "width": 132,
+            "height": 210
+          },
+          "heavy": true,
+          "launch": {
+            "vx": 4,
+            "vy": 8
+          }
+        }
+      ],
+      "events": [
+        {
+          "at": 9,
+          "sound": "swing"
+        }
+      ]
+    },
+    "airPunch": {
+      "frames": [
+        44,
+        45,
+        45,
+        44
+      ],
+      "durations": [
+        3,
+        3,
+        5,
+        8
+      ],
+      "loop": false,
+      "air": true,
+      "hits": [
+        {
+          "from": 1,
+          "until": 2,
+          "damage": 7,
+          "hitstun": 17,
+          "push": 3,
+          "box": {
+            "offsetX": 414,
+            "offsetY": 302,
+            "width": 124,
+            "height": 90
+          }
+        }
+      ],
+      "events": [
+        {
+          "at": 3,
+          "sound": "swing"
+        }
+      ]
+    },
+    "airKick": {
+      "frames": [
+        44,
+        46,
+        46,
+        47
+      ],
+      "durations": [
+        4,
+        4,
+        6,
+        9
+      ],
+      "loop": false,
+      "air": true,
+      "hits": [
+        {
+          "from": 1,
+          "until": 2,
+          "damage": 9,
+          "hitstun": 17,
+          "push": 3,
+          "box": {
+            "offsetX": 410,
+            "offsetY": 327,
+            "width": 150,
+            "height": 95
+          }
+        }
+      ],
+      "events": [
+        {
+          "at": 4,
+          "sound": "swing"
+        }
+      ]
+    },
+    "airHeavy": {
+      "frames": [
+        45,
+        46,
+        46,
+        47
+      ],
+      "durations": [
+        5,
+        5,
+        7,
+        10
+      ],
+      "loop": false,
+      "air": true,
+      "hits": [
+        {
+          "from": 1,
+          "until": 2,
+          "damage": 11,
+          "hitstun": 17,
+          "push": 3,
+          "box": {
+            "offsetX": 410,
+            "offsetY": 327,
+            "width": 150,
+            "height": 95
+          },
+          "heavy": true,
+          "launch": {
+            "vx": 4,
+            "vy": 3
+          }
+        }
+      ],
+      "events": [
+        {
+          "at": 5,
+          "sound": "swing"
+        }
+      ]
+    },
+    "special1": {
+      "frames": [
+        48,
+        49,
+        50,
+        51
+      ],
+      "durations": [
+        5,
+        5,
+        7,
+        13
+      ],
+      "loop": false,
+      "cooldown": 48,
+      "events": [
+        {
+          "at": 1,
+          "effect": {
+            "id": "mathCharge",
+            "offsetX": 50,
+            "offsetY": 160
+          }
+        },
+        {
+          "at": 10,
+          "sound": "equation"
+        },
+        {
+          "at": 10,
+          "effect": {
+            "id": "equation",
+            "offsetX": 130,
+            "offsetY": 165
+          }
+        }
+      ]
+    },
+    "special2": {
+      "frames": [
+        48,
+        49,
+        50,
+        51
+      ],
+      "durations": [
+        6,
+        6,
+        7,
+        16
+      ],
+      "loop": false,
+      "cooldown": 75,
+      "events": [
+        {
+          "at": 1,
+          "effect": {
+            "id": "mathCharge",
+            "offsetX": 50,
+            "offsetY": 160
+          }
+        },
+        {
+          "at": 12,
+          "sound": "parabola"
+        },
+        {
+          "at": 12,
+          "effect": {
+            "id": "parabola",
+            "offsetX": 80,
+            "offsetY": 160
+          }
+        }
+      ]
+    },
+    "special3": {
+      "frames": [
+        52,
+        53,
+        54,
+        55
+      ],
+      "durations": [
+        8,
+        12,
+        32,
+        20
+      ],
+      "loop": false,
+      "cooldown": 600,
+      "perRound": 2,
+      "events": [
+        {
+          "at": 0,
+          "effect": {
+            "id": "mathCharge",
+            "offsetX": 0,
+            "offsetY": 160
+          }
+        },
+        {
+          "at": 20,
+          "sound": "council"
+        },
+        {
+          "at": 20,
+          "effect": {
+            "id": "council",
+            "target": "opponent",
+            "offsetX": 0,
+            "offsetY": 0
+          }
+        }
+      ]
+    },
+    "special4": {
+      "frames": [
+        48,
+        49,
+        50,
+        51
+      ],
+      "durations": [
+        5,
+        6,
+        36,
+        9
+      ],
+      "loop": false,
+      "cooldown": 105,
+      "events": [
+        {
+          "at": 11,
+          "sound": "cartesian"
+        },
+        {
+          "at": 11,
+          "effect": {
+            "id": "cartesian",
+            "offsetX": 92,
+            "offsetY": 0
+          }
+        }
+      ]
+    },
+    "domainTrial": {
+      "frames": [
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87
+      ],
+      "durations": [
+        5,
+        5,
+        5,
+        9,
+        8,
+        8,
+        8,
+        8,
+        10,
+        10,
+        12,
+        8,
+        8,
+        10,
+        12,
+        18
+      ],
+      "loop": false,
+      "cooldown": 900,
+      "perRound": 1,
+      "invulnerable": [
+        24,
+        143
+      ],
+      "events": [
+        {
+          "at": 0,
+          "sound": "domainOpen"
+        },
+        {
+          "at": 0,
+          "effect": {
+            "id": "domainOpening",
+            "target": "stage",
+            "offsetY": 410
+          }
+        },
+        {
+          "at": 24,
+          "standAt": -300,
+          "pinOpponent": {
+            "dx": 300,
+            "ticks": 120,
+            "disableActions": true,
+            "releaseOnInterrupt": true
+          }
+        },
+        {
+          "at": 24,
+          "effect": {
+            "id": "domainCourt",
+            "target": "stage",
+            "offsetY": 208
+          }
+        },
+        {
+          "at": 40,
+          "sound": "gavel"
+        },
+        {
+          "at": 52,
+          "effect": {
+            "id": "domainWarning1",
+            "target": "opponent",
+            "offsetY": 290
+          }
+        },
+        {
+          "at": 52,
+          "sound": "gavel"
+        },
+        {
+          "at": 78,
+          "effect": {
+            "id": "domainWarning2",
+            "target": "opponent",
+            "offsetY": 290
+          }
+        },
+        {
+          "at": 78,
+          "sound": "gavel"
+        },
+        {
+          "at": 112,
+          "verdict": {
+            "threshold": 0.3,
+            "expel": "domainExpulsion",
+            "warning": "domainWarningFinal",
+            "offsetY": 290,
+            "expelSound": "expulsion",
+            "warningSound": "verdict"
+          }
+        }
+      ]
+    },
+    "executionerSword": {
+      "frames": [
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99
+      ],
+      "durations": [
+        4,
+        4,
+        5,
+        6,
+        7,
+        3,
+        4,
+        5,
+        5,
+        5,
+        4,
+        6
+      ],
+      "loop": false,
+      "cooldown": 180,
+      "hits": [
+        {
+          "from": 5,
+          "until": 7,
+          "damage": 24,
+          "hitstun": 24,
+          "push": 6,
+          "heavy": true,
+          "launch": {
+            "vx": 7,
+            "vy": 5
+          },
+          "box": {
+            "offsetX": 408,
+            "offsetY": 270,
+            "width": 318,
+            "height": 200
+          }
+        }
+      ],
+      "events": [
+        {
+          "at": 0,
+          "sound": "swordDraw"
+        },
+        {
+          "at": 4,
+          "effect": {
+            "id": "swordSummon",
+            "offsetX": 30,
+            "offsetY": 160
+          }
+        },
+        {
+          "at": 26,
+          "sound": "swordSlash"
+        },
+        {
+          "at": 26,
+          "effect": {
+            "id": "swordTrail"
+          }
+        }
+      ]
+    }
+  },
+  "effects": {
+    "equation": {
+      "spriteGridSize": {
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "baseline": 64
+      },
+      "atlas": [
+        [
+          3,
+          0,
+          0,
+          128,
+          128,
+          0,
+          0
+        ],
+        [
+          3,
+          128,
+          0,
+          128,
+          128,
+          0,
+          0
+        ],
+        [
+          3,
+          256,
+          0,
+          128,
+          128,
+          0,
+          0
+        ],
+        [
+          3,
+          384,
+          0,
+          128,
+          128,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "durations": [
+          3,
+          3,
+          3,
+          3
+        ],
+        "loop": true
+      },
+      "renderScale": 0.85,
+      "velocityX": 15,
+      "lifetime": 135,
+      "destroyOnHit": true,
+      "onHitSpawn": {
+        "id": "mathImpact"
+      },
+      "hits": [
+        {
+          "from": 0,
+          "until": 3,
+          "damage": 10,
+          "hitstun": 18,
+          "push": 4,
+          "box": {
+            "offsetX": 28,
+            "offsetY": 32,
+            "width": 80,
+            "height": 64
+          }
+        }
+      ]
+    },
+    "parabola": {
+      "spriteGridSize": {
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "baseline": 64
+      },
+      "atlas": [
+        [
+          3,
+          0,
+          128,
+          128,
+          128,
+          0,
+          0
+        ],
+        [
+          3,
+          128,
+          128,
+          128,
+          128,
+          0,
+          0
+        ],
+        [
+          3,
+          256,
+          128,
+          128,
+          128,
+          0,
+          0
+        ],
+        [
+          3,
+          384,
+          128,
+          128,
+          128,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "durations": [
+          3,
+          3,
+          3,
+          3
+        ],
+        "loop": true
+      },
+      "renderScale": 0.85,
+      "velocityX": 14,
+      "velocityY": -9,
+      "gravity": 0.44,
+      "lifetime": 110,
+      "endOnGround": true,
+      "destroyOnHit": true,
+      "onHitSpawn": {
+        "id": "mathImpact"
+      },
+      "hits": [
+        {
+          "from": 0,
+          "until": 3,
+          "damage": 12,
+          "hitstun": 20,
+          "push": 5,
+          "heavy": true,
+          "launch": {
+            "vx": 4,
+            "vy": 5
+          },
+          "box": {
+            "offsetX": 30,
+            "offsetY": 30,
+            "width": 72,
+            "height": 72
+          }
+        }
+      ]
+    },
+    "council": {
+      "spriteGridSize": {
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "baseline": 120
+      },
+      "atlas": [
+        [
+          3,
+          0,
+          256,
+          128,
+          128,
+          0,
+          0
+        ],
+        [
+          3,
+          128,
+          256,
+          128,
+          128,
+          0,
+          0
+        ],
+        [
+          3,
+          256,
+          256,
+          128,
+          128,
+          0,
+          0
+        ],
+        [
+          3,
+          384,
+          256,
+          128,
+          128,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "durations": [
+          12,
+          6,
+          6,
+          6
+        ],
+        "loop": false
+      },
+      "renderScale": 2,
+      "lifetime": 30,
+      "onHitSpawn": {
+        "id": "mathImpact"
+      },
+      "hits": [
+        {
+          "from": 1,
+          "until": 3,
+          "damage": 10,
+          "hitstun": 20,
+          "push": 1,
+          "heavy": true,
+          "every": 8,
+          "count": 3,
+          "launch": {
+            "vx": 5,
+            "vy": 6
+          },
+          "box": {
+            "offsetX": 34,
+            "offsetY": 10,
+            "width": 60,
+            "height": 110
+          }
+        }
+      ]
+    },
+    "cartesian": {
+      "spriteGridSize": {
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "baseline": 120
+      },
+      "atlas": [
+        [
+          3,
+          0,
+          384,
+          128,
+          128,
+          0,
+          0
+        ],
+        [
+          3,
+          128,
+          384,
+          128,
+          128,
+          0,
+          0
+        ],
+        [
+          3,
+          256,
+          384,
+          128,
+          128,
+          0,
+          0
+        ],
+        [
+          3,
+          384,
+          384,
+          128,
+          128,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "durations": [
+          5,
+          5,
+          5,
+          5
+        ],
+        "loop": true
+      },
+      "renderScale": 2,
+      "lifetime": 44,
+      "follow": "owner",
+      "endWithMove": true,
+      "shield": [
+        -42,
+        -235,
+        42,
+        0
+      ]
+    },
+    "mathImpact": {
+      "spriteGridSize": {
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "baseline": 64
+      },
+      "atlas": [
+        [
+          3,
+          0,
+          512,
+          128,
+          128,
+          0,
+          0
+        ],
+        [
+          3,
+          128,
+          512,
+          128,
+          128,
+          0,
+          0
+        ],
+        [
+          3,
+          256,
+          512,
+          128,
+          128,
+          0,
+          0
+        ],
+        [
+          3,
+          384,
+          512,
+          128,
+          128,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "durations": [
+          3,
+          3,
+          3,
+          3
+        ],
+        "loop": false
+      },
+      "renderScale": 1,
+      "lifetime": 12
+    },
+    "mathCharge": {
+      "spriteGridSize": {
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "baseline": 64
+      },
+      "atlas": [
+        [
+          3,
+          0,
+          0,
+          128,
+          128,
+          0,
+          0
+        ],
+        [
+          3,
+          128,
+          0,
+          128,
+          128,
+          0,
+          0
+        ],
+        [
+          3,
+          256,
+          0,
+          128,
+          128,
+          0,
+          0
+        ],
+        [
+          3,
+          384,
+          0,
+          128,
+          128,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "durations": [
+          3,
+          3,
+          3,
+          3
+        ],
+        "loop": false
+      },
+      "renderScale": 0.5,
+      "lifetime": 13,
+      "follow": "owner",
+      "endWithMove": true
+    },
+    "domainCourt": {
+      "spriteGridSize": {
+        "frameWidth": 1024,
+        "frameHeight": 576,
+        "baseline": 288
+      },
+      "atlas": [
+        [
+          5,
+          0,
+          0,
+          1024,
+          576,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0
+        ],
+        "durations": [
+          132
+        ],
+        "loop": false
+      },
+      "cover": [
+        1280,
+        720
+      ],
+      "layer": "back",
+      "lifetime": 132,
+      "endOnOwnerHit": true
+    },
+    "domainOpening": {
+      "spriteGridSize": {
+        "frameWidth": 256,
+        "frameHeight": 96,
+        "baseline": 48
+      },
+      "atlas": [
+        [
+          6,
+          0,
+          0,
+          256,
+          96,
+          0,
+          0
+        ],
+        [
+          6,
+          256,
+          0,
+          256,
+          96,
+          0,
+          0
+        ],
+        [
+          6,
+          512,
+          0,
+          256,
+          96,
+          0,
+          0
+        ],
+        [
+          6,
+          768,
+          0,
+          256,
+          96,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "durations": [
+          4,
+          4,
+          4,
+          8
+        ],
+        "loop": false
+      },
+      "renderScale": 1.5,
+      "lifetime": 26,
+      "endWithMove": true
+    },
+    "domainWarning1": {
+      "spriteGridSize": {
+        "frameWidth": 256,
+        "frameHeight": 96,
+        "baseline": 48
+      },
+      "atlas": [
+        [
+          6,
+          0,
+          96,
+          256,
+          96,
+          0,
+          0
+        ],
+        [
+          6,
+          256,
+          96,
+          256,
+          96,
+          0,
+          0
+        ],
+        [
+          6,
+          512,
+          96,
+          256,
+          96,
+          0,
+          0
+        ],
+        [
+          6,
+          768,
+          96,
+          256,
+          96,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "durations": [
+          4,
+          4,
+          4,
+          8
+        ],
+        "loop": false
+      },
+      "renderScale": 1.4,
+      "lifetime": 20,
+      "guaranteed": true,
+      "hits": [
+        {
+          "from": 0,
+          "until": 3,
+          "damage": 6,
+          "hitstun": 10,
+          "push": 0,
+          "box": {
+            "offsetX": 0,
+            "offsetY": 0,
+            "width": 256,
+            "height": 96
+          },
+          "nonLethal": true
+        }
+      ]
+    },
+    "domainWarning2": {
+      "spriteGridSize": {
+        "frameWidth": 256,
+        "frameHeight": 96,
+        "baseline": 48
+      },
+      "atlas": [
+        [
+          6,
+          0,
+          192,
+          256,
+          96,
+          0,
+          0
+        ],
+        [
+          6,
+          256,
+          192,
+          256,
+          96,
+          0,
+          0
+        ],
+        [
+          6,
+          512,
+          192,
+          256,
+          96,
+          0,
+          0
+        ],
+        [
+          6,
+          768,
+          192,
+          256,
+          96,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "durations": [
+          4,
+          4,
+          4,
+          8
+        ],
+        "loop": false
+      },
+      "renderScale": 1.4,
+      "lifetime": 20,
+      "guaranteed": true,
+      "hits": [
+        {
+          "from": 0,
+          "until": 3,
+          "damage": 6,
+          "hitstun": 10,
+          "push": 0,
+          "box": {
+            "offsetX": 0,
+            "offsetY": 0,
+            "width": 256,
+            "height": 96
+          },
+          "nonLethal": true
+        }
+      ]
+    },
+    "domainWarningFinal": {
+      "spriteGridSize": {
+        "frameWidth": 256,
+        "frameHeight": 96,
+        "baseline": 48
+      },
+      "atlas": [
+        [
+          6,
+          0,
+          288,
+          256,
+          96,
+          0,
+          0
+        ],
+        [
+          6,
+          256,
+          288,
+          256,
+          96,
+          0,
+          0
+        ],
+        [
+          6,
+          512,
+          288,
+          256,
+          96,
+          0,
+          0
+        ],
+        [
+          6,
+          768,
+          288,
+          256,
+          96,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "durations": [
+          4,
+          4,
+          4,
+          8
+        ],
+        "loop": false
+      },
+      "renderScale": 1.5,
+      "lifetime": 32,
+      "guaranteed": true,
+      "hits": [
+        {
+          "from": 0,
+          "until": 3,
+          "damage": 12,
+          "hitstun": 20,
+          "push": 5,
+          "box": {
+            "offsetX": 0,
+            "offsetY": 0,
+            "width": 256,
+            "height": 96
+          },
+          "heavy": true
+        }
+      ]
+    },
+    "domainExpulsion": {
+      "spriteGridSize": {
+        "frameWidth": 256,
+        "frameHeight": 96,
+        "baseline": 48
+      },
+      "atlas": [
+        [
+          6,
+          0,
+          384,
+          256,
+          96,
+          0,
+          0
+        ],
+        [
+          6,
+          256,
+          384,
+          256,
+          96,
+          0,
+          0
+        ],
+        [
+          6,
+          512,
+          384,
+          256,
+          96,
+          0,
+          0
+        ],
+        [
+          6,
+          768,
+          384,
+          256,
+          96,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "durations": [
+          4,
+          4,
+          4,
+          8
+        ],
+        "loop": false
+      },
+      "renderScale": 1.8,
+      "lifetime": 55,
+      "guaranteed": true,
+      "hits": [
+        {
+          "from": 0,
+          "until": 3,
+          "damage": 0,
+          "hitstun": 10,
+          "push": 0,
+          "box": {
+            "offsetX": 0,
+            "offsetY": 0,
+            "width": 256,
+            "height": 96
+          },
+          "instantKill": true,
+          "expel": true,
+          "heavy": true
+        }
+      ]
+    },
+    "swordSummon": {
+      "spriteGridSize": {
+        "frameWidth": 600,
+        "frameHeight": 384,
+        "baseline": 192
+      },
+      "atlas": [
+        [
+          8,
+          0,
+          0,
+          600,
+          384,
+          0,
+          0
+        ],
+        [
+          8,
+          600,
+          0,
+          600,
+          384,
+          0,
+          0
+        ],
+        [
+          8,
+          1200,
+          0,
+          600,
+          384,
+          0,
+          0
+        ],
+        [
+          8,
+          1800,
+          0,
+          600,
+          384,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "durations": [
+          4,
+          4,
+          4,
+          5
+        ],
+        "loop": false
+      },
+      "follow": "owner",
+      "endWithMove": true
+    },
+    "swordTrail": {
+      "spriteGridSize": {
+        "frameWidth": 600,
+        "frameHeight": 384,
+        "baseline": 352
+      },
+      "atlas": [
+        [
+          8,
+          0,
+          384,
+          600,
+          384,
+          0,
+          0
+        ],
+        [
+          8,
+          600,
+          384,
+          600,
+          384,
+          0,
+          0
+        ],
+        [
+          8,
+          1200,
+          384,
+          600,
+          384,
+          0,
+          0
+        ],
+        [
+          8,
+          1800,
+          384,
+          600,
+          384,
+          0,
+          0
+        ]
+      ],
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "durations": [
+          3,
+          3,
+          3,
+          4
+        ],
+        "loop": false
+      },
+      "follow": "owner",
+      "endWithMove": true
+    }
+  },
+  "buttons": {
+    "ground": {
+      "punch": "punch",
+      "kick": "kick",
+      "special": "special1"
+    },
+    "air": {
+      "punch": "airPunch",
+      "kick": "airKick",
+      "special": "airHeavy"
+    }
+  },
+  "combos": [
+    {
+      "id": "council",
+      "input": "↓→S",
+      "animation": "special3"
+    },
+    {
+      "id": "equation",
+      "input": "↓→P",
+      "animation": "special1"
+    },
+    {
+      "id": "parabola",
+      "input": "S",
+      "hold": "↓",
+      "animation": "special2"
+    },
+    {
+      "id": "cartesian",
+      "input": "S",
+      "hold": "←",
+      "animation": "special4"
+    },
+    {
+      "id": "councilShortcut",
+      "input": "S",
+      "hold": "→",
+      "animation": "special3"
+    },
+    {
+      "id": "uppercut",
+      "input": "P",
+      "hold": "→",
+      "animation": "uppercut"
+    },
+    {
+      "id": "crouchPunch",
+      "input": "P",
+      "hold": "↓",
+      "animation": "crouchPunch"
+    },
+    {
+      "id": "sweep",
+      "input": "K",
+      "hold": "↓",
+      "animation": "sweep"
+    },
+    {
+      "id": "domainTrial",
+      "input": "↓↓S",
+      "animation": "domainTrial"
+    },
+    {
+      "id": "executionerSword",
+      "input": "↓←S",
+      "animation": "executionerSword"
+    }
+  ],
+  "moveList": [
+    {
+      "section": "Movimento",
+      "name": "Andar / recuar",
+      "input": "←→"
+    },
+    {
+      "section": "Movimento",
+      "name": "Pulo e pulo duplo",
+      "input": "↑↑"
+    },
+    {
+      "section": "Movimento",
+      "name": "Dash / recuo rápido",
+      "input": "→→ / ←←",
+      "note": "Também funciona no ar"
+    },
+    {
+      "section": "Movimento",
+      "name": "Agachar",
+      "input": "↓"
+    },
+    {
+      "section": "Defesa",
+      "name": "Defesa em pé",
+      "input": "←",
+      "note": "Segure para trás ou o botão de defesa"
+    },
+    {
+      "section": "Defesa",
+      "name": "Defesa agachada",
+      "input": "↓←"
+    },
+    {
+      "section": "Básicos",
+      "name": "Soco → cruzado → uppercut",
+      "input": "PPP"
+    },
+    {
+      "section": "Básicos",
+      "name": "Chute → rasteira",
+      "input": "KK"
+    },
+    {
+      "section": "Básicos",
+      "name": "Sequência mista",
+      "input": "PPK"
+    },
+    {
+      "section": "Básicos",
+      "name": "Soco agachado",
+      "input": "P",
+      "hold": "↓"
+    },
+    {
+      "section": "Básicos",
+      "name": "Rasteira",
+      "input": "K",
+      "hold": "↓"
+    },
+    {
+      "section": "Básicos",
+      "name": "Uppercut",
+      "input": "P",
+      "hold": "→"
+    },
+    {
+      "section": "No ar",
+      "name": "Soco aéreo",
+      "input": "P",
+      "note": "Durante o pulo"
+    },
+    {
+      "section": "No ar",
+      "name": "Chute aéreo",
+      "input": "K",
+      "note": "Durante o pulo"
+    },
+    {
+      "section": "No ar",
+      "name": "Chute aéreo pesado",
+      "input": "S",
+      "note": "Durante o pulo"
+    },
+    {
+      "section": "Especiais",
+      "name": "Equação Direta",
+      "input": "S",
+      "note": "Símbolo de pi em linha reta. Também: ↓→ + soco"
+    },
+    {
+      "section": "Especiais",
+      "name": "Parábola",
+      "input": "S",
+      "hold": "↓",
+      "note": "Projétil em arco que derruba ao acertar"
+    },
+    {
+      "section": "Especiais",
+      "name": "Plano Cartesiano",
+      "input": "S",
+      "hold": "←",
+      "note": "Barreira defensiva que intercepta projéteis"
+    },
+    {
+      "section": "Super",
+      "name": "Conselho de Classe",
+      "input": "↓→S",
+      "note": "Marca o local do adversário. Dois usos por round"
+    },
+    {
+      "section": "Passiva",
+      "name": "Rigor Crescente",
+      "input": "",
+      "note": "Dano começa em 60% e sobe até 180% ao receber 80 de dano. Reinicia por round"
+    },
+    {
+      "section": "Domínio",
+      "name": "Expansão: Tribunal da Coordenação",
+      "input": "↓↓S",
+      "note": "Uma tentativa por round. Duas advertências; expulsa por K.O. se o alvo estiver com até 30% de vida no veredito"
+    },
+    {
+      "section": "Especiais",
+      "name": "Espada do Carrasco",
+      "input": "↓←S",
+      "note": "Lâmina de luz gigante: corte pesado de médio alcance que derruba. Pode ser defendido; recarga de 3 s"
+    }
+  ],
+  "sounds": {
+    "swing": "swing.wav",
+    "equation": "equation.wav",
+    "parabola": "parabola.wav",
+    "cartesian": "cartesian.wav",
+    "council": "council.wav",
+    "domainOpen": "domain-open.wav",
+    "gavel": "gavel.wav",
+    "verdict": "verdict.wav",
+    "expulsion": "expulsion.wav",
+    "swordDraw": "sword-draw.wav",
+    "swordSlash": "sword-slash.wav"
+  },
+  "balance": {
+    "damage": 1
+  },
+  "damagePassive": {
+    "label": "RIGOR",
+    "minScale": 0.6,
+    "maxScale": 1.8,
+    "fullAt": 0.8
+  }
+}

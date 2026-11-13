@@ -399,7 +399,7 @@ begin
   end if;
   -- TOTAL_PERSONAGENS: se o elenco crescer, mude aqui tambem. Existe um teste
   -- (test/achievements.test.js) que quebra de proposito pra lembrar disso.
-  if vencidos >= 18 then
+  if vencidos >= 20 then
     candidatas := array_append(candidatas, 'all_characters');
   end if;
 

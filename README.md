@@ -1,6 +1,6 @@
 # Ruptura Arena
 
-Jogo de luta 2D no navegador, no estilo dos fliperamas (Capcom vs SNK 2), feito com **React + PixiJS**. Tem 18 lutadores importados de pacotes MUGEN, partida contra a CPU, dois jogadores no mesmo teclado, partida online com ranking por Elo, Modo História, área de treino e conquistas.
+Jogo de luta 2D no navegador, no estilo dos fliperamas (Capcom vs SNK 2), feito com **React + PixiJS**. Tem 20 lutadores, incluindo personagens importados de pacotes MUGEN e professores com arte própria, partida contra a CPU, dois jogadores no mesmo teclado, partida online com ranking por Elo, Modo História, área de treino e conquistas.
 
 > Projeto acadêmico, sem fins comerciais. Os créditos de cada personagem, cenário e fonte estão em [CREDITS.md](CREDITS.md).
 
@@ -114,7 +114,19 @@ Controles padrão (remapeáveis em Configurações): `WASD` move, `J` soco, `K` 
 
 ## Lutadores e arte
 
-Cada lutador vem de um pacote MUGEN e é convertido por um script (`scripts/import-<nome>.mjs`, comando `npm run assets:<nome>`). Os pacotes originais ficam em `assets-src/`, fora do git (são grandes).
+A [Flavia](docs/COORDENADORA.md), coordenadora e professora de matemática, tem 100 poses
+próprias, quatro especiais matemáticos, a Espada do Carrasco (↓←S), com lâmina
+de luz amarela em forma de cruz e corte pesado, e o Tribunal da Coordenação (↓↓S),
+domínio inspirado no Higuruma com advertências e expulsão. Sua passiva Rigor
+Crescente aumenta o dano de ×0,60 a ×1,80 conforme apanha. Reconstrua os recursos
+com `npm run assets:coordenadora`.
+
+O [Professor Web](docs/PROFESSOR_WEB.md) usa 160 poses próprias: forma normal,
+futebol e transformação Deus da Guerra inspirada no Kratos, com machado,
+Lâminas do Caos e Lâmina do Olimpo. Os recursos são reconstruídos com
+`npm run assets:professor-web`.
+
+Os lutadores importados vêm de pacotes MUGEN e são convertidos por scripts (`scripts/import-<nome>.mjs`, comando `npm run assets:<nome>`). Os pacotes MUGEN originais ficam em `assets-src/*/mugen/`, fora do git (são grandes).
 
 Depois de reimportar alguém, rode `npm run assets:optimize`: ele converte os atlas de PNG para WebP sem perda (os pixels ficam idênticos e o download cai pela metade).
 

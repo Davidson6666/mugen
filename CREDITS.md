@@ -1,5 +1,29 @@
 # Créditos de arte
 
+## Flavia (Coordenadora)
+
+Lutadora original baseada nas fotos da professora de matemática e coordenadora
+fornecidas pelo usuário. Sprites gerados com IA, mantendo cabelo cacheado com
+mechas claras, casaco preto e calça rosa. São 100 poses próprias, efeitos
+geométricos de matemática, tribunal de julgamento e sons sintéticos.
+A Espada do Carrasco tem 12 poses próprias, lâmina fina de luz amarela com guarda em estrela,
+rastros e sons próprios. O domínio e a espada são inspirados no Higuruma e no Judgeman de Jujutsu Kaisen, de Gege
+Akutami; a arte do tribunal e os sprites foram gerados para este projeto.
+Reconstrução: `npm run assets:coordenadora`.
+Movimentos: `docs/COORDENADORA.md`.
+
+## Professor Web
+
+Personagem original criado a pedido do usuário com base nas fotos de referência
+fornecidas por ele. Sprites gerados com IA e preparados para o estilo de luta 2D
+do projeto. São 160 poses, incluindo futebol e uma transformação inspirada no
+Kratos, geradas a partir das referências fornecidas pelo usuário. Efeitos de
+futebol, gelo e armas gerados com IA, além de efeitos geométricos de código e
+sons sintéticos próprios. Kratos, Leviatã, Lâminas do Caos e Lâmina do Olimpo
+pertencem à franquia God of War, da Santa Monica Studio / Sony.
+Não reutiliza sprites nem vozes de outros lutadores. Recursos reconstruídos por
+`npm run assets:professor-web`; movimentos em `docs/PROFESSOR_WEB.md`.
+
 ## Itachi
 
 Personagem importado do pacote MUGEN **"Uchiha Itachi"**, usado sem fins comerciais em projeto acadêmico. Créditos do próprio pacote (`!Credit.txt`):

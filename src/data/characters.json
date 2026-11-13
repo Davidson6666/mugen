@@ -24,6 +24,22 @@
     "isBoss": false
   },
   {
+    "id": "professor_web",
+    "name": "Professor Web",
+    "dir": "/assets/characters/professor_web",
+    "config": "professor_web_config.json",
+    "portrait": "professor_web_portrait.png",
+    "isBoss": false
+  },
+  {
+    "id": "coordenadora",
+    "name": "Flavia",
+    "dir": "/assets/characters/coordenadora",
+    "config": "coordenadora_config.json",
+    "portrait": "coordenadora_portrait.png",
+    "isBoss": false
+  },
+  {
     "id": "itachi",
     "name": "Itachi",
     "dir": "/assets/characters/itachi",

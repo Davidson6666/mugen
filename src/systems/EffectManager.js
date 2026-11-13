@@ -182,7 +182,7 @@ export class Effect {
       }
     }
     // Some quando quem lancou apanha (kunais paradas no ar).
-    if (this.definition.endOnOwnerHit && (this.owner.state === 'hitstun' || this.owner.state === 'launched')) {
+    if (this.definition.endOnOwnerHit && (this.owner.state === 'hitstun' || this.owner.state === 'launched' || this.owner.isKnockedOut)) {
       this.dead = true;
       return null;
     }
@@ -313,6 +313,8 @@ export class Effect {
       heavy: hit.heavy ?? definition.heavy,
       guaranteed,
       instantKill: hit.instantKill ?? definition.instantKill,
+      nonLethal: hit.nonLethal ?? definition.nonLethal,
+      expel: hit.expel ?? definition.expel,
       launch: launchOf(hit, this.hitLog, active.index, true) ?? definition.launch,
       unblockable: guaranteed || (hit.unblockable ?? definition.unblockable),
       noEcho: definition.noEcho,
